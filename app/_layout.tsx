@@ -23,6 +23,12 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    UrbanistBlack: require('../assets/fonts/Urbanist-Black.ttf'),
+    UrbanistBold: require('../assets/fonts/Urbanist-Bold.ttf'),
+    UrbanistSemiBold: require('../assets/fonts/Urbanist-SemiBold.ttf'),
+    UrbanistMedium: require('../assets/fonts/Urbanist-Medium.ttf'),
+    UrbanistRegular: require('../assets/fonts/Urbanist-Regular.ttf'),
+
     ...FontAwesome.font,
   });
 
