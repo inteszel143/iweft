@@ -9,7 +9,7 @@ export default function Header() {
 
                 <View style={styles.headerLeft}>
                     <Image source={require('@/assets/icons/bookingIcon.png')} resizeMode='contain' style={{ width: wp(8) }} />
-                    <Text style={styles.bookingText} >My Bookings</Text>
+                    <Text style={styles.bookingText} >Inbox</Text>
                 </View>
                 <View style={styles.headerRight}>
                     <TouchableOpacity>

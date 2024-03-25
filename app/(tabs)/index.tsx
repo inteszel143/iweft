@@ -8,15 +8,16 @@ import HomeServices from '@/components/home/HomeServices';
 import LaundryBundles from '@/components/home/LaundryBundles';
 import HomeAds from '@/components/home/HomeAds';
 import BundleOffers from '@/components/home/BundleOffers';
+import { StatusBar } from 'expo-status-bar';
 export default function TabOneScreen() {
 
 
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar style='dark' />
       <HomeHeader />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(4), }}>
-
         <HomeSearch />
         <HomeSpecialOffers />
         <HomeServices />

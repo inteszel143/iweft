@@ -1,8 +1,6 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, Platform } from 'react-native'
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
-
 export default function HomeHeader() {
     return (
         <View style={styles.header}>
@@ -30,15 +28,12 @@ export default function HomeHeader() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#FFFFFF',
-    },
     header: {
         paddingHorizontal: wp(5),
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        paddingTop: Platform.OS === 'android' ? hp(4) : 0,
     },
     headerLeft: {
         flexDirection: 'row',

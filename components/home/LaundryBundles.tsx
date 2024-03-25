@@ -52,8 +52,8 @@ export default function LaundryBundles() {
                                     source={item.img}
                                     resizeMode='contain'
                                     style={{
-                                        width: wp(40),
-                                        height: hp(24),
+                                        width: wp(30),
+                                        height: hp(20),
                                     }}
                                 />
                                 <Text style={styles.bundleText}>{item.name}</Text>

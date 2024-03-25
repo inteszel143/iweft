@@ -9,12 +9,9 @@ export default function Header() {
 
                 <View style={styles.headerLeft}>
                     <Image source={require('@/assets/icons/bookingIcon.png')} resizeMode='contain' style={{ width: wp(8) }} />
-                    <Text style={styles.bookingText} >Inbox</Text>
+                    <Text style={styles.bookingText} >Profile</Text>
                 </View>
                 <View style={styles.headerRight}>
-                    <TouchableOpacity>
-                        <Image source={require('@/assets/icons/bookingSearch.png')} resizeMode='contain' style={{ width: wp(8) }} />
-                    </TouchableOpacity>
                     <TouchableOpacity>
                         <Image source={require('@/assets/icons/bookingMenu.png')} resizeMode='contain' style={{ width: wp(8) }} />
                     </TouchableOpacity>
@@ -27,7 +24,8 @@ export default function Header() {
 const styles = StyleSheet.create({
     container: {
         paddingHorizontal: wp(5),
-        marginTop: hp(1)
+        paddingTop: hp(6),
+        backgroundColor: "#ffffff",
     },
     innerContainer: {
         flexDirection: 'row',
