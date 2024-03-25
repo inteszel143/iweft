@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { router } from 'expo-router';
 import Animated, { BounceIn, FadeOut } from 'react-native-reanimated';
-import { eReciept } from '@/constants/booking/data';
+import { menuChat } from '@/constants/chat/data';
 
-export default function Header() {
+export default function HeaderChat() {
 
     const [cardShow, setCardShow] = useState(false);
 
@@ -18,15 +19,17 @@ export default function Header() {
             <View style={styles.innerContainer}>
 
                 <View style={styles.headerLeft}>
-                    <Image source={require('@/assets/icons/bookingIcon.png')} resizeMode='contain' style={{ width: wp(8) }} />
-                    <Text style={styles.bookingText} >My Bookings</Text>
+                    <TouchableOpacity onPress={() => router.back()}>
+                        <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                    </TouchableOpacity>
+                    <Text style={styles.bookingText} >Jenny Wilson</Text>
                 </View>
                 <View style={styles.headerRight}>
                     <TouchableOpacity>
-                        <Image source={require('@/assets/icons/bookingSearch.png')} resizeMode='contain' style={{ width: wp(7.5) }} />
+                        <Image source={require('@/assets/icons/call.jpg')} resizeMode='contain' style={{ width: wp(7) }} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={toggleShowCard}>
-                        <Image source={require('@/assets/icons/bookingMenu.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                        <Image source={require('@/assets/icons/bookingMenu.png')} resizeMode='contain' style={{ width: wp(7.5) }} />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -39,11 +42,11 @@ export default function Header() {
                     exiting={FadeOut}
                 >
                     {
-                        eReciept.map((item, index) => (
+                        menuChat.map((item, index) => (
                             <View key={index}>
                                 <TouchableOpacity style={styles.cardRow}>
                                     <Image source={item.icon} resizeMode='contain' style={{ width: wp(5) }} />
-                                    <Text style={styles.cardText} >{item.label}</Text>
+                                    <Text style={[styles.cardText, { color: item.color }]} >{item.label}</Text>
                                 </TouchableOpacity>
                                 {item.separator && <View style={styles.separator} />}
                             </View>
@@ -85,6 +88,9 @@ const styles = StyleSheet.create({
     },
 
 
+
+
+
     headerCard: {
         width: wp(56),
         height: hp(20),
@@ -110,18 +116,16 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: wp(4),
-        height: hp(5),
+        height: hp(5.5),
     },
     cardText: {
         fontFamily: 'UrbanistSemiBold',
         fontSize: hp(1.9)
     },
     separator: {
-        height: 1,
+        height: 0.9,
         backgroundColor: "#EEEEEE",
         marginHorizontal: wp(2),
         marginTop: 4,
     },
-
-
 })

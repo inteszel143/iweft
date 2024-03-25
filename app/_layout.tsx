@@ -7,6 +7,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { useColorScheme } from '@/components/useColorScheme';
+import HeaderChat from "@/components/inbox/HeaderChat";
 export {
   ErrorBoundary,
 } from 'expo-router';
@@ -58,12 +59,17 @@ function RootLayoutNav() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="BookingChat" options={{ header: () => <HeaderChat />, headerShadowVisible: false }} />
+
+
         {/* booking */}
         <Stack.Screen name='bookingPage/Ereceipt' options={{ headerShown: false }} />
         <Stack.Screen name='bookingPage/BookingPaymentMethod' options={{ headerShown: false }} />
         <Stack.Screen name='bookingPage/BookingPin' options={{ headerShown: false }} />
         <Stack.Screen name='bookingPage/BookingSummary' options={{ headerShown: false }} />
         {/* booking */}
+
+
       </Stack>
     </ThemeProvider>
   );

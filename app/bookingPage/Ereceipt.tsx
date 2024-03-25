@@ -189,16 +189,24 @@ const styles = StyleSheet.create({
 
     headerCard: {
         width: wp(56),
-        height: hp(22),
+        height: hp(20),
         position: 'absolute',
         top: hp(11.5),
         right: wp(5),
-        borderRadius: wp(10),
+        borderRadius: wp(6),
         backgroundColor: '#FFFFFF',
-        borderWidth: 0.5,
-        borderColor: '#FCFCFC',
+        // borderWidth: 0.5,
+        // borderColor: '#EEEEEE',
         justifyContent: 'center',
-        paddingHorizontal: wp(4)
+        paddingHorizontal: wp(4),
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.18,
+        shadowRadius: 1.00,
+        elevation: 1,
     },
     cardRow: {
         flexDirection: 'row',

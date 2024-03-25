@@ -32,8 +32,6 @@ export default function Page() {
                         entering={FadeInUp.duration(300).springify()}
                     >
 
-
-
                         <Link href={'/bookingPage/BookingSummary'} style={styles.row} asChild>
                             <TouchableOpacity>
                                 <View style={styles.rowLeft}>
@@ -53,9 +51,11 @@ export default function Page() {
                                     </View>
                                 </View>
                                 <View>
-                                    <TouchableOpacity style={styles.btnStyle}>
-                                        <Ionicons name='chatbubble-ellipses' size={hp(2.5)} color={'#0a5ca8'} />
-                                    </TouchableOpacity>
+                                    <Link href={'/BookingChat'} style={styles.btnStyle} asChild>
+                                        <TouchableOpacity>
+                                            <Ionicons name='chatbubble-ellipses' size={hp(2.5)} color={'#0a5ca8'} />
+                                        </TouchableOpacity>
+                                    </Link>
                                 </View>
                             </TouchableOpacity>
                         </Link>
