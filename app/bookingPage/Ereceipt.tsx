@@ -30,7 +30,7 @@ export default function Ereceipt() {
 
                     <View style={styles.headerRight}>
                         <TouchableOpacity onPress={toggleShowCard}>
-                            <Image source={require('@/assets/icons/bookingMenu.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                            <Image source={require('@/assets/icons/bookingMenu.png')} resizeMode='contain' style={{ width: wp(7.5) }} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -218,10 +218,6 @@ const styles = StyleSheet.create({
         fontFamily: 'UrbanistSemiBold',
         fontSize: hp(1.9)
     },
-
- 
-
-
     separator: {
         height: 1,
         backgroundColor: "#EEEEEE",

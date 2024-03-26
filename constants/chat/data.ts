@@ -61,6 +61,59 @@ export const messageChat = [
   },
 ];
 
+export const customerSupport = [
+  {
+    _id: 5,
+    text: "Yes Sandra, I’m on the most recent version of the app, are there any other possible causes?",
+    createdAt: new Date(),
+    user: {
+      _id: 1,
+      name: "Me",
+      avatar: "https://placeimg.com/140/140/any",
+    },
+  },
+  {
+    _id: 4,
+    text: "Do you have the latest version of the iweft app? There may be an update waiting for you on the app store. - Sandra, Customer Assistant",
+    createdAt: new Date(),
+    user: {
+      _id: 2,
+      name: "Jenny",
+      avatar: "https://placeimg.com/140/140/any",
+    },
+  },
+  {
+    _id: 3,
+    text: "Hello, we’re sorry to hear that you’re having trouble with your app! Lets get this fixed right away! - Sandra, Customer Assistant",
+    createdAt: new Date(),
+    user: {
+      _id: 2,
+      name: "Jenny",
+      avatar: "https://placeimg.com/140/140/any",
+    },
+  },
+  {
+    _id: 2,
+    text: "I cannot see my upcoming bookings in my app.",
+    createdAt: new Date(),
+    user: {
+      _id: 1,
+      name: "Me",
+      avatar: "https://placeimg.com/140/140/any",
+    },
+  },
+  {
+    _id: 1,
+    text: "Hi, I’m having an issue...",
+    createdAt: new Date(),
+    user: {
+      _id: 1,
+      name: "Me",
+      avatar: "https://placeimg.com/140/140/any",
+    },
+  },
+];
+
 export const menuChat = [
   {
     label: "Info & Support",

@@ -1,11 +1,14 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import Header from '@/components/profile/ProfileHeader';
-
+import ProfileTop from '@/components/profile/ProfileTop';
+import ProfileMiddle from '@/components/profile/ProfileMiddle';
 export default function Page() {
     return (
         <View style={styles.container}>
-
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <ProfileTop />
+                <ProfileMiddle />
+            </ScrollView>
         </View>
     )
 }

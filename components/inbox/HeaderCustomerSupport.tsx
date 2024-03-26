@@ -1,40 +1,48 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React, { useState } from 'react'
+import Animated, { BounceIn, FadeOut } from 'react-native-reanimated';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
-import Animated, { BounceIn, FadeOut } from 'react-native-reanimated';
+import { eReciept } from '@/constants/booking/data';
 import { menuChat } from '@/constants/chat/data';
+export default function HeaderCustomerSupport() {
 
-export default function HeaderChat() {
 
     const [cardShow, setCardShow] = useState(false);
 
     const toggleShowCard = () => {
         setCardShow(!cardShow);
-    }
+    };
+
 
 
     return (
         <View style={styles.container}>
+
+
             <View style={styles.innerContainer}>
 
                 <View style={styles.headerLeft}>
                     <TouchableOpacity onPress={() => router.back()}>
                         <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
                     </TouchableOpacity>
-                    <Text style={styles.bookingText} >Jenny Wilson</Text>
+                    <Text style={styles.bookingText} >Customer Support</Text>
                 </View>
+
                 <View style={styles.headerRight}>
                     <Link href={'/chatPage/CallCustomer'} asChild>
                         <TouchableOpacity>
                             <Image source={require('@/assets/icons/call.jpg')} resizeMode='contain' style={{ width: wp(7) }} />
                         </TouchableOpacity>
                     </Link>
+
                     <TouchableOpacity onPress={toggleShowCard}>
                         <Image source={require('@/assets/icons/bookingMenu.png')} resizeMode='contain' style={{ width: wp(7.5) }} />
                     </TouchableOpacity>
+
                 </View>
             </View>
+
 
 
             {
@@ -48,7 +56,7 @@ export default function HeaderChat() {
                             <View key={index}>
                                 <TouchableOpacity style={styles.cardRow}>
                                     <Image source={item.icon} resizeMode='contain' style={{ width: wp(5) }} />
-                                    <Text style={[styles.cardText, { color: item.color }]} >{item.label}</Text>
+                                    <Text style={styles.cardText} >{item.label}</Text>
                                 </TouchableOpacity>
                                 {item.separator && <View style={styles.separator} />}
                             </View>
@@ -56,6 +64,8 @@ export default function HeaderChat() {
                     }
                 </Animated.View>
             }
+
+
 
 
 
@@ -91,8 +101,6 @@ const styles = StyleSheet.create({
 
 
 
-
-
     headerCard: {
         width: wp(56),
         height: hp(20),
@@ -101,8 +109,6 @@ const styles = StyleSheet.create({
         right: wp(5),
         borderRadius: wp(6),
         backgroundColor: '#FFFFFF',
-        // borderWidth: 0.5,
-        // borderColor: '#EEEEEE',
         justifyContent: 'center',
         paddingHorizontal: wp(4),
         shadowColor: "#000",

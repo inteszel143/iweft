@@ -8,6 +8,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { useColorScheme } from '@/components/useColorScheme';
 import HeaderChat from "@/components/inbox/HeaderChat";
+import HeaderCustomerSupport from "@/components/inbox/HeaderCustomerSupport";
 export {
   ErrorBoundary,
 } from 'expo-router';
@@ -69,6 +70,21 @@ function RootLayoutNav() {
         <Stack.Screen name='bookingPage/BookingSummary' options={{ headerShown: false }} />
         {/* booking */}
 
+
+        {/* chat */}
+        <Stack.Screen name='chatPage/CustomerSupport' options={{ header: () => <HeaderCustomerSupport />, headerShadowVisible: false }} />
+        <Stack.Screen name='chatPage/CallCustomer' options={{ headerShown: false }} />
+
+
+        {/* profile */}
+        <Stack.Screen name='profilePage/EditProfile' options={{ headerShown: false }} />
+        <Stack.Screen name='profilePage/CurrentAddress' options={{ headerShown: false }} />
+        <Stack.Screen name='profilePage/ProfilePayment' options={{ headerShown: false }} />
+        <Stack.Screen name='profilePage/AddNewCard' options={{ headerShown: false }} />
+        <Stack.Screen name='profilePage/Notification' options={{ headerShown: false }} />
+        <Stack.Screen name='profilePage/Security' options={{ headerShown: false }} />
+        <Stack.Screen name='profilePage/ChangePassword' options={{ headerShown: false }} />
+        <Stack.Screen name='profilePage/ChangePin' options={{ headerShown: false }} />
 
       </Stack>
     </ThemeProvider>

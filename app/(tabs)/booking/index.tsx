@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     BottomSheetSeparator: {
         height: 1,
         backgroundColor: "#EEEEEE",
-        width: wp(90),
+        width: wp(82),
         marginTop: hp(2.2)
     },
     bottomSheetTitle: {
@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     bottomSubTitle: {
-        fontFamily: 'UrbanistMedium',
+        fontFamily: 'UrbanistRegular',
         fontSize: hp(1.8),
         color: "#424242",
         textAlign: 'center',

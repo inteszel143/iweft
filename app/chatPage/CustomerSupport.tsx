@@ -1,19 +1,20 @@
-import { Platform, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, Platform } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
-import { Bubble, GiftedChat, IMessage, InputToolbar, Send, SystemMessage } from 'react-native-gifted-chat'
-import { messageChat } from '@/constants/chat/data';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { router } from 'expo-router';
+import { Bubble, GiftedChat, IMessage, InputToolbar, Send, SystemMessage } from 'react-native-gifted-chat'
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { customerSupport } from '@/constants/chat/data';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
 
-export default function BookingChat() {
+export default function CustomerSupport() {
 
     const [messages, setMessages] = useState<IMessage[]>([]);
     const insets = useSafeAreaInsets();
     const [text, setText] = useState('')
 
     useEffect(() => {
-        setMessages([...messageChat])
+        setMessages([...customerSupport])
     }, []);
 
     const onSend = useCallback((messages = []) => {
@@ -21,6 +22,10 @@ export default function BookingChat() {
             GiftedChat.append(previousMessages, messages),
         )
     }, []);
+
+
+
+
 
     return (
         <View style={[styles.container, { paddingBottom: Platform.OS === 'ios' ? hp(6) : 0 }]}>

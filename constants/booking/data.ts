@@ -41,7 +41,7 @@ export const paymentMethods = [
   {
     id: 1,
     icon: require("@/assets/temp/bookingIcon/paypal.jpg"),
-    label: "Paypal",
+    label: "PayPal",
   },
   {
     id: 2,

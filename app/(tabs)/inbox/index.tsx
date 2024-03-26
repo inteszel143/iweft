@@ -5,12 +5,7 @@ import ChatList from '@/components/inbox/ChatList'
 export default function Page() {
     return (
         <View style={styles.container}>
-
-
             <ChatList />
-
-
-
         </View>
     )
 }

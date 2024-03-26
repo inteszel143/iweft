@@ -13,7 +13,7 @@ export default function Header() {
                 </View>
                 <View style={styles.headerRight}>
                     <TouchableOpacity>
-                        <Image source={require('@/assets/icons/bookingMenu.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                        <Image source={require('@/assets/icons/bookingMenu.png')} resizeMode='contain' style={{ width: wp(7.5), tintColor: 'white' }} />
                     </TouchableOpacity>
                 </View>
             </View>
