@@ -15,7 +15,7 @@ export default function Layout() {
             tabBarInactiveTintColor: 'gray',
             tabBarPressColor: 'white',
             tabBarLabelStyle: { fontSize: hp(1.9), fontFamily: 'UrbanistSemiBold', textTransform: 'capitalize' },
-            tabBarIndicatorStyle: { backgroundColor: '#0a5ca8', height: 2, }
+            tabBarIndicatorStyle: { backgroundColor: '#0a5ca8', height: 3, width: wp(42), marginLeft: wp(4), borderRadius: wp(4), }
         }} >
             <MaterialTopTabs.Screen name="index" options={{ title: 'Chats' }} />
             <MaterialTopTabs.Screen name="calls" options={{ title: 'Calls' }} />

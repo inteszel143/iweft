@@ -58,7 +58,7 @@ export default function BookingChat() {
                                     paddingHorizontal: wp(2),
                                 },
                                 right: {
-                                    backgroundColor: '#548DC2',
+                                    backgroundColor: '#4986BE',
                                     marginBottom: hp(1),
                                     paddingVertical: hp(1),
                                     paddingHorizontal: wp(2),

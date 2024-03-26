@@ -2,19 +2,19 @@ export const upcoming = [
   {
     id: 1,
     title: "Clean/Press",
-    sub: "Sub title",
+    sub: "6 items",
     img: require("@/assets/temp/services/list1.png"),
   },
   {
     id: 2,
-    title: "Clean/Press",
-    sub: "Sub title",
+    title: "Press Only",
+    sub: "2 items",
     img: require("@/assets/temp/services/list1.png"),
   },
   {
     id: 3,
     title: "Clean/Press",
-    sub: "Sub title",
+    sub: "10 items",
     img: require("@/assets/temp/services/list1.png"),
   },
 ];
