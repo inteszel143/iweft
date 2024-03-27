@@ -16,28 +16,31 @@ export default function CallList() {
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                    <TouchableOpacity style={styles.cardrow}>
-                        <View style={styles.cardLeftRow}>
-                            <Image source={item.img} resizeMode='contain' style={{ width: wp(14), height: hp(8) }} />
-                            <View>
-                                <Text style={styles.nameStyle}>{item.name}</Text>
-                                <View style={styles.statusRow}>
-                                    <Image source={item.statusicon} resizeMode='contain' style={{ width: wp(4.5) }} />
-                                    <Text style={styles.statusStyle}>{item.status}</Text>
-                                    <View style={styles.statusSeparator} />
-                                    <Text style={styles.dateStyle} >{item.date}</Text>
+
+                    <Link href={'/chatPage/CallUserHistory'} asChild>
+                        <TouchableOpacity style={styles.cardrow}>
+                            <View style={styles.cardLeftRow}>
+                                <Image source={item.img} resizeMode='contain' style={{ width: wp(14), height: hp(8) }} />
+                                <View>
+                                    <Text style={styles.nameStyle}>{item.name}</Text>
+                                    <View style={styles.statusRow}>
+                                        <Image source={item.statusicon} resizeMode='contain' style={{ width: wp(4.5) }} />
+                                        <Text style={styles.statusStyle}>{item.status}</Text>
+                                        <View style={styles.statusSeparator} />
+                                        <Text style={styles.dateStyle} >{item.date}</Text>
+                                    </View>
                                 </View>
                             </View>
-                        </View>
 
-                        <View style={styles.cardRightRow}>
-                            <Link href={'/chatPage/CallCustomer'} asChild>
-                                <TouchableOpacity>
-                                    <Feather name="phone" size={hp(2.5)} color={'#0A5CA8'} />
-                                </TouchableOpacity>
-                            </Link>
-                        </View>
-                    </TouchableOpacity>
+                            <View style={styles.cardRightRow}>
+                                <Link href={'/chatPage/CallCustomer'} asChild>
+                                    <TouchableOpacity>
+                                        <Feather name="phone" size={hp(2.5)} color={'#0A5CA8'} />
+                                    </TouchableOpacity>
+                                </Link>
+                            </View>
+                        </TouchableOpacity>
+                    </Link>
                 )}
             />
             <FloatButton />

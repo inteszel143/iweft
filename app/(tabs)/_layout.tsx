@@ -6,7 +6,7 @@ import Header from '@/components/booking/Header';
 import CalendarHeader from '@/components/calendar/CalendarHeader';
 import InboxHeader from '@/components/inbox/InboxHeader';
 import ProfileHeader from '@/components/profile/ProfileHeader';
-import { Platform } from 'react-native';
+import { Image, Platform } from 'react-native';
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof Ionicons>['name'];
   color: string;
@@ -20,7 +20,7 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: "#0a5ca8",
         headerShadowVisible: false,
-        tabBarLabelStyle: { fontFamily: 'UrbanistSemiBold' }
+        tabBarLabelStyle: { fontFamily: 'UrbanistMedium', paddingBottom: Platform.OS === 'android' ? 2 : 0, }
       }}>
 
 
@@ -30,7 +30,11 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           headerShown: false,
-          tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "compass" : "compass-outline"} color={color} />,
+          // tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "compass" : "compass-outline"} color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            focused ? <Image source={require('@/assets/icons/boldhome.png')} resizeMode='contain' style={{ width: Platform.OS === 'ios' ? 23 : 20, tintColor: '#0a5ca8' }} /> :
+              <Image source={require('@/assets/icons/home.png')} resizeMode='contain' style={{ width: Platform.OS === 'ios' ? 23 : 20, tintColor: 'gray' }} />
+          ),
         }}
       />
 

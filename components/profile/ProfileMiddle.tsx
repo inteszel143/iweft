@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginTop: hp(0.5),
+        marginBottom: hp(0.5),
     },
     leftRow: {
         flexDirection: 'row',

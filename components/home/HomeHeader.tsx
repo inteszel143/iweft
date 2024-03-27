@@ -1,17 +1,22 @@
-import { StyleSheet, Text, View, Image, Platform } from 'react-native'
+import { StyleSheet, Text, View, Image, Platform, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { Link } from 'expo-router';
 export default function HomeHeader() {
     return (
         <View style={styles.header}>
             <View style={styles.headerLeft}>
-                <View>
-                    <Image
-                        source={require('@/assets/temp/profile.png')}
-                        resizeMode='contain'
-                        style={{ width: wp(14), height: hp(10) }}
-                    />
-                </View>
+
+                <Link href={'/(tabs)/profile'} asChild>
+                    <TouchableOpacity>
+                        <Image
+                            source={require('@/assets/temp/profile.png')}
+                            resizeMode='contain'
+                            style={{ width: wp(14), height: hp(10) }}
+                        />
+                    </TouchableOpacity>
+                </Link>
+
                 <View>
                     <Text style={styles.headerGood} >Good Morning 👋</Text>
                     <Text style={styles.headerName} >Andrew Ainsley</Text>
@@ -20,8 +25,19 @@ export default function HomeHeader() {
 
 
             <View style={styles.headerIcon}>
-                <Image source={require('@/assets/icons/bell.png')} resizeMode='contain' style={{ width: wp(8) }} />
-                <Image source={require('@/assets/icons/bookmark.png')} resizeMode='contain' style={{ width: wp(8) }} />
+
+                <Link href={'/homePage/Notification'} asChild>
+                    <TouchableOpacity>
+                        <Image source={require('@/assets/icons/bell.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                    </TouchableOpacity>
+                </Link>
+
+                <Link href={'/homePage/Bookmarks'} asChild>
+                    <TouchableOpacity>
+                        <Image source={require('@/assets/icons/bookmark.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                    </TouchableOpacity>
+                </Link>
+
             </View>
         </View>
     )

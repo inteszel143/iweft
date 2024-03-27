@@ -18,7 +18,7 @@ export default function HomeSpecialOffers() {
     const [activeIndex, setActiveIndex] = useState(0);
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
+            <View style={styles.header}> 
                 <Text style={styles.specialText}>Special Offers</Text>
                 <TouchableOpacity>
                     <Text style={styles.seeallText}>See all</Text>

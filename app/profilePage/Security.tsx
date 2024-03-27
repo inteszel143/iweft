@@ -150,6 +150,8 @@ const styles = StyleSheet.create({
         fontFamily: "UrbanistBold",
         fontSize: hp(2.5)
     },
+
+
     containerStyle: {
         paddingHorizontal: wp(6),
         marginTop: hp(3),

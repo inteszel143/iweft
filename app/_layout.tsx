@@ -63,6 +63,11 @@ function RootLayoutNav() {
         <Stack.Screen name="BookingChat" options={{ header: () => <HeaderChat />, headerShadowVisible: false }} />
 
 
+        {/* home */}
+        <Stack.Screen name='homePage/Notification' options={{ headerShown: false }} />
+        <Stack.Screen name='homePage/Bookmarks' options={{ headerShown: false }} />
+
+
         {/* booking */}
         <Stack.Screen name='bookingPage/Ereceipt' options={{ headerShown: false }} />
         <Stack.Screen name='bookingPage/BookingPaymentMethod' options={{ headerShown: false }} />
@@ -74,6 +79,7 @@ function RootLayoutNav() {
         {/* chat */}
         <Stack.Screen name='chatPage/CustomerSupport' options={{ header: () => <HeaderCustomerSupport />, headerShadowVisible: false }} />
         <Stack.Screen name='chatPage/CallCustomer' options={{ headerShown: false }} />
+        <Stack.Screen name='chatPage/CallUserHistory' options={{ headerShown: false }} />
 
 
         {/* profile */}
@@ -85,6 +91,11 @@ function RootLayoutNav() {
         <Stack.Screen name='profilePage/Security' options={{ headerShown: false }} />
         <Stack.Screen name='profilePage/ChangePassword' options={{ headerShown: false }} />
         <Stack.Screen name='profilePage/ChangePin' options={{ headerShown: false }} />
+        <Stack.Screen name='profilePage/Language' options={{ headerShown: false }} />
+        <Stack.Screen name='profilePage/Subscription' options={{ headerShown: false }} />
+        <Stack.Screen name='profilePage/SubscriptionSummary' options={{ headerShown: false }} />
+        <Stack.Screen name='profilePage/PrivacyPolicy' options={{ headerShown: false }} />
+        <Stack.Screen name='profilePage/InviteFriends' options={{ headerShown: false }} />
 
       </Stack>
     </ThemeProvider>

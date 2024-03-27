@@ -13,7 +13,7 @@ export default function LaundryBundles() {
         {
             id: 2,
             name: "Suit Care",
-            img: require('@/assets/temp/laundryBundle/laundry1.png')
+            img: require('@/assets/temp/laundryBundle/laundry2.png')
         },
         {
             id: 3,

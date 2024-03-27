@@ -28,20 +28,20 @@ export const profileData = [
         icon: require('@/assets/temp/profileicons/language.jpg'),
         label: "Language",
         value: 'English (US)',
-        url: '/profilePage/EditProfile'
+        url: '/profilePage/Language'
     },
     {
         id: 6,
         icon: require('@/assets/temp/profileicons/subs.jpg'),
         label: "Subscription",
-        url: '/profilePage/EditProfile',
+        url: '/profilePage/Subscription',
         switch: true
     },
     {
         id: 7,
         icon: require('@/assets/temp/profileicons/privacy.jpg'),
         label: "Privacy Policy",
-        url: '/profilePage/EditProfile'
+        url: '/profilePage/PrivacyPolicy'
     },
     {
         id: 8,
@@ -53,12 +53,91 @@ export const profileData = [
         id: 9,
         icon: require('@/assets/temp/profileicons/invite.jpg'),
         label: "Invite Friends",
-        url: '/profilePage/EditProfile'
+        url: '/profilePage/InviteFriends'
+    },
+];
+
+
+export const SubscriptionData = [
+    {
+        img: require('@/assets/temp/profileicons/sub1.jpg'),
+        title: "Clean & Press Premium",
+        subtitle: "Up to 5 Services per Month",
+        renew: "Renews 18 March",
+        active: true,
     },
     {
-        id: 10,
-        icon: require('@/assets/temp/profileicons/logout.jpg'),
-        label: "Logout",
-        url: '/profilePage/EditProfile'
+        img: require('@/assets/temp/profileicons/sub2.jpg'),
+        title: "Wash & Fold Platinum VIP!",
+        subtitle: "Unlimited Services!",
+        renew: "Renews 28 March",
+        active: true,
     },
+    {
+        img: require('@/assets/temp/profileicons/sub3.jpg'),
+        title: "Press Only Basic",
+        subtitle: "Up to 3 Services per Month",
+        renew: "Paused",
+        active: false,
+    }
+];
+
+
+export const invite = [
+    {
+        id: 1,
+        img: require("@/assets/temp/chaticons/person1.jpg"),
+        name: "Tynisha Obey",
+        phone: "+1-300-555-0135"
+    },
+    {
+        id: 2,
+        img: require("@/assets/temp/chaticons/person2.jpg"),
+        name: "Florencio Dorrance",
+        phone: "+1-202-555-0136"
+    },
+    {
+        id: 3,
+        img: require("@/assets/temp/chaticons/person3.jpg"),
+        name: "Chantal Shelburne",
+        phone: "+1-300-555-0119"
+    },
+    {
+        id: 4,
+        img: require("@/assets/temp/chaticons/person4.jpg"),
+        name: "Maryland Winkles",
+        phone: "+1-300-555-0161"
+    },
+    {
+        id: 5,
+        img: require("@/assets/temp/chaticons/person5.jpg"),
+        name: "Rodolfo Goode",
+        phone: "+1-300-555-0136"
+    },
+    {
+        id: 6,
+        img: require("@/assets/temp/chaticons/person6.jpg"),
+        name: "Benny Spanbauer",
+        phone: "+1-202-555-0167"
+    },
+    {
+        id: 7,
+        img: require("@/assets/temp/chaticons/person7.jpg"),
+        name: "Tyra Dhillon",
+        phone: "+1-202-555-0119"
+    },
+    {
+        id: 8,
+        img: require("@/assets/temp/chaticons/person8.jpg"),
+        name: "Jamel Eusebio",
+        phone: "+1-300-555-0171"
+    },
+    {
+        id: 9,
+        img: require("@/assets/temp/chaticons/person9.jpg"),
+        name: "Pedro Huard",
+        phone: "+1-202-555-0171"
+    },
+
 ]
+
