@@ -68,12 +68,21 @@ function RootLayoutNav() {
         <Stack.Screen name='homePage/Bookmarks' options={{ headerShown: false }} />
         <Stack.Screen name='homePage/SepecialOffers' options={{ headerShown: false }} />
         <Stack.Screen name='homePage/OfferOtherPage' options={{ headerShown: false }} />
+        <Stack.Screen name='homePage/SubscriptionOffer' options={{ headerShown: false }} />
+        <Stack.Screen name='homePage/SubscriptionPlan' options={{ headerShown: false }} />
+
 
 
         {/* servcies */}
         <Stack.Screen name='homePage/services/ServicesScreen' options={{ headerShown: false }} />
         <Stack.Screen name='homePage/services/PhotosVideos' options={{ headerShown: false }} />
         <Stack.Screen name='homePage/services/BookNow' options={{ headerShown: false }} />
+        <Stack.Screen name='homePage/services/AllServices' options={{ headerShown: false }} />
+
+        {/* bundles */}
+        <Stack.Screen name='homePage/budles/BuddleScreen' options={{ headerShown: false }} />
+        <Stack.Screen name='homePage/budles/AllLaundryBundles' options={{ headerShown: false }} />
+
 
 
         {/* booking */}

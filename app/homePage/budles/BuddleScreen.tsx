@@ -1,0 +1,360 @@
+import { StyleSheet, Text, View, Image, TouchableOpacity, Platform } from 'react-native'
+import React, { useState } from 'react'
+import { Link, router, useLocalSearchParams } from 'expo-router'
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import Animated, { interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, withSpring } from 'react-native-reanimated';
+import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { bundle } from '@/constants/home/data';
+const IMG_HEIGHT = 300;
+export default function BuddleScreen() {
+    const item = useLocalSearchParams();
+    const [topSelect, setTopSelect] = useState(0);
+    const [addbook, setAddbook] = useState(false);
+
+    const toggleAdd = () => {
+        setAddbook(!addbook);
+    }
+
+    // scrollview
+    const scrollRef = useAnimatedRef<Animated.ScrollView>();
+    const scrollOffset = useScrollViewOffset(scrollRef);
+    const scrollHandler = useScrollViewOffset(scrollRef);
+    const imageAnimatedStyle = useAnimatedStyle(() => {
+        return {
+            transform: [
+                {
+                    translateY: interpolate(
+                        scrollOffset.value,
+                        [-IMG_HEIGHT, 0, IMG_HEIGHT, IMG_HEIGHT],
+                        [-IMG_HEIGHT / 2, 0, IMG_HEIGHT * 0.75]
+                    ),
+                },
+                {
+                    scale: interpolate(scrollOffset.value, [-IMG_HEIGHT, 0, IMG_HEIGHT], [2, 1, 1]),
+                },
+            ],
+        };
+    });
+    const headerStyle = useAnimatedStyle(() => {
+        return {
+            opacity: scrollHandler.value > 200 ? withSpring(1) : withSpring(0),
+        };
+    });
+
+    return (
+        <View style={styles.container}>
+            <Animated.ScrollView
+                bounces={false}
+                ref={scrollRef}
+                showsVerticalScrollIndicator={false}
+                scrollEventThrottle={16}
+            >
+
+                <Animated.View style={[styles.topStyle, imageAnimatedStyle]}>
+                    <Image source={require('@/assets/temp/laundryBundle/laundry1.png')} resizeMode='contain' style={[{ width: wp(60), height: hp(25), }]} />
+                    <View style={styles.topFooter}>
+                        <View style={{ width: wp(8), height: 10, borderRadius: 8, backgroundColor: '#0A5CA8' }} />
+                        <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
+                        <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
+                    </View>
+                </Animated.View>
+
+
+                <View style={styles.middleStyle}>
+
+
+                    <View style={styles.middelTopRow}>
+                        <Text style={styles.middleText}>{item.name} Bundle</Text>
+                        <TouchableOpacity onPress={toggleAdd}>
+                            {
+                                addbook ? <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5.5), marginTop: hp(1) }} /> : <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5.5) }} />
+                            }
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.rateStyle}>
+                        <Text style={styles.core}>Laundry Bundle</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, }}>
+                            <Image source={require('@/assets/icons/star.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
+                            <Text style={styles.rating}>48 (3,824 reviews)</Text>
+                        </View>
+                    </View>
+
+
+                    <View style={styles.laundryStyle}>
+                        <Text style={styles.laundryText}>Laundry</Text>
+                    </View>
+
+
+
+                    <View style={styles.priceStyle}>
+                        <Text style={styles.priceText}>AED 40</Text>
+                        <Text style={styles.subText}>(base price)</Text>
+                    </View>
+
+                    <View style={styles.separator} />
+
+
+
+                    <View style={styles.detailsStyle}>
+                        <Text style={styles.detailText}>Bundle Includes:</Text>
+                        {
+                            bundle.map((item, index) => (
+                                <View key={index} style={styles.cardStyle}>
+                                    <View style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between'
+                                    }}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(5) }}>
+                                            <Image source={item.img} resizeMode='contain' style={{ width: wp(10) }} />
+                                            <Text style={styles.bundleText}>{item.labe}</Text>
+                                        </View>
+                                        <View>
+                                            <MaterialCommunityIcons name='check-circle' size={hp(3)} color={'#0A5CA8'} />
+                                        </View>
+                                    </View>
+                                </View>
+                            ))
+                        }
+
+                    </View>
+
+
+
+
+
+
+
+                    <View style={[styles.detailsStyle, { paddingBottom: hp(15) }]}>
+                        <Text style={styles.detailText}>Details</Text>
+                        <Text style={styles.subDetailText}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, odio a neque nemo quae sequi repudiandae, non asperiores atque ut quisquam excepturi tempora quaerat facilis, adipisci delectus quia maiores. Tenetur?</Text>
+                    </View>
+
+
+
+
+
+                </View>
+
+
+
+            </Animated.ScrollView>
+
+
+
+
+            <View style={styles.footer}>
+                <View style={styles.bottomBtnRow}>
+                    <Link href={'/BookingChat'} asChild style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}>
+                        <TouchableOpacity>
+                            <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
+                        </TouchableOpacity>
+                    </Link>
+                    <Link href={'/homePage/services/BookNow'} style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]} asChild>
+                        <TouchableOpacity >
+                            <Text style={[styles.bottomText, { color: "white" }]}>Book Now </Text>
+                        </TouchableOpacity>
+                    </Link>
+                </View>
+            </View>
+
+
+
+
+
+            {/* back */}
+            <View style={styles.topBtnStyle}>
+                <TouchableOpacity
+                    onPress={() => router.back()}>
+                    <AntDesign name='arrowleft' size={hp(3)} />
+                </TouchableOpacity>
+            </View>
+
+            <Animated.View style={[styles.header, headerStyle]}>
+                <View style={styles.headerHide}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(4) }}>
+                        <TouchableOpacity onPress={() => router.back()}>
+                            <Ionicons name='chevron-back' size={hp(3)} />
+                        </TouchableOpacity>
+                        <Text style={styles.headerText}>{item.name} Bundle</Text>
+                    </View>
+                    <TouchableOpacity>
+                        {addbook ? <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5) }} /> : <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5) }} />}
+                    </TouchableOpacity>
+                </View>
+            </Animated.View>
+
+        </View>
+    )
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#FFFFFF',
+    },
+    topStyle: {
+        height: IMG_HEIGHT,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    topFooter: {
+        position: 'absolute',
+        bottom: 0,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: wp(2)
+    },
+    topBtnStyle: {
+        position: 'absolute',
+        top: hp(8),
+        left: wp(6),
+    },
+    middleStyle: {
+        paddingHorizontal: wp(5),
+        marginTop: hp(4),
+        backgroundColor: 'white',
+    },
+    middelTopRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    middleText: {
+        fontFamily: 'UrbanistBold',
+        fontSize: hp(3)
+    },
+    rateStyle: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: wp(4)
+    },
+    core: {
+        fontFamily: 'UrbanistBold',
+        fontSize: hp(2.5),
+        color: '#0A5CA8'
+    },
+    rating: {
+        fontFamily: 'UrbanistRegular',
+        fontSize: hp(2),
+        color: '#424242'
+    },
+    laundryStyle: {
+        width: wp(22),
+        height: hp(4),
+        backgroundColor: "#0A5CA826",
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 12,
+        marginTop: hp(2)
+    },
+    laundryText: {
+        fontFamily: 'UrbanistBold',
+        fontSize: hp(1.8),
+        color: "#0A5CA8"
+    },
+    priceStyle: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: wp(4),
+        marginTop: hp(3)
+    },
+    priceText: {
+        fontFamily: 'UrbanistBold',
+        fontSize: hp(3.2),
+        color: '#0A5CA8'
+    },
+    subText: {
+        fontFamily: 'UrbanistMedium',
+        fontSize: hp(1.8),
+        color: "#616161"
+    },
+    separator: {
+        height: 1,
+        backgroundColor: '#EEEEEE',
+        marginTop: hp(3)
+    },
+    detailsStyle: {
+        marginTop: hp(3)
+    },
+    detailText: {
+        fontFamily: "UrbanistBold",
+        fontSize: hp(2.5)
+    },
+    subDetailText: {
+        fontFamily: 'UrbanistRegular',
+        fontSize: hp(1.9),
+        color: '#424242',
+        marginTop: hp(2),
+        textAlign: 'justify'
+    },
+    footer: {
+        position: 'absolute',
+        bottom: 0,
+        width: wp(100),
+        height: hp(13),
+        backgroundColor: 'white',
+        borderTopRightRadius: wp(4),
+        borderTopLeftRadius: wp(4),
+        alignItems: 'center'
+    },
+
+    bottomBtnRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: wp(3),
+        marginTop: hp(3),
+    },
+    bottomBtn: {
+        width: wp(40),
+        height: hp(6),
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: wp(6),
+    },
+    bottomText: {
+        fontFamily: 'UrbanistBold',
+        fontSize: hp(2),
+    },
+    bundleText: {
+        fontFamily: 'UrbanistBold',
+        fontSize: hp(2.2)
+    },
+    header: {
+        position: 'absolute',
+        top: 0,
+        width: wp(100),
+        backgroundColor: "#fff",
+        height: Platform.OS === 'android' ? 92 : 100,
+        justifyContent: 'flex-end',
+        borderBottomColor: 'gray',
+        paddingHorizontal: wp(5)
+    },
+    headerText: {
+        fontFamily: 'UrbanistBold',
+        fontSize: hp(1.8),
+    },
+    headerHide: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    cardStyle: {
+        width: wp(90),
+        height: hp(10),
+        backgroundColor: '#FFFFFF',
+        borderRadius: wp(4),
+        marginTop: hp(2.5),
+        justifyContent: 'center',
+        paddingHorizontal: wp(5),
+        shadowColor: "#DDDDDD",
+        shadowOffset: {
+            width: 0,
+            height: 9,
+        },
+        shadowOpacity: 0.50,
+        shadowRadius: 12.35,
+        elevation: 19,
+    }
+})

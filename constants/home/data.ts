@@ -110,3 +110,45 @@ export const customer = [
     time: "2 week ago",
   },
 ];
+
+export const bundle = [
+  {
+    img: require("@/assets/temp/laundryBundle/bundle1.jpg"),
+    labe: "Pillow",
+  },
+  {
+    img: require("@/assets/temp/laundryBundle/bundle2.jpg"),
+    labe: "Mattress Cover",
+  },
+  {
+    img: require("@/assets/temp/laundryBundle/bundle3.jpg"),
+    labe: "Quilt",
+  },
+  {
+    img: require("@/assets/temp/laundryBundle/bundle4.jpg"),
+    labe: "Duvet Cover",
+  },
+];
+
+export const allbundle = [
+  {
+    img: require("@/assets/temp/laundryBundle/lbundle3.png"),
+    label: "Bedding Set",
+    color: "#486FFB",
+  },
+  {
+    img: require("@/assets/temp/laundryBundle/lbundle2.png"),
+    label: "Suit Care",
+    color: "#FF6A80",
+  },
+  {
+    img: require("@/assets/temp/laundryBundle/lbundle1.png"),
+    label: "Working's Bundle",
+    color: "#FEA223",
+  },
+  {
+    img: require("@/assets/temp/laundryBundle/lbundle4.png"),
+    label: "Family Bundle",
+    color: "#2DD0AF",
+  },
+];

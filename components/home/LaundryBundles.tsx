@@ -2,6 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList } from 'react
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Link } from 'expo-router';
 export default function LaundryBundles() {
 
     const data = [
@@ -31,10 +32,12 @@ export default function LaundryBundles() {
                     <Text style={styles.headerText}>Laundry Bundles</Text>
                 </View>
                 <View>
-                    <TouchableOpacity style={styles.btnStyle}>
-                        <Text style={styles.seeAllText} >See all</Text>
-                        <MaterialIcons name='keyboard-arrow-right' size={hp(2.5)} color={"#6F767E"} />
-                    </TouchableOpacity>
+                    <Link href={'/homePage/budles/AllLaundryBundles'} asChild>
+                        <TouchableOpacity style={styles.btnStyle}>
+                            <Text style={styles.seeAllText} >See all</Text>
+                            <MaterialIcons name='keyboard-arrow-right' size={hp(2.5)} color={"#6F767E"} />
+                        </TouchableOpacity>
+                    </Link>
                 </View>
             </View>
 
@@ -47,17 +50,19 @@ export default function LaundryBundles() {
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }) => {
                         return (
-                            <TouchableOpacity style={{ paddingLeft: wp(2), alignItems: 'center' }}>
-                                <Image
-                                    source={item.img}
-                                    resizeMode='contain'
-                                    style={{
-                                        width: wp(30),
-                                        height: hp(20),
-                                    }}
-                                />
-                                <Text style={styles.bundleText}>{item.name}</Text>
-                            </TouchableOpacity>
+                            <Link href={{ pathname: '/homePage/budles/BuddleScreen', params: item }} asChild>
+                                <TouchableOpacity style={{ paddingLeft: wp(2), alignItems: 'center' }}>
+                                    <Image
+                                        source={item.img}
+                                        resizeMode='contain'
+                                        style={{
+                                            width: wp(30),
+                                            height: hp(20),
+                                        }}
+                                    />
+                                    <Text style={styles.bundleText}>{item.name}</Text>
+                                </TouchableOpacity>
+                            </Link>
                         )
                     }}
 

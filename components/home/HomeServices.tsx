@@ -30,11 +30,13 @@ export default function HomeServices() {
                     </TouchableOpacity>
                 </Link>
 
-                <TouchableOpacity>
-                    <View style={styles.seeallStyle}>
-                        <Ionicons name='arrow-forward' size={hp(3)} color={"#6F767E"} />
-                    </View>
-                </TouchableOpacity>
+                <Link href={'/homePage/services/AllServices'} asChild>
+                    <TouchableOpacity>
+                        <View style={styles.seeallStyle}>
+                            <Ionicons name='arrow-forward' size={hp(3)} color={"#6F767E"} />
+                        </View>
+                    </TouchableOpacity>
+                </Link>
             </View>
 
 
