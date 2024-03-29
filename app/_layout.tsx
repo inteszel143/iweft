@@ -66,6 +66,14 @@ function RootLayoutNav() {
         {/* home */}
         <Stack.Screen name='homePage/Notification' options={{ headerShown: false }} />
         <Stack.Screen name='homePage/Bookmarks' options={{ headerShown: false }} />
+        <Stack.Screen name='homePage/SepecialOffers' options={{ headerShown: false }} />
+        <Stack.Screen name='homePage/OfferOtherPage' options={{ headerShown: false }} />
+
+
+        {/* servcies */}
+        <Stack.Screen name='homePage/services/ServicesScreen' options={{ headerShown: false }} />
+        <Stack.Screen name='homePage/services/PhotosVideos' options={{ headerShown: false }} />
+        <Stack.Screen name='homePage/services/BookNow' options={{ headerShown: false }} />
 
 
         {/* booking */}

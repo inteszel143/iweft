@@ -2,6 +2,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Ionicons } from '@expo/vector-icons';
+import { Link } from 'expo-router';
 export default function HomeServices() {
     return (
         <View style={styles.container}>
@@ -11,21 +12,32 @@ export default function HomeServices() {
 
 
             <View style={styles.listStyle}>
-                <TouchableOpacity>
-                    <Image source={require('@/assets/temp/services/list1.png')} resizeMode='contain' style={styles.imageStyle} />
-                </TouchableOpacity>
-                <TouchableOpacity>
-                    <Image source={require('@/assets/temp/services/list2.png')} resizeMode='contain' style={styles.imageStyle} />
-                </TouchableOpacity>
-                <TouchableOpacity>
-                    <Image source={require('@/assets/temp/services/list3.png')} resizeMode='contain' style={styles.imageStyle} />
-                </TouchableOpacity>
+                <Link href={'/homePage/services/ServicesScreen'} asChild>
+                    <TouchableOpacity>
+                        <Image source={require('@/assets/temp/services/list1.png')} resizeMode='contain' style={styles.imageStyle} />
+                    </TouchableOpacity>
+                </Link>
+                <Link href={'/homePage/services/ServicesScreen'} asChild>
+                    <TouchableOpacity>
+                        <Image source={require('@/assets/temp/services/list2.png')} resizeMode='contain' style={styles.imageStyle} />
+                    </TouchableOpacity>
+                </Link>
+
+
+                <Link href={'/homePage/services/ServicesScreen'} asChild>
+                    <TouchableOpacity>
+                        <Image source={require('@/assets/temp/services/list3.png')} resizeMode='contain' style={styles.imageStyle} />
+                    </TouchableOpacity>
+                </Link>
+
                 <TouchableOpacity>
                     <View style={styles.seeallStyle}>
                         <Ionicons name='arrow-forward' size={hp(3)} color={"#6F767E"} />
                     </View>
                 </TouchableOpacity>
             </View>
+
+
             <View style={{ height: 0.7, backgroundColor: "#DADADA", marginTop: hp(4), marginHorizontal: wp(4) }} />
         </View>
     )

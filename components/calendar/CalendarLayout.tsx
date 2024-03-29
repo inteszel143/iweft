@@ -7,9 +7,12 @@ export default function CalendarLayout() {
 
     const [selected, setSelected] = useState('');
     const currentDate = new Date();
+    
     const formattedCurrentDate = currentDate.toISOString().split('T')[0];
+    const yesterday = new Date(currentDate);
+    yesterday.setDate(currentDate.getDate() - 1);
 
-
+    const formattedYesterday = currentDate.toISOString().split('T')[0];
     return (
         <View style={styles.container}>
             <Calendar
@@ -40,7 +43,7 @@ export default function CalendarLayout() {
                     textDayHeaderFontSize: 15,
                 }}
                 current={'2024-03-26'}
-                minDate={Date()}
+                minDate={formattedYesterday}
                 pagingEnabled={true}
                 onDayPress={day => {
                     setSelected(day.dateString);
@@ -56,9 +59,9 @@ export default function CalendarLayout() {
                             fontSize: hp(2),
                         },
                     },
-                    [formattedCurrentDate]: {
-                        marked: true, dotColor: '#93C120',
-                    },
+                    // [formattedCurrentDate]: {
+                    //     marked: true, dotColor: '#93C120',
+                    // },
                 }}
             />
         </View>

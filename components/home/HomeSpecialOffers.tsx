@@ -1,7 +1,9 @@
-import { FlatList, StyleSheet, Text, View, Image, Dimensions, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Image, Dimensions, TouchableOpacity, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Carousel from 'react-native-reanimated-carousel';
+import CarouselIndicator from './CarouselIndicator';
+import { Link } from 'expo-router';
 const data = [
     {
         img: require('@/assets/temp/special/carousel1.png')
@@ -18,11 +20,13 @@ export default function HomeSpecialOffers() {
     const [activeIndex, setActiveIndex] = useState(0);
     return (
         <View style={styles.container}>
-            <View style={styles.header}> 
+            <View style={styles.header}>
                 <Text style={styles.specialText}>Special Offers</Text>
-                <TouchableOpacity>
-                    <Text style={styles.seeallText}>See all</Text>
-                </TouchableOpacity>
+                <Link href={'/homePage/SepecialOffers'} asChild>
+                    <TouchableOpacity>
+                        <Text style={styles.seeallText}>See all</Text>
+                    </TouchableOpacity>
+                </Link>
             </View>
 
             <View>
@@ -44,18 +48,26 @@ export default function HomeSpecialOffers() {
                                 paddingTop: hp(6),
                             }}
                         >
-                            <Image source={item.img}
-                                resizeMode='contain'
-                                style={{
-                                    width: wp(100),
-                                }}
-                            />
+                            <Link href={{ pathname: '/homePage/OfferOtherPage', params: item }} asChild>
+                                <Pressable>
+                                    <Image source={item.img}
+                                        resizeMode='contain'
+                                        style={{
+                                            width: wp(100),
+                                        }}
+                                    />
+                                </Pressable>
+                            </Link>
                             <Text style={{ textAlign: 'center', fontSize: 30 }}>
                                 {index}
                             </Text>
                         </View>
                     )}
                 />
+            </View>
+
+            <View style={styles.indicatorStyle}>
+                <CarouselIndicator totalItem={data.length} currentIndex={activeIndex} />
             </View>
 
 
@@ -83,4 +95,8 @@ const styles = StyleSheet.create({
         fontSize: hp(1.8),
         color: '#0a5ca8'
     },
+
+    indicatorStyle: {
+        alignItems: 'center'
+    }
 })

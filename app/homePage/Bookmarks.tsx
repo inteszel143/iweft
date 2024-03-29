@@ -13,6 +13,13 @@ import {
 export default function Bookmarks() {
 
 
+
+    // hook
+    const [topSelect, setTopSelect] = useState(0);
+
+
+
+
     // bottomSheet
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
     const snapPoints = useMemo(() => ['25%', '48%'], []);
@@ -55,8 +62,10 @@ export default function Bookmarks() {
                         {
                             bookmakeTop.map((item, index) => {
                                 return (
-                                    <TouchableOpacity key={index} style={index == 0 ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}>
-                                        <Text style={index == 0 ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item.label}</Text>
+                                    <TouchableOpacity key={index} style={topSelect == index ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
+                                        onPress={() => setTopSelect(index)}
+                                    >
+                                        <Text style={topSelect == index ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item.label}</Text>
                                     </TouchableOpacity>
                                 )
                             })
@@ -280,7 +289,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: wp(6),
     },
-    bottomText: {   
+    bottomText: {
         fontFamily: 'UrbanistBold',
         fontSize: hp(2),
     }

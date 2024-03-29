@@ -137,7 +137,8 @@ const styles = StyleSheet.create({
     composer: {
         backgroundColor: '#F5F5F5',
         borderRadius: wp(2),
-        height: 44,
+        minHeight: 44,
+        maxHeight: hp(13),
         paddingHorizontal: wp(4),
         fontSize: 16,
         marginVertical: 4,
