@@ -1,13 +1,11 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Platform } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
 import { paymentMethods } from '@/constants/booking/data';
 import { Fontisto } from '@expo/vector-icons';
 
-export default function BookingPaymentMethod() {
-
-
+export default function HomePaymentMethods() {
     const [isSelected, setIsSelected] = useState(0);
 
 
@@ -29,7 +27,7 @@ export default function BookingPaymentMethod() {
 
 
             <View style={styles.infoStyle}>
-                <Text style={styles.infoText}>Please select a payment refund method (only 80% will be refunded).</Text>
+                <Text style={styles.infoText}>Select the payment method you want to use.</Text>
             </View>
 
 
@@ -70,14 +68,7 @@ export default function BookingPaymentMethod() {
 
             <View style={styles.footer}>
 
-
-                <View style={styles.footerTop}>
-                    <Text style={[styles.footerTopText, { fontFamily: 'UrbanistMedium', textDecorationLine: "line-through", color: "#424242" }]}>Paid $87.50</Text>
-                    <Text style={[styles.footerTopText, { fontFamily: 'UrbanistBold' }]}>Refund: $70.00</Text>
-                </View>
-
-
-                <Link href={'/bookingPage/BookingPin'} style={[styles.footerBtn, { backgroundColor: isSelected == 0 ? "#DADADA" : "#0A5CA8", }]} asChild disabled={isSelected == 0 ? true : false}>
+                <Link href={'/homePage/HomeReviewSummary'} style={[styles.footerBtn, { backgroundColor: isSelected == 0 ? "#DADADA" : "#0A5CA8", }]} asChild disabled={isSelected == 0 ? true : false}>
                     <TouchableOpacity>
                         <Text style={styles.footerText}>Continue</Text>
                     </TouchableOpacity>
@@ -156,7 +147,7 @@ const styles = StyleSheet.create({
         fontSize: hp(2)
     },
     footer: {
-        height: hp(18),
+        height: Platform.OS === 'ios' ? hp(14) : hp(12),
         backgroundColor: "white",
         alignItems: 'center',
     },
@@ -182,7 +173,6 @@ const styles = StyleSheet.create({
     footerTopText: {
         fontSize: hp(1.8)
     }
-
 
 
 

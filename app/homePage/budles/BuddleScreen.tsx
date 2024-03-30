@@ -159,10 +159,6 @@ export default function BuddleScreen() {
                 </View>
             </View>
 
-
-
-
-
             {/* back */}
             <View style={styles.topBtnStyle}>
                 <TouchableOpacity
@@ -184,6 +180,10 @@ export default function BuddleScreen() {
                     </TouchableOpacity>
                 </View>
             </Animated.View>
+
+
+
+
 
         </View>
     )
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     },
     topBtnStyle: {
         position: 'absolute',
-        top: hp(8),
+        top: Platform.OS === 'ios' ? hp(7) : hp(8),
         left: wp(6),
     },
     middleStyle: {

@@ -133,22 +133,85 @@ export const bundle = [
 export const allbundle = [
   {
     img: require("@/assets/temp/laundryBundle/lbundle3.png"),
-    label: "Bedding Set",
+    name: "Bedding Set",
     color: "#486FFB",
   },
   {
     img: require("@/assets/temp/laundryBundle/lbundle2.png"),
-    label: "Suit Care",
+    name: "Suit Care",
     color: "#FF6A80",
   },
   {
     img: require("@/assets/temp/laundryBundle/lbundle1.png"),
-    label: "Working's Bundle",
+    name: "Working's Bundle",
     color: "#FEA223",
   },
   {
     img: require("@/assets/temp/laundryBundle/lbundle4.png"),
-    label: "Family Bundle",
+    name: "Family Bundle",
     color: "#2DD0AF",
+  },
+];
+
+export const items = [
+  {
+    label: "All",
+  },
+  {
+    label: "Mens",
+  },
+  {
+    label: "Womens",
+  },
+  {
+    label: "Kids",
+  },
+  {
+    label: "Home",
+  },
+];
+export const itemList = [
+  {
+    icon: require("@/assets/temp/items/item1.jpg"),
+    label: "Abaya",
+    price: 4,
+  },
+  {
+    icon: require("@/assets/temp/items/item2.jpg"),
+    label: "Apron",
+    price: 1,
+  },
+  {
+    icon: require("@/assets/temp/items/item3.jpg"),
+    label: "Backpack (L)",
+    price: 10,
+  },
+  {
+    icon: require("@/assets/temp/items/item4.jpg"),
+    label: "Baniya",
+    price: 1,
+  },
+  {
+    icon: require("@/assets/temp/items/item5.jpg"),
+    label: "Bedsheet",
+    price: 4,
+  },
+];
+
+export const timeCollect = [
+  {
+    label: "09:00 AM",
+  },
+  {
+    label: "10:00 AM",
+  },
+  {
+    label: "11:00 AM",
+  },
+  {
+    label: "13:00 PM",
+  },
+  {
+    label: "15:00 PM",
   },
 ];

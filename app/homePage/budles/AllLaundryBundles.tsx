@@ -33,14 +33,16 @@ export default function AllLaundryBundles() {
                     showsVerticalScrollIndicator={false}
                     keyExtractor={(item) => item.img}
                     renderItem={({ item }) => (
-                        <View style={[styles.cardStyle, { backgroundColor: `${item.color}` }]}>
-                            <View style={styles.cardInner}>
-                                <View style={{ width: wp(50) }}>
-                                    <Text style={styles.cardLabel}>{item.label}</Text>
+                        <Link href={{ pathname: '/homePage/budles/BuddleScreen', params: item }} asChild style={[styles.cardStyle, { backgroundColor: `${item.color}` }]}>
+                            <TouchableOpacity>
+                                <View style={styles.cardInner}>
+                                    <View style={{ width: wp(50) }}>
+                                        <Text style={styles.cardLabel}>{item.name}</Text>
+                                    </View>
+                                    <Image source={item.img} resizeMode='contain' style={{ width: wp(30), tintColor: 'white' }} />
                                 </View>
-                                <Image source={item.img} resizeMode='contain' style={{ width: wp(30), tintColor: 'white' }} />
-                            </View>
-                        </View>
+                            </TouchableOpacity>
+                        </Link>
                     )}
                 />
             </View>

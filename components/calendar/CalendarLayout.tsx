@@ -7,7 +7,7 @@ export default function CalendarLayout() {
 
     const [selected, setSelected] = useState('');
     const currentDate = new Date();
-    
+
     const formattedCurrentDate = currentDate.toISOString().split('T')[0];
     const yesterday = new Date(currentDate);
     yesterday.setDate(currentDate.getDate() - 1);

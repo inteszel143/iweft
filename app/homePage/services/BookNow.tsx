@@ -33,12 +33,15 @@ export default function BookNow() {
 
                 <View style={{ marginTop: hp(4), }}>
                     <Text style={styles.topTitle}>Total clothing items/bags</Text>
-                    <TouchableOpacity style={styles.textField}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <Text style={styles.textStyle}>2 items</Text>
-                            <FontAwesome name='caret-right' size={hp(2.5)} />
-                        </View>
-                    </TouchableOpacity>
+
+                    <Link href={'/homePage/item/ItemPage'} asChild>
+                        <TouchableOpacity style={styles.textField}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <Text style={styles.textStyle}>2 items</Text>
+                                <FontAwesome name='caret-right' size={hp(2.5)} />
+                            </View>
+                        </TouchableOpacity>
+                    </Link>
                 </View>
                 <View style={{ marginTop: hp(4), }}>
                     <Text style={styles.topTitle}>Service name</Text>
@@ -70,6 +73,18 @@ export default function BookNow() {
                     </View>
                 </View>
 
+            </View>
+
+
+
+
+
+            <View style={styles.footer}>
+                <Link href={'/homePage/BookingDetails'} asChild>
+                    <TouchableOpacity style={styles.footerBtn}>
+                        <Text style={styles.footerText}>Continue AED 125</Text>
+                    </TouchableOpacity>
+                </Link>
             </View>
 
 
@@ -150,6 +165,35 @@ const styles = StyleSheet.create({
     textStyle: {
         fontFamily: 'UrbanistMedium',
         fontSize: hp(1.9)
+    },
+
+
+
+
+    footer: {
+        position: 'absolute',
+        bottom: 0,
+        width: wp(100),
+        height: hp(14),
+        backgroundColor: 'white',
+        borderTopRightRadius: wp(4),
+        borderTopLeftRadius: wp(4),
+        alignItems: 'center'
+    },
+
+    footerBtn: {
+        width: wp(90),
+        height: hp(6.5),
+        backgroundColor: "#0A5CA8",
+        borderRadius: wp(10),
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: hp(2.5)
+    },
+    footerText: {
+        fontFamily: 'UrbanistBold',
+        fontSize: hp(2),
+        color: 'white'
     }
 
 

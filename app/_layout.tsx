@@ -70,6 +70,12 @@ function RootLayoutNav() {
         <Stack.Screen name='homePage/OfferOtherPage' options={{ headerShown: false }} />
         <Stack.Screen name='homePage/SubscriptionOffer' options={{ headerShown: false }} />
         <Stack.Screen name='homePage/SubscriptionPlan' options={{ headerShown: false }} />
+        <Stack.Screen name='homePage/BookingDetails' options={{ headerShown: false }} />
+        <Stack.Screen name='homePage/BookingAddress' options={{ headerShown: false }} />
+        <Stack.Screen name='homePage/HomePaymentMethods' options={{ headerShown: false }} />
+        <Stack.Screen name='homePage/HomeReviewSummary' options={{ headerShown: false }} />
+        <Stack.Screen name='homePage/HomeConfirmPin' options={{ headerShown: false }} />
+        <Stack.Screen name='homePage/HomeBookingReceipt' options={{ headerShown: false }} />
 
 
 
@@ -78,6 +84,11 @@ function RootLayoutNav() {
         <Stack.Screen name='homePage/services/PhotosVideos' options={{ headerShown: false }} />
         <Stack.Screen name='homePage/services/BookNow' options={{ headerShown: false }} />
         <Stack.Screen name='homePage/services/AllServices' options={{ headerShown: false }} />
+
+
+        {/* items */}
+        <Stack.Screen name='homePage/item/ItemPage' options={{ headerShown: false }} />
+
 
         {/* bundles */}
         <Stack.Screen name='homePage/budles/BuddleScreen' options={{ headerShown: false }} />

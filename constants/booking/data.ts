@@ -19,6 +19,19 @@ export const upcoming = [
   },
 ];
 
+export const bookingDetails = [
+  {
+    label: "Info & Support",
+    icon: require("@/assets/icons/shareicon.png"),
+    separator: true,
+  },
+  {
+    label: "Cancel Booking",
+    icon: require("@/assets/icons/print.png"),
+    separator: false,
+  },
+];
+
 export const eReciept = [
   {
     label: "Share E-Receipt",
