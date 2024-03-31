@@ -17,7 +17,8 @@
       "supportsTablet": true,
       "config": {
         "googleMapsApiKey": "AIzaSyD_x_jkpt33ZX96mrYSO4w65oRtLr9nxlo"
-      }
+      },
+      "bundleIdentifier": "com.paras23.iweft"
     },
     "android": {
       "adaptiveIcon": {
@@ -28,7 +29,11 @@
         "googleMaps": {
           "apiKey": "AIzaSyAHmtNmFT8nsIb519PlVAEN-Zgtm02ig1s"
         }
-      }
+      },
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -44,9 +49,17 @@
         }
       ]
     ],
-
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "b19817b7-4bf6-4317-94d7-f524d68e4e25"
+      }
+    },
+    "owner": "paras23"
   }
 }
