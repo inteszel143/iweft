@@ -69,11 +69,11 @@ export default function Logout() {
                         >
                             <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Cancel</Text>
                         </TouchableOpacity>
-                        {/* <Link href={'/(tabs)/'} style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]} asChild> */}
-                        <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]} >
-                            <Text style={[styles.bottomText, { color: "white" }]}>Yes, Logout</Text>
-                        </TouchableOpacity>
-                        {/* </Link> */}
+                        <Link href={'/authPage/SelectLoginPage'} style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]} asChild>
+                            <TouchableOpacity>
+                                <Text style={[styles.bottomText, { color: "white" }]}>Yes, Logout</Text>
+                            </TouchableOpacity>
+                        </Link>
                     </View>
 
 

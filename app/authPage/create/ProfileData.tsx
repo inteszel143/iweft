@@ -1,0 +1,308 @@
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform, Modal, KeyboardAvoidingView, TextInput } from 'react-native'
+import React, { useRef, useState } from 'react'
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { Link, router } from 'expo-router';
+import { FontAwesome5, Ionicons } from '@expo/vector-icons';
+import PhoneInput from "react-native-phone-number-input";
+export default function ProfileData() {
+    const phoneInput = useRef<PhoneInput>(null);
+    const [value, setValue] = useState("");
+    const [formattedValue, setFormattedValue] = useState("");
+
+
+    const [modalVisible, setModalVisible] = useState(false);
+    const toggleModal = () => {
+        setModalVisible(!modalVisible);
+    };
+
+    function ModalProfile() {
+        return (
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}
+                presentationStyle='overFullScreen'
+                statusBarTranslucent={true}
+            >
+                <View style={styles.modalStyle}>
+                    <View style={styles.modalBox}>
+                        <Text style={styles.modalTitle}>Add Profile Picture</Text>
+
+                        <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#0A5CA8' }]}>
+                            <Text style={[styles.modalText, { color: '#FFFFFF' }]}>Take Photo</Text>
+                        </TouchableOpacity >
+
+
+                        <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#0A5CA8' }]}>
+                            <Text style={[styles.modalText, { color: '#FFFFFF' }]}>Choose Photo</Text>
+                        </TouchableOpacity>
+
+
+                        <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#F75555' }]}>
+                            <Text style={[styles.modalText, { color: '#FFFFFF' }]}>Delete Photo</Text>
+                        </TouchableOpacity>
+
+
+                        <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#DAE7F2' }]}
+                            onPress={toggleModal}
+                        >
+                            <Text style={[styles.modalText, { color: '#0A5CA8' }]}>Cancel</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+        )
+    };
+
+    return (
+        <View style={styles.container}>
+            {ModalProfile()}
+            <View style={styles.Headercontainer}>
+                <View style={styles.innerContainer}>
+
+                    <View style={styles.headerLeft}>
+                        <TouchableOpacity onPress={() => router.back()}>
+                            <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                        </TouchableOpacity>
+                        <Text style={styles.bookingText} >Fill Your Profile</Text>
+                    </View>
+
+                    <View style={styles.headerRight}>
+                        <TouchableOpacity>
+                            <Image source={require('@/assets/icons/bookingMenu.png')} resizeMode='contain' style={{ width: wp(7.5), tintColor: 'white' }} />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </View>
+
+
+
+
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: Platform.OS === 'android' ? hp(3) : hp(6) }}
+                bounces={false}
+            >
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    style={{ alignItems: 'center' }}
+                >
+
+                    <View style={styles.headerStyle}>
+                        <Image source={require('@/assets/temp/default.jpg')} resizeMode='contain' style={{ width: wp(40), height: hp(16) }} />
+                        <TouchableOpacity style={styles.editBtn}
+                            onPress={toggleModal}
+                        >
+                            <FontAwesome5 name='pen' color={'white'} />
+                        </TouchableOpacity>
+                    </View>
+
+
+
+                    <View style={styles.textFieldStyle}>
+                        <View style={styles.innerTextField}>
+                            <TextInput placeholder='Full Name' style={styles.textStyle} />
+                        </View>
+                    </View>
+                    <View style={styles.textFieldStyle}>
+                        <View style={styles.innerTextField}>
+                            <TextInput placeholder='Nickname' style={styles.textStyle} />
+                        </View>
+                    </View>
+                    <View style={styles.textFieldStyle}>
+                        <View style={styles.innerTextField}>
+                            <TextInput placeholder='Date of Birth' style={styles.textStyle} />
+                            <TouchableOpacity>
+                                <Image source={require('@/assets/temp/profileicons/calendar.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View style={styles.textFieldStyle}>
+                        <View style={styles.innerTextField}>
+                            <TextInput placeholder='Email' style={styles.textStyle} />
+                            <Ionicons name='mail-outline' size={hp(2.4)} />
+                        </View>
+                    </View>
+
+
+
+                    <View>
+                        <PhoneInput
+                            ref={phoneInput}
+                            defaultValue={value}
+                            defaultCode="AE"
+                            layout="first"
+                            onChangeText={(text) => {
+                                setValue(text);
+                            }}
+                            onChangeFormattedText={(text) => {
+                                setFormattedValue(text);
+                            }}
+                            textInputStyle={{ fontFamily: 'UrbanistSemiBold', fontSize: hp(2) }}
+                            codeTextStyle={{ fontFamily: 'UrbanistSemiBold', fontSize: hp(2) }}
+                            flagButtonStyle={{ backgroundColor: '#FAFAFA', paddingLeft: wp(4), }}
+                            containerStyle={{ borderRadius: wp(6), width: wp(90), marginTop: hp(3), minHeight: hp(7.5), maxHeight: hp(8), }}
+                        />
+                    </View>
+
+                    <Link href={'/authPage/create/YourAddress'} asChild>
+                        <TouchableOpacity style={styles.textFieldStyle}>
+                            <View style={styles.innerTextField}>
+                                <TextInput placeholder='Address' editable={false} style={{ fontFamily: 'UrbanistSemiBold', fontSize: hp(2) }} />
+                                <Ionicons name='location-outline' size={hp(2.4)} />
+                            </View>
+                        </TouchableOpacity>
+                    </Link>
+
+
+                </KeyboardAvoidingView>
+
+
+
+                <View style={styles.footer} >
+                    <Link href={'/authPage/create/CreateNewPIN'} asChild>
+                        <TouchableOpacity style={styles.footerBtn}>
+                            <Text style={styles.footerText}>Continue</Text>
+                        </TouchableOpacity>
+                    </Link>
+                </View>
+
+
+            </ScrollView>
+
+
+
+        </View>
+    )
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#FFFFFF',
+    },
+
+    Headercontainer: {
+        paddingHorizontal: wp(5),
+        paddingTop: hp(6),
+    },
+    innerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    headerRight: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: wp(6),
+    },
+    headerLeft: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: wp(5),
+    },
+    bookingText: {
+        fontFamily: "UrbanistBold",
+        fontSize: hp(2.5)
+    },
+
+
+
+
+    headerStyle: {
+        width: wp(35),
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: hp(2),
+        alignSelf: 'center',
+    },
+    editBtn: {
+        position: 'absolute',
+        bottom: 0,
+        right: wp(3),
+        width: wp(8),
+        height: wp(8),
+        backgroundColor: "#0A5CA8",
+        borderRadius: wp(2),
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    // modal
+    modalStyle: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.6)',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    modalBox: {
+        width: wp(86),
+        height: Platform.OS === 'ios' ? hp(48) : hp(50),
+        backgroundColor: "white",
+        borderRadius: wp(6),
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    modalTitle: {
+        fontFamily: "UrbanistBold",
+        fontSize: hp(2.8),
+        color: '#0A5CA8',
+        marginBottom: hp(1)
+    },
+    modalBtn: {
+        width: wp(70),
+        height: hp(7),
+        borderRadius: wp(10),
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: hp(2)
+    },
+    modalText: {
+        fontFamily: "UrbanistBold",
+        fontSize: hp(2)
+    },
+
+
+
+
+    textFieldStyle: {
+        width: wp(90),
+        minHeight: hp(7.5),
+        maxHeight: hp(8),
+        backgroundColor: "#FAFAFA",
+        borderRadius: wp(4),
+        justifyContent: 'center',
+        marginTop: hp(3),
+        paddingHorizontal: wp(6)
+    },
+    textStyle: {
+        flex: 1,
+        fontFamily: "UrbanistSemiBold",
+        fontSize: hp(2)
+    },
+    innerTextField: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+
+
+    footer: {
+        marginTop: hp(4),
+        alignItems: 'center'
+    },
+    footerBtn: {
+        width: wp(90),
+        height: hp(7),
+        borderRadius: wp(10),
+        backgroundColor: '#0A5CA8',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    footerText: {
+        fontFamily: 'UrbanistBold',
+        fontSize: hp(2),
+        color: '#FFFFFF'
+    }
+});
+
+

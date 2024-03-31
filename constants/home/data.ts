@@ -215,3 +215,16 @@ export const timeCollect = [
     label: "15:00 PM",
   },
 ];
+
+export const forgot = [
+  {
+    icon: "chatbubble-ellipses",
+    via: "SMS",
+    value: "+971 *********99",
+  },
+  {
+    icon: "mail",
+    via: "Email",
+    value: "and***@yourdomain.com",
+  },
+];

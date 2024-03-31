@@ -68,7 +68,7 @@ export default function EditProflieData() {
                     <PhoneInput
                         ref={phoneInput}
                         defaultValue={value}
-                        defaultCode="KW"
+                        defaultCode="AE"
                         layout="first"
                         onChangeText={(text) => {
                             setValue(text);

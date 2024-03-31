@@ -58,9 +58,25 @@ function RootLayoutNav() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
         <Stack.Screen name="BookingChat" options={{ header: () => <HeaderChat />, headerShadowVisible: false }} />
+        <Stack.Screen name="Undercontruct" options={{ headerShown: false }} />
+
+        {/* auth */}
+        <Stack.Screen name="authPage/OnboardingScreen" options={{ headerShown: false, gestureEnabled: false }} />
+        <Stack.Screen name="authPage/SelectLoginPage" options={{ headerShown: false, gestureEnabled: false }} />
+        <Stack.Screen name="authPage/LoginScreen" options={{ headerShown: false }} />
+        <Stack.Screen name="authPage/RegisterScreen" options={{ headerShown: false }} />
+        <Stack.Screen name="authPage/forgot/ForgotPassScreen" options={{ headerShown: false }} />
+        <Stack.Screen name="authPage/forgot/ForgotCode" options={{ headerShown: false }} />
+        <Stack.Screen name="authPage/forgot/CreateNewPassword" options={{ headerShown: false }} />
+
+        <Stack.Screen name="authPage/create/ProfileData" options={{ headerShown: false }} />
+        <Stack.Screen name="authPage/create/YourAddress" options={{ headerShown: false }} />
+        <Stack.Screen name="authPage/create/CreateNewPIN" options={{ headerShown: false }} />
+
 
 
         {/* home */}

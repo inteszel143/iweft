@@ -1,0 +1,99 @@
+import {
+    ImageURISource,
+    Pressable,
+    StyleSheet,
+    Text,
+    View,
+} from 'react-native';
+import React, { useCallback } from 'react';
+import Animated, {
+    useAnimatedStyle,
+    withSpring,
+    withTiming,
+} from 'react-native-reanimated';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { router } from 'expo-router';
+type Props = {
+    currentIndex: Animated.SharedValue<number>;
+    length: number;
+    flatListRef: any;
+};
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
+const Button = ({ currentIndex, length, flatListRef }: Props) => {
+    const rnBtnStyle = useAnimatedStyle(() => {
+        return {
+            width:
+                currentIndex.value === length - 1 ? withSpring(140) : withSpring(60),
+        };
+    }, [currentIndex, length]);
+
+    const rnTextStyle = useAnimatedStyle(() => {
+        return {
+            opacity:
+                currentIndex.value === length - 1 ? withTiming(1) : withTiming(0),
+            transform: [
+                {
+                    translateX:
+                        currentIndex.value === length - 1 ? withTiming(0) : withTiming(100),
+                },
+            ],
+        };
+    }, [currentIndex, length]);
+
+    const imageAnimatedStyle = useAnimatedStyle(() => {
+        return {
+            opacity:
+                currentIndex.value !== length - 1 ? withTiming(1) : withTiming(0),
+            transform: [
+                {
+                    translateX:
+                        currentIndex.value !== length - 1 ? withTiming(0) : withTiming(100),
+                },
+            ],
+        };
+    }, [currentIndex, length]);
+
+    const onPress = useCallback(() => {
+        if (currentIndex.value === length - 1) {
+            // console.log('Get Started');
+            router.push('/authPage/SelectLoginPage');
+            return;
+        } else {
+            flatListRef?.current?.scrollToIndex({
+                index: currentIndex.value + 1,
+            });
+        }
+    }, []);
+    return (
+        <AnimatedPressable style={[styles.btnStyle]} onPress={onPress}>
+            <Animated.Text style={[styles.textStyle, rnTextStyle]}>
+                Get Started</Animated.Text>
+            <Animated.Text style={[styles.textStyle, imageAnimatedStyle]}>
+                Next</Animated.Text>
+        </AnimatedPressable>
+    );
+};
+
+export default Button;
+
+const styles = StyleSheet.create({
+
+    btnStyle: {
+        height: hp(7),
+        width: wp(90),
+        backgroundColor: '#0A5CA8',
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        borderRadius: wp(10),
+        marginTop: hp(8),
+        marginBottom: hp(2),
+    },
+    textStyle: {
+        fontFamily: 'UrbanistBold',
+        fontSize: hp(2.2),
+        color: '#FFFFFF',
+        position: 'absolute'
+    },
+});
