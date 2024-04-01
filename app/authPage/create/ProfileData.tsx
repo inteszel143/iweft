@@ -4,6 +4,8 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { Link, router } from 'expo-router';
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import PhoneInput from "react-native-phone-number-input";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
 export default function ProfileData() {
     const phoneInput = useRef<PhoneInput>(null);
     const [value, setValue] = useState("");
@@ -78,84 +80,82 @@ export default function ProfileData() {
 
 
 
-            <ScrollView
+            <KeyboardAwareScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: Platform.OS === 'android' ? hp(3) : hp(6) }}
                 bounces={false}
+                extraScrollHeight={Platform.OS === 'ios' ? hp(4) : 0}
             >
-                <KeyboardAvoidingView
-                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                    style={{ alignItems: 'center' }}
-                >
 
-                    <View style={styles.headerStyle}>
-                        <Image source={require('@/assets/temp/default.jpg')} resizeMode='contain' style={{ width: wp(40), height: hp(16) }} />
-                        <TouchableOpacity style={styles.editBtn}
-                            onPress={toggleModal}
-                        >
-                            <FontAwesome5 name='pen' color={'white'} />
+
+                <View style={styles.headerStyle}>
+                    <Image source={require('@/assets/temp/default.jpg')} resizeMode='contain' style={{ width: wp(40), height: hp(16) }} />
+                    <TouchableOpacity style={styles.editBtn}
+                        onPress={toggleModal}
+                    >
+                        <FontAwesome5 name='pen' color={'white'} />
+                    </TouchableOpacity>
+                </View>
+
+
+
+                <View style={styles.textFieldStyle}>
+                    <View style={styles.innerTextField}>
+                        <TextInput placeholder='Full Name' style={styles.textStyle} />
+                    </View>
+                </View>
+                <View style={styles.textFieldStyle}>
+                    <View style={styles.innerTextField}>
+                        <TextInput placeholder='Nickname' style={styles.textStyle} />
+                    </View>
+                </View>
+                <View style={styles.textFieldStyle}>
+                    <View style={styles.innerTextField}>
+                        <TextInput placeholder='Date of Birth' style={styles.textStyle} />
+                        <TouchableOpacity>
+                            <Image source={require('@/assets/temp/profileicons/calendar.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
                         </TouchableOpacity>
                     </View>
+                </View>
+                <View style={styles.textFieldStyle}>
+                    <View style={styles.innerTextField}>
+                        <TextInput placeholder='Email' style={styles.textStyle} />
+                        <Ionicons name='mail-outline' size={hp(2.4)} />
+                    </View>
+                </View>
 
 
 
-                    <View style={styles.textFieldStyle}>
+                <View>
+                    <PhoneInput
+                        ref={phoneInput}
+                        defaultValue={value}
+                        defaultCode="AE"
+                        layout="first"
+                        onChangeText={(text) => {
+                            setValue(text);
+                        }}
+                        onChangeFormattedText={(text) => {
+                            setFormattedValue(text);
+                        }}
+                        textInputStyle={{ fontFamily: 'UrbanistSemiBold', fontSize: hp(2) }}
+                        codeTextStyle={{ fontFamily: 'UrbanistSemiBold', fontSize: hp(2) }}
+                        flagButtonStyle={{ backgroundColor: '#FAFAFA', paddingLeft: wp(4), }}
+                        containerStyle={{ borderRadius: wp(6), width: wp(90), marginTop: hp(3), minHeight: hp(7.5), maxHeight: hp(8), }}
+                    />
+                </View>
+
+                <Link href={'/authPage/create/YourAddress'} asChild>
+                    <TouchableOpacity style={styles.textFieldStyle}>
                         <View style={styles.innerTextField}>
-                            <TextInput placeholder='Full Name' style={styles.textStyle} />
+                            <TextInput placeholder='Address' editable={false} style={{ fontFamily: 'UrbanistSemiBold', fontSize: hp(2) }} />
+                            <Ionicons name='location-outline' size={hp(2.4)} />
                         </View>
-                    </View>
-                    <View style={styles.textFieldStyle}>
-                        <View style={styles.innerTextField}>
-                            <TextInput placeholder='Nickname' style={styles.textStyle} />
-                        </View>
-                    </View>
-                    <View style={styles.textFieldStyle}>
-                        <View style={styles.innerTextField}>
-                            <TextInput placeholder='Date of Birth' style={styles.textStyle} />
-                            <TouchableOpacity>
-                                <Image source={require('@/assets/temp/profileicons/calendar.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    <View style={styles.textFieldStyle}>
-                        <View style={styles.innerTextField}>
-                            <TextInput placeholder='Email' style={styles.textStyle} />
-                            <Ionicons name='mail-outline' size={hp(2.4)} />
-                        </View>
-                    </View>
+                    </TouchableOpacity>
+                </Link>
 
 
 
-                    <View>
-                        <PhoneInput
-                            ref={phoneInput}
-                            defaultValue={value}
-                            defaultCode="AE"
-                            layout="first"
-                            onChangeText={(text) => {
-                                setValue(text);
-                            }}
-                            onChangeFormattedText={(text) => {
-                                setFormattedValue(text);
-                            }}
-                            textInputStyle={{ fontFamily: 'UrbanistSemiBold', fontSize: hp(2) }}
-                            codeTextStyle={{ fontFamily: 'UrbanistSemiBold', fontSize: hp(2) }}
-                            flagButtonStyle={{ backgroundColor: '#FAFAFA', paddingLeft: wp(4), }}
-                            containerStyle={{ borderRadius: wp(6), width: wp(90), marginTop: hp(3), minHeight: hp(7.5), maxHeight: hp(8), }}
-                        />
-                    </View>
-
-                    <Link href={'/authPage/create/YourAddress'} asChild>
-                        <TouchableOpacity style={styles.textFieldStyle}>
-                            <View style={styles.innerTextField}>
-                                <TextInput placeholder='Address' editable={false} style={{ fontFamily: 'UrbanistSemiBold', fontSize: hp(2) }} />
-                                <Ionicons name='location-outline' size={hp(2.4)} />
-                            </View>
-                        </TouchableOpacity>
-                    </Link>
-
-
-                </KeyboardAvoidingView>
 
 
 
@@ -168,7 +168,7 @@ export default function ProfileData() {
                 </View>
 
 
-            </ScrollView>
+            </KeyboardAwareScrollView >
 
 
 
