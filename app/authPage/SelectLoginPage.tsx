@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, Platform } from 'react
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link } from 'expo-router';
+import { defaultStyles } from '@/constants/Styles';
 export default function SelectLoginPage() {
     return (
         <View style={styles.container}>
@@ -50,7 +51,7 @@ export default function SelectLoginPage() {
 
             <View style={styles.footer}>
                 <Link href={'/authPage/LoginScreen'} asChild>
-                    <TouchableOpacity style={styles.footerBtn}>
+                    <TouchableOpacity style={defaultStyles.footerBtn}>
                         <Text style={styles.footerText}>Sign in with password</Text>
                     </TouchableOpacity>
                 </Link>
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     footerBtn: {
-        width: wp(90),
+        width: wp(88),
         height: hp(7),
         borderRadius: wp(10),
         backgroundColor: '#0A5CA8',

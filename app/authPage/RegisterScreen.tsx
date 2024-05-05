@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Link, router } from 'expo-router'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { defaultStyles } from '@/constants/Styles';
 
 export default function RegisterScreen() {
     const [emailF, setEmailF] = useState(false);
@@ -14,44 +15,33 @@ export default function RegisterScreen() {
     return (
         <View style={styles.container}>
 
-
             <View style={styles.headerBack}>
                 <TouchableOpacity onPress={() => router.back()}>
                     <AntDesign name='arrowleft' size={hp(3)} />
                 </TouchableOpacity>
             </View>
 
-
-
             <View style={styles.containerStyle}>
                 <Text style={styles.textStyle}>Create your Account</Text>
-
-
-
 
                 <View style={[styles.textField, { backgroundColor: emailF ? '#0A5CA826' : '#FAFAFA', borderColor: emailF ? '#0A5CA8' : '#FAFAFA' }]} >
                     <View style={styles.innerField}>
                         <Ionicons name='mail' size={hp(2.5)} color={emailF ? '#0A5CA8' : '#9E9E9E'} />
-                        <TextInput placeholder='Email' style={styles.textInputStyle} onFocus={() => setEmailF(true)} onBlur={() => setEmailF(false)} />
+                        <TextInput placeholder='Email' placeholderTextColor={'#d3d3d3'} style={styles.textInputStyle} onFocus={() => setEmailF(true)} onBlur={() => setEmailF(false)} />
                     </View>
                 </View>
-
-
-
-
 
 
                 <View style={[styles.textField, { backgroundColor: passwordF ? '#0A5CA826' : '#FAFAFA', borderColor: passwordF ? '#0A5CA8' : '#FAFAFA' }]}  >
                     <View style={styles.innerField}>
                         <Ionicons name='mail' size={hp(2.5)} color={passwordF ? '#0A5CA8' : '#9E9E9E'} />
-                        <TextInput placeholder='Password' style={styles.textInputStyle} onFocus={() => setPasswordF(true)} onBlur={() => setPasswordF(false)} />
+                        <TextInput placeholder='Password' placeholderTextColor={'#d3d3d3'} style={styles.textInputStyle} onFocus={() => setPasswordF(true)} onBlur={() => setPasswordF(false)} />
                         <TouchableOpacity>
                             <Ionicons name='eye-off' size={hp(2.5)} color={passwordF ? '#0A5CA8' : '#9E9E9E'} />
                         </TouchableOpacity>
                     </View>
                 </View>
             </View>
-
 
 
             <TouchableOpacity style={styles.rememberStyle} onPress={toggleCheck}>
@@ -63,7 +53,7 @@ export default function RegisterScreen() {
 
             <View style={{ alignItems: 'center', marginTop: hp(4) }}>
                 <Link href={'/authPage/create/ProfileData'} asChild>
-                    <TouchableOpacity style={styles.footerBtn}>
+                    <TouchableOpacity style={defaultStyles.footerBtn}>
                         <Text style={styles.footerText}>Sign up</Text>
                     </TouchableOpacity>
                 </Link>
@@ -74,14 +64,6 @@ export default function RegisterScreen() {
                     </TouchableOpacity>
                 </Link>
             </View>
-
-
-
-
-
-
-
-
 
 
             <View style={styles.orStyle}>

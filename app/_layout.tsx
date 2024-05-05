@@ -56,7 +56,7 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    // <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -142,6 +142,6 @@ function RootLayoutNav() {
         <Stack.Screen name='profilePage/InviteFriends' options={{ headerShown: false }} />
 
       </Stack>
-    </ThemeProvider>
+    // </ThemeProvider>
   );
 }
