@@ -5,18 +5,6 @@ import {
 } from "react-native-responsive-screen";
 
 export const defaultStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FDFFFF",
-  },
-  inputField: {
-    height: 44,
-    borderWidth: 1,
-    borderColor: "#ABABAB",
-    borderRadius: 8,
-    padding: 10,
-    backgroundColor: "#fff",
-  },
   footerBtn: {
     width: wp(88),
     height: hp(7),
@@ -33,5 +21,16 @@ export const defaultStyles = StyleSheet.create({
     paddingHorizontal: wp(5),
     marginTop: hp(2.5),
     borderWidth: 1.5,
+  },
+  innerField: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: wp(4),
+  },
+  textInputStyle: {
+    flex: 1,
+    fontFamily: "UrbanistMedium",
+    paddingVertical: hp(1),
+    fontSize: hp(2),
   },
 });

@@ -42,8 +42,9 @@ export default function CalendarLayout() {
                     textMonthFontSize: 20,
                     textDayHeaderFontSize: 15,
                 }}
-                current={'2024-03-26'}
-                minDate={formattedYesterday}
+                current={formattedCurrentDate}
+                // current={'2024-03-26'}
+                minDate={formattedCurrentDate}
                 pagingEnabled={true}
                 onDayPress={day => {
                     setSelected(day.dateString);
@@ -59,9 +60,10 @@ export default function CalendarLayout() {
                             fontSize: hp(2),
                         },
                     },
-                    // [formattedCurrentDate]: {
-                    //     marked: true, dotColor: '#93C120',
-                    // },
+                    [formattedCurrentDate]: {
+                        selected: true,
+                        marked: true, dotColor: '#93C120', selectedColor: '#0A5CA8',
+                    },
                 }}
             />
         </View>

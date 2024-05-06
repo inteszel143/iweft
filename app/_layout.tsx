@@ -57,91 +57,91 @@ function RootLayoutNav() {
 
   return (
     // <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="BookingChat" options={{ header: () => <HeaderChat />, headerShadowVisible: false }} />
-        <Stack.Screen name="Undercontruct" options={{ headerShown: false }} />
+    <Stack>
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="BookingChat" options={{ header: () => <HeaderChat />, headerShadowVisible: false }} />
+      <Stack.Screen name="Undercontruct" options={{ headerShown: false }} />
 
-        {/* auth */}
-        <Stack.Screen name="authPage/OnboardingScreen" options={{ headerShown: false, gestureEnabled: false }} />
-        <Stack.Screen name="authPage/SelectLoginPage" options={{ headerShown: false, gestureEnabled: false }} />
-        <Stack.Screen name="authPage/LoginScreen" options={{ headerShown: false }} />
-        <Stack.Screen name="authPage/RegisterScreen" options={{ headerShown: false }} />
-        <Stack.Screen name="authPage/forgot/ForgotPassScreen" options={{ headerShown: false }} />
-        <Stack.Screen name="authPage/forgot/ForgotCode" options={{ headerShown: false }} />
-        <Stack.Screen name="authPage/forgot/CreateNewPassword" options={{ headerShown: false }} />
+      {/* auth */}
+      <Stack.Screen name="authPage/OnboardingScreen" options={{ headerShown: false, gestureEnabled: false }} />
+      <Stack.Screen name="authPage/SelectLoginPage" options={{ headerShown: false, gestureEnabled: false }} />
+      <Stack.Screen name="authPage/LoginScreen" options={{ headerShown: false }} />
+      <Stack.Screen name="authPage/RegisterScreen" options={{ headerShown: false }} />
+      <Stack.Screen name="authPage/forgot/ForgotPassScreen" options={{ headerShown: false }} />
+      <Stack.Screen name="authPage/forgot/ForgotCode" options={{ headerShown: false }} />
+      <Stack.Screen name="authPage/forgot/CreateNewPassword" options={{ headerShown: false }} />
 
-        <Stack.Screen name="authPage/create/ProfileData" options={{ headerShown: false }} />
-        <Stack.Screen name="authPage/create/YourAddress" options={{ headerShown: false }} />
-        <Stack.Screen name="authPage/create/CreateNewPIN" options={{ headerShown: false }} />
-
-
-
-        {/* home */}
-        <Stack.Screen name='homePage/Notification' options={{ headerShown: false }} />
-        <Stack.Screen name='homePage/Bookmarks' options={{ headerShown: false }} />
-        <Stack.Screen name='homePage/SepecialOffers' options={{ headerShown: false }} />
-        <Stack.Screen name='homePage/OfferOtherPage' options={{ headerShown: false }} />
-        <Stack.Screen name='homePage/SubscriptionOffer' options={{ headerShown: false }} />
-        <Stack.Screen name='homePage/SubscriptionPlan' options={{ headerShown: false }} />
-        <Stack.Screen name='homePage/BookingDetails' options={{ headerShown: false }} />
-        <Stack.Screen name='homePage/BookingAddress' options={{ headerShown: false }} />
-        <Stack.Screen name='homePage/HomePaymentMethods' options={{ headerShown: false }} />
-        <Stack.Screen name='homePage/HomeReviewSummary' options={{ headerShown: false }} />
-        <Stack.Screen name='homePage/HomeConfirmPin' options={{ headerShown: false }} />
-        <Stack.Screen name='homePage/HomeBookingReceipt' options={{ headerShown: false }} />
+      <Stack.Screen name="authPage/create/ProfileData" options={{ headerShown: false }} />
+      <Stack.Screen name="authPage/create/YourAddress" options={{ headerShown: false }} />
+      <Stack.Screen name="authPage/create/CreateNewPIN" options={{ headerShown: false }} />
 
 
 
-        {/* servcies */}
-        <Stack.Screen name='homePage/services/ServicesScreen' options={{ headerShown: false }} />
-        <Stack.Screen name='homePage/services/PhotosVideos' options={{ headerShown: false }} />
-        <Stack.Screen name='homePage/services/BookNow' options={{ headerShown: false }} />
-        <Stack.Screen name='homePage/services/AllServices' options={{ headerShown: false }} />
+      {/* home */}
+      <Stack.Screen name='homePage/Notification' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/Bookmarks' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/SepecialOffers' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/OfferOtherPage' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/SubscriptionOffer' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/SubscriptionPlan' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/BookingDetails' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/BookingAddress' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/HomePaymentMethods' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/HomeReviewSummary' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/HomeConfirmPin' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/HomeBookingReceipt' options={{ headerShown: false }} />
 
 
-        {/* items */}
-        <Stack.Screen name='homePage/item/ItemPage' options={{ headerShown: false }} />
+
+      {/* servcies */}
+      <Stack.Screen name='homePage/services/ServicesScreen' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/services/PhotosVideos' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/services/BookNow' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/services/AllServices' options={{ headerShown: false }} />
 
 
-        {/* bundles */}
-        <Stack.Screen name='homePage/budles/BuddleScreen' options={{ headerShown: false }} />
-        <Stack.Screen name='homePage/budles/AllLaundryBundles' options={{ headerShown: false }} />
+      {/* items */}
+      <Stack.Screen name='homePage/item/ItemPage' options={{ headerShown: false }} />
+
+
+      {/* bundles */}
+      <Stack.Screen name='homePage/budles/BuddleScreen' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/budles/AllLaundryBundles' options={{ headerShown: false }} />
 
 
 
-        {/* booking */}
-        <Stack.Screen name='bookingPage/Ereceipt' options={{ headerShown: false }} />
-        <Stack.Screen name='bookingPage/BookingPaymentMethod' options={{ headerShown: false }} />
-        <Stack.Screen name='bookingPage/BookingPin' options={{ headerShown: false }} />
-        <Stack.Screen name='bookingPage/BookingSummary' options={{ headerShown: false }} />
-        {/* booking */}
+      {/* booking */}
+      <Stack.Screen name='bookingPage/Ereceipt' options={{ headerShown: false }} />
+      <Stack.Screen name='bookingPage/BookingPaymentMethod' options={{ headerShown: false }} />
+      <Stack.Screen name='bookingPage/BookingPin' options={{ headerShown: false }} />
+      <Stack.Screen name='bookingPage/BookingSummary' options={{ headerShown: false }} />
+      {/* booking */}
 
 
-        {/* chat */}
-        <Stack.Screen name='chatPage/CustomerSupport' options={{ header: () => <HeaderCustomerSupport />, headerShadowVisible: false }} />
-        <Stack.Screen name='chatPage/CallCustomer' options={{ headerShown: false }} />
-        <Stack.Screen name='chatPage/CallUserHistory' options={{ headerShown: false }} />
+      {/* chat */}
+      <Stack.Screen name='chatPage/CustomerSupport' options={{ header: () => <HeaderCustomerSupport />, headerShadowVisible: false }} />
+      <Stack.Screen name='chatPage/CallCustomer' options={{ headerShown: false }} />
+      <Stack.Screen name='chatPage/CallUserHistory' options={{ headerShown: false }} />
 
 
-        {/* profile */}
-        <Stack.Screen name='profilePage/EditProfile' options={{ headerShown: false }} />
-        <Stack.Screen name='profilePage/CurrentAddress' options={{ headerShown: false }} />
-        <Stack.Screen name='profilePage/ProfilePayment' options={{ headerShown: false }} />
-        <Stack.Screen name='profilePage/AddNewCard' options={{ headerShown: false }} />
-        <Stack.Screen name='profilePage/Notification' options={{ headerShown: false }} />
-        <Stack.Screen name='profilePage/Security' options={{ headerShown: false }} />
-        <Stack.Screen name='profilePage/ChangePassword' options={{ headerShown: false }} />
-        <Stack.Screen name='profilePage/ChangePin' options={{ headerShown: false }} />
-        <Stack.Screen name='profilePage/Language' options={{ headerShown: false }} />
-        <Stack.Screen name='profilePage/Subscription' options={{ headerShown: false }} />
-        <Stack.Screen name='profilePage/SubscriptionSummary' options={{ headerShown: false }} />
-        <Stack.Screen name='profilePage/PrivacyPolicy' options={{ headerShown: false }} />
-        <Stack.Screen name='profilePage/InviteFriends' options={{ headerShown: false }} />
+      {/* profile */}
+      <Stack.Screen name='profilePage/EditProfile' options={{ headerShown: false }} />
+      <Stack.Screen name='profilePage/CurrentAddress' options={{ headerShown: false }} />
+      <Stack.Screen name='profilePage/ProfilePayment' options={{ headerShown: false }} />
+      <Stack.Screen name='profilePage/AddNewCard' options={{ headerShown: false }} />
+      <Stack.Screen name='profilePage/Notification' options={{ headerShown: false }} />
+      <Stack.Screen name='profilePage/Security' options={{ headerShown: false }} />
+      <Stack.Screen name='profilePage/ChangePassword' options={{ headerShown: false }} />
+      <Stack.Screen name='profilePage/ChangePin' options={{ headerShown: false }} />
+      <Stack.Screen name='profilePage/Language' options={{ headerShown: false }} />
+      <Stack.Screen name='profilePage/Subscription' options={{ headerShown: false }} />
+      <Stack.Screen name='profilePage/SubscriptionSummary' options={{ headerShown: false }} />
+      <Stack.Screen name='profilePage/PrivacyPolicy' options={{ headerShown: false }} />
+      <Stack.Screen name='profilePage/InviteFriends' options={{ headerShown: false }} />
 
-      </Stack>
+    </Stack>
     // </ThemeProvider>
   );
 }

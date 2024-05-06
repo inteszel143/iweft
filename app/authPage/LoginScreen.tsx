@@ -11,7 +11,7 @@ import * as yup from 'yup';
 export default function LoginScreen() {
     const [emailF, setEmailF] = useState(false);
     const [passwordF, setPasswordF] = useState(false);
-    const [check, setCheck] = useState(false);
+    const [check, setCheck] = useState(true);
     const [showP, setShowP] = useState(true);
 
     const [loadingBtn, setLoadingBtn] = useState(false);
@@ -68,7 +68,7 @@ export default function LoginScreen() {
                 </TouchableOpacity>
             </View>
 
-            <ScrollView bounces={false}>
+            <ScrollView bounces={false} contentContainerStyle={{ paddingBottom: hp(5) }}>
                 <View style={styles.containerStyle}>
                     <Text style={styles.textStyle}>Login to your Account</Text>
                     <View style={[styles.textField, { backgroundColor: emailF ? '#0A5CA826' : '#FAFAFA', borderColor: emailF ? '#0A5CA8' : '#FAFAFA' }]} >
@@ -90,8 +90,8 @@ export default function LoginScreen() {
                                         autoCapitalize="none"
                                         autoComplete='email'
                                         autoCorrect={false}
-                                        placeholderTextColor={emailF ? '#808080' : '#d3d3d3'}
-                                        style={styles.textInputStyle}
+                                        placeholderTextColor={'#9E9E9E'}
+                                        style={defaultStyles.textInputStyle}
                                     />
                                 )}
                                 name="email"
@@ -100,7 +100,10 @@ export default function LoginScreen() {
                     </View>
 
                     {/* Error */}
-                    {errors.email?.message && <Text style={styles.errorStyle} >{errors.email?.message}</Text>}
+                    {errors.email?.message && <View style={styles.errorViewStyle}>
+                        <Ionicons name='alert-circle-outline' size={hp(2.4)} color={'#ED4337'} />
+                        <Text style={styles.errorStyle} >{errors.email?.message}</Text>
+                    </View>}
 
 
                     <View style={[styles.textField, { backgroundColor: passwordF ? '#0A5CA826' : '#FAFAFA', borderColor: passwordF ? '#0A5CA8' : '#FAFAFA' }]}  >
@@ -121,8 +124,8 @@ export default function LoginScreen() {
                                         onChangeText={onChange}
                                         // value={value}
                                         secureTextEntry={showP}
-                                        placeholderTextColor={passwordF ? '#808080' : '#d3d3d3'}
-                                        style={styles.textInputStyle}
+                                        placeholderTextColor={'#9E9E9E'}
+                                        style={defaultStyles.textInputStyle}
                                     />
                                 )}
                                 name="password"
@@ -134,7 +137,10 @@ export default function LoginScreen() {
                     </View>
 
                     {/* Error */}
-                    {errors.password?.message && <Text style={styles.errorStyle} >{errors.password?.message}</Text>}
+                    {errors.password?.message && <View style={styles.errorViewStyle}>
+                        <Ionicons name='alert-circle-outline' size={hp(2.4)} color={'#ED4337'} />
+                        <Text style={styles.errorStyle} >{errors.password?.message}</Text>
+                    </View>}
 
                 </View>
 
@@ -142,13 +148,15 @@ export default function LoginScreen() {
 
                 {/* Remember */}
                 <TouchableOpacity style={styles.rememberStyle} onPress={toggleCheck}>
-                    {check ? <MaterialCommunityIcons name='checkbox-marked-outline' size={hp(2.5)} color={'#0A5CA8'} /> : <MaterialCommunityIcons name='checkbox-blank-outline' size={hp(2.5)} color={'#0A5CA8'} />}
+                    {check ? <Ionicons name='checkbox' size={hp(2.6)} color={'#0A5CA8'} />
+                        :
+                        <MaterialCommunityIcons name='checkbox-blank-outline' size={hp(2.6)} color={'#0A5CA8'} />}
                     <Text style={styles.rememberText}>Remember me</Text>
                 </TouchableOpacity>
 
 
 
-                <View style={{ alignItems: 'center', marginTop: hp(4) }}>
+                <View style={{ alignItems: 'center', marginTop: hp(3) }}>
 
                     <TouchableOpacity style={defaultStyles.footerBtn} onPress={handleSubmit(onSubmit)}>
                         {loadingBtn ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>Sign in</Text>}
@@ -172,15 +180,21 @@ export default function LoginScreen() {
 
 
                 <View style={styles.socialStyle}>
-                    <TouchableOpacity style={styles.box}>
-                        <Image source={require('@/assets/temp/authIcons/fb.png')} resizeMode='contain' style={styles.btnImage} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.box}>
-                        <Image source={require('@/assets/temp/authIcons/google.png')} resizeMode='contain' style={styles.btnImage} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.box}>
-                        <Image source={require('@/assets/temp/authIcons/apple.png')} resizeMode='contain' style={styles.btnImage} />
-                    </TouchableOpacity>
+                    <Link href={'/Undercontruct'} asChild>
+                        <TouchableOpacity style={styles.box}>
+                            <Image source={require('@/assets/temp/authIcons/fb.png')} resizeMode='contain' style={styles.btnImage} />
+                        </TouchableOpacity>
+                    </Link>
+                    <Link href={'/Undercontruct'} asChild>
+                        <TouchableOpacity style={styles.box}>
+                            <Image source={require('@/assets/temp/authIcons/google.png')} resizeMode='contain' style={styles.btnImage} />
+                        </TouchableOpacity>
+                    </Link>
+                    <Link href={'/Undercontruct'} asChild>
+                        <TouchableOpacity style={styles.box}>
+                            <Image source={require('@/assets/temp/authIcons/apple.png')} resizeMode='contain' style={styles.btnImage} />
+                        </TouchableOpacity>
+                    </Link>
                 </View>
 
                 <View style={{ alignItems: 'center' }}>
@@ -247,7 +261,7 @@ const styles = StyleSheet.create({
     },
     rememberText: {
         fontFamily: 'UrbanistSemiBold',
-        fontSize: hp(1.8),
+        fontSize: hp(1.9),
     },
     forgot: {
         fontFamily: 'UrbanistSemiBold',
@@ -332,9 +346,14 @@ const styles = StyleSheet.create({
         color: '#0A5CA8'
     },
     errorStyle: {
-        marginTop: 10,
         fontFamily: 'UrbanistRegular',
         fontSize: hp(1.8),
         color: "#ED4337"
+    },
+    errorViewStyle: {
+        marginTop: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10
     }
 })

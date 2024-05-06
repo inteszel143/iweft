@@ -1,15 +1,24 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform, Modal, KeyboardAvoidingView, TextInput } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, Platform, Modal, TextInput } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import PhoneInput from "react-native-phone-number-input";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
+import { defaultStyles } from '@/constants/Styles';
+import DateTimePicker from '@react-native-community/datetimepicker';
 export default function ProfileData() {
     const phoneInput = useRef<PhoneInput>(null);
     const [value, setValue] = useState("");
     const [formattedValue, setFormattedValue] = useState("");
+
+    const [date, setDate] = useState(new Date());
+    const [showPicker, setShowPicker] = useState(false);
+    const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+    const onChange = (event: any, selectedDate: any) => {
+        setShowPicker(false);
+        setDate(selectedDate);
+    };
 
 
     const [modalVisible, setModalVisible] = useState(false);
@@ -56,9 +65,11 @@ export default function ProfileData() {
         )
     };
 
+
     return (
         <View style={styles.container}>
             {ModalProfile()}
+            {/* {ModalDatePicker()} */}
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
 
@@ -76,7 +87,6 @@ export default function ProfileData() {
                     </View>
                 </View>
             </View>
-
 
 
 
@@ -98,61 +108,99 @@ export default function ProfileData() {
                 </View>
 
 
-
-                <View style={styles.textFieldStyle}>
-                    <View style={styles.innerTextField}>
-                        <TextInput placeholder='Full Name' style={styles.textStyle} />
+                <View style={{ alignItems: 'center' }}>
+                    {/* Fullname */}
+                    <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
+                        <View style={defaultStyles.innerField}>
+                            <TextInput
+                                placeholder='Full Name'
+                                placeholderTextColor={'#9E9E9E'}
+                                style={defaultStyles.textInputStyle}
+                            />
+                        </View>
                     </View>
-                </View>
-                <View style={styles.textFieldStyle}>
-                    <View style={styles.innerTextField}>
-                        <TextInput placeholder='Nickname' style={styles.textStyle} />
+
+                    {/* Nickname */}
+                    <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
+                        <View style={defaultStyles.innerField}>
+                            <TextInput
+                                placeholder='Nickname'
+                                placeholderTextColor={'#9E9E9E'}
+                                style={defaultStyles.textInputStyle}
+                            />
+                        </View>
                     </View>
-                </View>
-                <View style={styles.textFieldStyle}>
-                    <View style={styles.innerTextField}>
-                        <TextInput placeholder='Date of Birth' style={styles.textStyle} />
-                        <TouchableOpacity>
-                            <Image source={require('@/assets/temp/profileicons/calendar.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.textFieldStyle}>
-                    <View style={styles.innerTextField}>
-                        <TextInput placeholder='Email' style={styles.textStyle} />
-                        <Ionicons name='mail-outline' size={hp(2.4)} />
-                    </View>
-                </View>
+                    {/* DateofBirth */}
+                    <TouchableOpacity onPress={() => setShowPicker(true)} >
+                        <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
+                            <View style={defaultStyles.innerField}>
+                                <Text style={[defaultStyles.textInputStyle]} >{formattedDate}</Text>
+                                {showPicker && (
+                                    <DateTimePicker
+                                        value={date}
+                                        mode="date"
+                                        display="default"
+                                        onChange={onChange}
+                                    />
+                                )}
 
-
-
-                <View>
-                    <PhoneInput
-                        ref={phoneInput}
-                        defaultValue={value}
-                        defaultCode="AE"
-                        layout="first"
-                        onChangeText={(text) => {
-                            setValue(text);
-                        }}
-                        onChangeFormattedText={(text) => {
-                            setFormattedValue(text);
-                        }}
-                        textInputStyle={{ fontFamily: 'UrbanistSemiBold', fontSize: hp(2) }}
-                        codeTextStyle={{ fontFamily: 'UrbanistSemiBold', fontSize: hp(2) }}
-                        flagButtonStyle={{ backgroundColor: '#FAFAFA', paddingLeft: wp(4), }}
-                        containerStyle={{ borderRadius: wp(6), width: wp(90), marginTop: hp(3), minHeight: hp(7.5), maxHeight: hp(8), }}
-                    />
-                </View>
-
-                <Link href={'/authPage/create/YourAddress'} asChild>
-                    <TouchableOpacity style={styles.textFieldStyle}>
-                        <View style={styles.innerTextField}>
-                            <TextInput placeholder='Address' editable={false} style={{ fontFamily: 'UrbanistSemiBold', fontSize: hp(2) }} />
-                            <Ionicons name='location-outline' size={hp(2.4)} />
+                                <TouchableOpacity>
+                                    <Image source={require('@/assets/temp/profileicons/calendar.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </TouchableOpacity>
-                </Link>
+
+                    {/* Email */}
+                    <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
+                        <View style={defaultStyles.innerField}>
+                            <TextInput
+                                placeholder='Email'
+                                placeholderTextColor={'#9E9E9E'}
+                                style={defaultStyles.textInputStyle}
+                            />
+                            <Ionicons name='mail-outline' size={hp(2.4)} />
+                        </View>
+                    </View>
+
+
+                    {/* Phone */}
+                    <View>
+                        <PhoneInput
+                            ref={phoneInput}
+                            defaultValue={value}
+                            defaultCode="AE"
+                            layout="first"
+                            onChangeText={(text) => {
+                                setValue(text);
+                            }}
+                            onChangeFormattedText={(text) => {
+                                setFormattedValue(text);
+                            }}
+                            textInputStyle={{ fontFamily: 'UrbanistSemiBold', fontSize: hp(2) }}
+                            codeTextStyle={{ fontFamily: 'UrbanistSemiBold', fontSize: hp(2) }}
+                            flagButtonStyle={{ backgroundColor: '#FAFAFA', paddingLeft: wp(4) }}
+                            containerStyle={{ borderRadius: wp(4), width: wp(90), marginTop: hp(3), minHeight: hp(7.5), maxHeight: hp(8), }}
+                        />
+                    </View>
+
+
+                    {/* Location */}
+                    <TouchableOpacity onPress={() => router.push('/authPage/create/YourAddress')}>
+                        <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
+                            <View style={defaultStyles.innerField}>
+                                <TextInput
+                                    placeholder='Address'
+                                    placeholderTextColor={'#9E9E9E'}
+                                    editable={false}
+                                    style={defaultStyles.textInputStyle} />
+                                <Ionicons name='location-outline' size={hp(2.4)} />
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+
+
+                </View>
 
 
 
@@ -242,10 +290,23 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
+    modalBoxDatePicker: {
+        width: wp(90),
+        height: Platform.OS === 'ios' ? hp(60) : hp(62),
+        backgroundColor: "white",
+        borderRadius: wp(6),
+        paddingHorizontal: wp(8),
+        paddingVertical: hp(5),
+    },
     modalTitle: {
         fontFamily: "UrbanistBold",
         fontSize: hp(2.8),
         color: '#0A5CA8',
+        marginBottom: hp(1)
+    },
+    modalTitleDate: {
+        fontFamily: "UrbanistBold",
+        fontSize: hp(2.5),
         marginBottom: hp(1)
     },
     modalBtn: {

@@ -4,6 +4,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { BallIndicator } from 'react-native-indicators'
 import { router } from 'expo-router';
 import Animated, { BounceIn, FadeIn } from 'react-native-reanimated';
+import { StatusBar } from 'expo-status-bar';
 export default function index() {
 
     useEffect(() => {
@@ -15,6 +16,7 @@ export default function index() {
 
     return (
         <View style={styles.container}>
+            <StatusBar style='dark' />
             <Animated.View style={styles.top} entering={BounceIn.delay(100).duration(800).springify()}>
                 <Image source={require('@/assets/icons/iweft.png')} resizeMode='contain' style={{ width: wp(60) }} />
             </Animated.View>

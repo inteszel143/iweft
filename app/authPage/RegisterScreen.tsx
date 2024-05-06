@@ -1,17 +1,62 @@
-import { Platform, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
+import { Platform, StyleSheet, Text, TextInput, TouchableOpacity, View, Image, ScrollView, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { Link, router } from 'expo-router'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
-
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 export default function RegisterScreen() {
     const [emailF, setEmailF] = useState(false);
     const [passwordF, setPasswordF] = useState(false);
-    const [check, setCheck] = useState(false);
+    const [check, setCheck] = useState(true);
+    const [showP, setShowP] = useState(true);
+
+    const [loadingBtn, setLoadingBtn] = useState(false);
+
+
     const toggleCheck = () => {
         setCheck(!check);
-    }
+    };
+    const toggleCheckPassword = () => {
+        setShowP(!showP);
+    };
+
+    const handleFocus = () => {
+        setEmailF(true);
+    };
+    const handleBlur = () => {
+        setEmailF(false);
+    };
+    const handleFocusP = () => {
+        setPasswordF(true);
+    };
+    const handleBlurP = () => {
+        setPasswordF(false);
+    };
+
+
+    const schema = yup.object().shape({
+        email: yup.string().email('Invalid email').required('Email is required'),
+        password: yup.string()
+            .required('Password is required')
+            .min(8, 'Password must be at least 8 characters')
+        // .matches(/^(?=.*\d)(?=.*[!@#$%^&*])/, 'Password must contain at least one number and one special character')
+    });
+
+    const { control, handleSubmit, formState: { errors } } = useForm({
+        resolver: yupResolver(schema),
+    });
+
+    const onSubmit = async (data: any) => {
+        setLoadingBtn(true);
+        setTimeout(() => {
+            setLoadingBtn(false);
+            router.push('/authPage/create/ProfileData');
+        }, 2000)
+    };
+
     return (
         <View style={styles.container}>
 
@@ -21,84 +66,148 @@ export default function RegisterScreen() {
                 </TouchableOpacity>
             </View>
 
-            <View style={styles.containerStyle}>
-                <Text style={styles.textStyle}>Create your Account</Text>
 
-                <View style={[styles.textField, { backgroundColor: emailF ? '#0A5CA826' : '#FAFAFA', borderColor: emailF ? '#0A5CA8' : '#FAFAFA' }]} >
-                    <View style={styles.innerField}>
-                        <Ionicons name='mail' size={hp(2.5)} color={emailF ? '#0A5CA8' : '#9E9E9E'} />
-                        <TextInput placeholder='Email' placeholderTextColor={'#d3d3d3'} style={styles.textInputStyle} onFocus={() => setEmailF(true)} onBlur={() => setEmailF(false)} />
+            <ScrollView bounces={false} contentContainerStyle={{ paddingBottom: hp(5) }}>
+                <View style={styles.containerStyle}>
+                    <Text style={styles.textStyle}>Create your Account</Text>
+
+                    <View style={[styles.textField, { backgroundColor: emailF ? '#0A5CA826' : '#FAFAFA', borderColor: emailF ? '#0A5CA8' : '#FAFAFA' }]} >
+                        <View style={styles.innerField}>
+                            <Ionicons name='mail' size={hp(2.5)} color={emailF ? '#0A5CA8' : '#9E9E9E'} />
+                            <Controller
+                                control={control}
+                                rules={{
+                                    required: true,
+                                }}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        onBlur={handleBlur}
+                                        onFocus={handleFocus}
+                                        onChangeText={onChange}
+                                        value={value}
+                                        placeholder='Email'
+                                        keyboardType="email-address"
+                                        autoCapitalize="none"
+                                        autoComplete='email'
+                                        autoCorrect={false}
+                                        placeholderTextColor={'#9E9E9E'}
+                                        style={defaultStyles.textInputStyle}
+                                    />
+                                )}
+                                name="email"
+                            />
+                        </View>
                     </View>
+
+                    {/* Error */}
+                    {errors.email?.message && <View style={styles.errorViewStyle}>
+                        <Ionicons name='alert-circle-outline' size={hp(2.4)} color={'#ED4337'} />
+                        <Text style={styles.errorStyle} >{errors.email?.message}</Text>
+                    </View>}
+
+
+                    <View style={[styles.textField, { backgroundColor: passwordF ? '#0A5CA826' : '#FAFAFA', borderColor: passwordF ? '#0A5CA8' : '#FAFAFA' }]}  >
+                        <View style={styles.innerField}>
+                            <Ionicons name='lock-closed' size={hp(2.5)} color={passwordF ? '#0A5CA8' : '#9E9E9E'} />
+
+                            <Controller
+                                control={control}
+                                rules={{
+                                    required: true,
+                                }}
+                                render={({ field: { onChange, onBlur, value } }) => (
+
+                                    <TextInput
+                                        placeholder='Password'
+                                        onBlur={handleBlurP}
+                                        onFocus={handleFocusP}
+                                        onChangeText={onChange}
+                                        // value={value}
+                                        secureTextEntry={showP}
+                                        placeholderTextColor={'#9E9E9E'}
+                                        style={defaultStyles.textInputStyle}
+                                    />
+                                )}
+                                name="password"
+                            />
+                            <TouchableOpacity onPress={toggleCheckPassword}>
+                                <Ionicons name={showP ? 'eye-off' : 'eye'} size={hp(2.5)} color={passwordF ? '#0A5CA8' : '#9E9E9E'} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+
+                    {/* Error */}
+                    {errors.password?.message && <View style={styles.errorViewStyle}>
+                        <Ionicons name='alert-circle-outline' size={hp(2.4)} color={'#ED4337'} />
+                        <Text style={styles.errorStyle} >{errors.password?.message}</Text>
+                    </View>}
+
+
+
                 </View>
 
-
-                <View style={[styles.textField, { backgroundColor: passwordF ? '#0A5CA826' : '#FAFAFA', borderColor: passwordF ? '#0A5CA8' : '#FAFAFA' }]}  >
-                    <View style={styles.innerField}>
-                        <Ionicons name='mail' size={hp(2.5)} color={passwordF ? '#0A5CA8' : '#9E9E9E'} />
-                        <TextInput placeholder='Password' placeholderTextColor={'#d3d3d3'} style={styles.textInputStyle} onFocus={() => setPasswordF(true)} onBlur={() => setPasswordF(false)} />
-                        <TouchableOpacity>
-                            <Ionicons name='eye-off' size={hp(2.5)} color={passwordF ? '#0A5CA8' : '#9E9E9E'} />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </View>
-
-
-            <TouchableOpacity style={styles.rememberStyle} onPress={toggleCheck}>
-                {check ? <MaterialCommunityIcons name='checkbox-marked-outline' size={hp(2.5)} color={'#0A5CA8'} /> : <MaterialCommunityIcons name='checkbox-blank-outline' size={hp(2.5)} color={'#0A5CA8'} />}
-                <Text style={styles.rememberText}>Remember me</Text>
-            </TouchableOpacity>
+                {/* Remember */}
+                <TouchableOpacity style={styles.rememberStyle} onPress={toggleCheck}>
+                    {check ? <Ionicons name='checkbox' size={hp(2.6)} color={'#0A5CA8'} />
+                        :
+                        <MaterialCommunityIcons name='checkbox-blank-outline' size={hp(2.6)} color={'#0A5CA8'} />}
+                    <Text style={styles.rememberText}>Remember me</Text>
+                </TouchableOpacity>
 
 
 
-            <View style={{ alignItems: 'center', marginTop: hp(4) }}>
-                <Link href={'/authPage/create/ProfileData'} asChild>
-                    <TouchableOpacity style={defaultStyles.footerBtn}>
-                        <Text style={styles.footerText}>Sign up</Text>
+                <View style={{ alignItems: 'center', marginTop: hp(3) }}>
+
+                    <TouchableOpacity style={defaultStyles.footerBtn} onPress={handleSubmit(onSubmit)}>
+                        {loadingBtn ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>Sign up</Text>}
                     </TouchableOpacity>
-                </Link>
 
-                <Link href={'/authPage/forgot/ForgotPassScreen'} asChild>
-                    <TouchableOpacity>
-                        <Text style={styles.forgot}>Forgot the password?</Text>
-                    </TouchableOpacity>
-                </Link>
-            </View>
-
-
-            <View style={styles.orStyle}>
-                <View style={styles.separator} />
-                <Text style={styles.orText}>or continue with</Text>
-                <View style={styles.separator} />
-            </View>
-
-
-            <View style={styles.socialStyle}>
-                <TouchableOpacity style={styles.box}>
-                    <Image source={require('@/assets/temp/authIcons/fb.png')} resizeMode='contain' style={styles.btnImage} />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.box}>
-                    <Image source={require('@/assets/temp/authIcons/google.png')} resizeMode='contain' style={styles.btnImage} />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.box}>
-                    <Image source={require('@/assets/temp/authIcons/apple.png')} resizeMode='contain' style={styles.btnImage} />
-                </TouchableOpacity>
-            </View>
-
-
-
-
-            <View style={styles.footer}>
-                <View style={styles.footerInner}>
-                    <Text style={styles.innerText}>Don’t have an account?</Text>
-                    <Link href={'/authPage/LoginScreen'} asChild>
+                    <Link href={'/authPage/forgot/ForgotPassScreen'} asChild>
                         <TouchableOpacity>
-                            <Text style={styles.signUpText}>Sign in</Text>
+                            <Text style={styles.forgot}>Forgot the password?</Text>
                         </TouchableOpacity>
                     </Link>
-
                 </View>
-            </View>
+
+
+                <View style={styles.orStyle}>
+                    <View style={styles.separator} />
+                    <Text style={styles.orText}>or continue with</Text>
+                    <View style={styles.separator} />
+                </View>
+
+
+                <View style={styles.socialStyle}>
+                    <Link href={'/Undercontruct'} asChild>
+                        <TouchableOpacity style={styles.box}>
+                            <Image source={require('@/assets/temp/authIcons/fb.png')} resizeMode='contain' style={styles.btnImage} />
+                        </TouchableOpacity>
+                    </Link>
+                    <Link href={'/Undercontruct'} asChild>
+                        <TouchableOpacity style={styles.box}>
+                            <Image source={require('@/assets/temp/authIcons/google.png')} resizeMode='contain' style={styles.btnImage} />
+                        </TouchableOpacity>
+                    </Link>
+                    <Link href={'/Undercontruct'} asChild>
+                        <TouchableOpacity style={styles.box}>
+                            <Image source={require('@/assets/temp/authIcons/apple.png')} resizeMode='contain' style={styles.btnImage} />
+                        </TouchableOpacity>
+                    </Link>
+                </View>
+
+                <View style={{ alignItems: 'center' }}>
+                    <View style={styles.footerInner}>
+                        <Text style={styles.innerText}>Already have an account?</Text>
+                        <Link href={'/authPage/LoginScreen'} asChild>
+                            <TouchableOpacity>
+                                <Text style={styles.signUpText}>Sign in</Text>
+                            </TouchableOpacity>
+                        </Link>
+
+                    </View>
+                </View>
+            </ScrollView>
         </View >
     )
 }
@@ -164,7 +273,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: wp(6),
         alignSelf: 'center',
-        marginTop: hp(5),
+        marginTop: hp(3),
     },
     btnImage: {
         width: wp(5),
@@ -185,22 +294,6 @@ const styles = StyleSheet.create({
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     orStyle: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -214,7 +307,7 @@ const styles = StyleSheet.create({
         color: '#616161'
     },
     separator: {
-        width: wp(36),
+        width: wp(25),
         height: 1,
         backgroundColor: '#EEEEEE'
     },
@@ -255,5 +348,17 @@ const styles = StyleSheet.create({
         fontFamily: 'UrbanistBold',
         fontSize: hp(1.8),
         color: '#0A5CA8'
+    },
+    errorStyle: {
+        flex: 1,
+        fontFamily: 'UrbanistRegular',
+        fontSize: hp(1.8),
+        color: "#ED4337"
+    },
+    errorViewStyle: {
+        marginTop: 10,
+        flexDirection: 'row',
+        // alignItems: 'center',
+        gap: 10
     }
 })
