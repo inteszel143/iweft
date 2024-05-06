@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
 
     containerStyle: {
         paddingHorizontal: wp(5),
-        marginTop: hp(4),
+        marginTop: hp(3),
     },
     textStyle: {
         fontFamily: 'UrbanistBold',

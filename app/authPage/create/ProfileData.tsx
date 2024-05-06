@@ -7,10 +7,19 @@ import PhoneInput from "react-native-phone-number-input";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { defaultStyles } from '@/constants/Styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import * as ImagePicker from 'expo-image-picker';
 export default function ProfileData() {
     const phoneInput = useRef<PhoneInput>(null);
     const [value, setValue] = useState("");
     const [formattedValue, setFormattedValue] = useState("");
+    const [image, setImage] = useState<any>(null);
+    // Error
+    const [phoneError, setPhoneError] = useState(false);
+    const [addressError, setAddressError] = useState(false);
+
 
     const [date, setDate] = useState(new Date());
     const [showPicker, setShowPicker] = useState(false);
@@ -20,10 +29,66 @@ export default function ProfileData() {
         setDate(selectedDate);
     };
 
-
     const [modalVisible, setModalVisible] = useState(false);
     const toggleModal = () => {
         setModalVisible(!modalVisible);
+    };
+
+
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+        if (result.canceled === true) {
+            return;
+        }
+        if (!result.canceled) {
+            toggleModal();
+            setImage(result.assets[0].uri);
+        }
+    };
+
+    const openCamera = async () => {
+        let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+        if (permissionResult.granted === false) {
+            alert('Permission to access camera is required!');
+            return;
+        }
+        let pickerResult = await ImagePicker.launchCameraAsync({
+            aspect: [4, 3],
+            quality: 1,
+        });
+        if (pickerResult.canceled === true) {
+            return;
+        }
+        if (!pickerResult.canceled) {
+            toggleModal();
+            setImage(pickerResult?.assets[0].uri);
+        }
+    }
+
+
+    const schema = yup.object().shape({
+        full_name: yup.string().required('Full Name is requred'),
+        n_name: yup.string().required('Nickname is requred'),
+        email: yup.string().email('Invalid email').required('Email is required'),
+    });
+    const { control, handleSubmit, formState: { errors } } = useForm({
+        resolver: yupResolver(schema),
+    });
+
+    const onSubmit = async (data: any) => {
+        if (value === "") {
+            setPhoneError(true);
+        } else {
+            setPhoneError(false);
+            console.log("All trap");
+        }
+        // router.push('/authPage/create/CreateNewPIN');
     };
 
     function ModalProfile() {
@@ -39,19 +104,18 @@ export default function ProfileData() {
                     <View style={styles.modalBox}>
                         <Text style={styles.modalTitle}>Add Profile Picture</Text>
 
-                        <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#0A5CA8' }]}>
+                        <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#0A5CA8' }]} onPress={openCamera}>
                             <Text style={[styles.modalText, { color: '#FFFFFF' }]}>Take Photo</Text>
                         </TouchableOpacity >
 
 
-                        <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#0A5CA8' }]}>
+                        <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#0A5CA8' }]} onPress={pickImage} >
                             <Text style={[styles.modalText, { color: '#FFFFFF' }]}>Choose Photo</Text>
                         </TouchableOpacity>
 
-
-                        <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#F75555' }]}>
+                        {/* <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#F75555' }]}>
                             <Text style={[styles.modalText, { color: '#FFFFFF' }]}>Delete Photo</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
 
                         <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#DAE7F2' }]}
@@ -99,7 +163,12 @@ export default function ProfileData() {
 
 
                 <View style={styles.headerStyle}>
-                    <Image source={require('@/assets/temp/default.jpg')} resizeMode='contain' style={{ width: wp(40), height: hp(16) }} />
+                    {image === null ? <Image source={require('@/assets/temp/default.jpg')} resizeMode='contain' style={{ width: wp(40), height: hp(18) }} />
+                        :
+                        <View style={{ borderRadius: wp(20), width: wp(40), height: wp(40), overflow: 'hidden', backgroundColor: 'white' }}>
+                            <Image source={{ uri: image }} resizeMode='contain' style={{ width: wp(40), height: wp(40) }} />
+                        </View>
+                    }
                     <TouchableOpacity style={styles.editBtn}
                         onPress={toggleModal}
                     >
@@ -112,24 +181,67 @@ export default function ProfileData() {
                     {/* Fullname */}
                     <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
                         <View style={defaultStyles.innerField}>
-                            <TextInput
-                                placeholder='Full Name'
-                                placeholderTextColor={'#9E9E9E'}
-                                style={defaultStyles.textInputStyle}
+                            <Controller
+                                control={control}
+                                rules={{
+                                    required: true,
+                                }}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        onBlur={onBlur}
+                                        // onFocus={handleFocus}
+                                        onChangeText={onChange}
+                                        value={value}
+                                        placeholder='Full Name'
+                                        placeholderTextColor={'#9E9E9E'}
+                                        style={defaultStyles.textInputStyle}
+                                    />
+                                )}
+                                name="full_name"
                             />
                         </View>
                     </View>
 
+                    {/* Error */}
+                    {errors.full_name?.message && <View style={styles.errorViewStyle}>
+                        <Ionicons name='alert-circle-outline' size={hp(2.4)} color={'#ED4337'} />
+                        <Text style={styles.errorStyle} >{errors.full_name?.message}</Text>
+                    </View>}
+
+
+
                     {/* Nickname */}
                     <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
                         <View style={defaultStyles.innerField}>
-                            <TextInput
-                                placeholder='Nickname'
-                                placeholderTextColor={'#9E9E9E'}
-                                style={defaultStyles.textInputStyle}
+                            <Controller
+                                control={control}
+                                rules={{
+                                    required: true,
+                                }}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        onBlur={onBlur}
+                                        // onFocus={handleFocus}
+                                        onChangeText={onChange}
+                                        value={value}
+                                        placeholder='Nickname'
+                                        placeholderTextColor={'#9E9E9E'}
+                                        style={defaultStyles.textInputStyle}
+                                    />
+                                )}
+                                name="n_name"
                             />
                         </View>
                     </View>
+
+
+                    {/* Error */}
+                    {errors.n_name?.message && <View style={styles.errorViewStyle}>
+                        <Ionicons name='alert-circle-outline' size={hp(2.4)} color={'#ED4337'} />
+                        <Text style={styles.errorStyle} >{errors.n_name?.message}</Text>
+                    </View>}
+
+
                     {/* DateofBirth */}
                     <TouchableOpacity onPress={() => setShowPicker(true)} >
                         <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
@@ -151,17 +263,46 @@ export default function ProfileData() {
                         </View>
                     </TouchableOpacity>
 
+
                     {/* Email */}
                     <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
                         <View style={defaultStyles.innerField}>
-                            <TextInput
+                            {/* <TextInput
                                 placeholder='Email'
                                 placeholderTextColor={'#9E9E9E'}
                                 style={defaultStyles.textInputStyle}
+                            /> */}
+                            <Controller
+                                control={control}
+                                rules={{
+                                    required: true,
+                                }}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        onBlur={onBlur}
+                                        // onFocus={handleFocus}
+                                        onChangeText={onChange}
+                                        value={value}
+                                        placeholder='Email'
+                                        keyboardType="email-address"
+                                        autoCapitalize="none"
+                                        autoComplete='email'
+                                        autoCorrect={false}
+                                        placeholderTextColor={'#9E9E9E'}
+                                        style={defaultStyles.textInputStyle}
+                                    />
+                                )}
+                                name="email"
                             />
                             <Ionicons name='mail-outline' size={hp(2.4)} />
                         </View>
                     </View>
+
+                    {/* Error */}
+                    {errors.email?.message && <View style={styles.errorViewStyle}>
+                        <Ionicons name='alert-circle-outline' size={hp(2.4)} color={'#ED4337'} />
+                        <Text style={styles.errorStyle} >{errors.email?.message}</Text>
+                    </View>}
 
 
                     {/* Phone */}
@@ -184,43 +325,33 @@ export default function ProfileData() {
                         />
                     </View>
 
+                    {/* Error */}
+                    {phoneError && <View style={styles.errorViewStyle}>
+                        <Ionicons name='alert-circle-outline' size={hp(2.4)} color={'#ED4337'} />
+                        <Text style={styles.errorStyle} >Phone number is required</Text>
+                    </View>}
+
 
                     {/* Location */}
-                    <TouchableOpacity onPress={() => router.push('/authPage/create/YourAddress')}>
-                        <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
-                            <View style={defaultStyles.innerField}>
-                                <TextInput
-                                    placeholder='Address'
-                                    placeholderTextColor={'#9E9E9E'}
-                                    editable={false}
-                                    style={defaultStyles.textInputStyle} />
-                                <Ionicons name='location-outline' size={hp(2.4)} />
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-
-
-                </View>
-
-
-
-
-
-
-                <View style={styles.footer} >
-                    <Link href={'/authPage/create/CreateNewPIN'} asChild>
-                        <TouchableOpacity style={styles.footerBtn}>
-                            <Text style={styles.footerText}>Continue</Text>
+                    <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
+                        <TouchableOpacity style={[defaultStyles.innerField]}
+                            onPress={() => router.push('/authPage/create/YourAddress')}>
+                            <Text style={[defaultStyles.textInputStyle, { color: "#9E9E9E" }]}>Address</Text>
+                            <Ionicons name='location-outline' size={hp(2.4)} />
                         </TouchableOpacity>
-                    </Link>
+                    </View>
+
+
                 </View>
-
-
             </KeyboardAwareScrollView >
+            <View style={styles.footer} >
+                <TouchableOpacity style={defaultStyles.footerBtn} onPress={handleSubmit(onSubmit)}>
+                    <Text style={styles.footerText}>Continue</Text>
+                </TouchableOpacity>
+            </View>
 
 
-
-        </View>
+        </View >
     )
 }
 
@@ -284,7 +415,7 @@ const styles = StyleSheet.create({
     },
     modalBox: {
         width: wp(86),
-        height: Platform.OS === 'ios' ? hp(48) : hp(50),
+        height: Platform.OS === 'ios' ? hp(42) : hp(44),
         backgroundColor: "white",
         borderRadius: wp(6),
         alignItems: 'center',
@@ -348,21 +479,25 @@ const styles = StyleSheet.create({
 
 
     footer: {
-        marginTop: hp(4),
+        marginBottom: hp(4),
         alignItems: 'center'
-    },
-    footerBtn: {
-        width: wp(90),
-        height: hp(7),
-        borderRadius: wp(10),
-        backgroundColor: '#0A5CA8',
-        alignItems: 'center',
-        justifyContent: 'center'
     },
     footerText: {
         fontFamily: 'UrbanistBold',
         fontSize: hp(2),
         color: '#FFFFFF'
+    },
+    errorStyle: {
+        flex: 1,
+        fontFamily: 'UrbanistRegular',
+        fontSize: hp(1.8),
+        color: "#ED4337"
+    },
+    errorViewStyle: {
+        marginTop: 10,
+        flexDirection: 'row',
+        gap: 10,
+        paddingHorizontal: wp(6),
     }
 });
 

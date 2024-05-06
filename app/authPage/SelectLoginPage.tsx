@@ -3,6 +3,9 @@ import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link } from 'expo-router';
 import { defaultStyles } from '@/constants/Styles';
+import AppleSigninSelect from '@/components/social/AppleSigninSelect';
+import GoogleSigninSelect from '@/components/social/GoogleSigninSelect';
+import FacebookSigninSelect from '@/components/social/FacebookSigninSelect';
 export default function SelectLoginPage() {
     return (
         <View style={styles.container}>
@@ -11,31 +14,9 @@ export default function SelectLoginPage() {
             </View>
 
             <View style={styles.midStyle}>
-
-                <Link href={'/Undercontruct'} asChild>
-                    <TouchableOpacity style={styles.btnStyle}>
-                        <View style={styles.btnInner}>
-                            <Image source={require('@/assets/temp/authIcons/fb.png')} resizeMode='contain' style={styles.btnImage} />
-                            <Text style={styles.btnText}>Continue with Facebook</Text>
-                        </View>
-                    </TouchableOpacity>
-                </Link>
-                <Link href={'/Undercontruct'} asChild>
-                    <TouchableOpacity style={styles.btnStyle}>
-                        <View style={styles.btnInner}>
-                            <Image source={require('@/assets/temp/authIcons/google.png')} resizeMode='contain' style={styles.btnImage} />
-                            <Text style={styles.btnText}>Continue with Google</Text>
-                        </View>
-                    </TouchableOpacity>
-                </Link>
-                <Link href={'/Undercontruct'} asChild>
-                    <TouchableOpacity style={styles.btnStyle}>
-                        <View style={styles.btnInner}>
-                            <Image source={require('@/assets/temp/authIcons/apple.png')} resizeMode='contain' style={styles.btnImage} />
-                            <Text style={styles.btnText}>Continue with Apple</Text>
-                        </View>
-                    </TouchableOpacity>
-                </Link>
+                <FacebookSigninSelect />
+                <GoogleSigninSelect />
+                <AppleSigninSelect />
             </View>
 
 
