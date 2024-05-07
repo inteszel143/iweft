@@ -1,13 +1,12 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
-import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin'
-
-export default function GoogleSigninSelect() {
+import { GoogleSignin } from '@react-native-google-signin/google-signin'
+export default function GooleIcon() {
 
     const [error, setError] = useState<any>(null);
     const [userInfo, setUserInfo] = useState<any>();
+
 
     const configureGoogleSignIn = () => {
         GoogleSignin.configure({
@@ -23,7 +22,6 @@ export default function GoogleSigninSelect() {
         configureGoogleSignIn();
     });
 
-
     const signIn = async () => {
         try {
             await GoogleSignin.hasPlayServices();
@@ -38,37 +36,22 @@ export default function GoogleSigninSelect() {
 
     return (
         <View>
-            <TouchableOpacity style={styles.btnStyle} onPress={signIn}>
-                <View style={styles.btnInner}>
-                    <Image source={require('@/assets/temp/authIcons/google.png')} resizeMode='contain' style={styles.btnImage} />
-                    <Text style={styles.btnText}>Continue with Google</Text>
-                </View>
+            <TouchableOpacity style={styles.box} onPress={signIn}>
+                <Image source={require('@/assets/temp/authIcons/google.png')} resizeMode='contain' style={styles.btnImage} />
             </TouchableOpacity>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    btnStyle: {
-        width: wp(90),
-        height: hp(7.5),
+    box: {
+        width: wp(22),
+        height: hp(7),
         borderWidth: 1,
-        borderColor: '#EEEEEE',
+        borderColor: "#EEEEEE",
         borderRadius: wp(4),
-        justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: wp(5),
-        marginTop: hp(2)
-    },
-    btnText: {
-        fontFamily: 'UrbanistBold',
-        fontSize: hp(2),
-        color: '#212121'
-    },
-    btnInner: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: wp(4)
+        justifyContent: 'center'
     },
     btnImage: {
         width: wp(5),

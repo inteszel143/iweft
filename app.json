@@ -21,7 +21,14 @@
       },
       "bundleIdentifier": "com.paras23.iweft",
       "infoPlist": {
-        "NSCalendarsUsageDescription": "This app needs access to your calendar to schedule events and reminders."
+        "NSCalendarsUsageDescription": "This app needs access to your calendar to schedule events and reminders.",
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.1074449350724-ftu4aip9qs5tj8p3kr3agt0cidekbpak"
+            ]
+          }
+        ]
       }
     },
     "android": {
@@ -67,7 +74,26 @@
           "launchModeExperimental": "most-recent"
         }
       ],
-      ["expo-apple-authentication"]
+      ["expo-apple-authentication"],
+      [
+        "expo-tracking-transparency",
+        {
+          "userTrackingPermission": "This identifier will be used to deliver personalized ads to you."
+        }
+      ],
+      [
+        "react-native-fbsdk-next",
+        {
+          "appID": "1518615575408915",
+          "clientToken": "fde73919bc269ef295f20308f3725012",
+          "displayName": "iWeft",
+          "scheme": "fb1518615575408915",
+          "advertiserIDCollectionEnabled": false,
+          "autoLogAppEventsEnabled": false,
+          "isAutoInitEnabled": true,
+          "iosUserTrackingPermission": "This identifier will be used to deliver personalized ads to you."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

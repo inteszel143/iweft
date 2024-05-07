@@ -7,6 +7,9 @@ import { defaultStyles } from '@/constants/Styles';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import AppleIcon from '@/components/social/AppleIcon';
+import GooleIcon from '@/components/social/GooleIcon';
+import FacebookIcon from '@/components/social/FacebookIcon';
 
 export default function LoginScreen() {
     const [emailF, setEmailF] = useState(false);
@@ -180,21 +183,9 @@ export default function LoginScreen() {
 
 
                 <View style={styles.socialStyle}>
-                    <Link href={'/Undercontruct'} asChild>
-                        <TouchableOpacity style={styles.box}>
-                            <Image source={require('@/assets/temp/authIcons/fb.png')} resizeMode='contain' style={styles.btnImage} />
-                        </TouchableOpacity>
-                    </Link>
-                    <Link href={'/Undercontruct'} asChild>
-                        <TouchableOpacity style={styles.box}>
-                            <Image source={require('@/assets/temp/authIcons/google.png')} resizeMode='contain' style={styles.btnImage} />
-                        </TouchableOpacity>
-                    </Link>
-                    <Link href={'/Undercontruct'} asChild>
-                        <TouchableOpacity style={styles.box}>
-                            <Image source={require('@/assets/temp/authIcons/apple.png')} resizeMode='contain' style={styles.btnImage} />
-                        </TouchableOpacity>
-                    </Link>
+                    <FacebookIcon />
+                    <GooleIcon />
+                    <AppleIcon />
                 </View>
 
                 <View style={{ alignItems: 'center' }}>

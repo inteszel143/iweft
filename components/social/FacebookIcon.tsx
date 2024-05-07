@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, Platform } from 'react-native'
-import React, { useEffect } from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Image, Platform } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
-import { AccessToken, AuthenticationToken, GraphRequest, GraphRequestManager, LoginButton, LoginManager, Settings, Profile } from 'react-native-fbsdk-next'
-export default function FacebookSigninSelect() {
+import { AccessToken, LoginManager, Settings, Profile } from 'react-native-fbsdk-next'
+export default function FacebookIcon() {
 
     useEffect(() => {
         const requestTracking = async () => {
@@ -16,6 +16,7 @@ export default function FacebookSigninSelect() {
         };
         requestTracking();
     }, []);
+
 
     const login = async () => {
         try {
@@ -55,50 +56,29 @@ export default function FacebookSigninSelect() {
         } catch (error) {
             console.log(error);
         }
-    }
+    };
+
+
+
 
     return (
         <View>
-            <TouchableOpacity style={styles.btnStyle} onPress={login}>
-                <View style={styles.btnInner}>
-                    <Image source={require('@/assets/temp/authIcons/fb.png')} resizeMode='contain' style={styles.btnImage} />
-                    <Text style={styles.btnText}>Continue with Facebook</Text>
-                </View>
+            <TouchableOpacity style={styles.box} onPress={login}>
+                <Image source={require('@/assets/temp/authIcons/fb.png')} resizeMode='contain' style={styles.btnImage} />
             </TouchableOpacity>
-            {/* <LoginButton onLogoutFinished={() => console.log("Loggout")} onLoginFinished={(error, data) => {
-                console.log(error || data);
-                AccessToken.getCurrentAccessToken().then((data) => console.log(data));
-                const infoReuest = new GraphRequest("/me", null, (error, result) => {
-                    console.log(error || result)
-                });
-                new GraphRequestManager().addRequest(infoReuest).start();
-            }}
-            /> */}
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    btnStyle: {
-        width: wp(90),
-        height: hp(7.5),
+    box: {
+        width: wp(22),
+        height: hp(7),
         borderWidth: 1,
-        borderColor: '#EEEEEE',
+        borderColor: "#EEEEEE",
         borderRadius: wp(4),
-        justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: wp(5),
-        marginTop: hp(2)
-    },
-    btnText: {
-        fontFamily: 'UrbanistBold',
-        fontSize: hp(2),
-        color: '#212121'
-    },
-    btnInner: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: wp(4)
+        justifyContent: 'center'
     },
     btnImage: {
         width: wp(5),

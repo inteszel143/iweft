@@ -1,10 +1,8 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { router } from 'expo-router';
 import * as AppleAuthentication from 'expo-apple-authentication';
-export default function AppleSigninSelect() {
-
+export default function AppleIcon() {
 
     const [appleAuthAvailable, setAppleAvailable] = useState(false);
     useEffect(() => {
@@ -14,6 +12,7 @@ export default function AppleSigninSelect() {
         }
         checkAvailable();
     }, []);
+
 
 
     const login = async () => {
@@ -26,48 +25,31 @@ export default function AppleSigninSelect() {
             });
             console.log(credential);
         } catch (e) {
-            if (e) {
-                return;
-            }
+            console.log(e);
         }
     }
 
 
+
+
     return (
         <View>
-            <TouchableOpacity style={styles.btnStyle} onPress={() => login()}>
-                <View style={styles.btnInner}>
-                    <Image source={require('@/assets/temp/authIcons/apple.png')} resizeMode='contain' style={styles.btnImage} />
-                    <Text style={styles.btnText}>Continue with Apple</Text>
-                </View>
+            <TouchableOpacity style={styles.box} onPress={() => login()}>
+                <Image source={require('@/assets/temp/authIcons/apple.png')} resizeMode='contain' style={styles.btnImage} />
             </TouchableOpacity>
-
-
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    btnStyle: {
-        width: wp(90),
-        height: hp(7.5),
+    box: {
+        width: wp(22),
+        height: hp(7),
         borderWidth: 1,
-        borderColor: '#EEEEEE',
+        borderColor: "#EEEEEE",
         borderRadius: wp(4),
-        justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: wp(5),
-        marginTop: hp(2)
-    },
-    btnText: {
-        fontFamily: 'UrbanistBold',
-        fontSize: hp(2),
-        color: '#212121'
-    },
-    btnInner: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: wp(4)
+        justifyContent: 'center'
     },
     btnImage: {
         width: wp(5),

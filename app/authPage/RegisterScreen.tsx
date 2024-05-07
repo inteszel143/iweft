@@ -7,6 +7,9 @@ import { defaultStyles } from '@/constants/Styles';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import FacebookIcon from '@/components/social/FacebookIcon';
+import GooleIcon from '@/components/social/GooleIcon';
+import AppleIcon from '@/components/social/AppleIcon';
 export default function RegisterScreen() {
     const [emailF, setEmailF] = useState(false);
     const [passwordF, setPasswordF] = useState(false);
@@ -179,21 +182,9 @@ export default function RegisterScreen() {
 
 
                 <View style={styles.socialStyle}>
-                    <Link href={'/Undercontruct'} asChild>
-                        <TouchableOpacity style={styles.box}>
-                            <Image source={require('@/assets/temp/authIcons/fb.png')} resizeMode='contain' style={styles.btnImage} />
-                        </TouchableOpacity>
-                    </Link>
-                    <Link href={'/Undercontruct'} asChild>
-                        <TouchableOpacity style={styles.box}>
-                            <Image source={require('@/assets/temp/authIcons/google.png')} resizeMode='contain' style={styles.btnImage} />
-                        </TouchableOpacity>
-                    </Link>
-                    <Link href={'/Undercontruct'} asChild>
-                        <TouchableOpacity style={styles.box}>
-                            <Image source={require('@/assets/temp/authIcons/apple.png')} resizeMode='contain' style={styles.btnImage} />
-                        </TouchableOpacity>
-                    </Link>
+                    <FacebookIcon />
+                    <GooleIcon />
+                    <AppleIcon />
                 </View>
 
                 <View style={{ alignItems: 'center' }}>
