@@ -1,16 +1,19 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform } from 'react-native'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link, router } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import MapView, { Marker, PROVIDER_GOOGLE, } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Fontisto } from '@expo/vector-icons';
+import { defaultStyles } from '@/constants/Styles';
 
 export default function YourAddress() {
+    const { image, fullName, nickName, dob, email, password, phone } = useLocalSearchParams();
+
     const [location, setLocation] = useState<any>(null);
     const [errorMsg, setErrorMsg] = useState("");
-    const [mapLocation, setMapLocation] = useState([]);
+    const [mapLocation, setMapLocation] = useState<any>([]);
     const [nameAddress, setNameAddress] = useState<any>();
     const [city, setCity] = useState<any>();
     const [street, setStreet] = useState<any>();
@@ -29,7 +32,7 @@ export default function YourAddress() {
             const location = await Location.getCurrentPositionAsync({});
             const { latitude, longitude } = location.coords;
             setLat(latitude);
-            setLong(longitude)
+            setLong(longitude);
         })();
 
     }, []);
@@ -62,6 +65,26 @@ export default function YourAddress() {
         setStreet(userAddress[0].street);
         setCity(userAddress[0].district);
     };
+
+    const onSubmit = async () => {
+        router.push({
+            pathname: '/authPage/create/VerificationCode',
+            params: {
+                image: image,
+                fullName: fullName,
+                nickName: nickName,
+                dob: dob,
+                email: email,
+                password: password,
+                phone: phone,
+                nameAddress: nameAddress,
+                street: street,
+                city: city,
+                latitude: lat,
+                longitude: long,
+            }
+        });
+    }
 
 
     return (
@@ -141,7 +164,7 @@ export default function YourAddress() {
                 </BottomSheetView>
             </BottomSheet>
             <View style={styles.footer}>
-                <TouchableOpacity style={styles.sheetBtn} onPress={() => router.back()}>
+                <TouchableOpacity style={defaultStyles.footerBtn} onPress={onSubmit}>
                     <Text style={styles.sheetText}>Continue</Text>
                 </TouchableOpacity>
             </View>
@@ -256,6 +279,6 @@ const styles = StyleSheet.create({
     sheetText: {
         fontFamily: 'UrbanistBold',
         fontSize: hp(2),
-        color: '#FFFFFF',
+        color: '#FFFFFF'
     }
 })

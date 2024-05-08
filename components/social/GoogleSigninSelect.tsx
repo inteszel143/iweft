@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin'
+import { signInWithGoogle } from '@/apis/socalAuth';
 
 export default function GoogleSigninSelect() {
 
@@ -30,7 +31,8 @@ export default function GoogleSigninSelect() {
             const userInfo = await GoogleSignin.signIn();
             setUserInfo(userInfo);
             setError(null);
-            console.log(userInfo);
+            const data = await signInWithGoogle(userInfo?.user?.email, userInfo?.user?.name, userInfo?.user?.id);
+            console.log(data);
         } catch (e) {
             setError(e);
         }

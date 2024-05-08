@@ -3,11 +3,41 @@ import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { forgot } from '@/constants/home/data';
+import { useUserQuery } from '@/query/fetchAuthQuery';
 
 export default function ForgotPassScreen() {
-
     const [selected, setSelected] = useState(3);
+    const { data, isPending } = useUserQuery();
+
+    const forgot = [
+        {
+            icon: "chatbubble-ellipses",
+            via: "SMS",
+            value: data?.contact_number,
+        },
+        {
+            icon: "mail",
+            via: "Email",
+            value: data?.email,
+        },
+    ];
+
+
+    const onSubmit = async () => {
+        if (selected == 1) {
+            router.push({
+                pathname: '/authPage/forgot/ForgotCode',
+                params: { item: data?.email }
+            })
+        } else {
+            router.push({
+                pathname: '/authPage/forgot/ForgotCode',
+                params: { item: data?.contact_number }
+            })
+        }
+    }
+
+
 
     return (
         <View style={styles.container}>
@@ -35,18 +65,16 @@ export default function ForgotPassScreen() {
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(12) }}>
 
                 <View>
-                    <Image source={require('@/assets/temp/forgot.jpg')} resizeMode='contain' style={{ width: wp(100), height: hp(40) }} />
+                    <Image source={require('@/assets/temp/forgot.jpg')} resizeMode='contain' style={{ width: wp(100), height: hp(35) }} />
                 </View>
 
                 <View style={styles.dataStyle}>
                     <Text style={styles.dataTextStyle} >Select which contact details should we use to reset your password</Text>
                 </View>
 
-
-
                 {
                     forgot.map((item, index) => (
-                        <TouchableOpacity style={[styles.boxStyle, { backgroundColor: selected === index ? '#DAE7F2' : '#FFFFFF' }]} key={index}
+                        <TouchableOpacity style={[styles.boxStyle, { backgroundColor: '#FFFFFF', borderColor: selected === index ? "#0A5CA8" : "#F1F1F1", }]} key={index}
                             onPress={() => setSelected(index)}
                         >
                             <View style={styles.innerBox}>
@@ -66,11 +94,9 @@ export default function ForgotPassScreen() {
             </ScrollView>
 
             <View style={styles.footer}>
-                <Link href={'/authPage/forgot/ForgotCode'} asChild>
-                    <TouchableOpacity style={styles.footerBtn}>
-                        <Text style={styles.footerText}>Continue</Text>
-                    </TouchableOpacity>
-                </Link>
+                <TouchableOpacity style={styles.footerBtn} onPress={onSubmit}>
+                    <Text style={styles.footerText}>Continue</Text>
+                </TouchableOpacity>
             </View>
 
 
@@ -110,7 +136,7 @@ const styles = StyleSheet.create({
 
 
     dataStyle: {
-        paddingHorizontal: wp(5)
+        paddingHorizontal: wp(6)
     },
     dataTextStyle: {
         fontFamily: 'UrbanistRegular',
@@ -122,7 +148,6 @@ const styles = StyleSheet.create({
         height: hp(14),
         borderRadius: wp(4),
         borderWidth: 2,
-        borderColor: "#0A5CA8",
         alignSelf: 'center',
         justifyContent: 'center',
         marginTop: hp(3),

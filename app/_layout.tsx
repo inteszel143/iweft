@@ -9,10 +9,13 @@ import { useEffect } from 'react';
 import { useColorScheme } from '@/components/useColorScheme';
 import HeaderChat from "@/components/inbox/HeaderChat";
 import HeaderCustomerSupport from "@/components/inbox/HeaderCustomerSupport";
+import {
+  QueryClient, QueryClientProvider,
+} from '@tanstack/react-query';
 export {
   ErrorBoundary,
 } from 'expo-router';
-
+const queryClient = new QueryClient();
 export const unstable_settings = {
   initialRouteName: '(tabs)',
 };
@@ -47,7 +50,9 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <RootLayoutNav />
+      <QueryClientProvider client={queryClient}>
+        <RootLayoutNav />
+      </QueryClientProvider>
     </GestureHandlerRootView>
   );
 }
@@ -73,9 +78,11 @@ function RootLayoutNav() {
       <Stack.Screen name="authPage/forgot/ForgotCode" options={{ headerShown: false }} />
       <Stack.Screen name="authPage/forgot/CreateNewPassword" options={{ headerShown: false }} />
 
+
       <Stack.Screen name="authPage/create/ProfileData" options={{ headerShown: false }} />
       <Stack.Screen name="authPage/create/YourAddress" options={{ headerShown: false }} />
       <Stack.Screen name="authPage/create/CreateNewPIN" options={{ headerShown: false }} />
+      <Stack.Screen name="authPage/create/VerificationCode" options={{ headerShown: false }} />
 
 
 

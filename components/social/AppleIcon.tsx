@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import * as AppleAuthentication from 'expo-apple-authentication';
+import { signInWithApple } from '@/apis/socalAuth';
 export default function AppleIcon() {
 
     const [appleAuthAvailable, setAppleAvailable] = useState(false);
@@ -23,11 +24,14 @@ export default function AppleIcon() {
                     AppleAuthentication.AppleAuthenticationScope.EMAIL
                 ]
             });
-            console.log(credential);
+            const response = await signInWithApple(credential?.email, credential?.fullName?.givenName + ' ' + credential?.fullName?.familyName);
+            console.log(response);
         } catch (e) {
-            console.log(e);
+            if (e) {
+                return;
+            }
         }
-    }
+    };
 
 
 

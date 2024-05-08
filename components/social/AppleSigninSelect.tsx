@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router } from 'expo-router';
 import * as AppleAuthentication from 'expo-apple-authentication';
+import { signInWithApple } from '@/apis/socalAuth';
 export default function AppleSigninSelect() {
 
 
@@ -24,13 +25,14 @@ export default function AppleSigninSelect() {
                     AppleAuthentication.AppleAuthenticationScope.EMAIL
                 ]
             });
-            console.log(credential);
+            const response = await signInWithApple(credential?.email, credential?.fullName?.givenName + ' ' + credential?.fullName?.familyName);
+            console.log(response);
         } catch (e) {
             if (e) {
                 return;
             }
         }
-    }
+    };
 
 
     return (
@@ -41,8 +43,6 @@ export default function AppleSigninSelect() {
                     <Text style={styles.btnText}>Continue with Apple</Text>
                 </View>
             </TouchableOpacity>
-
-
         </View>
     )
 }

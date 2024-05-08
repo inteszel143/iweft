@@ -2,7 +2,6 @@ import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform }
 import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 
 import {
     CodeField,
@@ -10,17 +9,49 @@ import {
     useBlurOnFulfill,
     useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
-
-
 const CELL_COUNT = 4;
-export default function ForgotCode() {
-    const { item } = useLocalSearchParams();
+export default function VerificationCode() {
+    const { image,
+        fullName,
+        nickName,
+        dob,
+        email,
+        password,
+        phone,
+        nameAddress,
+        street,
+        city,
+        latitude,
+        longitude } =
+        useLocalSearchParams();
+    const [seconds, setSeconds] = useState(300);
     const [value, setValue] = useState('');
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
         value,
         setValue,
     });
+
+
+    const onSubmit = async () => {
+        router.push({
+            pathname: '/authPage/create/CreateNewPIN',
+            params: {
+                image: image,
+                fullName: fullName,
+                nickName: nickName,
+                dob: dob,
+                email: email,
+                password: password,
+                phone: phone,
+                nameAddress: nameAddress,
+                street: street,
+                city: city,
+                latitude: latitude,
+                longitude: longitude,
+            }
+        });
+    }
 
     return (
         <View style={styles.container}>
@@ -32,7 +63,7 @@ export default function ForgotCode() {
                         <TouchableOpacity onPress={() => router.back()}>
                             <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
                         </TouchableOpacity>
-                        <Text style={styles.bookingText} >Forgot Password</Text>
+                        <Text style={styles.bookingText} >Verification Code</Text>
                     </View>
 
                     <View style={styles.headerRight}>
@@ -47,7 +78,7 @@ export default function ForgotCode() {
 
             <View style={styles.containerStyle}>
 
-                <Text style={styles.titleStyle}>Code has been send to <Text style={{ color: "#0A5CA8" }} >{item.slice(0, 4)}******{item.slice(-3)}</Text> </Text>
+                <Text style={styles.titleStyle}>Code has been send to {phone.slice(0, 4)}******{phone.slice(-3)}</Text>
                 <CodeField
                     ref={ref}
                     {...props}
@@ -76,11 +107,9 @@ export default function ForgotCode() {
             </View>
 
             <View style={styles.BtnStyle}>
-                <Link href={'/authPage/forgot/CreateNewPassword'} asChild>
-                    <TouchableOpacity style={styles.btnBoxStyle}>
-                        <Text style={styles.btnText}>Verify</Text>
-                    </TouchableOpacity>
-                </Link>
+                <TouchableOpacity style={styles.btnBoxStyle} onPress={onSubmit}>
+                    <Text style={styles.btnText}>Verify</Text>
+                </TouchableOpacity>
             </View>
 
 
@@ -152,7 +181,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     focusCell: {
-        width: wp(17),
+        width: wp(16),
         height: wp(16),
         textAlign: 'center',
         justifyContent: 'center',

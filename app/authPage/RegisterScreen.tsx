@@ -56,7 +56,13 @@ export default function RegisterScreen() {
         setLoadingBtn(true);
         setTimeout(() => {
             setLoadingBtn(false);
-            router.push('/authPage/create/ProfileData');
+            router.push({
+                pathname: '/authPage/create/ProfileData',
+                params: {
+                    email: data.email,
+                    password: data.password
+                }
+            });
         }, 2000)
     };
 

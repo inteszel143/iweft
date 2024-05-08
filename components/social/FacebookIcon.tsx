@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
 import { AccessToken, LoginManager, Settings, Profile } from 'react-native-fbsdk-next'
+import { signInWithFacebook } from '@/apis/socalAuth';
 export default function FacebookIcon() {
 
     useEffect(() => {
@@ -35,9 +36,11 @@ export default function FacebookIcon() {
                 // const result = await AuthenticationToken.getAuthenticationTokenIOS();
                 // console.log(result);
                 Profile.getCurrentProfile().then(
-                    function (currentProfile) {
+                    async function (currentProfile) {
                         if (currentProfile) {
-                            console.log(currentProfile);
+                            const data = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
+                            // console.log(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
+                            console.log(data);
                         }
                     }
                 );
@@ -46,9 +49,11 @@ export default function FacebookIcon() {
                 const result = await AccessToken.getCurrentAccessToken();
                 console.log(result);
                 Profile.getCurrentProfile().then(
-                    function (currentProfile) {
+                    async function (currentProfile) {
                         if (currentProfile) {
-                            console.log(currentProfile);
+                            const data = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
+                            // console.log(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
+                            console.log(data);
                         }
                     }
                 );

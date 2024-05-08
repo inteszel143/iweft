@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, Platform, Modal, TextInput } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link, router } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import PhoneInput from "react-native-phone-number-input";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -12,18 +12,19 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import * as ImagePicker from 'expo-image-picker';
 export default function ProfileData() {
+    const { email, password } = useLocalSearchParams(); // email and password
     const phoneInput = useRef<PhoneInput>(null);
     const [value, setValue] = useState("");
-    const [formattedValue, setFormattedValue] = useState("");
-    const [image, setImage] = useState<any>(null);
+    const [formattedValue, setFormattedValue] = useState(""); // Phone data
+    const [image, setImage] = useState<any>(null); // image data
     // Error
     const [phoneError, setPhoneError] = useState(false);
-    const [addressError, setAddressError] = useState(false);
-
-
     const [date, setDate] = useState(new Date());
     const [showPicker, setShowPicker] = useState(false);
+
     const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+    const dateVal = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`; // DOB value
+
     const onChange = (event: any, selectedDate: any) => {
         setShowPicker(false);
         setDate(selectedDate);
@@ -33,8 +34,6 @@ export default function ProfileData() {
     const toggleModal = () => {
         setModalVisible(!modalVisible);
     };
-
-
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -71,24 +70,28 @@ export default function ProfileData() {
         }
     }
 
-
     const schema = yup.object().shape({
         full_name: yup.string().required('Full Name is requred'),
         n_name: yup.string().required('Nickname is requred'),
-        email: yup.string().email('Invalid email').required('Email is required'),
+        email: yup.string().email('Invalid email').required('Email is required').default(email),
     });
     const { control, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(schema),
     });
 
     const onSubmit = async (data: any) => {
-        if (value === "") {
-            setPhoneError(true);
-        } else {
-            setPhoneError(false);
-            console.log("All trap");
-        }
-        // router.push('/authPage/create/CreateNewPIN');
+        router.push({
+            pathname: '/authPage/create/YourAddress',
+            params: {
+                image: image,
+                fullName: data?.full_name,
+                nickName: data?.n_name,
+                dob: dateVal,
+                email: data.email,
+                password: password,
+                phone: formattedValue,
+            }
+        });
     };
 
     function ModalProfile() {
@@ -193,6 +196,7 @@ export default function ProfileData() {
                                         onChangeText={onChange}
                                         value={value}
                                         placeholder='Full Name'
+                                        autoCapitalize='words'
                                         placeholderTextColor={'#9E9E9E'}
                                         style={defaultStyles.textInputStyle}
                                     />
@@ -267,11 +271,6 @@ export default function ProfileData() {
                     {/* Email */}
                     <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
                         <View style={defaultStyles.innerField}>
-                            {/* <TextInput
-                                placeholder='Email'
-                                placeholderTextColor={'#9E9E9E'}
-                                style={defaultStyles.textInputStyle}
-                            /> */}
                             <Controller
                                 control={control}
                                 rules={{
@@ -280,7 +279,7 @@ export default function ProfileData() {
                                 render={({ field: { onChange, onBlur, value } }) => (
                                     <TextInput
                                         onBlur={onBlur}
-                                        // onFocus={handleFocus}
+                                        defaultValue={email}
                                         onChangeText={onChange}
                                         value={value}
                                         placeholder='Email'
@@ -335,7 +334,8 @@ export default function ProfileData() {
                     {/* Location */}
                     <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
                         <TouchableOpacity style={[defaultStyles.innerField]}
-                            onPress={() => router.push('/authPage/create/YourAddress')}>
+                            disabled={!value || image === null ? true : false}
+                            onPress={handleSubmit(onSubmit)}>
                             <Text style={[defaultStyles.textInputStyle, { color: "#9E9E9E" }]}>Address</Text>
                             <Ionicons name='location-outline' size={hp(2.4)} />
                         </TouchableOpacity>
@@ -345,7 +345,12 @@ export default function ProfileData() {
                 </View>
             </KeyboardAwareScrollView >
             <View style={styles.footer} >
-                <TouchableOpacity style={defaultStyles.footerBtn} onPress={handleSubmit(onSubmit)}>
+                <TouchableOpacity style={[styles.footerBtn, { backgroundColor: "#DADADA" }]}
+                    // disabled={!value || image === null ? true : false}
+                    disabled
+                    onPress={handleSubmit(onSubmit)}
+
+                >
                     <Text style={styles.footerText}>Continue</Text>
                 </TouchableOpacity>
             </View>
@@ -498,7 +503,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         gap: 10,
         paddingHorizontal: wp(6),
-    }
+    },
+    footerBtn: {
+        width: wp(88),
+        height: hp(7),
+        borderRadius: wp(10),
+        alignItems: "center",
+        justifyContent: "center",
+    },
 });
 
 

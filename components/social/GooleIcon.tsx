@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
+import { signInWithGoogle } from '@/apis/socalAuth';
 export default function GooleIcon() {
 
     const [error, setError] = useState<any>(null);
@@ -28,7 +29,8 @@ export default function GooleIcon() {
             const userInfo = await GoogleSignin.signIn();
             setUserInfo(userInfo);
             setError(null);
-            console.log(userInfo);
+            const data = await signInWithGoogle(userInfo?.user?.email, userInfo?.user?.name, userInfo?.user?.id);
+            console.log(data);
         } catch (e) {
             setError(e);
         }

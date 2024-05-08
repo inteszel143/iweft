@@ -64,7 +64,8 @@
     "react-native-switch": "^1.5.1",
     "react-native-tab-view": "^3.5.2",
     "react-native-web": "^0.19.11",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "expo-secure-store": "~12.8.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

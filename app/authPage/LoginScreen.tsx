@@ -10,6 +10,7 @@ import * as yup from 'yup';
 import AppleIcon from '@/components/social/AppleIcon';
 import GooleIcon from '@/components/social/GooleIcon';
 import FacebookIcon from '@/components/social/FacebookIcon';
+import { manualLogin } from '@/apis/auth';
 
 export default function LoginScreen() {
     const [emailF, setEmailF] = useState(false);
@@ -39,7 +40,6 @@ export default function LoginScreen() {
         setPasswordF(false);
     };
 
-
     const schema = yup.object().shape({
         email: yup.string().email('Invalid email').required('Email is required'),
         password: yup.string()
@@ -55,10 +55,17 @@ export default function LoginScreen() {
 
     const onSubmit = async (data: any) => {
         setLoadingBtn(true);
-        setTimeout(() => {
+        try {
+            const response = await manualLogin(data.email, data.password);
+            // console.log(response);
+            setTimeout(() => {
+                setLoadingBtn(false);
+                router.push('/(tabs)/');
+            }, 2000)
+        } catch (error) {
+            console.log('YAWA')
             setLoadingBtn(false);
-            router.push('/(tabs)/');
-        }, 2000)
+        }
     };
 
     return (
@@ -66,7 +73,7 @@ export default function LoginScreen() {
 
 
             <View style={styles.headerBack}>
-                <TouchableOpacity onPress={() => router.back()}>
+                <TouchableOpacity onPress={() => router.push('/authPage/SelectLoginPage')}>
                     <AntDesign name='arrowleft' size={hp(3)} />
                 </TouchableOpacity>
             </View>

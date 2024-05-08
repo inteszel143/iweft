@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Platform, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import {
     CodeField,
     Cursor,
@@ -9,35 +9,42 @@ import {
     useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
 import { Octicons } from '@expo/vector-icons';
-import ChangePasswordSuccessModal from '@/components/ChangePasswordSuccessModal';
+import CreateNewUserSucess from '@/components/CreateNewUserSucess';
+import { manualSignin } from '@/apis/auth';
+import { number, string } from 'yup';
 interface CellProps {
     index: number;
     symbol: string;
     isFocused: boolean;
 }
+
 export default function CreateNewPIN() {
+    const { image,
+        fullName,
+        nickName,
+        dob,
+        email,
+        password,
+        phone,
+        nameAddress,
+        street,
+        city,
+        latitude,
+        longitude } =
+        useLocalSearchParams();
+
     const [modalVisible, setModalVisible] = useState(false);
     const [btnLoading, setBtnLoading] = useState(false);
-
-
-    const toggleModal = () => {
-        setBtnLoading(true);
-        setTimeout(() => {
-            setBtnLoading(false);
-            setModalVisible(true);
-        }, 2000);
-    }
 
     const CELL_COUNT = 4;
 
     const [enableMask, setEnableMask] = useState(true);
-    const [value, setValue] = useState('');
+    const [value, setValue] = useState(''); // pin data
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
         value,
         setValue,
     });
-
 
     const toggleMask = () => setEnableMask((f) => !f);
     const renderCell = ({ index, symbol, isFocused }: CellProps) => {
@@ -60,11 +67,45 @@ export default function CreateNewPIN() {
     };
 
 
+    const toggleModal = async () => {
+        setBtnLoading(true);
+        const formData = new FormData();
+        const pin = parseInt(value);
+        try {
+            // formData.append("email", email as string);
+            // formData.append("fullname", fullName as string);
+            // formData.append("nickname", nickName as string);
+            // formData.append("password", password as string);
+            // formData.append("contact_number", phone as string);
+            // formData.append("address", nameAddress as string);
+            // formData.append("apartment_number", street as string);
+            // formData.append("city", city as string);
+            // formData.append("pin", pin as number);
+            // formData.append("latitude", latitude as number);
+            // formData.append("longitude", longitude as number);
+            // // FEATURE IMAGE
+            // const filename = image.split("/").pop();
+            // const fileType = filename.split('.').pop();
+            // formData.append("profile_picture", {
+            //     uri: image,
+            //     name: filename,
+            //     type: `image/${fileType}`,
+            // });
+            // formData.append("dob", dob as Date);
+            // const response = await manualSignin(formData);
+            setTimeout(() => {
+                setBtnLoading(false);
+                setModalVisible(true);
+            }, 2000);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
         <View style={styles.container}>
 
-            {modalVisible && <ChangePasswordSuccessModal modalVisible={modalVisible} setModalVisible={setModalVisible} />}
+            {modalVisible && <CreateNewUserSucess modalVisible={modalVisible} setModalVisible={setModalVisible} />}
 
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
@@ -185,7 +226,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     focusCell: {
-        width: wp(16),
+        width: wp(17),
         height: wp(16),
         textAlign: 'center',
         justifyContent: 'center',
