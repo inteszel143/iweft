@@ -1,14 +1,15 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useUserQuery } from '@/query/fetchAuthQuery';
+import { forgotPasswordEmail } from '@/apis/forgot';
 
 export default function ForgotPassScreen() {
     const [selected, setSelected] = useState(3);
     const { data, isPending } = useUserQuery();
-
+    const [loadingBtn, setLoadingBtn] = useState(false);
     const forgot = [
         {
             icon: "chatbubble-ellipses",
@@ -24,11 +25,14 @@ export default function ForgotPassScreen() {
 
 
     const onSubmit = async () => {
+        setLoadingBtn(true);
         if (selected == 1) {
+            const response = await forgotPasswordEmail(data?.email);
             router.push({
                 pathname: '/authPage/forgot/ForgotCode',
                 params: { item: data?.email }
-            })
+            });
+            setLoadingBtn(false);
         } else {
             router.push({
                 pathname: '/authPage/forgot/ForgotCode',
@@ -95,7 +99,7 @@ export default function ForgotPassScreen() {
 
             <View style={styles.footer}>
                 <TouchableOpacity style={styles.footerBtn} onPress={onSubmit}>
-                    <Text style={styles.footerText}>Continue</Text>
+                    {loadingBtn ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>Continue</Text>}
                 </TouchableOpacity>
             </View>
 

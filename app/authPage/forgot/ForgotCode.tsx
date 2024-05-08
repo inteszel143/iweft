@@ -1,18 +1,16 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-
 import {
     CodeField,
     Cursor,
     useBlurOnFulfill,
     useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
-
-
+import { verifyEmailCode } from '@/apis/forgot';
 const CELL_COUNT = 4;
+
 export default function ForgotCode() {
     const { item } = useLocalSearchParams();
     const [value, setValue] = useState('');
@@ -22,19 +20,27 @@ export default function ForgotCode() {
         setValue,
     });
 
+    const onSubmit = async () => {
+        const code = parseInt(value);
+        const response = await verifyEmailCode(item as string, code);
+        if (response?.isMatch) {
+            router.push('/authPage/forgot/CreateNewPassword');
+        } else {
+            return;
+        }
+    }
+
     return (
         <View style={styles.container}>
 
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
-
                     <View style={styles.headerLeft}>
                         <TouchableOpacity onPress={() => router.back()}>
                             <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
                         </TouchableOpacity>
                         <Text style={styles.bookingText} >Forgot Password</Text>
                     </View>
-
                     <View style={styles.headerRight}>
                         <TouchableOpacity>
                             <Image source={require('@/assets/icons/bookingMenu.png')} resizeMode='contain' style={{ width: wp(7.5), tintColor: 'white' }} />
@@ -44,9 +50,7 @@ export default function ForgotCode() {
             </View>
 
 
-
             <View style={styles.containerStyle}>
-
                 <Text style={styles.titleStyle}>Code has been send to <Text style={{ color: "#0A5CA8" }} >{item.slice(0, 4)}******{item.slice(-3)}</Text> </Text>
                 <CodeField
                     ref={ref}
@@ -67,20 +71,29 @@ export default function ForgotCode() {
                         </View>
                     )}
                 />
-
-
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: hp(8) }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: hp(6) }}>
                     <Text style={[styles.titleStyle]}>Didn't receive?</Text>
                     <TouchableOpacity><Text style={[styles.titleStyle, { color: '#0A5CA8' }]}>Resend code</Text></TouchableOpacity>
                 </View>
             </View>
 
+
+
+
             <View style={styles.BtnStyle}>
-                <Link href={'/authPage/forgot/CreateNewPassword'} asChild>
-                    <TouchableOpacity style={styles.btnBoxStyle}>
+                {/* <Link href={'/authPage/forgot/CreateNewPassword'} asChild>
+                    <TouchableOpacity style={[styles.btnBoxStyle, { backgroundColor: '#0A5CA8' }]}
+                        disabled={value.length !== 4 ? true : false}
+                    >
                         <Text style={styles.btnText}>Verify</Text>
                     </TouchableOpacity>
-                </Link>
+                </Link> */}
+                <TouchableOpacity style={[styles.btnBoxStyle, { backgroundColor: value.length !== 4 ? '#DADADA' : '#0A5CA8' }]}
+                    disabled={value.length !== 4 ? true : false}
+                    onPress={onSubmit}
+                >
+                    <Text style={styles.btnText}>Verify</Text>
+                </TouchableOpacity>
             </View>
 
 
@@ -166,7 +179,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     BtnStyle: {
-        marginTop: hp(10),
+        marginTop: hp(8),
         alignItems: 'center'
     },
     btnBoxStyle: {
@@ -175,7 +188,6 @@ const styles = StyleSheet.create({
         borderRadius: wp(10),
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#0A5CA8'
     },
     btnText: {
         fontFamily: 'UrbanistBold',

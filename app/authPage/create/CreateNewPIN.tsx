@@ -72,32 +72,33 @@ export default function CreateNewPIN() {
         const formData = new FormData();
         const pin = parseInt(value);
         try {
-            // formData.append("email", email as string);
-            // formData.append("fullname", fullName as string);
-            // formData.append("nickname", nickName as string);
-            // formData.append("password", password as string);
-            // formData.append("contact_number", phone as string);
-            // formData.append("address", nameAddress as string);
-            // formData.append("apartment_number", street as string);
-            // formData.append("city", city as string);
-            // formData.append("pin", pin as number);
-            // formData.append("latitude", latitude as number);
-            // formData.append("longitude", longitude as number);
-            // // FEATURE IMAGE
-            // const filename = image.split("/").pop();
-            // const fileType = filename.split('.').pop();
-            // formData.append("profile_picture", {
-            //     uri: image,
-            //     name: filename,
-            //     type: `image/${fileType}`,
-            // });
-            // formData.append("dob", dob as Date);
-            // const response = await manualSignin(formData);
+            formData.append("email", email as string);
+            formData.append("fullname", fullName as string);
+            formData.append("nickname", nickName as string);
+            formData.append("password", password as string);
+            formData.append("contact_number", phone as string);
+            formData.append("address", nameAddress as string);
+            formData.append("apartment_number", street as string);
+            formData.append("city", city as string);
+            formData.append("pin", pin as number);
+            formData.append("latitude", latitude as number);
+            formData.append("longitude", longitude as number);
+            // FEATURE IMAGE
+            const filename = image.split("/").pop();
+            const fileType = filename.split('.').pop();
+            formData.append("profile_picture", {
+                uri: image,
+                name: filename,
+                type: `image/${fileType}`,
+            });
+            formData.append("dob", dob as Date);
+            const response = await manualSignin(formData);
             setTimeout(() => {
                 setBtnLoading(false);
                 setModalVisible(true);
             }, 2000);
         } catch (error) {
+            setBtnLoading(false);
             console.log(error);
         }
     }
