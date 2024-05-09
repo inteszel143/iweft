@@ -27,9 +27,17 @@ export default function EmailVerification() {
 
     const onSubmit = async () => {
         const verification_code = parseInt(value);
-        const response = await postVerifyEmailCode(email as string, verification_code);
-        console.log(response);
-    }
+        try {
+            const response = await postVerifyEmailCode(email as string, verification_code as number);
+            console.log(response);
+            router.push({
+                pathname: '/authPage/AfterEmailVerification',
+                params: { email: email }
+            });
+        } catch (error) {
+            console.log('Invalid Code');
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -56,7 +64,7 @@ export default function EmailVerification() {
 
             <View style={styles.containerStyle}>
 
-                <Text style={styles.titleStyle}>Code has been send to {email.slice(0, 4)}********{email.slice(-4)}</Text>
+                <Text style={styles.titleStyle}>Code has been send to <Text style={{ color: "#0A5CA8" }} >{email.slice(0, 4)}******{email.slice(-9)}</Text> </Text>
                 <CodeField
                     ref={ref}
                     {...props}
@@ -78,10 +86,10 @@ export default function EmailVerification() {
                 />
 
 
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: hp(8) }}>
+                {/* <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: hp(8) }}>
                     <Text style={[styles.titleStyle]}>Didn't receive?</Text>
                     <TouchableOpacity><Text style={[styles.titleStyle, { color: '#0A5CA8' }]}>Resend code</Text></TouchableOpacity>
-                </View>
+                </View> */}
             </View>
 
             <View style={styles.BtnStyle}>

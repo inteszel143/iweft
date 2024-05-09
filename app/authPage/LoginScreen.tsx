@@ -12,6 +12,7 @@ import GooleIcon from '@/components/social/GooleIcon';
 import FacebookIcon from '@/components/social/FacebookIcon';
 import { manualLogin } from '@/apis/auth';
 import * as SecureStore from 'expo-secure-store';
+import { getVerifyCheck } from '@/apis/fetchAuth';
 
 export default function LoginScreen() {
     const [emailF, setEmailF] = useState(false);
@@ -60,15 +61,16 @@ export default function LoginScreen() {
             const response = await manualLogin(data.email, data.password);
             await SecureStore.setItemAsync('accessToken', response?.access?.token);
             await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+            const isVerify = await getVerifyCheck(data?.email as string);
             setTimeout(() => {
                 setLoadingBtn(false);
                 router.push({
                     pathname: '/authPage/AfterLogin',
-                    params: { email: data?.email }
+                    params: { email: data?.email, verified: isVerify?.verified }
                 });
-            }, 2000)
+            }, 3000);
         } catch (error) {
-            console.log('YAWA')
+            console.log('Invalid Data');
             setLoadingBtn(false);
         }
     };

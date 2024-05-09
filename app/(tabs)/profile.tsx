@@ -3,10 +3,12 @@ import React from 'react'
 import ProfileTop from '@/components/profile/ProfileTop';
 import ProfileMiddle from '@/components/profile/ProfileMiddle';
 import Logout from '@/components/profile/Logout';
+import ProfileHeader from "@/components/profile/ProfileHeader";
 export default function Page() {
     return (
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 10, }}>
+                <ProfileHeader />
                 <ProfileTop />
                 <View style={styles.separator} />
                 <ProfileMiddle />

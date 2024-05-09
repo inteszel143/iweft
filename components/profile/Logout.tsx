@@ -1,5 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
-import React, { useCallback, useMemo, useRef } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ActivityIndicator } from 'react-native'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Feather } from '@expo/vector-icons';
 import {
@@ -8,15 +8,15 @@ import {
     BottomSheetModalProvider,
     BottomSheetBackdrop,
 } from '@gorhom/bottom-sheet';
-import { Link } from 'expo-router';
-
+import * as SecureStore from 'expo-secure-store';
+import { logoutUser } from '@/apis/auth';
+import { router } from 'expo-router';
 export default function Logout() {
 
-
-
+    const [btnLoading, setBtnLoading] = useState(false);
     // bottomSheet
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-    const snapPoints = useMemo(() => ['25%', '28%'], []);
+    const snapPoints = useMemo(() => ['25%', '26%'], []);
     const renderBackdrop = useCallback(
         (props: any) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1}{...props} />, []
     )
@@ -27,6 +27,19 @@ export default function Logout() {
         // console.log('handleSheetChanges', index);
     }, []);
     // end bottomSheet
+
+    const logout = async () => {
+        setBtnLoading(true);
+        const refreshToken = await SecureStore.getItemAsync('refreshToken');
+        const response = await logoutUser(refreshToken as string);
+        await SecureStore.deleteItemAsync('accessToken');
+        await SecureStore.deleteItemAsync('refreshToken');
+        setTimeout(() => {
+            setBtnLoading(false);
+            bottomSheetModalRef.current?.close();
+            router.push('/authPage/SelectLoginPage');
+        }, 2000);
+    }
 
 
     return (
@@ -59,7 +72,7 @@ export default function Logout() {
                 <BottomSheetView style={styles.contentContainer}>
                     <Text style={styles.bottomSheetIndi}>Logout</Text>
                     <View style={styles.BottomSheetSeparator} />
-                    <View style={{ marginTop: hp(2), paddingHorizontal: wp(10) }}>
+                    <View style={{ marginTop: hp(3), paddingHorizontal: wp(10) }}>
                         <Text style={styles.bottomSheetTitle}>Are you sure you want to log out?</Text>
                     </View>
 
@@ -69,13 +82,12 @@ export default function Logout() {
                         >
                             <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Cancel</Text>
                         </TouchableOpacity>
-                        <Link href={'/authPage/SelectLoginPage'} style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]} asChild>
-                            <TouchableOpacity>
-                                <Text style={[styles.bottomText, { color: "white" }]}>Yes, Logout</Text>
-                            </TouchableOpacity>
-                        </Link>
+                        <TouchableOpacity
+                            style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
+                            onPress={logout}>
+                            {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={[styles.bottomText, { color: "white" }]}>Yes, Logout</Text>}
+                        </TouchableOpacity>
                     </View>
-
 
                 </BottomSheetView>
             </BottomSheetModal>
@@ -142,10 +154,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: wp(3),
-        marginTop: hp(3),
+        marginTop: hp(3.5),
     },
     bottomBtn: {
-        paddingHorizontal: wp(9),
+        width: wp(40),
         height: hp(6),
         alignItems: 'center',
         justifyContent: 'center',
@@ -153,6 +165,6 @@ const styles = StyleSheet.create({
     },
     bottomText: {
         fontFamily: 'UrbanistSemiBold',
-        fontSize: hp(1.8),
+        fontSize: hp(1.9),
     }
 })

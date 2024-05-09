@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
@@ -14,6 +14,7 @@ const CELL_COUNT = 4;
 export default function ForgotCode() {
     const { item } = useLocalSearchParams();
     const [value, setValue] = useState('');
+    const [btnLoading, setBtnLoading] = useState(false);
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
         value,
@@ -21,12 +22,18 @@ export default function ForgotCode() {
     });
 
     const onSubmit = async () => {
+        setBtnLoading(true);
         const code = parseInt(value);
         const response = await verifyEmailCode(item as string, code);
         if (response?.isMatch) {
-            router.push('/authPage/forgot/CreateNewPassword');
+            router.push({
+                pathname: '/authPage/forgot/CreateNewPassword',
+                params: { email: item, code: code }
+            });
+            setBtnLoading(false);
         } else {
-            return;
+            setBtnLoading(false);
+            console.log('Error jud ka');
         }
     }
 
@@ -51,7 +58,7 @@ export default function ForgotCode() {
 
 
             <View style={styles.containerStyle}>
-                <Text style={styles.titleStyle}>Code has been send to <Text style={{ color: "#0A5CA8" }} >{item.slice(0, 4)}******{item.slice(-3)}</Text> </Text>
+                <Text style={styles.titleStyle}>Code has been send to <Text style={{ color: "#0A5CA8" }} >{item.slice(0, 4)}******{item.slice(-9)}</Text> </Text>
                 <CodeField
                     ref={ref}
                     {...props}
@@ -92,7 +99,7 @@ export default function ForgotCode() {
                     disabled={value.length !== 4 ? true : false}
                     onPress={onSubmit}
                 >
-                    <Text style={styles.btnText}>Verify</Text>
+                    {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.btnText}>Verify</Text>}
                 </TouchableOpacity>
             </View>
 

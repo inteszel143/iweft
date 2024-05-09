@@ -14,7 +14,7 @@ export default function ChangePasswordSuccessModal({ modalVisible, setModalVisib
     useEffect(() => {
         const timer = setTimeout(() => {
             setModalVisible(false);
-            router.push('/(tabs)/');
+            router.push('/authPage/LoginScreen');
         }, 3000);
         return () => clearTimeout(timer);
     }, []);
@@ -33,7 +33,7 @@ export default function ChangePasswordSuccessModal({ modalVisible, setModalVisib
                         <Image source={require('@/assets/temp/success.jpg')} resizeMode='contain' style={styles.imageStyle} />
                     </View>
                     <Text style={styles.titleStyle}>Congratulations!</Text>
-                    <Text style={styles.subStyle}>Your account is ready to use. You will be redirected to the Home page in a few seconds..</Text>
+                    <Text style={styles.subStyle}>Your account is ready to use. You will be redirected to the Login page in a few seconds..</Text>
                     <View style={{ marginTop: hp(8) }} />
                     <View style={styles.indicator}>
                         <BallIndicator color="#93C120" size={hp(4)} />

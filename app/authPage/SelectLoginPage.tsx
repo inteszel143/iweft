@@ -10,7 +10,7 @@ export default function SelectLoginPage() {
     return (
         <View style={styles.container}>
             <View style={styles.topImage}>
-                <Image source={require('@/assets/temp/authIcons/topLogin.jpg')} resizeMode='contain' style={{ width: wp(80), height: hp(37) }} />
+                <Image source={require('@/assets/temp/authIcons/topLogin.jpg')} resizeMode='contain' style={{ width: wp(80), height: hp(36) }} />
             </View>
 
             <View style={styles.midStyle}>
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         width: wp(100),
-        height: hp(16),
+        height: hp(17),
         backgroundColor: '#FFFFFF',
         alignItems: 'center'
     },

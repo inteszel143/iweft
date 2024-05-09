@@ -42,6 +42,29 @@ export const manualLogin = async (email: string, password: string) => {
 };
 
 /**
+ * LOGOUT ---------------------------------------------------------
+ */
+
+export const logoutUser = async (refreshToken: string) => {
+  const data = {
+    refreshToken: refreshToken,
+  };
+  try {
+    const response = await axios.post(
+      `${process.env.EXPO_PUBLIC_API_URL}/auth/client/logout`,
+      data,
+      {
+        headers: {},
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(errorRes(error));
+    return Promise.reject(error);
+  }
+};
+
+/**
  * VERIFY EMAIL CODE ---------------------------------------------------------
  *
  */

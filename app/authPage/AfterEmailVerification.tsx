@@ -9,9 +9,6 @@ import {
     useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
 import { Octicons } from '@expo/vector-icons';
-import CreateNewUserSucess from '@/components/CreateNewUserSucess';
-import { manualSignin } from '@/apis/auth';
-import { number, string } from 'yup';
 import { getPinNumber } from '@/apis/fetchAuth';
 
 interface CellProps {
@@ -20,7 +17,7 @@ interface CellProps {
     isFocused: boolean;
 }
 
-export default function PinChecker() {
+export default function AfterEmailVerification() {
     const { email } = useLocalSearchParams();
     const [btnLoading, setBtnLoading] = useState(false);
     const CELL_COUNT = 4;
@@ -51,16 +48,17 @@ export default function PinChecker() {
         );
     };
 
+    useEffect(() => {
+        ref?.current.focus();
+    }, []);
+
     const onSubmit = async () => {
-        setBtnLoading(true);
         const pin = parseInt(value);
         const response = await getPinNumber(pin);
         if (response?.isMatch) {
             router.push('/(tabs)/');
-            setBtnLoading(false);
         } else {
             console.log("Error ka");
-            setBtnLoading(false);
         }
     }
 

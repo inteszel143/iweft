@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform, TextInput, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link, router } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import ChangePasswordSuccessModal from '@/components/ChangePasswordSuccessModal';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -9,9 +9,10 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { defaultStyles } from '@/constants/Styles';
+import { resetPasswordEmail } from '@/apis/forgot';
 
 export default function CreateNewPassword() {
-
+    const { email, code } = useLocalSearchParams();
     const [passwordF, setPasswordF] = useState(false);
     const [passwordFC, setPasswordFC] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
@@ -19,7 +20,6 @@ export default function CreateNewPassword() {
 
     const [showP, setShowP] = useState(true);
     const [showPC, setShowPC] = useState(true);
-
 
     const handleFocusP = () => {
         setPasswordF(true);
@@ -42,15 +42,6 @@ export default function CreateNewPassword() {
         setShowP(!showP);
     };
 
-    const toggleModal = () => {
-        setBtnLoading(true);
-        setTimeout(() => {
-            setBtnLoading(false);
-            setModalVisible(true);
-        }, 2000);
-    };
-
-
     const schema = yup.object().shape({
         new_password: yup.string()
             .required('Password is required')
@@ -68,8 +59,18 @@ export default function CreateNewPassword() {
     });
 
     const onSubmit = async (data: any) => {
-        console.log(data?.new_password);
-        console.log(data?.confirm_password);
+        setBtnLoading(true);
+        const pin = parseInt(code as string);
+        try {
+            await resetPasswordEmail(data?.new_password as string, email as string, pin);
+            setTimeout(() => {
+                setBtnLoading(false);
+                setModalVisible(true);
+            }, 2000);
+        } catch (error) {
+            setBtnLoading(false);
+            console.log("Error ka");
+        }
     };
 
 
@@ -108,7 +109,7 @@ export default function CreateNewPassword() {
                 </View>
 
                 <View style={styles.containerStyle}>
-                    <Text style={[styles.titleStyle, { marginTop: hp(2) }]}>Create Your New Password</Text>
+                    <Text style={[styles.titleStyle, { marginTop: hp(2.5) }]}>Create Your New Password</Text>
 
 
 
@@ -241,10 +242,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: wp(5)
     },
 
-
     titleStyle: {
         fontFamily: 'UrbanistMedium',
-        fontSize: hp(2.1),
+        fontSize: hp(2.2),
         color: '#212121'
     },
     textField: {

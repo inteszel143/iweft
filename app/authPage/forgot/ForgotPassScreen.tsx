@@ -1,47 +1,52 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, ActivityIndicator, Platform, TextInput } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { useUserQuery } from '@/query/fetchAuthQuery';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 import { forgotPasswordEmail } from '@/apis/forgot';
+import { defaultStyles } from '@/constants/Styles';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function ForgotPassScreen() {
     const [selected, setSelected] = useState(3);
-    const { data, isPending } = useUserQuery();
     const [loadingBtn, setLoadingBtn] = useState(false);
-    const forgot = [
-        {
-            icon: "chatbubble-ellipses",
-            via: "SMS",
-            value: data?.contact_number,
-        },
-        {
-            icon: "mail",
-            via: "Email",
-            value: data?.email,
-        },
-    ];
+    const [resetInput, setResetInput] = useState("");
 
-    console.log(data);
+    const schema = yup.object().shape({
+        input: yup.string().required('Email or phone number is required').test('emailOrPhoneNumber', 'Enter a valid email or phone number', function (value) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const phoneRegex = /^(09|\+639)\d{9}$/;
+            const uaePhoneRegex = /^(?:\+971|00971)5[0-9]{8}$/;
+            if (emailRegex.test(value) || phoneRegex.test(value) || uaePhoneRegex.test(value)) {
+                return true; // Input is either an email or a phone number
+            }
+            return false; // Input is neither an email nor a phone number
+        })
+    });
 
-    const onSubmit = async () => {
+    const { control, handleSubmit, formState: { errors } } = useForm({
+        resolver: yupResolver(schema),
+    });
+
+    const onSubmit = async (data: any) => {
         setLoadingBtn(true);
-        if (selected == 1) {
-            const response = await forgotPasswordEmail(data?.email);
-            router.push({
-                pathname: '/authPage/forgot/ForgotCode',
-                params: { item: data?.email }
-            });
+        try {
+            await forgotPasswordEmail(data?.input);
+            setTimeout(() => {
+                setLoadingBtn(false);
+                router.push({
+                    pathname: '/authPage/forgot/ForgotCode',
+                    params: { item: data?.input }
+                });
+            }, 2000);
+        } catch (error) {
             setLoadingBtn(false);
-        } else {
-            router.push({
-                pathname: '/authPage/forgot/ForgotCode',
-                params: { item: data?.contact_number }
-            })
+            console.log("Error ka");
         }
     }
-
 
 
     return (
@@ -67,39 +72,66 @@ export default function ForgotPassScreen() {
 
 
 
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(12) }}>
-
+            <KeyboardAwareScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: Platform.OS === 'android' ? hp(3) : hp(6) }}
+                bounces={false}
+                extraScrollHeight={Platform.OS === 'ios' ? hp(6) : 0}
+            >
                 <View>
-                    <Image source={require('@/assets/temp/forgot.jpg')} resizeMode='contain' style={{ width: wp(100), height: hp(35) }} />
+                    <Image source={require('@/assets/temp/forgot.jpg')} resizeMode='contain' style={{ width: wp(100), height: hp(36) }} />
                 </View>
 
                 <View style={styles.dataStyle}>
-                    <Text style={styles.dataTextStyle} >Select which contact details should we use to reset your password</Text>
+                    <Text style={styles.dataTextStyle} >Please enter your email address or phone number to request a password reset.</Text>
+                </View>
+                <View style={styles.titleStyle}>
+                    <Text style={styles.textTitleStyle} >Email or Phone number</Text>
+                </View>
+                {/* TextInput */}
+                <View style={{ alignItems: 'center', marginTop: hp(1) }}>
+                    <View style={[styles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
+                        <View style={[defaultStyles.innerField, { paddingHorizontal: wp(1) }]}>
+                            <Controller
+                                control={control}
+                                rules={{
+                                    required: true,
+                                }}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        onBlur={onBlur}
+                                        onChangeText={onChange}
+                                        value={value}
+                                        placeholder='Email or Phone number '
+                                        keyboardType="email-address"
+                                        autoCapitalize="none"
+                                        autoComplete='email'
+                                        autoCorrect={false}
+                                        placeholderTextColor={'#9E9E9E'}
+                                        style={defaultStyles.textInputStyle}
+                                    />
+                                )}
+                                name="input"
+                            />
+                            {
+                                errors.input?.message && <Ionicons name='close-sharp' size={hp(2.4)} color={'red'} />
+                            }
+                            {/* <Ionicons name={errors.input?.message ? 'close-sharp' : 'checkmark-sharp'} size={hp(2.4)} color={errors.input?.message ? 'red' : '#93c120'} /> */}
+                        </View>
+                    </View>
                 </View>
 
-                {
-                    forgot.map((item, index) => (
-                        <TouchableOpacity style={[styles.boxStyle, { backgroundColor: '#FFFFFF', borderColor: selected === index ? "#0A5CA8" : "#F1F1F1", }]} key={index}
-                            onPress={() => setSelected(index)}
-                        >
-                            <View style={styles.innerBox}>
-                                <View style={styles.btnStyle}>
-                                    <Ionicons name={item.icon} size={hp(3)} color={'#0a5ca8'} />
-                                </View>
-                                <View>
-                                    <Text style={styles.viaText}>via {item.via}:</Text>
-                                    <Text style={styles.numberStyle}>{item.value}</Text>
-                                </View>
-                            </View>
-                        </TouchableOpacity>
-                    ))
+                {/* Error */}
+                {errors.input?.message && <View style={styles.errorViewStyle}>
+                    <Ionicons name='alert-circle-outline' size={hp(2.4)} color={'#ED4337'} />
+                    <Text style={styles.errorStyle} >{errors.input?.message}</Text>
+                </View>
                 }
 
-
-            </ScrollView>
+            </KeyboardAwareScrollView>
 
             <View style={styles.footer}>
-                <TouchableOpacity style={styles.footerBtn} onPress={onSubmit}>
+                <TouchableOpacity style={defaultStyles.footerBtn} onPress={handleSubmit(onSubmit)}>
                     {loadingBtn ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>Continue</Text>}
                 </TouchableOpacity>
             </View>
@@ -138,15 +170,33 @@ const styles = StyleSheet.create({
         fontFamily: "UrbanistBold",
         fontSize: hp(2.5)
     },
-
-
-    dataStyle: {
+    textField: {
+        width: wp(88),
+        height: hp(7.5),
+        borderRadius: wp(4),
+        justifyContent: "center",
+        paddingHorizontal: wp(5),
+        marginTop: hp(2.5),
+        borderWidth: 1.5,
+    },
+    titleStyle: {
+        marginTop: hp(4),
         paddingHorizontal: wp(6)
     },
+    textTitleStyle: {
+        fontFamily: 'UrbanistBold',
+        fontSize: hp(2.1),
+    },
+
+    dataStyle: {
+        paddingHorizontal: wp(6),
+        marginTop: hp(1),
+    },
     dataTextStyle: {
-        fontFamily: 'UrbanistRegular',
+        fontFamily: 'UrbanistMedium',
         fontSize: hp(2),
-        marginTop: hp(1)
+        marginTop: hp(1),
+
     },
     boxStyle: {
         width: wp(90),
@@ -185,8 +235,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         width: wp(100),
-        height: hp(10),
-        // backgroundColor: '#FFFFFF',
+        height: hp(13),
         alignItems: 'center'
     },
     footerBtn: {
@@ -198,9 +247,27 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     footerText: {
-        fontFamily: "UrbanistBold",
+        fontFamily: 'UrbanistBold',
         fontSize: hp(2),
-        color: '#FFFFFF'
+        color: "#FFFFFF"
+    },
+    errorStyle: {
+        flex: 1,
+        fontFamily: 'UrbanistRegular',
+        fontSize: hp(1.8),
+        color: "#ED4337"
+    },
+    errorViewStyle: {
+        marginTop: 10,
+        flexDirection: 'row',
+        gap: 10,
+        paddingHorizontal: wp(6),
+    },
+    successStyle: {
+        flex: 1,
+        fontFamily: 'UrbanistMedium',
+        fontSize: hp(1.8),
+        color: "#93c120"
     }
 
 })
