@@ -1,10 +1,11 @@
 import axios from "axios";
+import errorRes from "./errorRes";
+import * as SecureStore from "expo-secure-store";
 /**
  * Get User Data ---------------------------------------------------------
  */
 export const getUserData = async () => {
-  const accessToken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjNiNjdkYWViZGI4MWFmNTMwNGRjZGMiLCJpYXQiOjE3MTUxNjk5MDcsImV4cCI6MTcxNTI1NjMwNywidHlwZSI6ImFjY2VzcyJ9.6tfB0t9rnzdehr8LGHnnSAuTV2iuToBXAoHIeIu0GXQ";
+  const accessToken = await SecureStore.getItemAsync("accessToken");
   try {
     const response = await axios.get(
       `${process.env.EXPO_PUBLIC_API_URL}/user/profile`,
@@ -17,6 +18,52 @@ export const getUserData = async () => {
     );
     return response?.data?.user;
   } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+/**
+ * Get USER PIN NUMBER ---------------------------------------------------------
+ */
+export const getPinNumber = async (pin: number) => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  try {
+    const response = await axios.get(
+      `${process.env.EXPO_PUBLIC_API_URL}/auth/client/pin-checker`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          // "Content-Type": "multipart/form-data", // If you need to set content type, uncomment this line
+        },
+        params: {
+          pin: pin,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+/**
+ * VERIFY CHECK ---------------------------------------------------------
+ *
+ */
+
+export const getVerifyCheck = async (email: string) => {
+  try {
+    const response = await axios.get(
+      `${process.env.EXPO_PUBLIC_API_URL}/auth/client/check_verification`,
+      {
+        params: {
+          email: email,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(errorRes(error));
     return Promise.reject(error);
   }
 };

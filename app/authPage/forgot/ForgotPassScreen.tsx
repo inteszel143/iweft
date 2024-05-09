@@ -23,6 +23,7 @@ export default function ForgotPassScreen() {
         },
     ];
 
+    console.log(data);
 
     const onSubmit = async () => {
         setLoadingBtn(true);

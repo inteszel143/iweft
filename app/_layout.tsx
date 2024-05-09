@@ -73,6 +73,7 @@ function RootLayoutNav() {
       <Stack.Screen name="authPage/OnboardingScreen" options={{ headerShown: false, gestureEnabled: false }} />
       <Stack.Screen name="authPage/SelectLoginPage" options={{ headerShown: false, gestureEnabled: false }} />
       <Stack.Screen name="authPage/LoginScreen" options={{ headerShown: false }} />
+      <Stack.Screen name="authPage/AfterLogin" options={{ headerShown: false }} />
       <Stack.Screen name="authPage/RegisterScreen" options={{ headerShown: false }} />
       <Stack.Screen name="authPage/forgot/ForgotPassScreen" options={{ headerShown: false }} />
       <Stack.Screen name="authPage/forgot/ForgotCode" options={{ headerShown: false }} />

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Platform, ActivityIndicator } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router, useLocalSearchParams } from 'expo-router';
 import {
@@ -12,28 +12,16 @@ import { Octicons } from '@expo/vector-icons';
 import CreateNewUserSucess from '@/components/CreateNewUserSucess';
 import { manualSignin } from '@/apis/auth';
 import { number, string } from 'yup';
+import { getPinNumber } from '@/apis/fetchAuth';
+
 interface CellProps {
     index: number;
     symbol: string;
     isFocused: boolean;
 }
 
-export default function CreateNewPIN() {
-    const { image,
-        fullName,
-        nickName,
-        dob,
-        email,
-        password,
-        phone,
-        nameAddress,
-        street,
-        city,
-        latitude,
-        longitude } =
-        useLocalSearchParams();
-
-    const [modalVisible, setModalVisible] = useState(false);
+export default function PinChecker() {
+    const { email } = useLocalSearchParams();
     const [btnLoading, setBtnLoading] = useState(false);
     const CELL_COUNT = 4;
     const [enableMask, setEnableMask] = useState(true);
@@ -63,46 +51,23 @@ export default function CreateNewPIN() {
         );
     };
 
-    const toggleModal = async () => {
-        setBtnLoading(true);
-        const formData = new FormData();
+    useEffect(() => {
+        ref?.current.focus();
+    }, []);
+
+    const onSubmit = async () => {
         const pin = parseInt(value);
-        try {
-            formData.append("email", email as string);
-            formData.append("fullname", fullName as string);
-            formData.append("nickname", nickName as string);
-            formData.append("password", password as string);
-            formData.append("contact_number", phone as string);
-            formData.append("address", nameAddress as string);
-            formData.append("apartment_number", street as string);
-            formData.append("city", city as string);
-            formData.append("pin", pin as number);
-            formData.append("latitude", latitude as number);
-            formData.append("longitude", longitude as number);
-            // FEATURE IMAGE
-            const filename = image.split("/").pop();
-            const fileType = filename.split('.').pop();
-            formData.append("profile_picture", {
-                uri: image,
-                name: filename,
-                type: `image/${fileType}`,
-            });
-            formData.append("dob", dob as Date);
-            const response = await manualSignin(formData);
-            setTimeout(() => {
-                setBtnLoading(false);
-                setModalVisible(true);
-            }, 2000);
-        } catch (error) {
-            setBtnLoading(false);
-            console.log(error);
+        const response = await getPinNumber(pin);
+        if (response?.isMatch) {
+            router.push('/(tabs)/');
+        } else {
+            console.log("Error ka");
         }
     }
 
     return (
         <View style={styles.container}>
 
-            {modalVisible && <CreateNewUserSucess modalVisible={modalVisible} setModalVisible={setModalVisible} />}
 
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
@@ -110,7 +75,7 @@ export default function CreateNewPIN() {
                         <TouchableOpacity onPress={() => router.back()}>
                             <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
                         </TouchableOpacity>
-                        <Text style={styles.bookingText} >Create New PIN</Text>
+                        <Text style={styles.bookingText} >Enter Your PIN</Text>
                     </View>
                 </View>
             </View>
@@ -118,7 +83,7 @@ export default function CreateNewPIN() {
 
             <ScrollView contentContainerStyle={styles.scollviewContainer}>
                 <View>
-                    <Text style={styles.conatinertitle}>Add a PIN number to make your account more secure.</Text>
+                    <Text style={styles.conatinertitle}>Never share your PIN number with anyone.</Text>
                 </View>
                 <CodeField
                     ref={ref}
@@ -133,7 +98,7 @@ export default function CreateNewPIN() {
                 />
                 <TouchableOpacity style={[styles.footerBtn, { backgroundColor: value.length != 4 ? "#DADADA" : "#0A5CA8", }]}
                     disabled={value.length != 4 ? true : false}
-                    onPress={toggleModal}
+                    onPress={onSubmit}
                 >
                     {
                         btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>Continue</Text>

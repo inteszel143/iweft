@@ -2,28 +2,18 @@ import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform }
 import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
-
 import {
     CodeField,
     Cursor,
     useBlurOnFulfill,
     useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
-const CELL_COUNT = 4;
-export default function VerificationCode() {
-    const { image,
-        fullName,
-        nickName,
-        dob,
-        email,
-        password,
-        phone,
-        nameAddress,
-        street,
-        city,
-        latitude,
-        longitude } =
-        useLocalSearchParams();
+import { postVerifyEmailCode } from '@/apis/auth';
+const CELL_COUNT = 6;
+
+
+export default function EmailVerification() {
+    const { email } = useLocalSearchParams();
     const [value, setValue] = useState('');
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -31,25 +21,14 @@ export default function VerificationCode() {
         setValue,
     });
 
+    useEffect(() => {
+        ref?.current.focus();
+    }, []);
 
     const onSubmit = async () => {
-        router.push({
-            pathname: '/authPage/create/CreateNewPIN',
-            params: {
-                image: image,
-                fullName: fullName,
-                nickName: nickName,
-                dob: dob,
-                email: email,
-                password: password,
-                phone: phone,
-                nameAddress: nameAddress,
-                street: street,
-                city: city,
-                latitude: latitude,
-                longitude: longitude,
-            }
-        });
+        const verification_code = parseInt(value);
+        const response = await postVerifyEmailCode(email as string, verification_code);
+        console.log(response);
     }
 
     return (
@@ -62,7 +41,7 @@ export default function VerificationCode() {
                         <TouchableOpacity onPress={() => router.back()}>
                             <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
                         </TouchableOpacity>
-                        <Text style={styles.bookingText} >Verification Code</Text>
+                        <Text style={styles.bookingText} >Email Verification</Text>
                     </View>
 
                     <View style={styles.headerRight}>
@@ -77,7 +56,7 @@ export default function VerificationCode() {
 
             <View style={styles.containerStyle}>
 
-                <Text style={styles.titleStyle}>Code has been send to {phone.slice(0, 4)}******{phone.slice(-3)}</Text>
+                <Text style={styles.titleStyle}>Code has been send to {email.slice(0, 4)}********{email.slice(-4)}</Text>
                 <CodeField
                     ref={ref}
                     {...props}
@@ -106,7 +85,9 @@ export default function VerificationCode() {
             </View>
 
             <View style={styles.BtnStyle}>
-                <TouchableOpacity style={styles.btnBoxStyle} onPress={onSubmit}>
+                <TouchableOpacity style={styles.btnBoxStyle}
+                    onPress={onSubmit}
+                >
                     <Text style={styles.btnText}>Verify</Text>
                 </TouchableOpacity>
             </View>
@@ -159,18 +140,16 @@ const styles = StyleSheet.create({
         color: '#212121'
     },
 
-
-
     root: { flex: 1, padding: 20 },
     title: { textAlign: 'center', fontSize: 30 },
     codeFieldRoot: {
         marginTop: hp(5),
-        gap: wp(4),
+        gap: wp(3),
         marginLeft: 'auto',
         marginRight: 'auto',
     },
     cell: {
-        width: wp(17),
+        width: wp(12),
         height: wp(16),
         borderRadius: wp(4),
         borderWidth: 1,
@@ -180,7 +159,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     focusCell: {
-        width: wp(16),
+        width: wp(12),
         height: wp(16),
         textAlign: 'center',
         justifyContent: 'center',

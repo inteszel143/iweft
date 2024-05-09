@@ -11,6 +11,7 @@ import AppleIcon from '@/components/social/AppleIcon';
 import GooleIcon from '@/components/social/GooleIcon';
 import FacebookIcon from '@/components/social/FacebookIcon';
 import { manualLogin } from '@/apis/auth';
+import * as SecureStore from 'expo-secure-store';
 
 export default function LoginScreen() {
     const [emailF, setEmailF] = useState(false);
@@ -57,10 +58,14 @@ export default function LoginScreen() {
         setLoadingBtn(true);
         try {
             const response = await manualLogin(data.email, data.password);
-            // console.log(response);
+            await SecureStore.setItemAsync('accessToken', response?.access?.token);
+            await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
             setTimeout(() => {
                 setLoadingBtn(false);
-                router.push('/(tabs)/');
+                router.push({
+                    pathname: '/authPage/AfterLogin',
+                    params: { email: data?.email }
+                });
             }, 2000)
         } catch (error) {
             console.log('YAWA')

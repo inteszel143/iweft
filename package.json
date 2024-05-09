@@ -17,7 +17,6 @@
     "@gorhom/bottom-sheet": "^4.6.1",
     "@hookform/resolvers": "^3.3.4",
     "@invertase/react-native-apple-authentication": "^2.3.0",
-    "@react-native-community/datetimepicker": "7.6.1",
     "@react-native-google-signin/google-signin": "^11.0.1",
     "@react-navigation/material-top-tabs": "^6.6.13",
     "@react-navigation/native": "^6.0.2",
@@ -34,6 +33,7 @@
     "expo-linking": "~6.2.2",
     "expo-location": "~16.5.5",
     "expo-router": "~3.4.10",
+    "expo-secure-store": "~12.8.1",
     "expo-splash-screen": "~0.26.5",
     "expo-status-bar": "~1.11.1",
     "expo-system-ui": "~2.9.4",
@@ -64,8 +64,7 @@
     "react-native-switch": "^1.5.1",
     "react-native-tab-view": "^3.5.2",
     "react-native-web": "^0.19.11",
-    "yup": "^1.4.0",
-    "expo-secure-store": "~12.8.1"
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

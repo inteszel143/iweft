@@ -6,13 +6,17 @@ import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import PhoneInput from "react-native-phone-number-input";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { defaultStyles } from '@/constants/Styles';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { Calendar, LocaleConfig } from 'react-native-calendars';
+// import DateTimePicker from '@react-native-community/datetimepicker';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import * as ImagePicker from 'expo-image-picker';
 export default function ProfileData() {
     const { email, password } = useLocalSearchParams(); // email and password
+    const [selected, setSelected] = useState('');
+
+
     const phoneInput = useRef<PhoneInput>(null);
     const [value, setValue] = useState("");
     const [formattedValue, setFormattedValue] = useState(""); // Phone data
@@ -31,9 +35,13 @@ export default function ProfileData() {
     };
 
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalDate, setModalDate] = useState(false);
     const toggleModal = () => {
         setModalVisible(!modalVisible);
     };
+    const toggleModalDate = () => {
+        setModalDate(!modalDate);
+    }
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -110,8 +118,6 @@ export default function ProfileData() {
                         <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#0A5CA8' }]} onPress={openCamera}>
                             <Text style={[styles.modalText, { color: '#FFFFFF' }]}>Take Photo</Text>
                         </TouchableOpacity >
-
-
                         <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#0A5CA8' }]} onPress={pickImage} >
                             <Text style={[styles.modalText, { color: '#FFFFFF' }]}>Choose Photo</Text>
                         </TouchableOpacity>
@@ -119,7 +125,6 @@ export default function ProfileData() {
                         {/* <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#F75555' }]}>
                             <Text style={[styles.modalText, { color: '#FFFFFF' }]}>Delete Photo</Text>
                         </TouchableOpacity> */}
-
 
                         <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#DAE7F2' }]}
                             onPress={toggleModal}
@@ -132,11 +137,41 @@ export default function ProfileData() {
         )
     };
 
+    function ModalDatePicker() {
+        return (
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalDate}
+                presentationStyle='overFullScreen'
+                statusBarTranslucent={true}
+            >
+                <View style={styles.modalStyle}>
+                    <View style={styles.modalBoxDatePicker}>
+                        <Calendar
+                            onMonthChange={(newMonth) => {
+                                console.log('New month:', newMonth);
+                                // You can perform any action you want when the month changes
+                            }}
+                            onDayPress={day => {
+                                setSelected(day.dateString);
+                            }}
+                            markedDates={{
+                                [selected]: { selected: true, disableTouchEvent: true, selectedColor: 'orange' }
+                            }}
+                        />
+                    </View>
+                </View>
+
+            </Modal>
+        )
+    }
+
 
     return (
         <View style={styles.container}>
             {ModalProfile()}
-            {/* {ModalDatePicker()} */}
+            {ModalDatePicker()}
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
 
@@ -247,18 +282,18 @@ export default function ProfileData() {
 
 
                     {/* DateofBirth */}
-                    <TouchableOpacity onPress={() => setShowPicker(true)} >
+                    <TouchableOpacity onPress={toggleModalDate} >
                         <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
                             <View style={defaultStyles.innerField}>
                                 <Text style={[defaultStyles.textInputStyle]} >{formattedDate}</Text>
-                                {showPicker && (
+                                {/* {showPicker && (
                                     <DateTimePicker
                                         value={date}
                                         mode="date"
                                         display="default"
                                         onChange={onChange}
                                     />
-                                )}
+                                )} */}
 
                                 <TouchableOpacity>
                                     <Image source={require('@/assets/temp/profileicons/calendar.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
@@ -266,7 +301,6 @@ export default function ProfileData() {
                             </View>
                         </View>
                     </TouchableOpacity>
-
 
                     {/* Email */}
                     <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>

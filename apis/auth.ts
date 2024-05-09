@@ -27,10 +27,35 @@ export const manualLogin = async (email: string, password: string) => {
     email: email,
     password: password,
   };
-
   try {
     const response = await axios.post(
       `${process.env.EXPO_PUBLIC_API_URL}/auth/client/signin`,
+      data,
+      {
+        headers: {},
+      }
+    );
+    return response.data.tokens;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+/**
+ * VERIFY EMAIL CODE ---------------------------------------------------------
+ *
+ */
+export const postVerifyEmailCode = async (
+  email: string,
+  verification_code: number
+) => {
+  const data = {
+    email: email,
+    verification_code: verification_code,
+  };
+  try {
+    const response = await axios.post(
+      `${process.env.EXPO_PUBLIC_API_URL}/auth/client/verify-code`,
       data,
       {
         headers: {},
