@@ -4,9 +4,12 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { router } from 'expo-router';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { signInWithApple } from '@/apis/socalAuth';
+import * as SecureStore from 'expo-secure-store';
+import errorRes from '@/apis/errorRes';
+import ErrorFacebookAuthModal from '../ErrorFacebookAuthModal';
 export default function AppleSigninSelect() {
 
-
+    const [errorLoginModal, setErrorLoginModal] = useState(false);
     const [appleAuthAvailable, setAppleAvailable] = useState(false);
     useEffect(() => {
         const checkAvailable = async () => {
@@ -15,7 +18,6 @@ export default function AppleSigninSelect() {
         }
         checkAvailable();
     }, []);
-
 
     const login = async () => {
         try {
@@ -26,17 +28,22 @@ export default function AppleSigninSelect() {
                 ]
             });
             const response = await signInWithApple(credential?.email, credential?.fullName?.givenName + ' ' + credential?.fullName?.familyName);
-            console.log(response);
+            await SecureStore.setItemAsync('accessToken', response?.access?.token);
+            await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+            setTimeout(() => {
+                router.push('/(tabs)/');
+            }, 2000);
         } catch (e) {
-            if (e) {
-                return;
-            }
+            return;
+            // console.log(errorRes(e));
+            // if (errorRes(e)) {
+            //     return;
+            // }
         }
     };
-
-
     return (
         <View>
+            {errorLoginModal && <ErrorFacebookAuthModal modalVisible={errorLoginModal} setModalVisible={setErrorLoginModal} />}
             <TouchableOpacity style={styles.btnStyle} onPress={() => login()}>
                 <View style={styles.btnInner}>
                     <Image source={require('@/assets/temp/authIcons/apple.png')} resizeMode='contain' style={styles.btnImage} />

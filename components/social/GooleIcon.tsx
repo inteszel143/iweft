@@ -3,12 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { signInWithGoogle } from '@/apis/socalAuth';
+import * as SecureStore from 'expo-secure-store';
+import { router } from 'expo-router';
+import errorRes from '@/apis/errorRes';
+import ErrorFacebookAuthModal from '../ErrorFacebookAuthModal';
 export default function GooleIcon() {
 
-    const [error, setError] = useState<any>(null);
-    const [userInfo, setUserInfo] = useState<any>();
-
-
+    const [errorLoginModal, setErrorLoginModal] = useState(false);
     const configureGoogleSignIn = () => {
         GoogleSignin.configure({
             webClientId:
@@ -27,17 +28,24 @@ export default function GooleIcon() {
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
-            setUserInfo(userInfo);
-            setError(null);
-            const data = await signInWithGoogle(userInfo?.user?.email, userInfo?.user?.name, userInfo?.user?.id);
-            console.log(data);
+            const response = await signInWithGoogle(userInfo?.user?.email, userInfo?.user?.name, userInfo?.user?.id);
+            await SecureStore.setItemAsync('accessToken', response?.access?.token);
+            await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+            setTimeout(() => {
+                router.push('/(tabs)/');
+            }, 2000)
         } catch (e) {
-            setError(e);
+            if (errorRes(e) === "The email you provided is already taken.") {
+                setErrorLoginModal(true);
+            } else {
+                return;
+            }
         }
     };
 
     return (
         <View>
+            {errorLoginModal && <ErrorFacebookAuthModal modalVisible={errorLoginModal} setModalVisible={setErrorLoginModal} />}
             <TouchableOpacity style={styles.box} onPress={signIn}>
                 <Image source={require('@/assets/temp/authIcons/google.png')} resizeMode='contain' style={styles.btnImage} />
             </TouchableOpacity>

@@ -9,11 +9,12 @@ import { forgotPasswordEmail } from '@/apis/forgot';
 import { defaultStyles } from '@/constants/Styles';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
+import ForgotCodeModal from '@/components/ForgotCodeModal';
 
 export default function ForgotPassScreen() {
-    const [selected, setSelected] = useState(3);
+
     const [loadingBtn, setLoadingBtn] = useState(false);
-    const [resetInput, setResetInput] = useState("");
+    const [codeSuccessModal, setCodeSuccesModal] = useState(false);
 
     const schema = yup.object().shape({
         input: yup.string().required('Email or phone number is required').test('emailOrPhoneNumber', 'Enter a valid email or phone number', function (value) {
@@ -35,8 +36,10 @@ export default function ForgotPassScreen() {
         setLoadingBtn(true);
         try {
             await forgotPasswordEmail(data?.input);
+            setCodeSuccesModal(true);
             setTimeout(() => {
                 setLoadingBtn(false);
+                setCodeSuccesModal(false);
                 router.push({
                     pathname: '/authPage/forgot/ForgotCode',
                     params: { item: data?.input }
@@ -46,12 +49,12 @@ export default function ForgotPassScreen() {
             setLoadingBtn(false);
             console.log("Error ka");
         }
-    }
+    };
 
 
     return (
         <View style={styles.container}>
-
+            {codeSuccessModal && <ForgotCodeModal modalVisible={codeSuccessModal} setModalVisible={setCodeSuccesModal} />}
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
 

@@ -13,12 +13,15 @@ import FacebookIcon from '@/components/social/FacebookIcon';
 import { manualLogin } from '@/apis/auth';
 import * as SecureStore from 'expo-secure-store';
 import { getVerifyCheck } from '@/apis/fetchAuth';
+import ErrorLoginModal from '@/components/ErrorLoginModal';
 
 export default function LoginScreen() {
     const [emailF, setEmailF] = useState(false);
     const [passwordF, setPasswordF] = useState(false);
     const [check, setCheck] = useState(true);
     const [showP, setShowP] = useState(true);
+
+    const [errorModalVisible, setErrorModalVisible] = useState(false);
 
     const [loadingBtn, setLoadingBtn] = useState(false);
 
@@ -70,14 +73,14 @@ export default function LoginScreen() {
                 });
             }, 3000);
         } catch (error) {
-            console.log('Invalid Data');
+            setErrorModalVisible(true);
             setLoadingBtn(false);
         }
     };
 
     return (
         <View style={styles.container}>
-
+            {errorModalVisible && <ErrorLoginModal modalVisible={errorModalVisible} setModalVisible={setErrorModalVisible} />}
 
             <View style={styles.headerBack}>
                 <TouchableOpacity onPress={() => router.push('/authPage/SelectLoginPage')}>

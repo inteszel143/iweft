@@ -1,15 +1,14 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
 import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin'
 import { signInWithGoogle } from '@/apis/socalAuth';
-
+import * as SecureStore from 'expo-secure-store';
+import errorRes from '@/apis/errorRes';
+import ErrorFacebookAuthModal from '../ErrorFacebookAuthModal';
+import { router } from 'expo-router';
 export default function GoogleSigninSelect() {
-
-    const [error, setError] = useState<any>(null);
-    const [userInfo, setUserInfo] = useState<any>();
-
+    const [errorLoginModal, setErrorLoginModal] = useState(false);
     const configureGoogleSignIn = () => {
         GoogleSignin.configure({
             webClientId:
@@ -24,22 +23,28 @@ export default function GoogleSigninSelect() {
         configureGoogleSignIn();
     });
 
-
     const signIn = async () => {
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
-            setUserInfo(userInfo);
-            setError(null);
-            const data = await signInWithGoogle(userInfo?.user?.email, userInfo?.user?.name, userInfo?.user?.id);
-            console.log(data);
+            const response = await signInWithGoogle(userInfo?.user?.email, userInfo?.user?.name, userInfo?.user?.id);
+            await SecureStore.setItemAsync('accessToken', response?.access?.token);
+            await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+            setTimeout(() => {
+                router.push('/(tabs)/');
+            }, 2000)
         } catch (e) {
-            setError(e);
+            if (errorRes(e) === "The email you provided is already taken.") {
+                setErrorLoginModal(true);
+            } else {
+                return;
+            }
         }
     };
 
     return (
         <View>
+            {errorLoginModal && <ErrorFacebookAuthModal modalVisible={errorLoginModal} setModalVisible={setErrorLoginModal} />}
             <TouchableOpacity style={styles.btnStyle} onPress={signIn}>
                 <View style={styles.btnInner}>
                     <Image source={require('@/assets/temp/authIcons/google.png')} resizeMode='contain' style={styles.btnImage} />

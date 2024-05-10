@@ -4,8 +4,10 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
 import { AccessToken, LoginManager, Settings, Profile } from 'react-native-fbsdk-next'
 import { signInWithFacebook } from '@/apis/socalAuth';
+import ErrorFacebookAuthModal from '../ErrorFacebookAuthModal';
+import * as SecureStore from 'expo-secure-store';
 export default function FacebookIcon() {
-
+    const [errorLoginModal, setErrorLoginModal] = useState(false);
     useEffect(() => {
         const requestTracking = async () => {
             const { status } = await requestTrackingPermissionsAsync();
@@ -29,31 +31,35 @@ export default function FacebookIcon() {
                 "limited",
                 "my_nonce", // Optional
             );
-            console.log(result);
             if (Platform.OS === "ios") {
                 // This token **cannot** be used to access the Graph API.
                 // https://developers.facebook.com/docs/facebook-login/limited-login/
                 // const result = await AuthenticationToken.getAuthenticationTokenIOS();
-                // console.log(result);
                 Profile.getCurrentProfile().then(
                     async function (currentProfile) {
                         if (currentProfile) {
-                            const data = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
-                            // console.log(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
-                            console.log(data);
+                            try {
+                                const response = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
+                                await SecureStore.setItemAsync('accessToken', response?.access?.token);
+                                await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+                            } catch (error) {
+                                setErrorLoginModal(true);
+                            }
                         }
                     }
                 );
             } else {
-                // This token can be used to access the Graph API.
                 const result = await AccessToken.getCurrentAccessToken();
                 console.log(result);
                 Profile.getCurrentProfile().then(
                     async function (currentProfile) {
                         if (currentProfile) {
-                            const data = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
-                            // console.log(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
-                            console.log(data);
+                            try {
+                                const data = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
+                                console.log(data);
+                            } catch (error) {
+                                setErrorLoginModal(true);
+                            }
                         }
                     }
                 );
@@ -61,13 +67,11 @@ export default function FacebookIcon() {
         } catch (error) {
             console.log(error);
         }
-    };
-
-
-
+    }
 
     return (
         <View>
+            {errorLoginModal && <ErrorFacebookAuthModal modalVisible={errorLoginModal} setModalVisible={setErrorLoginModal} />}
             <TouchableOpacity style={styles.box} onPress={login}>
                 <Image source={require('@/assets/temp/authIcons/fb.png')} resizeMode='contain' style={styles.btnImage} />
             </TouchableOpacity>

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
+import errorRes from "./errorRes";
 
 /**
  * SIGN IN WITH FACEBOOK  ---------------------------------------------------------
@@ -23,7 +24,7 @@ export const signInWithFacebook = async (
         headers: {},
       }
     );
-    return response.data;
+    return response.data.tokens;
   } catch (error) {
     return Promise.reject(error);
   }
@@ -51,7 +52,7 @@ export const signInWithGoogle = async (
         headers: {},
       }
     );
-    return response.data;
+    return response.data.tokens;
   } catch (error) {
     return Promise.reject(error);
   }
@@ -74,7 +75,7 @@ export const signInWithApple = async (email: any, fullname: any) => {
         headers: {},
       }
     );
-    return response.data;
+    return response.data.tokens;
   } catch (error) {
     return Promise.reject(error);
   }

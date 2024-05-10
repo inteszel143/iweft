@@ -1,11 +1,15 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, Platform } from 'react-native'
-import React, { useEffect } from 'react'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Platform, ActivityIndicator } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
 import { AccessToken, AuthenticationToken, GraphRequest, GraphRequestManager, LoginButton, LoginManager, Settings, Profile } from 'react-native-fbsdk-next'
 import { signInWithFacebook } from '@/apis/socalAuth';
-
+import ErrorFacebookAuthModal from '../ErrorFacebookAuthModal';
+import * as SecureStore from 'expo-secure-store';
+import { router } from 'expo-router';
 export default function FacebookSigninSelect() {
+
+    const [errorLoginModal, setErrorLoginModal] = useState(false);
 
     useEffect(() => {
         const requestTracking = async () => {
@@ -29,34 +33,49 @@ export default function FacebookSigninSelect() {
                 "limited",
                 "my_nonce", // Optional
             );
-            console.log(result);
-            if (Platform.OS === "ios") {
-                // This token **cannot** be used to access the Graph API.
-                // https://developers.facebook.com/docs/facebook-login/limited-login/
-                // const result = await AuthenticationToken.getAuthenticationTokenIOS();
-                // console.log(result);
-                Profile.getCurrentProfile().then(
-                    async function (currentProfile) {
-                        if (currentProfile) {
-                            const data = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
-                            // console.log(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
-                            console.log(data);
-                        }
-                    }
-                );
+            if (result?.isCancelled) {
+                return;
             } else {
-                // This token can be used to access the Graph API.
-                const result = await AccessToken.getCurrentAccessToken();
-                console.log(result);
-                Profile.getCurrentProfile().then(
-                    async function (currentProfile) {
-                        if (currentProfile) {
-                            const data = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
-                            // console.log(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
-                            console.log(data);
+                if (Platform.OS === "ios") {
+                    // This token **cannot** be used to access the Graph API.
+                    // https://developers.facebook.com/docs/facebook-login/limited-login/
+                    // const result = await AuthenticationToken.getAuthenticationTokenIOS();
+                    Profile.getCurrentProfile().then(
+                        async function (currentProfile) {
+                            if (currentProfile) {
+                                try {
+                                    const response = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
+                                    await SecureStore.setItemAsync('accessToken', response?.access?.token);
+                                    await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+                                    setTimeout(() => {
+                                        router.push('/(tabs)/');
+                                    }, 2000)
+                                } catch (error) {
+                                    setErrorLoginModal(true);
+                                }
+                            }
                         }
-                    }
-                );
+                    );
+                } else {
+                    const result = await AccessToken.getCurrentAccessToken();
+                    console.log(result);
+                    Profile.getCurrentProfile().then(
+                        async function (currentProfile) {
+                            if (currentProfile) {
+                                try {
+                                    const response = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
+                                    await SecureStore.setItemAsync('accessToken', response?.access?.token);
+                                    await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+                                    setTimeout(() => {
+                                        router.push('/(tabs)/');
+                                    }, 2000)
+                                } catch (error) {
+                                    setErrorLoginModal(true);
+                                }
+                            }
+                        }
+                    );
+                }
             }
         } catch (error) {
             console.log(error);
@@ -65,6 +84,7 @@ export default function FacebookSigninSelect() {
 
     return (
         <View>
+            {errorLoginModal && <ErrorFacebookAuthModal modalVisible={errorLoginModal} setModalVisible={setErrorLoginModal} />}
             <TouchableOpacity style={styles.btnStyle} onPress={login}>
                 <View style={styles.btnInner}>
                     <Image source={require('@/assets/temp/authIcons/fb.png')} resizeMode='contain' style={styles.btnImage} />
