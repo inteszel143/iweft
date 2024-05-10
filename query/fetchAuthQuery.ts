@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getUserData } from "@/apis/fetchAuth";
+import { getUserData, getVerifyCheck } from "@/apis/fetchAuth";
 
 /**
  * Get User Data Query ---------------------------------------------------------

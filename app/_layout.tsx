@@ -87,8 +87,6 @@ function RootLayoutNav() {
       <Stack.Screen name="authPage/create/CreateNewPIN" options={{ headerShown: false }} />
       <Stack.Screen name="authPage/create/VerificationCode" options={{ headerShown: false }} />
 
-
-
       {/* home */}
       <Stack.Screen name='homePage/Notification' options={{ headerShown: false }} />
       <Stack.Screen name='homePage/Bookmarks' options={{ headerShown: false }} />
@@ -103,14 +101,11 @@ function RootLayoutNav() {
       <Stack.Screen name='homePage/HomeConfirmPin' options={{ headerShown: false }} />
       <Stack.Screen name='homePage/HomeBookingReceipt' options={{ headerShown: false }} />
 
-
-
       {/* servcies */}
       <Stack.Screen name='homePage/services/ServicesScreen' options={{ headerShown: false }} />
       <Stack.Screen name='homePage/services/PhotosVideos' options={{ headerShown: false }} />
       <Stack.Screen name='homePage/services/BookNow' options={{ headerShown: false }} />
       <Stack.Screen name='homePage/services/AllServices' options={{ headerShown: false }} />
-
 
       {/* items */}
       <Stack.Screen name='homePage/item/ItemPage' options={{ headerShown: false }} />
@@ -121,15 +116,13 @@ function RootLayoutNav() {
       <Stack.Screen name='homePage/budles/AllLaundryBundles' options={{ headerShown: false }} />
 
 
-
       {/* booking */}
       <Stack.Screen name='bookingPage/Ereceipt' options={{ headerShown: false }} />
       <Stack.Screen name='bookingPage/BookingPaymentMethod' options={{ headerShown: false }} />
       <Stack.Screen name='bookingPage/BookingPin' options={{ headerShown: false }} />
       <Stack.Screen name='bookingPage/BookingSummary' options={{ headerShown: false }} />
+
       {/* booking */}
-
-
       {/* chat */}
       <Stack.Screen name='chatPage/CustomerSupport' options={{ header: () => <HeaderCustomerSupport />, headerShadowVisible: false }} />
       <Stack.Screen name='chatPage/CallCustomer' options={{ headerShown: false }} />

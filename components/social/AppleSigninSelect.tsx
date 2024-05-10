@@ -1,16 +1,17 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { router } from 'expo-router';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { signInWithApple } from '@/apis/socalAuth';
 import * as SecureStore from 'expo-secure-store';
-import errorRes from '@/apis/errorRes';
-import ErrorFacebookAuthModal from '../ErrorFacebookAuthModal';
+import SuccessLogin from '../SuccessLogin';
+import ErrorPage from '../ErrorPage';
 export default function AppleSigninSelect() {
 
     const [errorLoginModal, setErrorLoginModal] = useState(false);
+    const [successLogin, setSuccessLogin] = useState(false);
     const [appleAuthAvailable, setAppleAvailable] = useState(false);
+
     useEffect(() => {
         const checkAvailable = async () => {
             const isAvailable = await AppleAuthentication.isAvailableAsync();
@@ -27,23 +28,18 @@ export default function AppleSigninSelect() {
                     AppleAuthentication.AppleAuthenticationScope.EMAIL
                 ]
             });
-            const response = await signInWithApple(credential?.email, credential?.fullName?.givenName + ' ' + credential?.fullName?.familyName);
+            const response = await signInWithApple(credential?.email, credential?.fullName?.givenName + ' ' + credential?.fullName?.familyName, credential?.identityToken);
             await SecureStore.setItemAsync('accessToken', response?.access?.token);
             await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
-            setTimeout(() => {
-                router.push('/(tabs)/');
-            }, 2000);
+            setSuccessLogin(true);
         } catch (e) {
-            return;
-            // console.log(errorRes(e));
-            // if (errorRes(e)) {
-            //     return;
-            // }
+            setErrorLoginModal(true);
         }
     };
     return (
         <View>
-            {errorLoginModal && <ErrorFacebookAuthModal modalVisible={errorLoginModal} setModalVisible={setErrorLoginModal} />}
+            {errorLoginModal && <ErrorPage modalVisible={errorLoginModal} setModalVisible={setErrorLoginModal} />}
+            {successLogin && <SuccessLogin modalVisible={successLogin} setModalVisible={setSuccessLogin} />}
             <TouchableOpacity style={styles.btnStyle} onPress={() => login()}>
                 <View style={styles.btnInner}>
                     <Image source={require('@/assets/temp/authIcons/apple.png')} resizeMode='contain' style={styles.btnImage} />

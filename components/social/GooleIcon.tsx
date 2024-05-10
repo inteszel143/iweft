@@ -7,9 +7,11 @@ import * as SecureStore from 'expo-secure-store';
 import { router } from 'expo-router';
 import errorRes from '@/apis/errorRes';
 import ErrorFacebookAuthModal from '../ErrorFacebookAuthModal';
+import SuccessLogin from '../SuccessLogin';
 export default function GooleIcon() {
 
     const [errorLoginModal, setErrorLoginModal] = useState(false);
+    const [successLogin, setSuccessLogin] = useState(false);
     const configureGoogleSignIn = () => {
         GoogleSignin.configure({
             webClientId:
@@ -31,9 +33,10 @@ export default function GooleIcon() {
             const response = await signInWithGoogle(userInfo?.user?.email, userInfo?.user?.name, userInfo?.user?.id);
             await SecureStore.setItemAsync('accessToken', response?.access?.token);
             await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
-            setTimeout(() => {
-                router.push('/(tabs)/');
-            }, 2000)
+            setSuccessLogin(true);
+            // setTimeout(() => {
+            //     router.push('/(tabs)/');
+            // }, 2000)
         } catch (e) {
             if (errorRes(e) === "The email you provided is already taken.") {
                 setErrorLoginModal(true);
@@ -46,6 +49,7 @@ export default function GooleIcon() {
     return (
         <View>
             {errorLoginModal && <ErrorFacebookAuthModal modalVisible={errorLoginModal} setModalVisible={setErrorLoginModal} />}
+            {successLogin && <SuccessLogin modalVisible={successLogin} setModalVisible={setSuccessLogin} />}
             <TouchableOpacity style={styles.box} onPress={signIn}>
                 <Image source={require('@/assets/temp/authIcons/google.png')} resizeMode='contain' style={styles.btnImage} />
             </TouchableOpacity>

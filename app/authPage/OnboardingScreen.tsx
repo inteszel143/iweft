@@ -9,6 +9,7 @@ import ListItem from '@/components/boarding/ListItem';
 import PaginationElement from '@/components/boarding/PaginationElement';
 import Button from '@/components/boarding/Button';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
 const pages = [
     {
         text: 'We provide professional service at a friendly price',

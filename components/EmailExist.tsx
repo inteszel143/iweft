@@ -3,14 +3,16 @@ import React, { useEffect } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router } from 'expo-router';
 import LottieView from 'lottie-react-native';
-import { BallIndicator } from 'react-native-indicators'
 interface ModalProps {
     modalVisible: boolean;
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>; // Ensure correct typing
 }
 
+export default function EmailExist({ modalVisible, setModalVisible }: ModalProps) {
 
-export default function ForgotCodeModal({ modalVisible, setModalVisible }: ModalProps) {
+    const toggleModal = () => {
+        setModalVisible(!modalVisible);
+    };
 
     return (
         <Modal
@@ -26,15 +28,15 @@ export default function ForgotCodeModal({ modalVisible, setModalVisible }: Modal
                         <LottieView
                             autoPlay
                             style={styles.errorLottieStyle}
-                            source={require('@/assets/animate/check.json')}
+                            source={require('@/assets/animate/invalid.json')}
                         />
                     </View>
-                    <Text style={styles.titleStyle}>Success !</Text>
-                    <Text style={styles.subStyle}>We already have sent your verification code please check it.</Text>
-                    <View style={{ marginTop: hp(8) }} />
-                    <View style={styles.indicator}>
-                        <BallIndicator color="#6DCC5B" size={hp(4)} />
-                    </View>
+                    <Text style={styles.titleStyle}>Oops, Sorry!</Text>
+                    <Text style={styles.subStyle}>The email address you provided is already in use. Please try another email.</Text>
+                    <View style={{ marginTop: hp(2.5) }} />
+                    <TouchableOpacity style={styles.btnStyle} onPress={toggleModal}>
+                        <Text style={styles.btnText}>Try again</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
 
@@ -66,7 +68,7 @@ const styles = StyleSheet.create({
         fontFamily: 'UrbanistBold',
         fontSize: hp(2.9),
         textAlign: 'center',
-        color: '#6DCC5B',
+        color: '#DB3747',
         marginTop: hp(1)
     },
     subStyle: {
@@ -79,7 +81,7 @@ const styles = StyleSheet.create({
     btnStyle: {
         height: hp(7),
         width: wp(50),
-        backgroundColor: '#6DCC5B',
+        backgroundColor: '#DC3545',
         borderRadius: wp(10),
         alignItems: 'center',
         justifyContent: 'center'

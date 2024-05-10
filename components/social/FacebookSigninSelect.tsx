@@ -7,9 +7,11 @@ import { signInWithFacebook } from '@/apis/socalAuth';
 import ErrorFacebookAuthModal from '../ErrorFacebookAuthModal';
 import * as SecureStore from 'expo-secure-store';
 import { router } from 'expo-router';
+import SuccessLogin from '../SuccessLogin';
 export default function FacebookSigninSelect() {
 
     const [errorLoginModal, setErrorLoginModal] = useState(false);
+    const [successLogin, setSuccessLogin] = useState(false);
 
     useEffect(() => {
         const requestTracking = async () => {
@@ -47,9 +49,10 @@ export default function FacebookSigninSelect() {
                                     const response = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
                                     await SecureStore.setItemAsync('accessToken', response?.access?.token);
                                     await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
-                                    setTimeout(() => {
-                                        router.push('/(tabs)/');
-                                    }, 2000)
+                                    setSuccessLogin(true);
+                                    // setTimeout(() => {
+                                    //     router.push('/(tabs)/');
+                                    // }, 2000)
                                 } catch (error) {
                                     setErrorLoginModal(true);
                                 }
@@ -66,9 +69,10 @@ export default function FacebookSigninSelect() {
                                     const response = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
                                     await SecureStore.setItemAsync('accessToken', response?.access?.token);
                                     await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
-                                    setTimeout(() => {
-                                        router.push('/(tabs)/');
-                                    }, 2000)
+                                    setSuccessLogin(true);
+                                    // setTimeout(() => {
+                                    //     router.push('/(tabs)/');
+                                    // }, 2000)
                                 } catch (error) {
                                     setErrorLoginModal(true);
                                 }
@@ -85,6 +89,7 @@ export default function FacebookSigninSelect() {
     return (
         <View>
             {errorLoginModal && <ErrorFacebookAuthModal modalVisible={errorLoginModal} setModalVisible={setErrorLoginModal} />}
+            {successLogin && <SuccessLogin modalVisible={successLogin} setModalVisible={setSuccessLogin} />}
             <TouchableOpacity style={styles.btnStyle} onPress={login}>
                 <View style={styles.btnInner}>
                     <Image source={require('@/assets/temp/authIcons/fb.png')} resizeMode='contain' style={styles.btnImage} />

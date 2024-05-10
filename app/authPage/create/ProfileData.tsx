@@ -7,11 +7,11 @@ import PhoneInput from "react-native-phone-number-input";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { defaultStyles } from '@/constants/Styles';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
-// import DateTimePicker from '@react-native-community/datetimepicker';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import * as ImagePicker from 'expo-image-picker';
+import DatePicker from 'react-native-date-picker';
 export default function ProfileData() {
     const { email, password } = useLocalSearchParams(); // email and password
     const [selected, setSelected] = useState('');
@@ -24,24 +24,16 @@ export default function ProfileData() {
     // Error
     const [phoneError, setPhoneError] = useState(false);
     const [date, setDate] = useState(new Date());
-    const [showPicker, setShowPicker] = useState(false);
+    const [open, setOpen] = useState(false)
 
     const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
     const dateVal = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`; // DOB value
 
-    const onChange = (event: any, selectedDate: any) => {
-        setShowPicker(false);
-        setDate(selectedDate);
-    };
-
     const [modalVisible, setModalVisible] = useState(false);
-    const [modalDate, setModalDate] = useState(false);
     const toggleModal = () => {
         setModalVisible(!modalVisible);
     };
-    const toggleModalDate = () => {
-        setModalDate(!modalDate);
-    }
+
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -81,7 +73,7 @@ export default function ProfileData() {
     const schema = yup.object().shape({
         full_name: yup.string().required('Full Name is requred'),
         n_name: yup.string().required('Nickname is requred'),
-        email: yup.string().email('Invalid email').required('Email is required').default(email),
+        email: yup.string().email('Invalid email').required('Email is required').default(email as string),
     });
     const { control, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(schema),
@@ -137,41 +129,9 @@ export default function ProfileData() {
         )
     };
 
-    function ModalDatePicker() {
-        return (
-            <Modal
-                animationType="fade"
-                transparent={true}
-                visible={modalDate}
-                presentationStyle='overFullScreen'
-                statusBarTranslucent={true}
-            >
-                <View style={styles.modalStyle}>
-                    <View style={styles.modalBoxDatePicker}>
-                        <Calendar
-                            onMonthChange={(newMonth) => {
-                                console.log('New month:', newMonth);
-                                // You can perform any action you want when the month changes
-                            }}
-                            onDayPress={day => {
-                                setSelected(day.dateString);
-                            }}
-                            markedDates={{
-                                [selected]: { selected: true, disableTouchEvent: true, selectedColor: 'orange' }
-                            }}
-                        />
-                    </View>
-                </View>
-
-            </Modal>
-        )
-    }
-
-
     return (
         <View style={styles.container}>
             {ModalProfile()}
-            {ModalDatePicker()}
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
 
@@ -282,18 +242,25 @@ export default function ProfileData() {
 
 
                     {/* DateofBirth */}
-                    <TouchableOpacity onPress={toggleModalDate} >
+                    <TouchableOpacity
+                        onPress={() => setOpen(true)}
+                    >
                         <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
                             <View style={defaultStyles.innerField}>
                                 <Text style={[defaultStyles.textInputStyle]} >{formattedDate}</Text>
-                                {/* {showPicker && (
-                                    <DateTimePicker
-                                        value={date}
-                                        mode="date"
-                                        display="default"
-                                        onChange={onChange}
-                                    />
-                                )} */}
+                                <DatePicker
+                                    modal
+                                    open={open}
+                                    mode='date'
+                                    date={date}
+                                    onConfirm={(date) => {
+                                        setOpen(false)
+                                        setDate(date)
+                                    }}
+                                    onCancel={() => {
+                                        setOpen(false)
+                                    }}
+                                />
 
                                 <TouchableOpacity>
                                     <Image source={require('@/assets/temp/profileicons/calendar.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
@@ -313,7 +280,7 @@ export default function ProfileData() {
                                 render={({ field: { onChange, onBlur, value } }) => (
                                     <TextInput
                                         onBlur={onBlur}
-                                        defaultValue={email}
+                                        defaultValue={email as string}
                                         onChangeText={onChange}
                                         value={value}
                                         placeholder='Email'

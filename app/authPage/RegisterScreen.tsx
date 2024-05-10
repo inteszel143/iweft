@@ -10,6 +10,8 @@ import * as yup from 'yup';
 import FacebookIcon from '@/components/social/FacebookIcon';
 import GooleIcon from '@/components/social/GooleIcon';
 import AppleIcon from '@/components/social/AppleIcon';
+import { getEmailChecker } from '@/apis/fetchAuth';
+import EmailExist from '@/components/EmailExist';
 export default function RegisterScreen() {
     const [emailF, setEmailF] = useState(false);
     const [passwordF, setPasswordF] = useState(false);
@@ -17,6 +19,7 @@ export default function RegisterScreen() {
     const [showP, setShowP] = useState(true);
 
     const [loadingBtn, setLoadingBtn] = useState(false);
+    const [existModal, setExitModal] = useState(false);
 
 
     const toggleCheck = () => {
@@ -54,21 +57,27 @@ export default function RegisterScreen() {
 
     const onSubmit = async (data: any) => {
         setLoadingBtn(true);
-        setTimeout(() => {
+        const reponse = await getEmailChecker(data?.email);
+        if (reponse?.exists) {
+            setExitModal(true);
             setLoadingBtn(false);
-            router.push({
-                pathname: '/authPage/create/ProfileData',
-                params: {
-                    email: data.email,
-                    password: data.password
-                }
-            });
-        }, 2000)
+        } else {
+            setTimeout(() => {
+                setLoadingBtn(false);
+                router.push({
+                    pathname: '/authPage/create/ProfileData',
+                    params: {
+                        email: data.email,
+                        password: data.password
+                    }
+                });
+            }, 2000);
+        }
     };
 
     return (
         <View style={styles.container}>
-
+            {existModal && <EmailExist modalVisible={existModal} setModalVisible={setExitModal} />}
             <View style={styles.headerBack}>
                 <TouchableOpacity onPress={() => router.back()}>
                     <AntDesign name='arrowleft' size={hp(3)} />

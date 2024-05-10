@@ -11,6 +11,7 @@ import {
 import * as SecureStore from 'expo-secure-store';
 import { logoutUser } from '@/apis/auth';
 import { router } from 'expo-router';
+import * as AppleAuthentication from 'expo-apple-authentication';
 export default function Logout() {
 
     const [btnLoading, setBtnLoading] = useState(false);

@@ -62,10 +62,15 @@ export const signInWithGoogle = async (
  * SIGN IN WITH APPLE  ---------------------------------------------------------
  */
 
-export const signInWithApple = async (email: any, fullname: any) => {
+export const signInWithApple = async (
+  email: any,
+  fullname: any,
+  identityToken: any
+) => {
   const data = {
     email: email,
     fullname: fullname,
+    identityToken: identityToken,
   };
   try {
     const response = await axios.post(

@@ -25,7 +25,7 @@ export default function index() {
             </Animated.View>
         </View >
     )
-}
+};
 
 const styles = StyleSheet.create({
     container: {

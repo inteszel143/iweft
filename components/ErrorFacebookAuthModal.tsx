@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
         bottom: hp(4),
     },
     errorLottieStyle: {
-        width: wp(35),
-        height: hp(18)
+        width: wp(34),
+        height: hp(16)
     }
 })

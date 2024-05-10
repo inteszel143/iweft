@@ -67,3 +67,23 @@ export const getVerifyCheck = async (email: string) => {
     return Promise.reject(error);
   }
 };
+
+/**
+ * EMAIL CHECKER IF EXIST ---------------------------------------------------------
+ *
+ */
+export const getEmailChecker = async (email: string) => {
+  try {
+    const response = await axios.get(
+      `${process.env.EXPO_PUBLIC_API_URL}/auth/client/check-email`,
+      {
+        params: {
+          email: email,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
