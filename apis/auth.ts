@@ -59,7 +59,27 @@ export const logoutUser = async (refreshToken: string) => {
     );
     return response.data;
   } catch (error) {
-    console.log(errorRes(error));
+    return Promise.reject(error);
+  }
+};
+
+/**
+ * REFRESH TOKEN WHEN OPEN APP ---------------------------------------------------------
+ */
+export const appOpenRefresh = async (refreshToken: string) => {
+  const data = {
+    refreshToken: refreshToken,
+  };
+  try {
+    const response = await axios.post(
+      `${process.env.EXPO_PUBLIC_API_URL}/auth/client/refresh-token`,
+      data,
+      {
+        headers: {},
+      }
+    );
+    return response.data;
+  } catch (error) {
     return Promise.reject(error);
   }
 };

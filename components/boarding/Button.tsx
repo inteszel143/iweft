@@ -5,6 +5,7 @@ import {
     Text,
     View,
 } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 import React, { useCallback } from 'react';
 import Animated, {
     useAnimatedStyle,
@@ -54,10 +55,10 @@ const Button = ({ currentIndex, length, flatListRef }: Props) => {
         };
     }, [currentIndex, length]);
 
-    const onPress = useCallback(() => {
+    const onPress = useCallback(async () => {
         if (currentIndex.value === length - 1) {
-            // console.log('Get Started');
             router.push('/authPage/SelectLoginPage');
+            await SecureStore.setItemAsync("onboarded", "1");
             return;
         } else {
             flatListRef?.current?.scrollToIndex({

@@ -35,6 +35,7 @@ export default function Logout() {
         const response = await logoutUser(refreshToken as string);
         await SecureStore.deleteItemAsync('accessToken');
         await SecureStore.deleteItemAsync('refreshToken');
+        await SecureStore.deleteItemAsync('onboarded');
         setTimeout(() => {
             setBtnLoading(false);
             bottomSheetModalRef.current?.close();
