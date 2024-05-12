@@ -9,7 +9,6 @@ import FacebookSigninSelect from '@/components/social/FacebookSigninSelect';
 export default function SelectLoginPage() {
     return (
         <View style={styles.container}>
-
             <View style={styles.topImage}>
                 <Image source={require('@/assets/temp/authIcons/topLogin.jpg')} resizeMode='contain' style={{ width: wp(80), height: hp(36) }} />
             </View>

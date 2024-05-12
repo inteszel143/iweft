@@ -9,6 +9,7 @@ import ErrorFacebookAuthModal from '../ErrorFacebookAuthModal';
 import SuccessLogin from '../SuccessLogin';
 export default function GoogleSigninSelect() {
     const [errorLoginModal, setErrorLoginModal] = useState(false);
+
     const [successLogin, setSuccessLogin] = useState(false);
     const configureGoogleSignIn = () => {
         GoogleSignin.configure({
@@ -32,9 +33,6 @@ export default function GoogleSigninSelect() {
             await SecureStore.setItemAsync('accessToken', response?.access?.token);
             await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
             setSuccessLogin(true);
-            // setTimeout(() => {
-            //     router.push('/(tabs)/');
-            // }, 2000)
         } catch (e) {
             if (errorRes(e) === "The email you provided is already taken.") {
                 setErrorLoginModal(true);

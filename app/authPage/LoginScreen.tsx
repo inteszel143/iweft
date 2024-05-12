@@ -14,13 +14,14 @@ import { manualLogin } from '@/apis/auth';
 import * as SecureStore from 'expo-secure-store';
 import { getVerifyCheck } from '@/apis/fetchAuth';
 import ErrorLoginModal from '@/components/ErrorLoginModal';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function LoginScreen() {
     const [emailF, setEmailF] = useState(false);
     const [passwordF, setPasswordF] = useState(false);
     const [check, setCheck] = useState(true);
     const [showP, setShowP] = useState(true);
-
+    const queryClient = useQueryClient();
     const [errorModalVisible, setErrorModalVisible] = useState(false);
 
     const [loadingBtn, setLoadingBtn] = useState(false);
@@ -67,6 +68,7 @@ export default function LoginScreen() {
             const isVerify = await getVerifyCheck(data?.email as string);
             setTimeout(() => {
                 setLoadingBtn(false);
+                queryClient.invalidateQueries({ queryKey: ['user-data'] });
                 router.push({
                     pathname: '/authPage/AfterLogin',
                     params: { email: data?.email, verified: isVerify?.verified }

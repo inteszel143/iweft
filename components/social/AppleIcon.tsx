@@ -21,6 +21,7 @@ export default function AppleIcon() {
         checkAvailable();
     }, []);
 
+
     const login = async () => {
         try {
             const credential = await AppleAuthentication.signInAsync({

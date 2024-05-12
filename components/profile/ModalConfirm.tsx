@@ -8,11 +8,14 @@ interface ModalProps {
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>; // Ensure correct typing
 }
 
-export default function EmailExist({ modalVisible, setModalVisible }: ModalProps) {
-
+export default function ModalConfirm({ modalVisible, setModalVisible }: ModalProps) {
     const toggleModal = () => {
         setModalVisible(!modalVisible);
     };
+
+    const toggleConfirm = async () => {
+
+    }
 
     return (
         <Modal
@@ -24,19 +27,17 @@ export default function EmailExist({ modalVisible, setModalVisible }: ModalProps
         >
             <View style={styles.modalStyle}>
                 <View style={styles.modalBox}>
-                    <View>
-                        <LottieView
-                            autoPlay
-                            style={styles.errorLottieStyle}
-                            source={require('@/assets/animate/invalid.json')}
-                        />
-                    </View>
-                    <Text style={styles.titleStyle}>Oops, Sorry!</Text>
-                    <Text style={styles.subStyle}>The email address you provided is already in use. Please try another email.</Text>
+                    <Text style={styles.titleStyle}>Are you sure?</Text>
+                    <Text style={styles.subStyle}>You want to update your profile images?</Text>
                     <View style={{ marginTop: hp(2.5) }} />
-                    <TouchableOpacity style={styles.btnStyle} onPress={toggleModal}>
-                        <Text style={styles.btnText}>Try again</Text>
-                    </TouchableOpacity>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2) }}>
+                        <TouchableOpacity style={[styles.btnStyle, { borderWidth: 1, borderColor: '#DADADA' }]} onPress={toggleModal}>
+                            <Text style={[styles.btnText, { color: '#424242' }]}>Cancel</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.btnStyle, { backgroundColor: '#0a5ca8', }]} onPress={toggleConfirm}>
+                            <Text style={[styles.btnText, { color: 'white' }]}>Confirm</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
 
@@ -52,8 +53,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     modalBox: {
-        width: wp(86),
-        height: Platform.OS === 'ios' ? hp(48) : hp(50),
+        width: wp(88),
+        height: Platform.OS === 'ios' ? hp(30) : hp(32),
         backgroundColor: "white",
         borderRadius: wp(6),
         alignItems: 'center',
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
         fontFamily: 'UrbanistBold',
         fontSize: hp(2.9),
         textAlign: 'center',
-        color: '#DB3747',
+        color: '#0a5ca8',
         marginTop: hp(1)
     },
     subStyle: {
@@ -80,8 +81,7 @@ const styles = StyleSheet.create({
     },
     btnStyle: {
         height: hp(7),
-        width: wp(50),
-        backgroundColor: '#DC3545',
+        width: wp(35),
         borderRadius: wp(10),
         alignItems: 'center',
         justifyContent: 'center'
@@ -89,7 +89,6 @@ const styles = StyleSheet.create({
     btnText: {
         fontFamily: 'UrbanistBold',
         fontSize: hp(2),
-        color: 'white'
     },
     indicator: {
         position: 'absolute',

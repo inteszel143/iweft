@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
@@ -9,12 +9,15 @@ import {
     useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
 import { postVerifyEmailCode } from '@/apis/auth';
+import ErrorCodeModal from '../ErrorCodeModal';
 const CELL_COUNT = 6;
 
 
 export default function EmailVerification() {
     const { email } = useLocalSearchParams();
     const [value, setValue] = useState('');
+    const [btnLoading, setBtnLoading] = useState(false);
+    const [errorModalVisible, setErrorModalVisible] = useState(false);
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
         value,
@@ -26,22 +29,26 @@ export default function EmailVerification() {
     }, []);
 
     const onSubmit = async () => {
+        setBtnLoading(true);
         const verification_code = parseInt(value);
         try {
-            const response = await postVerifyEmailCode(email as string, verification_code as number);
-            console.log(response);
-            router.push({
-                pathname: '/authPage/AfterEmailVerification',
-                params: { email: email }
-            });
+            await postVerifyEmailCode(email as string, verification_code as number);
+            setTimeout(() => {
+                router.push({
+                    pathname: '/authPage/AfterEmailVerification',
+                    params: { email: email }
+                });
+                setBtnLoading(false);
+            }, 2000);
         } catch (error) {
-            console.log('Invalid Code');
+            setErrorModalVisible(true);
+            setBtnLoading(false);
         }
     };
 
     return (
         <View style={styles.container}>
-
+            {errorModalVisible && <ErrorCodeModal modalVisible={errorModalVisible} setModalVisible={setErrorModalVisible} />}
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
 
@@ -96,7 +103,7 @@ export default function EmailVerification() {
                 <TouchableOpacity style={styles.btnBoxStyle}
                     onPress={onSubmit}
                 >
-                    <Text style={styles.btnText}>Verify</Text>
+                    {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.btnText}>Verify</Text>}
                 </TouchableOpacity>
             </View>
 

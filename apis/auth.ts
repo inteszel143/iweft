@@ -1,6 +1,6 @@
 import axios from "axios";
 import errorRes from "./errorRes";
-
+import * as SecureStore from "expo-secure-store";
 /**
  * MANUAL REGISTER  ---------------------------------------------------------
  */
@@ -96,12 +96,16 @@ export const postVerifyEmailCode = async (
     email: email,
     verification_code: verification_code,
   };
+  const accessToken = await SecureStore.getItemAsync("accessToken");
   try {
     const response = await axios.post(
       `${process.env.EXPO_PUBLIC_API_URL}/auth/client/verify-code`,
       data,
       {
-        headers: {},
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          // "Content-Type": "multipart/form-data", // If you need to set content type, uncomment this line
+        },
       }
     );
     return response.data;

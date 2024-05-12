@@ -47,7 +47,6 @@ export default function ForgotPassScreen() {
             }, 2000);
         } catch (error) {
             setLoadingBtn(false);
-            console.log("Error ka");
         }
     };
 

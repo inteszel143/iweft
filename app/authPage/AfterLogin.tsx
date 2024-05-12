@@ -6,13 +6,13 @@ import EmailVerification from '@/components/auth/EmailVerification';
 
 export default function AfterLogin() {
     const { email, verified } = useLocalSearchParams();
-    if (verified) {
+    if (verified === "false") {
         return (
-            <PinChecker />
+            <EmailVerification />
         );
     } else {
         return (
-            <EmailVerification />
-        )
+            <PinChecker />
+        );
     }
 };

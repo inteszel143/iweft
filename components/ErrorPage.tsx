@@ -73,8 +73,8 @@ const styles = StyleSheet.create({
         marginTop: hp(1)
     },
     subStyle: {
-        fontFamily: 'UrbanistSemiBold',
-        fontSize: hp(2.1),
+        fontFamily: 'UrbanistMedium',
+        fontSize: hp(2.3),
         textAlign: 'center',
         color: "gray",
         marginTop: hp(2),
@@ -98,6 +98,6 @@ const styles = StyleSheet.create({
     },
     errorLottieStyle: {
         width: wp(34),
-        height: hp(16)
+        height: hp(15)
     }
 })

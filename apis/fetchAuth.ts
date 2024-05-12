@@ -52,10 +52,15 @@ export const getPinNumber = async (pin: number) => {
  */
 
 export const getVerifyCheck = async (email: string) => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
   try {
     const response = await axios.get(
       `${process.env.EXPO_PUBLIC_API_URL}/auth/client/check_verification`,
       {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          // "Content-Type": "multipart/form-data", // If you need to set content type, uncomment this line
+        },
         params: {
           email: email,
         },

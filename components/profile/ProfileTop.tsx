@@ -2,30 +2,87 @@ import { Image, Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { useUserQuery } from '@/query/fetchAuthQuery';
+import * as ImagePicker from 'expo-image-picker';
+import ModalConfirm from './ModalConfirm';
 export default function ProfileTop() {
-
+    const { data } = useUserQuery();
+    const [image, setImage] = useState<any>(null); // image data
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalConfirm, setModalConfirm] = useState(true);
     const toggleModal = () => {
         setModalVisible(!modalVisible);
     };
 
+    const pickImage = async () => {
+        let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+        if (permissionResult.granted === false) {
+            alert('Permission to access camera is required!');
+            return;
+        }
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+        if (result.canceled === true) {
+            return;
+        }
+        if (!result.canceled) {
+            toggleModal();
+            setImage(result.assets[0].uri);
+        }
+    };
+
+    const openCamera = async () => {
+        let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+        if (permissionResult.granted === false) {
+            alert('Permission to access camera is required!');
+            return;
+        }
+        let pickerResult = await ImagePicker.launchCameraAsync({
+            aspect: [4, 3],
+            quality: 1,
+        });
+        if (pickerResult.canceled === true) {
+            return;
+        }
+        if (!pickerResult.canceled) {
+            toggleModal();
+            setImage(pickerResult?.assets[0].uri);
+        }
+    };
+
     return (
         <View style={styles.container}>
-
+            {modalConfirm && <ModalConfirm modalVisible={modalConfirm} setModalVisible={setModalConfirm} />}
             <View style={styles.headerStyle}>
-                <Image source={require('@/assets/temp/chaticons/profilecall.jpg')} resizeMode='contain' style={{ width: wp(40), height: hp(16) }} />
+                {
+                    image === null ? <Image
+                        source={{ uri: `${process.env.EXPO_PUBLIC_API_URL}/uploads/${data?.profile_picture}` }}
+                        resizeMode='cover'
+                        style={{ width: wp(36), height: wp(36), borderRadius: wp(18) }}
+                    />
+                        :
+                        <Image
+                            source={{ uri: image }}
+                            resizeMode='cover'
+                            style={{ width: wp(36), height: wp(36), borderRadius: wp(18) }}
+                        />
+                }
                 <TouchableOpacity style={styles.editBtn}
                     onPress={toggleModal}
                 >
                     <FontAwesome5 name='pen' color={'white'} />
                 </TouchableOpacity>
             </View>
+
+
             <View style={styles.headerTextStyle}>
-                <Text style={styles.nameStyle}>Andrew Ainsley</Text>
-                <Text style={styles.emailStyle}>andrewainsley@gmail.com.ph</Text>
+                <Text style={styles.nameStyle}>{data?.fullname}</Text>
+                <Text style={styles.emailStyle}>{data?.email}</Text>
             </View>
-
-
 
 
             {/* modal */}
@@ -41,12 +98,12 @@ export default function ProfileTop() {
                     <View style={styles.modalBox}>
                         <Text style={styles.modalTitle}>Edit Profile Picture</Text>
 
-                        <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#0A5CA8' }]}>
+                        <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#0A5CA8' }]} onPress={openCamera}>
                             <Text style={[styles.modalText, { color: '#FFFFFF' }]}>Take Photo</Text>
                         </TouchableOpacity >
 
 
-                        <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#0A5CA8' }]}>
+                        <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#0A5CA8' }]} onPress={pickImage}>
                             <Text style={[styles.modalText, { color: '#FFFFFF' }]}>Choose Photo</Text>
                         </TouchableOpacity>
 
@@ -101,7 +158,7 @@ const styles = StyleSheet.create({
     },
     emailStyle: {
         fontFamily: 'UrbanistSemiBold',
-        fontSize: hp(1.8),
+        fontSize: hp(2),
         marginTop: hp(1),
         color: "#212121",
     },

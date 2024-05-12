@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
@@ -25,6 +25,7 @@ export default function VerificationCode() {
         longitude } =
         useLocalSearchParams();
     const [value, setValue] = useState('');
+    const [btnLoading, setBtnLoading] = useState(false);
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
         value,
@@ -33,23 +34,27 @@ export default function VerificationCode() {
 
 
     const onSubmit = async () => {
-        router.push({
-            pathname: '/authPage/create/CreateNewPIN',
-            params: {
-                image: image,
-                fullName: fullName,
-                nickName: nickName,
-                dob: dob,
-                email: email,
-                password: password,
-                phone: phone,
-                nameAddress: nameAddress,
-                street: street,
-                city: city,
-                latitude: latitude,
-                longitude: longitude,
-            }
-        });
+        setBtnLoading(true);
+        setTimeout(() => {
+            router.push({
+                pathname: '/authPage/create/CreateNewPIN',
+                params: {
+                    image: image,
+                    fullName: fullName,
+                    nickName: nickName,
+                    dob: dob,
+                    email: email,
+                    password: password,
+                    phone: phone,
+                    nameAddress: nameAddress,
+                    street: street,
+                    city: city,
+                    latitude: latitude,
+                    longitude: longitude,
+                }
+            });
+            setBtnLoading(false);
+        }, 2000)
     }
 
     return (
@@ -106,8 +111,11 @@ export default function VerificationCode() {
             </View>
 
             <View style={styles.BtnStyle}>
-                <TouchableOpacity style={styles.btnBoxStyle} onPress={onSubmit}>
-                    <Text style={styles.btnText}>Verify</Text>
+                <TouchableOpacity style={[styles.btnBoxStyle, { backgroundColor: value.length != 4 ? "#DADADA" : "#0A5CA8", }]}
+                    disabled={value.length != 4 ? true : false}
+                    onPress={onSubmit}
+                >
+                    {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.btnText}>Verify</Text>}
                 </TouchableOpacity>
             </View>
 
@@ -203,7 +211,6 @@ const styles = StyleSheet.create({
         borderRadius: wp(10),
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#0A5CA8'
     },
     btnText: {
         fontFamily: 'UrbanistBold',

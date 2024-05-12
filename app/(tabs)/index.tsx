@@ -11,8 +11,6 @@ import BundleOffers from '@/components/home/BundleOffers';
 import { StatusBar } from 'expo-status-bar';
 export default function TabOneScreen() {
 
-
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style='dark' />

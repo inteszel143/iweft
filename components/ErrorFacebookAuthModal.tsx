@@ -72,8 +72,8 @@ const styles = StyleSheet.create({
         marginTop: hp(1)
     },
     subStyle: {
-        fontFamily: 'UrbanistSemiBold',
-        fontSize: hp(2.1),
+        fontFamily: 'UrbanistMedium',
+        fontSize: hp(2.3),
         textAlign: 'center',
         color: "gray",
         marginTop: hp(2),

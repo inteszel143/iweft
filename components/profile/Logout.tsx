@@ -2,6 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View, Image, ActivityIndicator } fr
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Feather } from '@expo/vector-icons';
+import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import {
     BottomSheetModal,
     BottomSheetView,
@@ -36,10 +37,12 @@ export default function Logout() {
         await SecureStore.deleteItemAsync('accessToken');
         await SecureStore.deleteItemAsync('refreshToken');
         await SecureStore.deleteItemAsync('onboarded');
+        GoogleSignin.revokeAccess();
+        GoogleSignin.signOut();
         setTimeout(() => {
             setBtnLoading(false);
             bottomSheetModalRef.current?.close();
-            router.push('/authPage/SelectLoginPage');
+            router.push('/authPage/OnboardingScreen');
         }, 2000);
     }
 

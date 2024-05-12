@@ -32,7 +32,7 @@ export default function ErrorLoginModal({ modalVisible, setModalVisible }: Modal
                     </View>
                     <Text style={styles.titleStyle}>Authentication failed</Text>
                     <Text style={styles.subStyle}>Please ensure your email address and password are correct.</Text>
-                    <View style={{ marginTop: hp(2.5) }} />
+                    <View style={{ marginTop: hp(3) }} />
                     <TouchableOpacity style={styles.btnStyle} onPress={toggleModal}>
                         <Text style={styles.btnText}>Try again</Text>
                     </TouchableOpacity>
@@ -71,8 +71,8 @@ const styles = StyleSheet.create({
         marginTop: hp(1)
     },
     subStyle: {
-        fontFamily: 'UrbanistSemiBold',
-        fontSize: hp(2.1),
+        fontFamily: 'UrbanistMedium',
+        fontSize: hp(2.3),
         textAlign: 'center',
         color: "gray",
         marginTop: hp(2),
@@ -96,6 +96,6 @@ const styles = StyleSheet.create({
     },
     errorLottieStyle: {
         width: wp(34),
-        height: hp(16)
+        height: hp(15)
     }
 })

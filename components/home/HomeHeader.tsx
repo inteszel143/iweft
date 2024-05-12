@@ -1,26 +1,30 @@
 import { StyleSheet, Text, View, Image, Platform, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
+import { useUserQuery } from '@/query/fetchAuthQuery';
 export default function HomeHeader() {
+    const currentDate = new Date();
+    const currentHour = currentDate.getHours();
+    const isMorning = currentHour >= 0 && currentHour < 12;
+    const { data } = useUserQuery();
     return (
         <View style={styles.header}>
             <View style={styles.headerLeft}>
 
-                <Link href={'/(tabs)/profile'} asChild>
-                    <TouchableOpacity>
-                        <Image
-                            source={require('@/assets/temp/profile.png')}
-                            resizeMode='contain'
-                            style={{ width: wp(14), height: hp(10) }}
-                        />
-                    </TouchableOpacity>
-                </Link>
+                <TouchableOpacity onPress={() => router.push('/(tabs)/profile')}>
+                    <Image
+                        source={{ uri: `${process.env.EXPO_PUBLIC_API_URL}/uploads/${data?.profile_picture}` }}
+                        resizeMode='center'
+                        style={{ width: wp(14), height: wp(14), borderRadius: wp(7) }}
+                    />
+                </TouchableOpacity>
 
                 <View>
-                    <Text style={styles.headerGood} >Good Morning 👋</Text>
-                    <Text style={styles.headerName} >Andrew Ainsley</Text>
+                    <Text style={styles.headerGood} >{isMorning ? 'Good Morning! 👋' : 'Good Evening! 🌙'}</Text>
+                    <Text style={styles.headerName} >{data?.fullname}</Text>
                 </View>
+
             </View>
 
 
@@ -52,9 +56,11 @@ const styles = StyleSheet.create({
         paddingTop: Platform.OS === 'android' ? hp(4) : 0,
     },
     headerLeft: {
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         gap: wp(4),
+        paddingVertical: hp(1),
     },
     headerGood: {
         fontFamily: 'UrbanistRegular',

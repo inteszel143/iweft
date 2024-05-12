@@ -7,8 +7,9 @@ import { router } from 'expo-router';
 import Animated, { BounceIn, FadeIn } from 'react-native-reanimated';
 import { StatusBar } from 'expo-status-bar';
 import { appOpenRefresh } from '@/apis/auth';
+import { useQueryClient } from '@tanstack/react-query';
 export default function index() {
-
+    const queryClient = useQueryClient();
     useEffect(() => {
         setTimeout(() => {
             validate();
@@ -18,6 +19,7 @@ export default function index() {
     const validate = async () => {
         const refreshToken = await SecureStore.getItemAsync('refreshToken');
         const onboarded = await SecureStore.getItemAsync('onboarded');
+        queryClient.invalidateQueries({ queryKey: ['user-data'] });
         if (refreshToken === null) {
             if (onboarded === "1") {
                 router.push('/authPage/SelectLoginPage');

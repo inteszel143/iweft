@@ -8,7 +8,10 @@ export default function Header() {
             <View style={styles.innerContainer}>
 
                 <View style={styles.headerLeft}>
-                    <Image source={require('@/assets/icons/bookingIcon.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                    <Image
+                        source={require('@/assets/icons/bookingIcon.png')}
+                        resizeMode='contain'
+                        style={{ width: wp(8) }} />
                     <Text style={styles.bookingText} >Profile</Text>
                 </View>
                 <View style={styles.headerRight}>

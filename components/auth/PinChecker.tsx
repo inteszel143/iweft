@@ -9,10 +9,8 @@ import {
     useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
 import { Octicons } from '@expo/vector-icons';
-import CreateNewUserSucess from '@/components/CreateNewUserSucess';
-import { manualSignin } from '@/apis/auth';
-import { number, string } from 'yup';
 import { getPinNumber } from '@/apis/fetchAuth';
+import PinCodeModal from '../PinCodeModal';
 
 interface CellProps {
     index: number;
@@ -27,6 +25,7 @@ export default function PinChecker() {
     const [enableMask, setEnableMask] = useState(true);
     const [value, setValue] = useState(''); // pin data
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
+    const [errorModalVisible, setErrorModalVisible] = useState(false);
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
         value,
         setValue,
@@ -59,15 +58,14 @@ export default function PinChecker() {
             router.push('/(tabs)/');
             setBtnLoading(false);
         } else {
-            console.log("Error ka");
+            setErrorModalVisible(true);
             setBtnLoading(false);
         }
-    }
+    };
 
     return (
         <View style={styles.container}>
-
-
+            {errorModalVisible && <PinCodeModal modalVisible={errorModalVisible} setModalVisible={setErrorModalVisible} />}
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
                     <View style={styles.headerLeft}>
@@ -78,7 +76,6 @@ export default function PinChecker() {
                     </View>
                 </View>
             </View>
-
 
             <ScrollView contentContainerStyle={styles.scollviewContainer}>
                 <View>

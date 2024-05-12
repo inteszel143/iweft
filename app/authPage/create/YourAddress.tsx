@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform, ActivityIndicator } from 'react-native'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
@@ -11,7 +11,6 @@ import { defaultStyles } from '@/constants/Styles';
 export default function YourAddress() {
     const { image, fullName, nickName, dob, email, password, phone } = useLocalSearchParams();
 
-    const [location, setLocation] = useState<any>(null);
     const [errorMsg, setErrorMsg] = useState("");
     const [mapLocation, setMapLocation] = useState<any>([]);
     const [nameAddress, setNameAddress] = useState<any>();
@@ -19,6 +18,7 @@ export default function YourAddress() {
     const [street, setStreet] = useState<any>();
     const [lat, setLat] = useState<any>("");
     const [long, setLong] = useState<any>("");
+    const [btnLoading, setBtnLoading] = useState(false);
 
 
     useEffect(() => {
@@ -67,23 +67,27 @@ export default function YourAddress() {
     };
 
     const onSubmit = async () => {
-        router.push({
-            pathname: '/authPage/create/VerificationCode',
-            params: {
-                image: image,
-                fullName: fullName,
-                nickName: nickName,
-                dob: dob,
-                email: email,
-                password: password,
-                phone: phone,
-                nameAddress: nameAddress,
-                street: street,
-                city: city,
-                latitude: lat,
-                longitude: long,
-            }
-        });
+        setBtnLoading(true);
+        setTimeout(() => {
+            router.push({
+                pathname: '/authPage/create/VerificationCode',
+                params: {
+                    image: image,
+                    fullName: fullName,
+                    nickName: nickName,
+                    dob: dob,
+                    email: email,
+                    password: password,
+                    phone: phone,
+                    nameAddress: nameAddress,
+                    street: street,
+                    city: city,
+                    latitude: lat,
+                    longitude: long,
+                }
+            });
+            setBtnLoading(false);
+        }, 2000)
     }
 
 
@@ -109,7 +113,7 @@ export default function YourAddress() {
             </View>
 
 
-            <View style={{ height: hp(60) }}>
+            <View style={{ height: hp(50) }}>
                 <MapView
                     style={styles.map}
                     provider={PROVIDER_GOOGLE}
@@ -165,7 +169,7 @@ export default function YourAddress() {
             </BottomSheet>
             <View style={styles.footer}>
                 <TouchableOpacity style={defaultStyles.footerBtn} onPress={onSubmit}>
-                    <Text style={styles.sheetText}>Continue</Text>
+                    {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.sheetText}>Continue</Text>}
                 </TouchableOpacity>
             </View>
 
@@ -235,7 +239,7 @@ const styles = StyleSheet.create({
     markerStyle: {
         position: 'absolute',
         alignSelf: 'center',
-        top: hp(20)
+        top: hp(15.5),
     },
 
 

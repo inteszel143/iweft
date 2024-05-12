@@ -6,7 +6,6 @@ import { AccessToken, AuthenticationToken, GraphRequest, GraphRequestManager, Lo
 import { signInWithFacebook } from '@/apis/socalAuth';
 import ErrorFacebookAuthModal from '../ErrorFacebookAuthModal';
 import * as SecureStore from 'expo-secure-store';
-import { router } from 'expo-router';
 import SuccessLogin from '../SuccessLogin';
 export default function FacebookSigninSelect() {
 
@@ -84,7 +83,7 @@ export default function FacebookSigninSelect() {
         } catch (error) {
             console.log(error);
         }
-    }
+    };
 
     return (
         <View>
