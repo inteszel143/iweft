@@ -6,6 +6,7 @@ import * as SecureStore from 'expo-secure-store';
 import { router } from 'expo-router';
 import Animated, { BounceIn, FadeIn } from 'react-native-reanimated';
 import { StatusBar } from 'expo-status-bar';
+import { appOpenRefresh } from '@/apis/auth';
 export default function index() {
 
     useEffect(() => {
@@ -15,14 +16,25 @@ export default function index() {
     }, []);
 
     const validate = async () => {
+        const refreshToken = await SecureStore.getItemAsync('refreshToken');
         const onboarded = await SecureStore.getItemAsync('onboarded');
-        if (onboarded === "1") {
-            router.push('/authPage/SelectLoginPage');
+        if (refreshToken === null) {
+            if (onboarded === "1") {
+                router.push('/authPage/SelectLoginPage');
+            } else {
+                router.push('/authPage/OnboardingScreen');
+            }
         } else {
-            router.push('/authPage/OnboardingScreen');
+            try {
+                const response = await appOpenRefresh(refreshToken);
+                await SecureStore.setItemAsync('accessToken', response?.access?.token);
+                await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+                router.push('/(tabs)/');
+            } catch (error) {
+                return;
+            }
         }
     };
-
 
     return (
         <View style={styles.container}>

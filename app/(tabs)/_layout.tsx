@@ -7,6 +7,7 @@ import InboxHeader from "@/components/inbox/InboxHeader";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import { Image, Platform } from "react-native";
 import { useColorScheme } from "@/components/useColorScheme";
+import { BlurView } from "expo-blur";
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof Ionicons>["name"];
   color: string;
