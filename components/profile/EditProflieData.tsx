@@ -1,74 +1,192 @@
-import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Ionicons } from '@expo/vector-icons';
 import PhoneInput from "react-native-phone-number-input";
-import { Link } from 'expo-router';
+import { router } from 'expo-router';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { defaultStyles } from '@/constants/Styles';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { useUserQuery } from '@/query/fetchAuthQuery';
+import DatePicker from 'react-native-date-picker';
+import { SelectList } from 'react-native-dropdown-select-list';
+import { country, genderData } from '@/constants/profile/data';
+
 export default function EditProflieData() {
+    const { data, isFetching } = useUserQuery();
     const phoneInput = useRef<PhoneInput>(null);
-    const [value, setValue] = useState("");
-    const [formattedValue, setFormattedValue] = useState("");
+    const [value, setValue] = useState('');
+    const [formattedValue, setFormattedValue] = useState(""); // Phone value
+    const [gender, setGender] = useState("");//Gender Value
+    const [contry, setCountry] = useState(""); //Country Value
+    const [date, setDate] = useState(new Date(data?.dob));
+    const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+    const [open, setOpen] = useState(false);
+    const dateVal = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`; // DOB value
+
+    const schema = yup.object().shape({
+        full_name: yup.string().required('Full Name is requred').default(data?.fullname as string),
+        n_name: yup.string().required('Nickname is requred').default(data?.nickname as string),
+        email: yup.string().email('Invalid email').required('Email is required').default(data?.email as string),
+    });
+    const { control, handleSubmit, formState: { errors } } = useForm({
+        resolver: yupResolver(schema),
+    });
+
+    const toggleAddress = async () => {
+        router.push({
+            pathname: '/profilePage/CurrentAddress',
+            params: { latitude: data?.latitude, longitude: data?.longitude }
+        })
+    };
 
     return (
-
-        <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: Platform.OS === 'android' ? hp(3) : hp(6) }}
-            bounces={false}
-        >
-            <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={{ alignItems: 'center' }}
+        <View style={styles.container}>
+            <KeyboardAwareScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: Platform.OS === 'android' ? hp(14) : hp(17) }}
+                extraScrollHeight={Platform.OS === 'ios' ? hp(4) : 0}
             >
-                <View style={styles.textFieldStyle}>
-                    <Text style={styles.textStyle}>Andrew Ainsley</Text>
-                </View>
-
-                <View style={styles.textFieldStyle}>
-                    <Text style={styles.textStyle}>Andrew</Text>
-                </View>
-
-
-                <View style={styles.textFieldStyle}>
+                {/* Fullname */}
+                <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
                     <View style={styles.innerTextField}>
-                        <Text style={styles.textStyle}>12/27/1995</Text>
-                        <TouchableOpacity>
-                            <Image source={require('@/assets/temp/profileicons/calendar.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
-                        </TouchableOpacity>
+                        <Controller
+                            control={control}
+                            rules={{
+                                required: true,
+                            }}
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <TextInput
+                                    onBlur={onBlur}
+                                    defaultValue={data?.fullname as string}
+                                    onChangeText={onChange}
+                                    value={value}
+                                    placeholder='Full Name'
+                                    autoCapitalize='words'
+                                    placeholderTextColor={'#9E9E9E'}
+                                    style={styles.textStyle}
+                                />
+                            )}
+                            name="full_name"
+                        />
                     </View>
                 </View>
 
-
-                <View style={styles.textFieldStyle}>
+                {/* NickName */}
+                <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
                     <View style={styles.innerTextField}>
-                        <Text style={styles.textStyle}>andrew_ainsley@yourdomain.com</Text>
+                        <Controller
+                            control={control}
+                            rules={{
+                                required: true,
+                            }}
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <TextInput
+                                    onBlur={onBlur}
+                                    defaultValue={data?.nickname as string}
+                                    onChangeText={onChange}
+                                    value={value}
+                                    placeholder='Nickname'
+                                    placeholderTextColor={'#9E9E9E'}
+                                    style={styles.textStyle}
+                                />
+                            )}
+                            name="n_name"
+                        />
+                    </View>
+                </View>
+
+                {/* DateofBirth */}
+                <TouchableOpacity onPress={() => setOpen(true)}>
+                    <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
+                        <View style={styles.innerTextField}>
+                            <Text style={[styles.textStyle]} >{formattedDate}</Text>
+                            <DatePicker
+                                modal
+                                open={open}
+                                mode='date'
+                                date={date}
+                                onConfirm={(date) => {
+                                    setOpen(false)
+                                    setDate(date)
+                                }}
+                                onCancel={() => {
+                                    setOpen(false)
+                                }}
+                            />
+                            <TouchableOpacity>
+                                <Image source={require('@/assets/temp/profileicons/calendar.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </TouchableOpacity>
+
+
+                {/* EMAIL */}
+
+                <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
+                    <View style={styles.innerTextField}>
+                        <Controller
+                            control={control}
+                            rules={{
+                                required: true,
+                            }}
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <TextInput
+                                    onBlur={onBlur}
+                                    defaultValue={data?.email as string}
+                                    onChangeText={onChange}
+                                    value={value}
+                                    placeholder='Email'
+                                    keyboardType="email-address"
+                                    autoCapitalize="none"
+                                    autoComplete='email'
+                                    autoCorrect={false}
+                                    placeholderTextColor={'#9E9E9E'}
+                                    style={styles.textStyle}
+                                />
+                            )}
+                            name="email"
+                        />
                         <TouchableOpacity>
                             <Image source={require('@/assets/temp/profileicons/profileEmail.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
                         </TouchableOpacity>
                     </View>
                 </View>
 
-
-                <View style={styles.textFieldStyle}>
+                {/* <View style={styles.textFieldStyle}>
                     <View style={styles.innerTextField}>
                         <Text style={styles.textStyle}>United Arab Emirates</Text>
                         <Ionicons name='caret-down' size={hp(2)} />
                     </View>
+                </View> */}
+
+                {/* Country */}
+                <View style={{ marginTop: hp(3) }}>
+                    <SelectList
+                        setSelected={(val: React.SetStateAction<null>) => setCountry(val)}
+                        data={country}
+                        save="value"
+                        placeholder='Country'
+                        search={false}
+                        boxStyles={styles.boxStyles}
+                        inputStyles={{ fontFamily: "UrbanistSemiBold", fontSize: hp(2), }}
+                        dropdownStyles={styles.dropdownStyles}
+                        dropdownTextStyles={styles.dropdownTextStyles}
+                        maxHeight={300}
+                        defaultOption={{ key: 'Philippines', value: 'Philippines' }}
+                    />
                 </View>
 
 
-                <View style={styles.textFieldStyle}>
-                    <View style={styles.innerTextField}>
-                        <Text style={styles.textStyle}>Male</Text>
-                        <Ionicons name='caret-down' size={hp(2)} />
-                    </View>
-                </View>
 
                 <View>
                     <PhoneInput
                         ref={phoneInput}
-                        defaultValue={value}
-                        defaultCode="AE"
+                        defaultValue={data?.contact_number ? data.contact_number.slice(3, 14) : value}
+                        defaultCode={(data?.contact_number?.slice(0, 3) === "+63" ? "PH" : "AE") || 'AE'}
                         layout="first"
                         onChangeText={(text) => {
                             setValue(text);
@@ -78,27 +196,43 @@ export default function EditProflieData() {
                         }}
                         textInputStyle={{ fontFamily: 'UrbanistSemiBold', fontSize: hp(2) }}
                         codeTextStyle={{ fontFamily: 'UrbanistSemiBold', fontSize: hp(2) }}
-                        flagButtonStyle={{ backgroundColor: '#FAFAFA', paddingLeft: wp(4), }}
-                        containerStyle={{ borderRadius: wp(6), width: wp(90), marginTop: hp(3), minHeight: hp(7.5), maxHeight: hp(8), }}
+                        flagButtonStyle={{ backgroundColor: '#FAFAFA', paddingLeft: wp(4) }}
+                        containerStyle={{ borderRadius: wp(4), width: wp(90), marginTop: hp(3), minHeight: hp(7.5), maxHeight: hp(8), }}
                     />
                 </View>
 
 
 
-                <Link href={'/profilePage/CurrentAddress'} asChild>
-                    <TouchableOpacity style={styles.textFieldStyle}>
-                        <Text style={styles.textStyle}>267 New Avenue Park, Downtown, Dubai</Text>
-                    </TouchableOpacity>
-                </Link>
+                <View style={{ marginTop: hp(3) }}>
+                    <SelectList
+                        setSelected={(val: React.SetStateAction<null>) => setGender(val)}
+                        data={genderData}
+                        save="value"
+                        placeholder='Gender'
+                        search={false}
+                        boxStyles={styles.boxStyles}
+                        inputStyles={{ fontFamily: "UrbanistSemiBold", fontSize: hp(2), }}
+                        dropdownStyles={styles.dropdownStyles}
+                        dropdownTextStyles={styles.dropdownTextStyles}
+                        maxHeight={300}
+                        defaultOption={{ key: 'Male', value: 'Male' }}
+                    />
+                </View>
 
+
+                <TouchableOpacity style={styles.textFieldStyle} onPress={toggleAddress}>
+                    <Text style={styles.textStyle}>{data?.address ? data?.address : "Your Address"}</Text>
+                </TouchableOpacity>
 
                 <View style={styles.footer}>
-                    <TouchableOpacity style={styles.footerbtn}>
-                        <Text style={styles.footerText}>Update</Text>
+                    <TouchableOpacity style={defaultStyles.footerBtn}>
+                        <Text style={defaultStyles.footerText}>Update</Text>
                     </TouchableOpacity>
                 </View>
-            </KeyboardAvoidingView>
-        </ScrollView>
+
+            </KeyboardAwareScrollView>
+
+        </View>
 
     )
 }
@@ -118,8 +252,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: wp(6)
     },
     textStyle: {
+        flex: 1,
         fontFamily: "UrbanistSemiBold",
-        fontSize: hp(2)
+        fontSize: hp(2),
+        paddingVertical: hp(1),
     },
     innerTextField: {
         flexDirection: 'row',
@@ -127,8 +263,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     footer: {
-        marginTop: hp(6),
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: hp(4)
     },
     footerbtn: {
         width: wp(90),
@@ -142,5 +278,24 @@ const styles = StyleSheet.create({
         fontFamily: 'UrbanistBold',
         fontSize: hp(2),
         color: '#FFFFFF'
-    }
+    },
+    boxStyles: {
+        borderColor: '#FFFFFF',
+        backgroundColor: "#FAFAFA",
+        minHeight: hp(7.5),
+        maxHeight: hp(8),
+        borderWidth: 0.5,
+        borderRadius: 6,
+        alignItems: 'center'
+    },
+    dropdownStyles: {
+        borderColor: '#DADADA',
+        borderRadius: 6,
+        borderWidth: 0.5,
+    },
+    dropdownTextStyles: {
+        fontFamily: "UrbanistSemiBold",
+        fontSize: hp(2),
+        marginTop: hp(2),
+    },
 })

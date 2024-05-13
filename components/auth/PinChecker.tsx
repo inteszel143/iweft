@@ -11,7 +11,7 @@ import {
 import { Octicons } from '@expo/vector-icons';
 import { getPinNumber } from '@/apis/fetchAuth';
 import PinCodeModal from '../PinCodeModal';
-
+import * as SecureStore from 'expo-secure-store';
 interface CellProps {
     index: number;
     symbol: string;
@@ -19,7 +19,7 @@ interface CellProps {
 }
 
 export default function PinChecker() {
-    const { email } = useLocalSearchParams();
+    const { refreshToken } = useLocalSearchParams();
     const [btnLoading, setBtnLoading] = useState(false);
     const CELL_COUNT = 4;
     const [enableMask, setEnableMask] = useState(true);
@@ -54,6 +54,7 @@ export default function PinChecker() {
         setBtnLoading(true);
         const pin = parseInt(value);
         const response = await getPinNumber(pin);
+        await SecureStore.setItemAsync('refreshToken', refreshToken as string);
         if (response?.isMatch) {
             router.push('/(tabs)/');
             setBtnLoading(false);

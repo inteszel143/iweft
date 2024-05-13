@@ -113,7 +113,7 @@ export default function YourAddress() {
             </View>
 
 
-            <View style={{ height: hp(50) }}>
+            <View style={{ height: hp(52) }}>
                 <MapView
                     style={styles.map}
                     provider={PROVIDER_GOOGLE}

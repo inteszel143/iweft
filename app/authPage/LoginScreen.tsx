@@ -63,15 +63,16 @@ export default function LoginScreen() {
         setLoadingBtn(true);
         try {
             const response = await manualLogin(data.email, data.password);
+            const refreshToken = response?.refresh?.token;
             await SecureStore.setItemAsync('accessToken', response?.access?.token);
-            await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+            // await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
             const isVerify = await getVerifyCheck(data?.email as string);
             setTimeout(() => {
                 setLoadingBtn(false);
                 queryClient.invalidateQueries({ queryKey: ['user-data'] });
                 router.push({
                     pathname: '/authPage/AfterLogin',
-                    params: { email: data?.email, verified: isVerify?.verified }
+                    params: { email: data?.email, verified: isVerify?.verified, refreshToken: refreshToken }
                 });
             }, 3000);
         } catch (error) {

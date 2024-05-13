@@ -119,7 +119,8 @@ const styles = StyleSheet.create({
     },
     labelStyle: {
         fontFamily: 'UrbanistSemiBold',
-        fontSize: hp(2.2)
+        fontSize: hp(2.2),
+        color: "#F75555",
     },
     rightRow: {
         flexDirection: 'row',

@@ -161,10 +161,13 @@ export default function ProfileData() {
 
 
                 <View style={styles.headerStyle}>
-                    {image === null ? <Image source={require('@/assets/temp/default.jpg')} resizeMode='contain' style={{ width: wp(40), height: hp(18) }} />
+                    {image === null ? <Image source={require('@/assets/temp/default.jpg')} resizeMode='contain' style={{ width: wp(40), height: wp(40) }} />
                         :
                         <View style={{ borderRadius: wp(20), width: wp(40), height: wp(40), overflow: 'hidden', backgroundColor: 'white' }}>
-                            <Image source={{ uri: image }} resizeMode='contain' style={{ width: wp(40), height: wp(40) }} />
+                            <Image
+                                source={{ uri: image }}
+                                resizeMode='cover'
+                                style={{ width: wp(40), height: wp(40), borderRadius: wp(18) }} />
                         </View>
                     }
                     <TouchableOpacity style={styles.editBtn}
@@ -294,7 +297,9 @@ export default function ProfileData() {
                                 )}
                                 name="email"
                             />
-                            <Ionicons name='mail-outline' size={hp(2.4)} />
+                            <TouchableOpacity>
+                                <Image source={require('@/assets/temp/profileicons/profileEmail.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
+                            </TouchableOpacity>
                         </View>
                     </View>
 

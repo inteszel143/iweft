@@ -14,7 +14,7 @@ export default function HomeHeader() {
 
                 <TouchableOpacity onPress={() => router.push('/(tabs)/profile')}>
                     <Image
-                        source={{ uri: `${process.env.EXPO_PUBLIC_API_URL}/uploads/${data?.profile_picture}` }}
+                        source={{ uri: data?.profile_picture }}
                         resizeMode='center'
                         style={{ width: wp(14), height: wp(14), borderRadius: wp(7) }}
                     />

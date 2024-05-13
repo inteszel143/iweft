@@ -50,7 +50,6 @@ export const getPinNumber = async (pin: number) => {
  * VERIFY CHECK ---------------------------------------------------------
  *
  */
-
 export const getVerifyCheck = async (email: string) => {
   const accessToken = await SecureStore.getItemAsync("accessToken");
   try {
@@ -68,7 +67,6 @@ export const getVerifyCheck = async (email: string) => {
     );
     return response.data;
   } catch (error) {
-    console.log(errorRes(error));
     return Promise.reject(error);
   }
 };

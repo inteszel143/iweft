@@ -5,7 +5,7 @@ import PinChecker from '@/components/auth/PinChecker';
 import EmailVerification from '@/components/auth/EmailVerification';
 
 export default function AfterLogin() {
-    const { email, verified } = useLocalSearchParams();
+    const { email, verified, accessToken, refreshToken } = useLocalSearchParams();
     if (verified === "false") {
         return (
             <EmailVerification />

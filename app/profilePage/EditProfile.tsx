@@ -6,8 +6,6 @@ import EditProflieData from '@/components/profile/EditProflieData';
 export default function EditProfile() {
     return (
         <View style={styles.container}>
-
-
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
 

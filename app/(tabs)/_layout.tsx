@@ -7,7 +7,8 @@ import InboxHeader from "@/components/inbox/InboxHeader";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import { Image, Platform } from "react-native";
 import { useColorScheme } from "@/components/useColorScheme";
-import { BlurView } from "expo-blur";
+import { useUserQuery } from "@/query/fetchAuthQuery";
+import { BlurView } from 'expo-blur';
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof Ionicons>["name"];
   color: string;
@@ -20,9 +21,18 @@ function TabBarIcon(props: {
     />
   );
 }
-
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { data, isFetching } = useUserQuery();
+  const validate =
+    ((data?.profile_picture ===
+      "https://res.cloudinary.com/dgepgnzoc/image/upload/v1715604259/uploads_profile_pictures/default_profile_picture.jpg") ||
+      (data?.address === null) ||
+      (data?.apartment_number === null) ||
+      (data?.city === null) ||
+      (data?.contact_number === null) ||
+      (data?.nickname === null)) as boolean;
+
   return (
     <Tabs
       screenOptions={{
@@ -108,6 +118,7 @@ export default function TabLayout() {
         options={{
           title: "Profile",
           headerShown: false,
+          tabBarBadge: validate ? 1 : null,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name={focused ? "person" : "person-outline"}

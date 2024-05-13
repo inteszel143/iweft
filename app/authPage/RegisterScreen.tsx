@@ -78,7 +78,7 @@ export default function RegisterScreen() {
     return (
         <View style={styles.container}>
             {existModal && <EmailExist modalVisible={existModal} setModalVisible={setExitModal} />}
-        
+
             <View style={styles.headerBack}>
                 <TouchableOpacity onPress={() => router.back()}>
                     <AntDesign name='arrowleft' size={hp(3)} />

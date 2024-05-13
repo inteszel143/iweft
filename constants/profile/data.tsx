@@ -1,9 +1,11 @@
+
 export const profileData = [
     {
         id: 1,
         icon: require('@/assets/temp/profileicons/editprofile.jpg'),
         label: "Edit Profile",
-        url: '/profilePage/EditProfile'
+        url: '/profilePage/EditProfile',
+        warning: true,
     },
     {
         id: 2,
@@ -139,5 +141,12 @@ export const invite = [
         phone: "+1-202-555-0171"
     },
 
+];
+export const genderData = [
+    { key: 'Male', value: 'Male' },
+    { key: 'Female', value: 'Female' },
+];
+export const country = [
+    { key: 'United Arab Emirates', value: 'United Arab Emirates' },
+    { key: 'Philippines', value: 'Philippines' },
 ]
-

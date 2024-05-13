@@ -1,10 +1,79 @@
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { profileData } from '@/constants/profile/data';
-import { Feather } from '@expo/vector-icons';
+import { AntDesign, Feather } from '@expo/vector-icons';
 import { Link } from 'expo-router';
+import { useUserQuery } from '@/query/fetchAuthQuery';
 export default function ProfileMiddle() {
+    const { data, isFetching } = useUserQuery();
+    const validate =
+        ((data?.profile_picture ===
+            "https://res.cloudinary.com/dgepgnzoc/image/upload/v1715604259/uploads_profile_pictures/default_profile_picture.jpg") ||
+            (data?.address === null) ||
+            (data?.apartment_number === null) ||
+            (data?.city === null) ||
+            (data?.contact_number === null) ||
+            (data?.nickname === null)) as boolean;
+    const profileData = [
+        {
+            id: 1,
+            icon: require('@/assets/temp/profileicons/editprofile.jpg'),
+            label: "Edit Profile",
+            url: '/profilePage/EditProfile',
+            warning: validate,
+        },
+        {
+            id: 2,
+            icon: require('@/assets/temp/profileicons/notif.jpg'),
+            label: "Notification",
+            url: '/profilePage/Notification'
+        },
+        {
+            id: 3,
+            icon: require('@/assets/temp/profileicons/payment.jpg'),
+            label: "Payment",
+            url: '/profilePage/ProfilePayment'
+        },
+        {
+            id: 4,
+            icon: require('@/assets/temp/profileicons/security.jpg'),
+            label: "Security",
+            url: '/profilePage/Security'
+        },
+        {
+            id: 5,
+            icon: require('@/assets/temp/profileicons/language.jpg'),
+            label: "Language",
+            value: 'English (US)',
+            url: '/profilePage/Language'
+        },
+        {
+            id: 6,
+            icon: require('@/assets/temp/profileicons/subs.jpg'),
+            label: "Subscription",
+            url: '/profilePage/Subscription',
+            switch: true
+        },
+        {
+            id: 7,
+            icon: require('@/assets/temp/profileicons/privacy.jpg'),
+            label: "Privacy Policy",
+            url: '/profilePage/PrivacyPolicy'
+        },
+        {
+            id: 8,
+            icon: require('@/assets/temp/profileicons/help.jpg'),
+            label: "Help Center",
+            url: '/profilePage/EditProfile'
+        },
+        {
+            id: 9,
+            icon: require('@/assets/temp/profileicons/invite.jpg'),
+            label: "Invite Friends",
+            url: '/profilePage/InviteFriends'
+        },
+    ];
+
     return (
         <View style={styles.container}>
             {
@@ -18,6 +87,7 @@ export default function ProfileMiddle() {
                                 </View>
 
                                 <View style={styles.rightRow}>
+                                    {item.warning && <AntDesign name="exclamationcircle" size={hp(2)} color={'red'} />}
                                     <Text style={styles.textValue}>{item.value}</Text>
                                     {item.switch ? <Feather name='chevron-right' size={hp(2.5)} color={'#212121'} /> : <Feather name='chevron-right' size={hp(2.5)} color={'#212121'} />}
                                 </View>
@@ -53,7 +123,7 @@ const styles = StyleSheet.create({
     rightRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: wp(4)
+        gap: wp(3)
     },
     textValue: {
         fontFamily: 'UrbanistSemiBold',

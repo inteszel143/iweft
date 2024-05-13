@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Carousel from 'react-native-reanimated-carousel';
 import CarouselIndicator from './CarouselIndicator';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 const data = [
     {
         img: require('@/assets/temp/special/carousel1.png')
@@ -42,22 +42,26 @@ export default function HomeSpecialOffers() {
                     onSnapToItem={(index) => setActiveIndex(index)}
                     renderItem={({ item, index }) => (
                         <View
+
                             style={{
                                 flex: 1,
                                 justifyContent: 'center',
                                 paddingTop: hp(6),
                             }}
                         >
-                            <Link href={{ pathname: '/homePage/OfferOtherPage', params: item }} asChild>
-                                <Pressable>
-                                    <Image source={item.img}
-                                        resizeMode='contain'
-                                        style={{
-                                            width: wp(100),
-                                        }}
-                                    />
-                                </Pressable>
-                            </Link>
+                            <View
+                            // onPress={() => router.push({
+                            //     pathname: '/homePage/OfferOtherPage',
+                            //     params: item
+                            // })}
+                            >
+                                <Image source={item.img}
+                                    resizeMode='contain'
+                                    style={{
+                                        width: wp(100),
+                                    }}
+                                />
+                            </View>
                             <Text style={{ textAlign: 'center', fontSize: 30 }}>
                                 {index}
                             </Text>

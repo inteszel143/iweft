@@ -33,4 +33,9 @@ export const defaultStyles = StyleSheet.create({
     paddingVertical: hp(1),
     fontSize: hp(2),
   },
+  footerText: {
+    fontFamily: "UrbanistBold",
+    fontSize: hp(2),
+    color: "#FFFFFF",
+  },
 });

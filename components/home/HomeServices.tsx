@@ -3,33 +3,30 @@ import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
+import { useHomeServices } from '@/query/homeQuery';
 export default function HomeServices() {
+
+    const { data } = useHomeServices();
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.specialText}>Services</Text>
             </View>
-
-
             <View style={styles.listStyle}>
-                <Link href={'/homePage/services/ServicesScreen'} asChild>
-                    <TouchableOpacity>
-                        <Image source={require('@/assets/temp/services/list1.png')} resizeMode='contain' style={styles.imageStyle} />
-                    </TouchableOpacity>
-                </Link>
-                <Link href={'/homePage/services/ServicesScreen'} asChild>
-                    <TouchableOpacity>
-                        <Image source={require('@/assets/temp/services/list2.png')} resizeMode='contain' style={styles.imageStyle} />
-                    </TouchableOpacity>
-                </Link>
-
-
-                <Link href={'/homePage/services/ServicesScreen'} asChild>
-                    <TouchableOpacity>
-                        <Image source={require('@/assets/temp/services/list3.png')} resizeMode='contain' style={styles.imageStyle} />
-                    </TouchableOpacity>
-                </Link>
-
+                {
+                    data?.map((item: any, index: any) => {
+                        return (
+                            <TouchableOpacity key={index}>
+                                <Image
+                                    source={{ uri: item?.image }}
+                                    resizeMode='contain'
+                                    style={styles.imageStyle}
+                                />
+                                <Text style={styles.titleStyle} >{item?.title.replace(" Services", "")}</Text>
+                            </TouchableOpacity>
+                        )
+                    })
+                }
                 <Link href={'/homePage/services/AllServices'} asChild>
                     <TouchableOpacity>
                         <View style={styles.seeallStyle}>
@@ -38,16 +35,21 @@ export default function HomeServices() {
                     </TouchableOpacity>
                 </Link>
             </View>
+            {/* <Link href={'/homePage/services/ServicesScreen'} asChild>
+                <TouchableOpacity>
+                    <Image source={require('@/assets/temp/services/list1.png')} resizeMode='contain' style={styles.imageStyle} />
+                </TouchableOpacity>
+            </Link> */}
 
 
             <View style={{ height: 0.7, backgroundColor: "#DADADA", marginTop: hp(4), marginHorizontal: wp(4) }} />
         </View>
     )
-}
+};
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: hp(3),
+        marginTop: hp(2.5),
     },
     header: {
         flexDirection: 'row',
@@ -79,5 +81,9 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor: "#DADADA",
         backgroundColor: "#FAFAFA"
+    },
+    titleStyle: {
+        fontFamily: "UrbanistMedium",
+        fontSize: hp(1.8),
     }
 })
