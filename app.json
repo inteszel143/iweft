@@ -12,9 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "usesAppleSignIn": true,
       "supportsTablet": true,
@@ -22,9 +20,7 @@
         "NSPrivacyAccessedAPITypes": [
           {
             "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
-            "NSPrivacyAccessedAPITypeReasons": [
-              "CA92.1"
-            ]
+            "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
           }
         ]
       },
@@ -87,9 +83,7 @@
           "launchModeExperimental": "most-recent"
         }
       ],
-      [
-        "expo-apple-authentication"
-      ],
+      ["expo-apple-authentication"],
       [
         "expo-tracking-transparency",
         {

@@ -4,9 +4,10 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { Ionicons } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 import { useHomeServices } from '@/query/homeQuery';
+import { useIsFocused } from '@react-navigation/native';
 export default function HomeServices() {
-
-    const { data } = useHomeServices();
+    const isFocused = useIsFocused();
+    const { data } = useHomeServices(isFocused)
     return (
         <View style={styles.container}>
             <View style={styles.header}>

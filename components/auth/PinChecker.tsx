@@ -50,6 +50,10 @@ export default function PinChecker() {
         );
     };
 
+    useEffect(() => {
+        ref?.current.focus();
+    }, []);
+
     const onSubmit = async () => {
         setBtnLoading(true);
         const pin = parseInt(value);

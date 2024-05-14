@@ -22,7 +22,6 @@ export default function TabOneScreen() {
         <LaundryBundles />
         <HomeAds />
         <BundleOffers />
-
       </ScrollView>
     </SafeAreaView>
   );

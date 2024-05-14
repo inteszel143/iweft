@@ -38,8 +38,8 @@ export default function ProfileData() {
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
+            selectionLimit: 1,
             allowsEditing: true,
-            aspect: [4, 3],
             quality: 1,
         });
         if (result.canceled === true) {
@@ -349,8 +349,20 @@ export default function ProfileData() {
 
 
                 </View>
+
+                <View style={{ alignItems: 'center', marginTop: hp(4) }}>
+                    <TouchableOpacity style={[styles.footerBtn, { backgroundColor: "#DADADA" }]}
+                        // disabled={!value || image === null ? true : false}
+                        disabled
+                        onPress={handleSubmit(onSubmit)}
+
+                    >
+                        <Text style={styles.footerText}>Continue</Text>
+                    </TouchableOpacity>
+                </View>
+
             </KeyboardAwareScrollView >
-            <View style={styles.footer} >
+            {/* <View style={styles.footer} >
                 <TouchableOpacity style={[styles.footerBtn, { backgroundColor: "#DADADA" }]}
                     // disabled={!value || image === null ? true : false}
                     disabled
@@ -359,7 +371,7 @@ export default function ProfileData() {
                 >
                     <Text style={styles.footerText}>Continue</Text>
                 </TouchableOpacity>
-            </View>
+            </View> */}
 
 
         </View >

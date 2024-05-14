@@ -10,7 +10,8 @@ import {
 } from 'react-native-confirmation-code-field';
 import { Octicons } from '@expo/vector-icons';
 import { getPinNumber } from '@/apis/fetchAuth';
-
+import PinCodeModal from '@/components/PinCodeModal';
+import * as SecureStore from 'expo-secure-store';
 interface CellProps {
     index: number;
     symbol: string;
@@ -18,11 +19,12 @@ interface CellProps {
 }
 
 export default function AfterEmailVerification() {
-    const { email } = useLocalSearchParams();
+    const { refreshToken } = useLocalSearchParams();
     const [btnLoading, setBtnLoading] = useState(false);
     const CELL_COUNT = 4;
     const [enableMask, setEnableMask] = useState(true);
     const [value, setValue] = useState(''); // pin data
+    const [errorModalVisible, setErrorModalVisible] = useState(false);
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
         value,
@@ -53,18 +55,22 @@ export default function AfterEmailVerification() {
     }, []);
 
     const onSubmit = async () => {
+        setBtnLoading(true);
         const pin = parseInt(value);
         const response = await getPinNumber(pin);
+        await SecureStore.setItemAsync('refreshToken', refreshToken as string);
         if (response?.isMatch) {
             router.push('/(tabs)/');
+            setBtnLoading(false);
         } else {
-            console.log("Error ka");
+            setErrorModalVisible(true);
+            setBtnLoading(false);
         }
-    }
+    };
 
     return (
         <View style={styles.container}>
-
+            {errorModalVisible && <PinCodeModal modalVisible={errorModalVisible} setModalVisible={setErrorModalVisible} />}
 
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>

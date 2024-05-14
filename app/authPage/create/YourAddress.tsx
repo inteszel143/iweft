@@ -12,14 +12,12 @@ export default function YourAddress() {
     const { image, fullName, nickName, dob, email, password, phone } = useLocalSearchParams();
 
     const [errorMsg, setErrorMsg] = useState("");
-    const [mapLocation, setMapLocation] = useState<any>([]);
     const [nameAddress, setNameAddress] = useState<any>();
     const [city, setCity] = useState<any>();
     const [street, setStreet] = useState<any>();
     const [lat, setLat] = useState<any>("");
     const [long, setLong] = useState<any>("");
     const [btnLoading, setBtnLoading] = useState(false);
-
 
     useEffect(() => {
         (async () => {
@@ -31,12 +29,9 @@ export default function YourAddress() {
             }
             const location = await Location.getCurrentPositionAsync({});
             const { latitude, longitude } = location.coords;
-            setLat(latitude);
-            setLong(longitude);
         })();
 
     }, []);
-
 
 
     // bottomsheet
@@ -55,8 +50,8 @@ export default function YourAddress() {
         longitudeDelta: 0.005005337297916412,
     };
     const onRegionChange = async (region: Region) => {
-        setMapLocation([region.latitude, region.longitude]);
-
+        setLat(region.latitude);
+        setLong(region.longitude);
         const userAddress = await Location.reverseGeocodeAsync({
             latitude: region.latitude,
             longitude: region.longitude
@@ -113,20 +108,14 @@ export default function YourAddress() {
             </View>
 
 
-            <View style={{ height: hp(52) }}>
+            <View style={{ height: Platform.OS === 'ios' ? hp(53) : hp(55) }}>
                 <MapView
-                    style={styles.map}
+                    style={StyleSheet.absoluteFill}
                     provider={PROVIDER_GOOGLE}
-                    // showsUserLocation={true}
+                    showsUserLocation={true}
                     showsMyLocationButton
                     loadingEnabled={true}
                     initialRegion={INITIAL_REGION}
-                    region={{
-                        latitude: lat,
-                        longitude: long,
-                        latitudeDelta: 0.1034042830388827383,
-                        longitudeDelta: 0.105005337297916412,
-                    }}
                     onRegionChangeComplete={onRegionChange}
                 />
                 <View style={styles.markerStyle}>

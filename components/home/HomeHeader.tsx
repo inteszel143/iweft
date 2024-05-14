@@ -3,21 +3,33 @@ import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
 import { useUserQuery } from '@/query/fetchAuthQuery';
+import { useIsFocused } from '@react-navigation/native';
 export default function HomeHeader() {
+    const isFocused = useIsFocused();
     const currentDate = new Date();
     const currentHour = currentDate.getHours();
     const isMorning = currentHour >= 0 && currentHour < 12;
-    const { data } = useUserQuery();
+    const { data } = useUserQuery(isFocused);
+    if (!data) {
+        return;
+    }
     return (
         <View style={styles.header}>
             <View style={styles.headerLeft}>
 
                 <TouchableOpacity onPress={() => router.push('/(tabs)/profile')}>
-                    <Image
-                        source={{ uri: data?.profile_picture }}
+                    {!data ? <Image
+                        source={require('@/assets/temp/default.jpg')}
                         resizeMode='center'
                         style={{ width: wp(14), height: wp(14), borderRadius: wp(7) }}
-                    />
+                    /> :
+                        <Image
+                            source={{ uri: data?.profile_picture }}
+                            resizeMode='center'
+                            style={{ width: wp(14), height: wp(14), borderRadius: wp(7) }}
+                        />
+                    }
+
                 </TouchableOpacity>
 
                 <View>

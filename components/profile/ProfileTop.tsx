@@ -7,13 +7,15 @@ import * as ImagePicker from 'expo-image-picker';
 import { userDeleteProfileImage, userUpdateProfileImage } from '@/apis/userupdate';
 import errorRes from '@/apis/errorRes';
 import { useQueryClient } from "@tanstack/react-query";
+import { useIsFocused } from '@react-navigation/native';
 export default function ProfileTop() {
+    const isFocused = useIsFocused();
     const queryClient = useQueryClient();
-    const { data, isFetching } = useUserQuery();
+    const { data, isPending } = useUserQuery(isFocused);
     const [image, setImage] = useState<any>(null); // image data
     const [modalVisible, setModalVisible] = useState(false);
     const [modalConfirm, setModalConfirm] = useState(false);
-    const [btnModalLoading, setBtnModalLoading] = useState(false)
+    const [btnModalLoading, setBtnModalLoading] = useState(false);
     const toggleModal = () => {
         setModalVisible(!modalVisible);
     };
@@ -26,8 +28,8 @@ export default function ProfileTop() {
         }
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
+            selectionLimit: 1,
             allowsEditing: true,
-            aspect: [4, 3],
             quality: 1,
         });
         if (result.canceled === true) {
@@ -80,19 +82,20 @@ export default function ProfileTop() {
         } catch (error) {
             setModalConfirm(false);
             setBtnModalLoading(false);
-            console.log(errorRes(error));
         }
     };
 
     const toggleDeletePhoto = async () => {
+        setBtnModalLoading(true);
         try {
             await userDeleteProfileImage();
             setImage(null);
             queryClient.invalidateQueries({ queryKey: ['user-data'] });
             toggleModal();
+            setBtnModalLoading(false);
         } catch (error) {
             toggleModal();
-            console.log(error);
+            setBtnModalLoading(false);
         }
     }
 
@@ -128,10 +131,13 @@ export default function ProfileTop() {
         )
     }
 
-    if (isFetching) {
+    if (isPending) {
         return (
             <ActivityIndicator size={'small'} color={'gray'} />
         )
+    };
+    if (!data) {
+        return;
     }
 
     return (
@@ -192,7 +198,7 @@ export default function ProfileTop() {
 
 
                         <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#F75555' }]} onPress={toggleDeletePhoto}>
-                            <Text style={[styles.modalText, { color: '#FFFFFF' }]}>Delete Photo</Text>
+                            {btnModalLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={[styles.modalText, { color: '#FFFFFF' }]}>Delete Photo</Text>}
                         </TouchableOpacity>
 
 

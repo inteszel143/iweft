@@ -1,7 +1,6 @@
-import { Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Image, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Ionicons } from '@expo/vector-icons';
 import PhoneInput from "react-native-phone-number-input";
 import { router } from 'expo-router';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -13,14 +12,17 @@ import { useUserQuery } from '@/query/fetchAuthQuery';
 import DatePicker from 'react-native-date-picker';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { country, genderData } from '@/constants/profile/data';
+import { AntDesign } from '@expo/vector-icons';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function EditProflieData() {
-    const { data, isFetching } = useUserQuery();
+    const isFocused = useIsFocused();
+    const { data, isFetching } = useUserQuery(isFocused);
     const phoneInput = useRef<PhoneInput>(null);
     const [value, setValue] = useState('');
     const [formattedValue, setFormattedValue] = useState(""); // Phone value
-    const [gender, setGender] = useState("");//Gender Value
-    const [contry, setCountry] = useState(""); //Country Value
+    const [gender, setGender] = useState(""); // Gender Value
+    const [contry, setCountry] = useState(""); // Country Value
     const [date, setDate] = useState(new Date(data?.dob));
     const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
     const [open, setOpen] = useState(false);
@@ -95,6 +97,7 @@ export default function EditProflieData() {
                             )}
                             name="n_name"
                         />
+                        {data?.nickname === null && <AntDesign name='exclamationcircle' size={hp(2)} color={'red'} />}
                     </View>
                 </View>
 
@@ -221,7 +224,10 @@ export default function EditProflieData() {
 
 
                 <TouchableOpacity style={styles.textFieldStyle} onPress={toggleAddress}>
-                    <Text style={styles.textStyle}>{data?.address ? data?.address : "Your Address"}</Text>
+                    <View style={styles.innerTextField}>
+                        <Text style={styles.textStyle}>{data?.address ? data?.address : "Your Address"}</Text>
+                        {data?.address === null && <AntDesign name='exclamationcircle' size={hp(2)} color={'red'} />}
+                    </View>
                 </TouchableOpacity>
 
                 <View style={styles.footer}>

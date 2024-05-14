@@ -8,6 +8,7 @@ import Animated, { BounceIn, FadeIn } from 'react-native-reanimated';
 import { StatusBar } from 'expo-status-bar';
 import { appOpenRefresh } from '@/apis/auth';
 import { useQueryClient } from '@tanstack/react-query';
+import errorRes from '@/apis/errorRes';
 export default function index() {
     const queryClient = useQueryClient();
     useEffect(() => {
@@ -21,7 +22,7 @@ export default function index() {
         const onboarded = await SecureStore.getItemAsync('onboarded');
         queryClient.invalidateQueries({ queryKey: ['user-data'] });
         if (refreshToken === null) {
-            if (onboarded === "1") {
+            if (onboarded === null) {
                 router.push('/authPage/SelectLoginPage');
             } else {
                 router.push('/authPage/OnboardingScreen');
@@ -33,7 +34,7 @@ export default function index() {
                 await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
                 router.push('/(tabs)/');
             } catch (error) {
-                return;
+                router.push('/authPage/LoginScreen');
             }
         }
     };

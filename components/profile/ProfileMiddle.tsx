@@ -4,8 +4,10 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { AntDesign, Feather } from '@expo/vector-icons';
 import { Link } from 'expo-router';
 import { useUserQuery } from '@/query/fetchAuthQuery';
+import { useIsFocused } from '@react-navigation/native';
 export default function ProfileMiddle() {
-    const { data, isFetching } = useUserQuery();
+    const isFocused = useIsFocused();
+    const { data, isFetching } = useUserQuery(isFocused);
     const validate =
         ((data?.profile_picture ===
             "https://res.cloudinary.com/dgepgnzoc/image/upload/v1715604259/uploads_profile_pictures/default_profile_picture.jpg") ||

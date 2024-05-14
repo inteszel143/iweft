@@ -14,7 +14,7 @@ const CELL_COUNT = 6;
 
 
 export default function EmailVerification() {
-    const { email } = useLocalSearchParams();
+    const { email, refreshToken } = useLocalSearchParams();
     const [value, setValue] = useState('');
     const [btnLoading, setBtnLoading] = useState(false);
     const [errorModalVisible, setErrorModalVisible] = useState(false);
@@ -36,7 +36,7 @@ export default function EmailVerification() {
             setTimeout(() => {
                 router.push({
                     pathname: '/authPage/AfterEmailVerification',
-                    params: { email: email }
+                    params: { email: email, refreshToken: refreshToken }
                 });
                 setBtnLoading(false);
             }, 2000);

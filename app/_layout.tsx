@@ -62,9 +62,13 @@ function RootLayoutNav() {
 
   return (
     // <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-    <Stack>
+    <Stack
+      screenOptions={{
+        animation: "slide_from_right"
+      }}
+    >
       <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false, gestureEnabled: false, }} />
       <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
       <Stack.Screen name="BookingChat" options={{ header: () => <HeaderChat />, headerShadowVisible: false }} />
       <Stack.Screen name="Undercontruct" options={{ headerShown: false }} />

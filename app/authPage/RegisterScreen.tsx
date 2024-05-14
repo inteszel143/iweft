@@ -57,21 +57,25 @@ export default function RegisterScreen() {
 
     const onSubmit = async (data: any) => {
         setLoadingBtn(true);
-        const reponse = await getEmailChecker(data?.email);
-        if (reponse?.exists) {
-            setExitModal(true);
-            setLoadingBtn(false);
-        } else {
-            setTimeout(() => {
+        try {
+            const reponse = await getEmailChecker(data?.email);
+            if (reponse?.exists) {
+                setExitModal(true);
                 setLoadingBtn(false);
-                router.push({
-                    pathname: '/authPage/create/ProfileData',
-                    params: {
-                        email: data.email,
-                        password: data.password
-                    }
-                });
-            }, 2000);
+            } else {
+                setTimeout(() => {
+                    setLoadingBtn(false);
+                    router.push({
+                        pathname: '/authPage/create/ProfileData',
+                        params: {
+                            email: data.email,
+                            password: data.password
+                        }
+                    });
+                }, 2000);
+            }
+        } catch (error) {
+            setLoadingBtn(false);
         }
     };
 

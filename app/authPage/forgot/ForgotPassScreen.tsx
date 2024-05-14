@@ -10,11 +10,14 @@ import { defaultStyles } from '@/constants/Styles';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
 import ForgotCodeModal from '@/components/ForgotCodeModal';
+import errorRes from '@/apis/errorRes';
+import EmailNotFound from '@/components/EmailNotFound';
 
 export default function ForgotPassScreen() {
 
     const [loadingBtn, setLoadingBtn] = useState(false);
     const [codeSuccessModal, setCodeSuccesModal] = useState(false);
+    const [emailNotFound, setEmailNotFound] = useState(false);
 
     const schema = yup.object().shape({
         input: yup.string().required('Email or phone number is required').test('emailOrPhoneNumber', 'Enter a valid email or phone number', function (value) {
@@ -46,6 +49,7 @@ export default function ForgotPassScreen() {
                 });
             }, 2000);
         } catch (error) {
+            setEmailNotFound(true);
             setLoadingBtn(false);
         }
     };
@@ -54,6 +58,7 @@ export default function ForgotPassScreen() {
     return (
         <View style={styles.container}>
             {codeSuccessModal && <ForgotCodeModal modalVisible={codeSuccessModal} setModalVisible={setCodeSuccesModal} />}
+            {emailNotFound && <EmailNotFound modalVisible={emailNotFound} setModalVisible={setEmailNotFound} />}
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
 
@@ -129,14 +134,17 @@ export default function ForgotPassScreen() {
                     <Text style={styles.errorStyle} >{errors.input?.message}</Text>
                 </View>
                 }
+                <View style={{ alignItems: 'center', marginTop: hp(6) }}>
+                    <TouchableOpacity style={defaultStyles.footerBtn} onPress={handleSubmit(onSubmit)}>
+                        {loadingBtn ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>Continue</Text>}
+                    </TouchableOpacity>
+                </View>
 
             </KeyboardAwareScrollView>
 
-            <View style={styles.footer}>
-                <TouchableOpacity style={defaultStyles.footerBtn} onPress={handleSubmit(onSubmit)}>
-                    {loadingBtn ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>Continue</Text>}
-                </TouchableOpacity>
-            </View>
+            {/* <View style={styles.footer}>
+
+            </View> */}
 
 
         </View>

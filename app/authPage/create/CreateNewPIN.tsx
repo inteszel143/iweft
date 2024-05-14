@@ -10,8 +10,9 @@ import {
 } from 'react-native-confirmation-code-field';
 import { Octicons } from '@expo/vector-icons';
 import CreateNewUserSucess from '@/components/CreateNewUserSucess';
-import { manualSignin } from '@/apis/auth';
+import { manualSignup } from '@/apis/auth';
 import { number, string } from 'yup';
+import errorRes from '@/apis/errorRes';
 interface CellProps {
     index: number;
     symbol: string;
@@ -76,28 +77,28 @@ export default function CreateNewPIN() {
             formData.append("address", nameAddress as string);
             formData.append("apartment_number", street as string);
             formData.append("city", city as string);
-            formData.append("pin", pin as number);
-            formData.append("latitude", latitude as number);
-            formData.append("longitude", longitude as number);
-            // FEATURE IMAGE
-            const filename = image.split("/").pop();
-            const fileType = filename.split('.').pop();
-            formData.append("profile_picture", {
-                uri: image,
-                name: filename,
-                type: `image/${fileType}`,
-            });
+            formData.append("pin", pin);
+            formData.append("latitude", latitude as string);
+            formData.append("longitude", longitude as string);
+            // // PROFILE IMAGE
+            // const filename = image.split("/").pop();
+            // const fileType = filename.split('.').pop();
+            // formData.append("profile_picture", {
+            //     uri: image,
+            //     name: filename,
+            //     type: `image/${fileType}`,
+            // });
             formData.append("dob", dob as Date);
-            const response = await manualSignin(formData);
+            await manualSignup(formData);
             setTimeout(() => {
                 setBtnLoading(false);
                 setModalVisible(true);
             }, 2000);
         } catch (error) {
             setBtnLoading(false);
-            console.log(error);
+            console.log(errorRes(error));
         }
-    }
+    };
 
     return (
         <View style={styles.container}>
@@ -117,7 +118,7 @@ export default function CreateNewPIN() {
 
 
             <ScrollView contentContainerStyle={styles.scollviewContainer}>
-                <View>
+                <View style={{ paddingHorizontal: wp(4) }}>
                     <Text style={styles.conatinertitle}>Add a PIN number to make your account more secure.</Text>
                 </View>
                 <CodeField

@@ -4,7 +4,7 @@ import * as SecureStore from "expo-secure-store";
 /**
  * MANUAL REGISTER  ---------------------------------------------------------
  */
-export const manualSignin = async (data: Object) => {
+export const manualSignup = async (data: Object) => {
   try {
     const response = await axios.post(
       `${process.env.EXPO_PUBLIC_API_URL}/auth/client/signup`,
