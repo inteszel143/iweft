@@ -4,13 +4,15 @@ import * as SecureStore from "expo-secure-store";
 /**
  * MANUAL REGISTER  ---------------------------------------------------------
  */
-export const manualSignup = async (data: Object) => {
+export const manualSignup = async (data: FormData) => {
   try {
     const response = await axios.post(
       `${process.env.EXPO_PUBLIC_API_URL}/auth/client/signup`,
       data,
       {
-        headers: {},
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       }
     );
     return response.data;

@@ -13,6 +13,7 @@ import CreateNewUserSucess from '@/components/CreateNewUserSucess';
 import { manualSignup } from '@/apis/auth';
 import { number, string } from 'yup';
 import errorRes from '@/apis/errorRes';
+import ValidatingData from '@/components/ValidatingData';
 interface CellProps {
     index: number;
     symbol: string;
@@ -33,8 +34,8 @@ export default function CreateNewPIN() {
         latitude,
         longitude } =
         useLocalSearchParams();
-
     const [modalVisible, setModalVisible] = useState(false);
+    const [validate, setValidate] = useState(false);
     const [btnLoading, setBtnLoading] = useState(false);
     const CELL_COUNT = 4;
     const [enableMask, setEnableMask] = useState(true);
@@ -66,6 +67,7 @@ export default function CreateNewPIN() {
 
     const toggleModal = async () => {
         setBtnLoading(true);
+        setValidate(true);
         const formData = new FormData();
         const pin = parseInt(value);
         try {
@@ -81,28 +83,30 @@ export default function CreateNewPIN() {
             formData.append("latitude", latitude as string);
             formData.append("longitude", longitude as string);
             // // PROFILE IMAGE
-            // const filename = image.split("/").pop();
-            // const fileType = filename.split('.').pop();
-            // formData.append("profile_picture", {
-            //     uri: image,
-            //     name: filename,
-            //     type: `image/${fileType}`,
-            // });
-            formData.append("dob", dob as Date);
+            const filename = image.split("/").pop();
+            const fileType = filename.split('.').pop();
+            formData.append("profile_picture", {
+                uri: image,
+                name: filename,
+                type: `image/${fileType}`,
+            });
+            formData.append("dob", dob as string);
             await manualSignup(formData);
             setTimeout(() => {
                 setBtnLoading(false);
+                setValidate(false);
                 setModalVisible(true);
             }, 2000);
         } catch (error) {
             setBtnLoading(false);
+            setValidate(false);
             console.log(errorRes(error));
         }
     };
 
     return (
         <View style={styles.container}>
-
+            {validate && <ValidatingData modalVisible={validate} setModalVisible={setValidate} />}
             {modalVisible && <CreateNewUserSucess modalVisible={modalVisible} setModalVisible={setModalVisible} />}
 
             <View style={styles.Headercontainer}>

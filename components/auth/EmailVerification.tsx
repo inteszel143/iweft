@@ -159,22 +159,22 @@ const styles = StyleSheet.create({
     title: { textAlign: 'center', fontSize: 30 },
     codeFieldRoot: {
         marginTop: hp(5),
-        gap: wp(3),
+        gap: wp(2.5),
         marginLeft: 'auto',
         marginRight: 'auto',
     },
     cell: {
-        width: wp(12),
+        width: wp(13),
         height: wp(16),
         borderRadius: wp(4),
         borderWidth: 1,
         borderColor: "#F1F1F1",
-        backgroundColor: "#EEEEEE",
+        backgroundColor: "#F5F5F5",
         textAlign: 'center',
         justifyContent: 'center',
     },
     focusCell: {
-        width: wp(12),
+        width: wp(13),
         height: wp(16),
         textAlign: 'center',
         justifyContent: 'center',
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     },
     cellText: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(3),
+        fontSize: hp(2.8),
         alignSelf: 'center',
     },
     BtnStyle: {

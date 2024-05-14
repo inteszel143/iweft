@@ -9,8 +9,8 @@ import errorRes from '@/apis/errorRes';
 import { useQueryClient } from "@tanstack/react-query";
 import { useIsFocused } from '@react-navigation/native';
 export default function ProfileTop() {
-    const isFocused = useIsFocused();
     const queryClient = useQueryClient();
+    const isFocused = useIsFocused();
     const { data, isPending } = useUserQuery(isFocused);
     const [image, setImage] = useState<any>(null); // image data
     const [modalVisible, setModalVisible] = useState(false);
@@ -19,7 +19,6 @@ export default function ProfileTop() {
     const toggleModal = () => {
         setModalVisible(!modalVisible);
     };
-
     const pickImage = async () => {
         let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
         if (permissionResult.granted === false) {
@@ -41,7 +40,6 @@ export default function ProfileTop() {
             setImage(result.assets[0].uri);
         }
     };
-
     const openCamera = async () => {
         let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
         if (permissionResult.granted === false) {
@@ -61,7 +59,6 @@ export default function ProfileTop() {
             setImage(pickerResult?.assets[0].uri);
         }
     };
-
     const toggleConfirm = async () => {
         setBtnModalLoading(true);
         const formData = new FormData();
@@ -80,6 +77,7 @@ export default function ProfileTop() {
             setBtnModalLoading(false);
             setModalConfirm(false);
         } catch (error) {
+            console.log(errorRes(error));
             setModalConfirm(false);
             setBtnModalLoading(false);
         }
@@ -303,6 +301,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: "gray",
         marginTop: hp(2),
+        paddingHorizontal: wp(4),
     },
     btnStyle: {
         height: hp(6),

@@ -25,7 +25,7 @@ function TabBarIcon(props: {
 export default function TabLayout() {
   // const isFocused = useIsFocused();
   const colorScheme = useColorScheme();
-  // const { data, isFetching } = useUserQuery(isFocused);
+  // const { data } = useUserQuery(isFocused);
   // console.log(data);
   // const validate =
   //   ((data?.profile_picture ===
@@ -45,7 +45,7 @@ export default function TabLayout() {
           fontFamily: "UrbanistMedium",
           paddingBottom: Platform.OS === "android" ? 2 : 0,
         },
-        lazy: false
+        // lazy: false
       }}
     >
       <Tabs.Screen
@@ -123,7 +123,6 @@ export default function TabLayout() {
           title: "Profile",
           headerShown: false,
           // tabBarBadge: validate ? 1 : null,
-          tabBarBadge: 1,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name={focused ? "person" : "person-outline"}

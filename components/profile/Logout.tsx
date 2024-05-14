@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ActivityIndicator, Platform } from 'react-native'
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Feather } from '@expo/vector-icons';
@@ -37,15 +37,12 @@ export default function Logout() {
         await SecureStore.deleteItemAsync('accessToken');
         await SecureStore.deleteItemAsync('refreshToken');
         await SecureStore.deleteItemAsync('onboarded');
-        GoogleSignin.revokeAccess();
-        GoogleSignin.signOut();
         setTimeout(() => {
             setBtnLoading(false);
             bottomSheetModalRef.current?.close();
             router.push('/authPage/OnboardingScreen');
         }, 2000);
-    }
-
+    };
 
     return (
         <BottomSheetModalProvider>
@@ -153,7 +150,7 @@ const styles = StyleSheet.create({
     },
     bottomSheetTitle: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(2.2),
+        fontSize: Platform.OS === 'android' ? hp(2.4) : hp(2.2),
         textAlign: 'center'
     },
     bottomBtnRow: {

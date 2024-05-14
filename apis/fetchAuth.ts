@@ -18,6 +18,7 @@ export const getUserData = async () => {
     );
     return response?.data?.user;
   } catch (error) {
+    console.log(errorRes(error));
     return Promise.reject(error);
   }
 };

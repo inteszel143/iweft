@@ -6,7 +6,7 @@ import * as SecureStore from "expo-secure-store";
  * USER UPDATE PROFILE IMAGE  ---------------------------------------------------------
  */
 
-export const userUpdateProfileImage = async (data: Object) => {
+export const userUpdateProfileImage = async (data: FormData) => {
   const accessToken = await SecureStore.getItemAsync("accessToken");
   try {
     const response = await axios.patch(
@@ -15,7 +15,7 @@ export const userUpdateProfileImage = async (data: Object) => {
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          // "Content-Type": "multipart/form-data", // If you need to set content type, uncomment this line
+          "Content-Type": "multipart/form-data",
         },
       }
     );
