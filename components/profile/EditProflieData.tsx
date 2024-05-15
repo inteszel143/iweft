@@ -48,7 +48,7 @@ export default function EditProflieData() {
         <View style={styles.container}>
             <KeyboardAwareScrollView
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: Platform.OS === 'android' ? hp(14) : hp(17) }}
+                contentContainerStyle={{ paddingBottom: hp(17) }}
                 extraScrollHeight={Platform.OS === 'ios' ? hp(4) : 0}
             >
                 {/* Fullname */}

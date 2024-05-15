@@ -8,8 +8,7 @@ interface ModalProps {
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>; // Ensure correct typing
 }
 
-export default function EmailExist({ modalVisible, setModalVisible }: ModalProps) {
-
+export default function WrongCode({ modalVisible, setModalVisible }: ModalProps) {
     const toggleModal = () => {
         setModalVisible(!modalVisible);
     };
@@ -31,9 +30,9 @@ export default function EmailExist({ modalVisible, setModalVisible }: ModalProps
                             source={require('@/assets/animate/invalid.json')}
                         />
                     </View>
-                    <Text style={styles.titleStyle}>Email already exists!</Text>
-                    <Text style={styles.subStyle}>The email address you provided is already in use. Please try another email.</Text>
-                    <View style={{ marginTop: hp(2.5) }} />
+                    <Text style={styles.titleStyle}>Incorrect CODE</Text>
+                    <Text style={styles.subStyle}>The code you entered is incorrect. Please check your code and try again.</Text>
+                    <View style={{ marginTop: hp(3) }} />
                     <TouchableOpacity style={styles.btnStyle} onPress={toggleModal}>
                         <Text style={styles.btnText}>Try again</Text>
                     </TouchableOpacity>

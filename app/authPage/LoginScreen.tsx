@@ -218,7 +218,7 @@ export default function LoginScreen() {
                         </Link>
                     </View>
                 </View>
-            </ScrollView>
+            </ScrollView >
         </View >
     )
 }

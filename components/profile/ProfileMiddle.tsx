@@ -9,9 +9,7 @@ export default function ProfileMiddle() {
     const isFocused = useIsFocused();
     const { data, isFetching } = useUserQuery(isFocused);
     const validate =
-        ((data?.profile_picture ===
-            "https://res.cloudinary.com/dgepgnzoc/image/upload/v1715604259/uploads_profile_pictures/default_profile_picture.jpg") ||
-            (data?.address === null) ||
+        ((data?.address === null) ||
             (data?.apartment_number === null) ||
             (data?.city === null) ||
             (data?.contact_number === null) ||

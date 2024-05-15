@@ -189,14 +189,22 @@ export default function CreateNewPassword() {
 
 
                 </View>
+
+                <View style={{ alignItems: 'center', marginTop: hp(6) }}>
+                    <TouchableOpacity style={defaultStyles.footerBtn} onPress={handleSubmit(onSubmit)}>
+                        {btnLoading ? <ActivityIndicator size={'small'} color={'#FFFFFF'} /> : <Text style={styles.btnText}>Continue</Text>}
+                    </TouchableOpacity>
+                </View>
+
+
             </KeyboardAwareScrollView>
 
 
-            <View style={styles.footer}>
+            {/* <View style={styles.footer}>
                 <TouchableOpacity style={defaultStyles.footerBtn} onPress={handleSubmit(onSubmit)}>
                     {btnLoading ? <ActivityIndicator size={'small'} color={'#FFFFFF'} /> : <Text style={styles.btnText}>Continue</Text>}
                 </TouchableOpacity>
-            </View>
+            </View> */}
         </View>
     )
 }

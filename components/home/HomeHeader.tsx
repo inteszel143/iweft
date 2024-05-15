@@ -33,7 +33,13 @@ export default function HomeHeader() {
                 </TouchableOpacity>
 
                 <View>
-                    <Text style={styles.headerGood} >{isMorning ? 'Good Morning! 👋' : 'Good Evening! 🌙'}</Text>
+                    <Text style={styles.headerGood}>
+                        {currentHour >= 0 && currentHour < 12
+                            ? 'Good Morning! 👋'
+                            : currentHour >= 12 && currentHour < 18
+                                ? 'Good Afternoon ☀️'
+                                : 'Good Evening! 🌙'}
+                    </Text>
                     <Text style={styles.headerName} >{data?.fullname}</Text>
                 </View>
 

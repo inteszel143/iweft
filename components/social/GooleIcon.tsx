@@ -26,7 +26,9 @@ export default function GooleIcon() {
         configureGoogleSignIn();
     });
 
+
     const signIn = async () => {
+        GoogleSignin.signOut();
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
@@ -34,9 +36,6 @@ export default function GooleIcon() {
             await SecureStore.setItemAsync('accessToken', response?.access?.token);
             await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
             setSuccessLogin(true);
-            // setTimeout(() => {
-            //     router.push('/(tabs)/');
-            // }, 2000)
         } catch (e) {
             if (errorRes(e) === "The email you provided is already taken.") {
                 setErrorLoginModal(true);

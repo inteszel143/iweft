@@ -1,4 +1,4 @@
-import { Image, SafeAreaView, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { Alert, BackHandler, Image, SafeAreaView, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import HomeHeader from '@/components/home/HomeHeader';
@@ -9,7 +9,25 @@ import LaundryBundles from '@/components/home/LaundryBundles';
 import HomeAds from '@/components/home/HomeAds';
 import BundleOffers from '@/components/home/BundleOffers';
 import { StatusBar } from 'expo-status-bar';
+import { useFocusEffect } from 'expo-router';
+import { useCallback } from 'react';
 export default function TabOneScreen() {
+
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        Alert.alert('Exit App', 'Are you sure you want to exit?', [
+          { text: 'Cancel', onPress: () => { } },
+          { text: 'OK', onPress: () => BackHandler.exitApp() },
+        ]);
+        return true;
+      };
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [])
+  );
+
 
   return (
     <SafeAreaView style={styles.container}>

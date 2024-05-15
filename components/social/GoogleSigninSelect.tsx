@@ -26,6 +26,7 @@ export default function GoogleSigninSelect() {
     });
 
     const signIn = async () => {
+        GoogleSignin.signOut();
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
@@ -41,7 +42,6 @@ export default function GoogleSigninSelect() {
             }
         }
     };
-
     return (
         <View>
             {errorLoginModal && <ErrorFacebookAuthModal modalVisible={errorLoginModal} setModalVisible={setErrorLoginModal} />}

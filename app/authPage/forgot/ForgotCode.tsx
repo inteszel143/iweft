@@ -9,12 +9,14 @@ import {
     useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
 import { verifyEmailCode } from '@/apis/forgot';
+import WrongCode from '@/components/WrongCode';
 const CELL_COUNT = 4;
 
 export default function ForgotCode() {
     const { item } = useLocalSearchParams();
     const [value, setValue] = useState('');
     const [btnLoading, setBtnLoading] = useState(false);
+    const [errorModalVisible, setErrorModalVisible] = useState(false);
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
         value,
@@ -33,13 +35,13 @@ export default function ForgotCode() {
             setBtnLoading(false);
         } else {
             setBtnLoading(false);
-            console.log('Error jud ka');
+            setErrorModalVisible(true);
         }
     }
 
     return (
         <View style={styles.container}>
-
+            {errorModalVisible && <WrongCode modalVisible={errorModalVisible} setModalVisible={setErrorModalVisible} />}
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
                     <View style={styles.headerLeft}>
