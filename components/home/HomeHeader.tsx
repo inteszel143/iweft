@@ -37,7 +37,7 @@ export default function HomeHeader() {
                         {currentHour >= 0 && currentHour < 12
                             ? 'Good Morning! 👋'
                             : currentHour >= 12 && currentHour < 18
-                                ? 'Good Afternoon ☀️'
+                                ? 'Good Afternoon! ☀️'
                                 : 'Good Evening! 🌙'}
                     </Text>
                     <Text style={styles.headerName} >{data?.fullname}</Text>

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Platform, ActivityIndicator } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router, useLocalSearchParams } from 'expo-router';
 import {
@@ -64,6 +64,11 @@ export default function CreateNewPIN() {
             </View>
         );
     };
+    useEffect(() => {
+        if (ref?.current) {
+            ref.current.focus();
+        }
+    }, []);
 
     const toggleModal = async () => {
         setBtnLoading(true);

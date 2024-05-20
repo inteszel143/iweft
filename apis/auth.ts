@@ -115,3 +115,72 @@ export const postVerifyEmailCode = async (
     return Promise.reject(error);
   }
 };
+
+/**
+ * VERIFY USER VIA PHONE NUMBER ---------------------------------------------------------
+ *
+ */
+
+export const postPhoneVerificationCode = async (contact_number: string) => {
+  const data = {
+    contact_number: contact_number,
+  };
+  try {
+    const response = await axios.post(
+      `${process.env.EXPO_PUBLIC_API_URL}/auth/client/send-verification`,
+      data,
+      {
+        headers: {},
+      }
+    );
+    return response.data;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+/**
+ * PHONE CHECK VERIFICATION ---------------------------------------------------------
+ *
+ */
+export const postVerifyCheck = async (contact_number: string, code: string) => {
+  const data = {
+    contact_number: contact_number,
+    code: code,
+  };
+  try {
+    const response = await axios.post(
+      `${process.env.EXPO_PUBLIC_API_URL}/auth/client/verifychecks`,
+      data,
+      {
+        headers: {},
+      }
+    );
+    return response.data;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+/**
+ * DELETE ACCOUNT ---------------------------------------------------------
+ *
+ */
+
+export const deleteAccount = async () => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  try {
+    const response = await axios.delete(
+      `${process.env.EXPO_PUBLIC_API_URL}/user/profile/delete-account`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(errorRes(error));
+    return Promise.reject(error);
+  }
+};

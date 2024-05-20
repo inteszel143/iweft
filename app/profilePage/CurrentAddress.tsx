@@ -7,10 +7,12 @@ import MapView, { Marker, PROVIDER_GOOGLE, } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Fontisto } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
+import { userUpdateProfileData } from '@/apis/userupdate';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function CurrentAddress() {
-    const { latitude, longitude } = useLocalSearchParams();
-    const [errorMsg, setErrorMsg] = useState("");
+    const queryClient = useQueryClient();
+    const { latitude, longitude, fullname, nickname, dob } = useLocalSearchParams();
     const [mapLocation, setMapLocation] = useState<any>([]);
     const [nameAddress, setNameAddress] = useState<any>();
     const [city, setCity] = useState<any>();
@@ -18,27 +20,8 @@ export default function CurrentAddress() {
     const [lat, setLat] = useState<any>("");
     const [long, setLong] = useState<any>("");
     const [btnLoading, setBtnLoading] = useState(false);
-    useEffect(() => {
-        (async () => {
-
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                setErrorMsg('Permission to access location was denied');
-                return;
-            }
-            const location = await Location.getCurrentPositionAsync({});
-            const { latitude, longitude } = location.coords;
-            setLat(latitude);
-            setLong(longitude);
-        })();
-
-    }, []);
-
-    // bottomsheet
-    // ref
     const bottomSheetRef = useRef<BottomSheet>(null);
     const snapPoints = useMemo(() => ['35%', '64%'], []);
-    // callbacks
     const handleSheetChanges = useCallback((index: number) => {
         // console.log('handleSheetChanges', index);
     }, []);
@@ -49,9 +32,11 @@ export default function CurrentAddress() {
         latitudeDelta: 0.0034042830388827383,
         longitudeDelta: 0.005005337297916412,
     };
+
     const onRegionChange = async (region: Region) => {
         setMapLocation([region.latitude, region.longitude]);
-
+        setLat(region.latitude);
+        setLong(region.longitude);
         const userAddress = await Location.reverseGeocodeAsync({
             latitude: region.latitude,
             longitude: region.longitude
@@ -60,6 +45,31 @@ export default function CurrentAddress() {
         setStreet(userAddress[0].street);
         setCity(userAddress[0].district);
     };
+
+
+    const onSubmit = async () => {
+        setBtnLoading(true);
+        const data = {
+            fullname: fullname,
+            nickname: nickname,
+            address: nameAddress,
+            apartment_number: street,
+            city: city,
+            dob: dob,
+            latitude: lat as number,
+            longitude: long as number,
+        }
+        try {
+            await userUpdateProfileData(data);
+            queryClient.invalidateQueries({ queryKey: ['user-data'] });
+            setTimeout(() => {
+                router.back();
+                setBtnLoading(false);
+            }, 2000)
+        } catch (error) {
+            setBtnLoading(false);
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -83,20 +93,14 @@ export default function CurrentAddress() {
             </View>
 
 
-            <View style={{ height: hp(52) }}>
+            <View style={{ height: Platform.OS === 'ios' ? hp(53) : hp(55) }}>
                 <MapView
-                    style={styles.map}
+                    style={StyleSheet.absoluteFill}
                     provider={PROVIDER_GOOGLE}
-                    // showsUserLocation={true}
+                    showsUserLocation={true}
                     showsMyLocationButton
                     loadingEnabled={true}
                     initialRegion={INITIAL_REGION}
-                    region={{
-                        latitude: lat,
-                        longitude: long,
-                        latitudeDelta: 0.1034042830388827383,
-                        longitudeDelta: 0.105005337297916412,
-                    }}
                     onRegionChangeComplete={onRegionChange}
                 />
                 <View style={styles.markerStyle}>
@@ -138,7 +142,9 @@ export default function CurrentAddress() {
                 </BottomSheetView>
             </BottomSheet>
             <View style={styles.footer}>
-                <TouchableOpacity style={defaultStyles.footerBtn}>
+                <TouchableOpacity style={defaultStyles.footerBtn}
+                    onPress={onSubmit}
+                >
                     {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.sheetText}>Continue</Text>}
                 </TouchableOpacity>
             </View>
@@ -232,9 +238,9 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         width: wp(100),
-        height: hp(10),
+        height: Platform.OS === 'ios' ? hp(10.5) : hp(10),
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'white'
     },
     sheetBtn: {
         width: wp(90),

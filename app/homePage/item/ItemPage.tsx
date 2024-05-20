@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
 import { itemList, items } from '@/constants/home/data';
+import { defaultStyles } from '@/constants/Styles';
 
 export default function ItemPage() {
 
@@ -46,7 +47,10 @@ export default function ItemPage() {
             <View style={styles.searchContainer}>
                 <View style={styles.searchLeft}>
                     <Image source={require('@/assets/icons/search.png')} resizeMode='contain' style={{ width: wp(6.5) }} />
-                    <TextInput placeholder='Seach' style={{ width: wp(60), fontFamily: 'UrbanistMedium', fontSize: hp(1.8) }} />
+                    <TextInput
+                        placeholder='Seach items'
+                        placeholderTextColor={'#9E9E9E'}
+                        style={{ width: wp(60), fontFamily: 'UrbanistMedium', fontSize: hp(1.8) }} />
                 </View>
                 <Image source={require('@/assets/icons/filter.png')} resizeMode='contain' style={{ width: wp(6.5) }} />
             </View>
@@ -54,7 +58,7 @@ export default function ItemPage() {
 
 
 
-            <View style={{ marginTop: hp(1) }}>
+            <View style={{ paddingVertical: hp(1), backgroundColor: 'white' }}>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ marginTop: hp(2) }}>
                     {
                         items.map((item, index) => {
@@ -116,8 +120,8 @@ export default function ItemPage() {
 
 
             <View style={styles.footer}>
-                <TouchableOpacity style={styles.footerBtn} onPress={() => router.back()}>
-                    <Text style={styles.footerText}>Continue AED 120</Text>
+                <TouchableOpacity style={defaultStyles.footerBtn} onPress={() => router.back()}>
+                    <Text style={defaultStyles.footerText}>Continue AED 120</Text>
                 </TouchableOpacity>
             </View>
 
@@ -249,7 +253,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         width: wp(100),
-        height: hp(14),
+        height: hp(11),
         backgroundColor: 'white',
         borderTopRightRadius: wp(4),
         borderTopLeftRadius: wp(4),

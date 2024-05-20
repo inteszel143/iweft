@@ -31,7 +31,7 @@ export default function ErrorCodeModal({ modalVisible, setModalVisible }: ModalP
                             source={require('@/assets/animate/invalid.json')}
                         />
                     </View>
-                    <Text style={styles.titleStyle}>Unfortunately</Text>
+                    <Text style={styles.titleStyle}>Verification failed</Text>
                     <Text style={styles.subStyle}>The verification code you entered doesn't match what we expected.</Text>
                     <View style={{ marginTop: hp(2.5) }} />
                     <TouchableOpacity style={styles.btnStyle} onPress={toggleModal}>

@@ -65,7 +65,10 @@ export default function BookNow() {
                     <Text style={styles.topTitle}>Promo Code</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                         <View style={styles.promoTextField}>
-                            <TextInput placeholder='Enter Promo Code' style={{ flex: 1, fontFamily: 'UrbanistMedium', fontSize: hp(1.9) }} />
+                            <TextInput
+                                placeholder='Enter Promo Code'
+                                placeholderTextColor={'#9E9E9E'}
+                                style={{ flex: 1, fontFamily: 'UrbanistMedium', fontSize: hp(1.9) }} />
                         </View>
                         <TouchableOpacity style={styles.promoCircle}>
                             <Feather name='plus' size={hp(2.5)} color={'#0A5CA8'} />

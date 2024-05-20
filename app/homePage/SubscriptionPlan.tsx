@@ -6,6 +6,7 @@ import { FontAwesome } from '@expo/vector-icons';
 
 export default function SubscriptionPlan() {
     return (
+
         <View style={styles.container}>
 
             <View style={styles.Headercontainer}>
@@ -25,9 +26,6 @@ export default function SubscriptionPlan() {
                     </View>
                 </View>
             </View>
-
-
-
 
 
             <TouchableOpacity style={styles.CardStyle}>

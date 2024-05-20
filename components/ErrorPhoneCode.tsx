@@ -2,20 +2,17 @@ import { StyleSheet, Text, View, Modal, Platform, Image, TouchableOpacity } from
 import React, { useEffect } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router } from 'expo-router';
-import { BallIndicator, WaveIndicator } from 'react-native-indicators'
+import LottieView from 'lottie-react-native';
 interface ModalProps {
     modalVisible: boolean;
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>; // Ensure correct typing
 }
 
-export default function SuccessLogin({ modalVisible, setModalVisible }: ModalProps) {
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setModalVisible(false);
-            router.push('/(tabs)/');
-        }, 2000);
-        return () => clearTimeout(timer);
-    }, []);
+
+export default function ErrorPhoneCode({ modalVisible, setModalVisible }: ModalProps) {
+    const toggleModal = () => {
+        setModalVisible(!modalVisible);
+    };
 
     return (
         <Modal
@@ -27,13 +24,19 @@ export default function SuccessLogin({ modalVisible, setModalVisible }: ModalPro
         >
             <View style={styles.modalStyle}>
                 <View style={styles.modalBox}>
-                    <View style={styles.indicator}>
-                        <BallIndicator color="#0A5CA8" size={hp(4)} />
+                    <View>
+                        <LottieView
+                            autoPlay
+                            style={styles.errorLottieStyle}
+                            source={require('@/assets/animate/invalid.json')}
+                        />
                     </View>
-                    <View style={{ marginTop: hp(4) }} />
-                    <Text style={styles.titleStyle}>Please wait</Text>
-                    <Text style={styles.subStyle}>Fetching user data...</Text>
-
+                    <Text style={styles.titleStyle}>Verification failed</Text>
+                    <Text style={styles.subStyle}>The verification code you entered doesn't match what we expected.</Text>
+                    <View style={{ marginTop: hp(2.5) }} />
+                    <TouchableOpacity style={styles.btnStyle} onPress={toggleModal}>
+                        <Text style={styles.btnText}>Try again</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
 
@@ -49,8 +52,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     modalBox: {
-        width: wp(82),
-        height: Platform.OS === 'ios' ? hp(28) : hp(30),
+        width: wp(86),
+        height: Platform.OS === 'ios' ? hp(48) : hp(50),
         backgroundColor: "white",
         borderRadius: wp(6),
         alignItems: 'center',
@@ -65,21 +68,20 @@ const styles = StyleSheet.create({
         fontFamily: 'UrbanistBold',
         fontSize: hp(2.9),
         textAlign: 'center',
-        color: '#0A5CA8',
+        color: '#DB3747',
         marginTop: hp(1)
     },
     subStyle: {
-        fontFamily: 'UrbanistRegular',
-        fontSize: hp(2.1),
+        fontFamily: 'UrbanistMedium',
+        fontSize: hp(2.3),
         textAlign: 'center',
-        color: "#212121",
+        color: "gray",
         marginTop: hp(2),
     },
     btnStyle: {
-        marginTop: hp(4),
         height: hp(7),
-        width: wp(72),
-        backgroundColor: '#0A5CA8',
+        width: wp(50),
+        backgroundColor: '#DC3545',
         borderRadius: wp(10),
         alignItems: 'center',
         justifyContent: 'center'
@@ -91,6 +93,10 @@ const styles = StyleSheet.create({
     },
     indicator: {
         position: 'absolute',
-        top: hp(6),
+        bottom: hp(4),
+    },
+    errorLottieStyle: {
+        width: wp(34),
+        height: hp(15)
     }
 })

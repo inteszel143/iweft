@@ -7,6 +7,7 @@ import MapView, { Marker, PROVIDER_GOOGLE, } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Fontisto } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
+import { postPhoneVerificationCode } from '@/apis/auth';
 
 export default function YourAddress() {
     const { image, fullName, nickName, dob, email, password, phone } = useLocalSearchParams();
@@ -63,27 +64,33 @@ export default function YourAddress() {
 
     const onSubmit = async () => {
         setBtnLoading(true);
-        setTimeout(() => {
-            router.push({
-                pathname: '/authPage/create/VerificationCode',
-                params: {
-                    image: image,
-                    fullName: fullName,
-                    nickName: nickName,
-                    dob: dob,
-                    email: email,
-                    password: password,
-                    phone: phone,
-                    nameAddress: nameAddress,
-                    street: street,
-                    city: city,
-                    latitude: lat,
-                    longitude: long,
-                }
-            });
+        try {
+            await postPhoneVerificationCode(phone as string);
+            setTimeout(() => {
+                router.push({
+                    pathname: '/authPage/create/VerificationCode',
+                    params: {
+                        image: image,
+                        fullName: fullName,
+                        nickName: nickName,
+                        dob: dob,
+                        email: email,
+                        password: password,
+                        phone: phone,
+                        nameAddress: nameAddress,
+                        street: street,
+                        city: city,
+                        latitude: lat,
+                        longitude: long,
+                    }
+                });
+                setBtnLoading(false);
+            }, 2000);
+        } catch (error) {
+            console.log(error);
             setBtnLoading(false);
-        }, 2000)
-    }
+        }
+    };
 
 
     return (

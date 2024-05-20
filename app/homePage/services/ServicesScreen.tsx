@@ -1,14 +1,34 @@
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link, router } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import Animated, { interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, withSpring } from 'react-native-reanimated';
 import { customer, starRating } from '@/constants/home/data';
 const IMG_HEIGHT = 300;
 const { width } = Dimensions.get('window');
-export default function ServicesScreen() {
+interface ServiceItem {
+    _id: string;
+    title: string;
+    sub_title: string;
+    base_price: number;
+    image: string;
+    other_images: string[];
+    details: string;
+    status: string;
+    created_by: {
+        _id: string;
+        email: string;
+    };
+    updated_by: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+}
 
+export default function ServicesScreen() {
+    const { item } = useLocalSearchParams();
+    const serviceItem: ServiceItem = JSON.parse(item as string);
     // hook
     const [topSelect, setTopSelect] = useState(0);
     const [addbook, setAddbook] = useState(false);
@@ -66,7 +86,11 @@ export default function ServicesScreen() {
                 scrollEventThrottle={16}
             >
                 <Animated.View style={[styles.topStyle, imageAnimatedStyle]}>
-                    <Image source={require('@/assets/temp/services/services1.jpg')} resizeMode='contain' style={[{ width: wp(50), height: hp(20), marginLeft: wp(4) }]} />
+                    <Image
+                        // source={require('@/assets/temp/services/services1.jpg')}
+                        source={{ uri: serviceItem.image }}
+                        resizeMode='cover'
+                        style={[{ width: wp(50), height: hp(20), marginLeft: wp(4) }]} />
                     <View style={styles.topFooter}>
                         <View style={{ width: wp(8), height: 10, borderRadius: 8, backgroundColor: '#0A5CA8' }} />
                         <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
@@ -78,7 +102,7 @@ export default function ServicesScreen() {
                 <View style={styles.middleStyle}>
 
                     <View style={styles.middelTopRow}>
-                        <Text style={styles.middleText}>Clean & Press Services</Text>
+                        <Text style={styles.middleText}>{serviceItem.title}</Text>
                         <TouchableOpacity onPress={toggleAdd}>
                             {
                                 addbook ? <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5.5), marginTop: hp(1) }} /> : <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5.5) }} />
@@ -87,7 +111,7 @@ export default function ServicesScreen() {
                     </View>
 
                     <View style={styles.rateStyle}>
-                        <Text style={styles.core}>Core Service</Text>
+                        <Text style={styles.core}>{serviceItem.sub_title}</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, }}>
                             <Image source={require('@/assets/icons/star.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
                             <Text style={styles.rating}>48 (3,824 reviews)</Text>
@@ -101,7 +125,7 @@ export default function ServicesScreen() {
 
 
                     <View style={styles.priceStyle}>
-                        <Text style={styles.priceText}>AED 21</Text>
+                        <Text style={styles.priceText}>AED {serviceItem.base_price}</Text>
                         <Text style={styles.subText}>(base price)</Text>
                     </View>
 
@@ -112,7 +136,7 @@ export default function ServicesScreen() {
 
                     <View style={styles.detailsStyle}>
                         <Text style={styles.detailText}>Details</Text>
-                        <Text style={styles.subDetailText}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, odio a neque nemo quae sequi repudiandae, non asperiores atque ut quisquam excepturi tempora quaerat facilis, adipisci delectus quia maiores. Tenetur?</Text>
+                        <Text style={styles.subDetailText}>{serviceItem.details}</Text>
                     </View>
 
 
@@ -126,7 +150,6 @@ export default function ServicesScreen() {
                                 </TouchableOpacity>
                             </Link>
                         </View>
-
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
                             <Image source={require('@/assets/temp/services/photo1.jpg')} resizeMode='contain' style={{ width: wp(40), height: hp(30) }} />
                             <Image source={require('@/assets/temp/services/photo2.jpg')} resizeMode='contain' style={{ width: wp(40), height: hp(30) }} />
@@ -372,7 +395,7 @@ const styles = StyleSheet.create({
     priceStyle: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: wp(4),
+        gap: wp(3),
         marginTop: hp(3)
     },
     priceText: {

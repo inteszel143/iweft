@@ -132,7 +132,6 @@ function RootLayoutNav() {
       <Stack.Screen name='chatPage/CallCustomer' options={{ headerShown: false }} />
       <Stack.Screen name='chatPage/CallUserHistory' options={{ headerShown: false }} />
 
-
       {/* profile */}
       <Stack.Screen name='profilePage/EditProfile' options={{ headerShown: false }} />
       <Stack.Screen name='profilePage/CurrentAddress' options={{ headerShown: false }} />
@@ -142,6 +141,8 @@ function RootLayoutNav() {
       <Stack.Screen name='profilePage/Security' options={{ headerShown: false }} />
       <Stack.Screen name='profilePage/ChangePassword' options={{ headerShown: false }} />
       <Stack.Screen name='profilePage/ChangePin' options={{ headerShown: false }} />
+      <Stack.Screen name='profilePage/ChangePhoneNumber' options={{ headerShown: false }} />
+      <Stack.Screen name='profilePage/PhoneNumberCode' options={{ headerShown: false }} />
       <Stack.Screen name='profilePage/Language' options={{ headerShown: false }} />
       <Stack.Screen name='profilePage/Subscription' options={{ headerShown: false }} />
       <Stack.Screen name='profilePage/SubscriptionSummary' options={{ headerShown: false }} />

@@ -4,6 +4,8 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import Carousel from 'react-native-reanimated-carousel';
 import CarouselIndicator from './CarouselIndicator';
 import { Link, router } from 'expo-router';
+import { useSpecialOffers } from '@/query/homeQuery';
+import { useIsFocused } from '@react-navigation/native';
 const data = [
     {
         img: require('@/assets/temp/special/carousel1.png')
@@ -17,6 +19,7 @@ const data = [
 ];
 const width = Dimensions.get('window').width;
 export default function HomeSpecialOffers() {
+    const isFocused = useIsFocused();
     const [activeIndex, setActiveIndex] = useState(0);
     return (
         <View style={styles.container}>

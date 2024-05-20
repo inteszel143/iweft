@@ -18,7 +18,26 @@ export const getHomeServices = async () => {
     );
     return response?.data?.services;
   } catch (error) {
-    console.log(errorRes(error));
+    return Promise.reject(error);
+  }
+};
+/**
+ * Get Home Special Offers ---------------------------------------------------------
+ */
+export const getSpecialOffers = async () => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  try {
+    const response = await axios.get(
+      `${process.env.EXPO_PUBLIC_API_URL}/special-offers`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          //   "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response?.data?.special_offers;
+  } catch (error) {
     return Promise.reject(error);
   }
 };

@@ -25,7 +25,9 @@ export default function EmailVerification() {
     });
 
     useEffect(() => {
-        ref?.current.focus();
+        if (ref?.current) {
+            ref.current.focus();
+        }
     }, []);
 
     const onSubmit = async () => {
@@ -71,7 +73,7 @@ export default function EmailVerification() {
 
             <View style={styles.containerStyle}>
 
-                <Text style={styles.titleStyle}>Code has been send to <Text style={{ color: "#0A5CA8" }} >{email.slice(0, 4)}******{email.slice(-9)}</Text> </Text>
+                <Text style={styles.titleStyle}>Code has been send to <Text style={{ color: "#0A5CA8" }} >{email?.slice(0, 4)}******{email?.slice(-9)}</Text> </Text>
                 <CodeField
                     ref={ref}
                     {...props}
@@ -159,17 +161,17 @@ const styles = StyleSheet.create({
     title: { textAlign: 'center', fontSize: 30 },
     codeFieldRoot: {
         marginTop: hp(5),
-        gap: wp(2.5),
+        gap: wp(3),
         marginLeft: 'auto',
         marginRight: 'auto',
     },
     cell: {
-        width: wp(13),
+        width: wp(12),
         height: wp(16),
         borderRadius: wp(4),
         borderWidth: 1,
         borderColor: "#F1F1F1",
-        backgroundColor: "#F5F5F5",
+        backgroundColor: "#EEEEEE",
         textAlign: 'center',
         justifyContent: 'center',
     },
@@ -184,7 +186,7 @@ const styles = StyleSheet.create({
     },
     cellText: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(2.8),
+        fontSize: hp(2.6),
         alignSelf: 'center',
     },
     BtnStyle: {

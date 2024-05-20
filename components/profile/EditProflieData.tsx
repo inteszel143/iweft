@@ -1,4 +1,4 @@
-import { Image, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Image, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import PhoneInput from "react-native-phone-number-input";
@@ -12,11 +12,15 @@ import { useUserQuery } from '@/query/fetchAuthQuery';
 import DatePicker from 'react-native-date-picker';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { country, genderData } from '@/constants/profile/data';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
+import UpdateProfileData from '../UpdateProfileData';
+import { useQueryClient } from '@tanstack/react-query';
+import { userUpdateProfileData } from '@/apis/userupdate';
 
 export default function EditProflieData() {
     const isFocused = useIsFocused();
+    const queryClient = useQueryClient();
     const { data, isFetching } = useUserQuery(isFocused);
     const phoneInput = useRef<PhoneInput>(null);
     const [value, setValue] = useState('');
@@ -27,7 +31,8 @@ export default function EditProflieData() {
     const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
     const [open, setOpen] = useState(false);
     const dateVal = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`; // DOB value
-
+    const [successModal, setSuccessModal] = useState(false);
+    const [btnLoading, setBtnLoading] = useState(false);
     const schema = yup.object().shape({
         full_name: yup.string().required('Full Name is requred').default(data?.fullname as string),
         n_name: yup.string().required('Nickname is requred').default(data?.nickname as string),
@@ -36,16 +41,45 @@ export default function EditProflieData() {
     const { control, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(schema),
     });
-
-    const toggleAddress = async () => {
+    // fullname, nickname, dob
+    const toggleAddress = async (item: any) => {
         router.push({
             pathname: '/profilePage/CurrentAddress',
-            params: { latitude: data?.latitude, longitude: data?.longitude }
+            params: { latitude: data?.latitude, longitude: data?.longitude, fullname: data?.fullname, nickname: item?.n_name, dob: dateVal }
         })
     };
 
+
+    const onSubmit = async (insidedata: any) => {
+        setBtnLoading(true);
+        const formdata = {
+            fullname: insidedata?.full_name,
+            nickname: insidedata?.n_name,
+            address: data?.address,
+            apartment_number: data?.apartment_number,
+            city: data?.city,
+            dob: dateVal,
+            latitude: data?.latitude,
+            longitude: data?.longitude,
+        }
+        try {
+            await userUpdateProfileData(formdata);
+            queryClient.invalidateQueries({ queryKey: ['user-data'] });
+            setSuccessModal(true);
+            setBtnLoading(false);
+            setTimeout(() => {
+                setSuccessModal(false);
+            }, 2000)
+        } catch (error) {
+            console.log(formdata);
+            setBtnLoading(false);
+        }
+    }
+
     return (
         <View style={styles.container}>
+            {successModal && <UpdateProfileData modalVisible={successModal} setModalVisible={setSuccessModal} />}
+
             <KeyboardAwareScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: hp(17) }}
@@ -75,6 +109,11 @@ export default function EditProflieData() {
                         />
                     </View>
                 </View>
+                {/* Error */}
+                {errors.full_name?.message && <View style={styles.errorViewStyle}>
+                    <Ionicons name='alert-circle-outline' size={hp(2.4)} color={'#ED4337'} />
+                    <Text style={styles.errorStyle} >{errors.full_name?.message}</Text>
+                </View>}
 
                 {/* NickName */}
                 <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
@@ -100,6 +139,12 @@ export default function EditProflieData() {
                         {data?.nickname === null && <AntDesign name='exclamationcircle' size={hp(2)} color={'red'} />}
                     </View>
                 </View>
+                {/* Error */}
+                {errors.n_name?.message && <View style={styles.errorViewStyle}>
+                    <Ionicons name='alert-circle-outline' size={hp(2.4)} color={'#ED4337'} />
+                    <Text style={styles.errorStyle} >{errors.n_name?.message}</Text>
+                </View>}
+
 
                 {/* DateofBirth */}
                 <TouchableOpacity onPress={() => setOpen(true)}>
@@ -158,13 +203,11 @@ export default function EditProflieData() {
                         </TouchableOpacity>
                     </View>
                 </View>
-
-                {/* <View style={styles.textFieldStyle}>
-                    <View style={styles.innerTextField}>
-                        <Text style={styles.textStyle}>United Arab Emirates</Text>
-                        <Ionicons name='caret-down' size={hp(2)} />
-                    </View>
-                </View> */}
+                {/* Error */}
+                {errors.email?.message && <View style={styles.errorViewStyle}>
+                    <Ionicons name='alert-circle-outline' size={hp(2.4)} color={'#ED4337'} />
+                    <Text style={styles.errorStyle} >{errors.email?.message}</Text>
+                </View>}
 
                 {/* Country */}
                 <View style={{ marginTop: hp(3) }}>
@@ -202,6 +245,7 @@ export default function EditProflieData() {
                         flagButtonStyle={{ backgroundColor: '#FAFAFA', paddingLeft: wp(4) }}
                         containerStyle={{ borderRadius: wp(4), width: wp(90), marginTop: hp(3), minHeight: hp(7.5), maxHeight: hp(8), }}
                     />
+
                 </View>
 
 
@@ -223,7 +267,9 @@ export default function EditProflieData() {
                 </View>
 
 
-                <TouchableOpacity style={styles.textFieldStyle} onPress={toggleAddress}>
+                <TouchableOpacity style={styles.textFieldStyle}
+
+                    onPress={handleSubmit(toggleAddress)}>
                     <View style={styles.innerTextField}>
                         <Text style={styles.textStyle}>{data?.address ? data?.address : "Your Address"}</Text>
                         {data?.address === null && <AntDesign name='exclamationcircle' size={hp(2)} color={'red'} />}
@@ -231,8 +277,10 @@ export default function EditProflieData() {
                 </TouchableOpacity>
 
                 <View style={styles.footer}>
-                    <TouchableOpacity style={defaultStyles.footerBtn}>
-                        <Text style={defaultStyles.footerText}>Update</Text>
+                    <TouchableOpacity style={defaultStyles.footerBtn}
+                        onPress={handleSubmit(onSubmit)}
+                    >
+                        {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={defaultStyles.footerText}>Update</Text>}
                     </TouchableOpacity>
                 </View>
 
@@ -303,5 +351,17 @@ const styles = StyleSheet.create({
         fontFamily: "UrbanistSemiBold",
         fontSize: hp(2),
         marginTop: hp(2),
+    },
+    errorStyle: {
+        flex: 1,
+        fontFamily: 'UrbanistRegular',
+        fontSize: hp(1.8),
+        color: "#ED4337"
+    },
+    errorViewStyle: {
+        marginTop: 10,
+        flexDirection: 'row',
+        gap: 10,
+        paddingHorizontal: wp(1),
     },
 })

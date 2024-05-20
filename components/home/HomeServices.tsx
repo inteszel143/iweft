@@ -2,7 +2,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Ionicons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { useHomeServices } from '@/query/homeQuery';
 import { useIsFocused } from '@react-navigation/native';
 export default function HomeServices() {
@@ -17,7 +17,12 @@ export default function HomeServices() {
                 {
                     data?.map((item: any, index: any) => {
                         return (
-                            <TouchableOpacity key={index}>
+                            <TouchableOpacity key={index}
+                                onPress={() => router.push({
+                                    pathname: 'homePage/services/ServicesScreen',
+                                    params: { item: JSON.stringify(item) },
+                                })}
+                            >
                                 <Image
                                     source={{ uri: item?.image }}
                                     resizeMode='contain'
@@ -44,7 +49,7 @@ export default function HomeServices() {
 
 
             <View style={{ height: 0.7, backgroundColor: "#DADADA", marginTop: hp(4), marginHorizontal: wp(4) }} />
-        </View>
+        </View >
     )
 };
 

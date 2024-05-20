@@ -2,7 +2,6 @@ import { StyleSheet, Text, TouchableOpacity, View, Image, ActivityIndicator, Pla
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Feather } from '@expo/vector-icons';
-import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import {
     BottomSheetModal,
     BottomSheetView,

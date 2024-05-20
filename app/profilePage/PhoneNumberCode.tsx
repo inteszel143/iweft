@@ -2,7 +2,6 @@ import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform, 
 import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
-
 import {
     CodeField,
     Cursor,
@@ -11,11 +10,11 @@ import {
 } from 'react-native-confirmation-code-field';
 import ErrorPhoneCode from '@/components/ErrorPhoneCode';
 import ApprovedPhone from '@/components/ApprovedPhone';
-import { postVerifyCheck } from '@/apis/auth';
+import { userUpdatePhoneNumber } from '@/apis/userupdate';
 const CELL_COUNT = 6;
-export default function VerificationCode() {
-    const { image, fullName, nickName, dob, email, password, phone, nameAddress, street, city, latitude, longitude } =
-        useLocalSearchParams();
+
+export default function PhoneNumberCode() {
+    const { phone } = useLocalSearchParams();
     const [value, setValue] = useState('');
     const [btnLoading, setBtnLoading] = useState(false);
     const [errorModalVisible, setErrorModalVisible] = useState(false);
@@ -35,46 +34,20 @@ export default function VerificationCode() {
     const onSubmit = async () => {
         setBtnLoading(true);
         try {
-            await postVerifyCheck(phone as string, value as string);
+            await userUpdatePhoneNumber(phone as string, value as string);
             setApprovedModal(true);
+            router.push('/profilePage/Security');
             setTimeout(() => {
-                router.push({
-                    pathname: '/authPage/create/CreateNewPIN',
-                    params: {
-                        image: image,
-                        fullName: fullName,
-                        nickName: nickName,
-                        dob: dob,
-                        email: email,
-                        password: password,
-                        phone: phone,
-                        nameAddress: nameAddress,
-                        street: street,
-                        city: city,
-                        latitude: latitude,
-                        longitude: longitude,
-                    }
-                });
                 setBtnLoading(false);
                 setApprovedModal(false);
             }, 2500);
         } catch (error) {
+            console.log(error);
             setBtnLoading(false);
             setErrorModalVisible(true);
         }
     };
 
-    const postResendCode = async () => {
-        setResendCodeDisable(true);
-        setTimeout(() => {
-            setResendCodeDisable(false);
-        }, 16000)
-        // try {
-        //     await postPhoneVerificationCode(email as string);
-        // } catch (error) {
-
-        // }
-    }
 
     return (
         <View style={styles.container}>
@@ -127,7 +100,6 @@ export default function VerificationCode() {
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: hp(6) }}>
                     <Text style={[styles.titleStyle]}>Didn't receive?</Text>
                     <TouchableOpacity
-                        onPress={postResendCode}
                         disabled={resendCodeDisable ? true : false}
                     ><Text style={[styles.titleStyle, { color: resendCodeDisable ? 'gray' : '#0A5CA8' }]}>Resend code</Text></TouchableOpacity>
                 </View>
