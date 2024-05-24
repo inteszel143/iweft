@@ -5,6 +5,7 @@ import { Link, router, useLocalSearchParams } from 'expo-router';
 import { Feather, FontAwesome } from '@expo/vector-icons';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { subscribeServices } from '@/constants/booking/data';
+import { defaultStyles } from '@/constants/Styles';
 interface ServiceItem {
     _id: string;
     title: string;
@@ -26,10 +27,20 @@ interface ServiceItem {
 export default function BookNow() {
     const { item } = useLocalSearchParams();
     const serviceItem: ServiceItem = JSON.parse(item as string);
-    const [subscription, setSubscription] = useState(""); // service subscription data
+    const [subscription, setSubscription] = useState<string | null>(null); // service subscription data
+
+    const toggleSubmit = () => {
+        if (subscription === "Yes") {
+            router.push('/homePage/services/ChooseSubscription');
+        } else {
+            router.push('/homePage/BookingDetails');
+        }
+    }
+
+
     return (
         <View style={styles.container}>
-
+            {/* HEADER */}
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
 
@@ -49,75 +60,89 @@ export default function BookNow() {
             </View>
 
 
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(14) }}>
+                <View style={[styles.containerStyle]}>
+                    <Text style={[styles.topText, { paddingHorizontal: wp(5) }]}>Enter the amount of items or bags you need.</Text>
 
-            <View style={styles.containerStyle}>
-                <Text style={styles.topText}>Enter the amount of items or bags you need.</Text>
+                    <View style={{ marginTop: hp(4), paddingHorizontal: wp(5) }}>
+                        <Text style={styles.topTitle}>Total clothing items/bags</Text>
 
-                <View style={{ marginTop: hp(4), }}>
-                    <Text style={styles.topTitle}>Total clothing items/bags</Text>
-
-                    <Link href={'/homePage/item/ItemPage'} asChild>
+                        <Link href={'/homePage/item/ItemPage'} asChild>
+                            <TouchableOpacity style={styles.textField}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <Text style={styles.textStyle}>2 items</Text>
+                                    <FontAwesome name='caret-right' size={hp(2.5)} />
+                                </View>
+                            </TouchableOpacity>
+                        </Link>
+                    </View>
+                    <View style={styles.viewTop}>
+                        <Text style={styles.topTitle}>Service name</Text>
                         <TouchableOpacity style={styles.textField}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <Text style={styles.textStyle}>2 items</Text>
+                                <Text style={styles.textStyle}>{serviceItem?.title}</Text>
                                 <FontAwesome name='caret-right' size={hp(2.5)} />
                             </View>
                         </TouchableOpacity>
-                    </Link>
-                </View>
-                <View style={{ marginTop: hp(4), }}>
-                    <Text style={styles.topTitle}>Service name</Text>
-                    <TouchableOpacity style={styles.textField}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <Text style={styles.textStyle}>{serviceItem?.title}</Text>
-                            <FontAwesome name='caret-right' size={hp(2.5)} />
-                        </View>
-                    </TouchableOpacity>
-                </View>
-                <View style={{ marginTop: hp(4), }}>
-                    <Text style={styles.topTitle}>Want to subscribe to this service?</Text>
-                    <SelectList
-                        setSelected={(val: React.SetStateAction<null>) => setSubscription(val)}
-                        data={subscribeServices}
-                        save="value"
-                        placeholder='Gender'
-                        search={false}
-                        boxStyles={styles.boxStyles}
-                        inputStyles={{ fontFamily: "UrbanistMedium", fontSize: hp(1.9), }}
-                        dropdownStyles={styles.dropdownStyles}
-                        dropdownTextStyles={styles.dropdownTextStyles}
-                        arrowicon={<FontAwesome name='caret-right' size={hp(2.5)} />}
-                        maxHeight={300}
-                        defaultOption={{ key: 'Male', value: 'Male' }}
-                    />
-                </View>
-                <View style={{ marginTop: hp(4), }}>
-                    <Text style={styles.topTitle}>Promo Code</Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <View style={styles.promoTextField}>
-                            <TextInput
-                                placeholder='Enter Promo Code'
-                                placeholderTextColor={'#9E9E9E'}
-                                style={{ flex: 1, fontFamily: 'UrbanistMedium', fontSize: hp(1.9) }} />
-                        </View>
-                        <TouchableOpacity style={styles.promoCircle}>
-                            <Feather name='plus' size={hp(2.5)} color={'#0A5CA8'} />
-                        </TouchableOpacity>
                     </View>
-                </View>
+                    <View style={styles.viewTop}>
+                        <Text style={styles.topTitle}>Want to subscribe to this service?</Text>
+                        <SelectList
+                            setSelected={(val: string) => setSubscription(val)}
+                            data={subscribeServices}
+                            save="value"
+                            placeholder='Gender'
+                            search={false}
+                            boxStyles={styles.boxStyles}
+                            inputStyles={{ fontFamily: "UrbanistMedium", fontSize: hp(1.9), }}
+                            dropdownStyles={styles.dropdownStyles}
+                            dropdownTextStyles={styles.dropdownTextStyles}
+                            arrowicon={<FontAwesome name='caret-right' size={hp(2.5)} />}
+                            maxHeight={300}
+                            defaultOption={{ key: 'Yes', value: 'Yes' }}
+                        />
+                    </View>
+                    <View style={styles.viewTop}>
+                        <Text style={styles.topTitle}>Promo Code</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <View style={styles.promoTextField}>
+                                <TextInput
+                                    placeholder='Enter Promo Code'
+                                    placeholderTextColor={'#9E9E9E'}
+                                    style={{ flex: 1, fontFamily: 'UrbanistMedium', fontSize: hp(1.9) }} />
+                            </View>
+                            <TouchableOpacity style={styles.promoCircle}>
+                                <Feather name='plus' size={hp(2.5)} color={'#0A5CA8'} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
 
-            </View>
+
+                    {/* Applied */}
+                    <View style={{ marginTop: hp(4), }}>
+                        <Text style={[styles.topTitle, { paddingHorizontal: wp(5) }]}>Applied Promotions & Offers</Text>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                            <View style={[styles.appliedInner, { paddingLeft: wp(5) }]}>
+                                <View style={styles.appliedView} >
+                                    <Text style={styles.appliedText} >Refer a Friend - 30% Off</Text>
+                                </View>
+                            </View>
+                        </ScrollView>
+                    </View>
+
+                </View>
+            </ScrollView>
 
 
 
 
 
             <View style={styles.footer}>
-                <Link href={'/homePage/BookingDetails'} asChild>
-                    <TouchableOpacity style={styles.footerBtn}>
-                        <Text style={styles.footerText}>Continue AED 125</Text>
-                    </TouchableOpacity>
-                </Link>
+                <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(1) }]}
+                    onPress={toggleSubmit}
+                >
+                    <Text style={defaultStyles.footerText}>Continue AED 125</Text>
+                </TouchableOpacity>
             </View>
 
 
@@ -158,7 +183,6 @@ const styles = StyleSheet.create({
 
     containerStyle: {
         marginTop: hp(2),
-        paddingHorizontal: wp(5)
     },
     topText: {
         fontFamily: 'UrbanistMedium',
@@ -199,7 +223,9 @@ const styles = StyleSheet.create({
         fontFamily: 'UrbanistMedium',
         fontSize: hp(1.9)
     },
-
+    viewTop: {
+        marginTop: hp(4), paddingHorizontal: wp(5)
+    },
 
 
 
@@ -207,11 +233,11 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         width: wp(100),
-        height: hp(14),
+        height: hp(11.5),
         backgroundColor: 'white',
         borderTopRightRadius: wp(4),
         borderTopLeftRadius: wp(4),
-        alignItems: 'center'
+        alignItems: 'center',
     },
 
     footerBtn: {
@@ -248,8 +274,27 @@ const styles = StyleSheet.create({
     dropdownTextStyles: {
         fontFamily: 'UrbanistMedium',
         fontSize: hp(1.9),
-        marginTop: hp(1.2),
+        marginTop: hp(1.5),
     },
 
+    appliedInner: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: wp(2),
+        marginTop: hp(2)
+    },
+    appliedView: {
+        backgroundColor: '#0A5CA8',
+        width: wp(60),
+        height: hp(5.5),
+        borderRadius: wp(10),
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    appliedText: {
+        fontFamily: 'UrbanistSemiBold',
+        fontSize: hp(2),
+        color: 'white'
+    }
 
 })

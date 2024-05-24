@@ -252,7 +252,7 @@ export default function ServicesScreen() {
             <View style={styles.topBtnStyle}>
                 <TouchableOpacity
                     onPress={() => router.back()}>
-                    <AntDesign name='arrowleft' size={hp(3)} />
+                    <AntDesign name='arrowleft' size={hp(3)} color={'#212121'} />
                 </TouchableOpacity>
             </View>
             <Animated.View style={[styles.header, headerStyle]}>

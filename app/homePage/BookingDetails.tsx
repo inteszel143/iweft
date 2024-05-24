@@ -12,12 +12,16 @@ import {
     BottomSheetBackdrop,
 } from '@gorhom/bottom-sheet';
 import Animated, { FadeIn } from 'react-native-reanimated';
+import { defaultStyles } from '@/constants/Styles';
 
 export default function BookingDetails() {
     const [selected, setSelected] = useState<any[]>([]);
 
     const currentDate = new Date();
+    const formattedCurrentDate = currentDate.toISOString().split('T')[0];
     const yesterday = new Date(currentDate);
+    yesterday.setDate(currentDate.getDate() - 1);
+
     const formattedYesterday = currentDate.toISOString().split('T')[0];
 
     const [topSelect, setTopSelect] = useState('');
@@ -26,19 +30,15 @@ export default function BookingDetails() {
 
     const handleDayPress = (date: any) => {
         if (selected.length < 2) {
-            // If less than 2 dates are selected, add the pressed date to the selectedDates array
             setSelected([...selected, date]);
         } else {
-            // If 2 dates are already selected, reset the selection and select the pressed date
             setSelected([date]);
         }
     };
 
-
-    // useEffect(() => {
-    //     bottomSheetModalRef.current?.present();
-    // }, []);
-
+    useEffect(() => {
+        bottomSheetModalRef.current?.present();
+    }, []);
     // bottomsheet
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
     const snapPoints = useMemo(() => ['25%', '54%'], []);
@@ -112,12 +112,9 @@ export default function BookingDetails() {
                                 textMonthFontSize: 20,
                                 textDayHeaderFontSize: 15,
                             }}
-                            current={'2024-03-26'}
+                            current={formattedCurrentDate}
                             minDate={formattedYesterday}
                             pagingEnabled={true}
-                            // onDayPress={day => {
-                            //     setSelected(day.dateString);
-                            // }}
                             onDayPress={day => {
                                 handleDayPress(day.dateString);
                             }}
@@ -216,8 +213,8 @@ export default function BookingDetails() {
 
                 <View style={styles.footer}>
                     <Link href={'/homePage/BookingAddress'} asChild>
-                        <TouchableOpacity style={styles.footerBtn}>
-                            <Text style={styles.footerText}>Continue AED 125</Text>
+                        <TouchableOpacity style={defaultStyles.footerBtn}>
+                            <Text style={defaultStyles.footerText}>Continue AED 125</Text>
                         </TouchableOpacity>
                     </Link>
                 </View>
@@ -358,7 +355,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         width: wp(100),
-        height: Platform.OS === 'ios' ? hp(14) : hp(12),
+        height: Platform.OS === 'ios' ? hp(12) : hp(10),
         backgroundColor: 'white',
         borderTopRightRadius: wp(4),
         borderTopLeftRadius: wp(4),

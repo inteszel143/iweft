@@ -1,6 +1,10 @@
 import axios from "axios";
 import errorRes from "./errorRes";
 import * as SecureStore from "expo-secure-store";
+
+interface RefreshResponse {
+  accessToken: string;
+}
 /**
  * MANUAL REGISTER  ---------------------------------------------------------
  */
@@ -68,21 +72,38 @@ export const logoutUser = async (refreshToken: string) => {
 /**
  * REFRESH TOKEN WHEN OPEN APP ---------------------------------------------------------
  */
-export const appOpenRefresh = async (refreshToken: string) => {
+// export const appOpenRefresh = async (refreshToken: string) => {
+//   const data = {
+//     refreshToken: refreshToken,
+//   };
+//   try {
+//     const response = await axios.post(
+//       `${process.env.EXPO_PUBLIC_API_URL}/auth/client/refresh-token`,
+//       data,
+//       {
+//         headers: {},
+//       }
+//     );
+//     return response.data;
+//   } catch (error) {
+//     return Promise.reject(error);
+//   }
+// };
+export const appOpenRefresh = async (
+  refreshToken: string
+): Promise<RefreshResponse> => {
   const data = {
     refreshToken: refreshToken,
   };
+
   try {
-    const response = await axios.post(
+    const response = await axios.post<RefreshResponse>(
       `${process.env.EXPO_PUBLIC_API_URL}/auth/client/refresh-token`,
-      data,
-      {
-        headers: {},
-      }
+      data
     );
     return response.data;
   } catch (error) {
-    return Promise.reject(error);
+    throw error;
   }
 };
 

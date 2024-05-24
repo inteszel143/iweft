@@ -1,5 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { getHomeServices, getSpecialOffers } from "@/apis/homeApi";
+import {
+  getHomeServices,
+  getSpecialOffers,
+  getSupscriptionPlan,
+} from "@/apis/homeApi";
 /**
  * Get Home Services ---------------------------------------------------------
  */
@@ -18,5 +22,15 @@ export const useSpecialOffers = (isFocused: boolean) => {
     queryKey: ["special-offrs"],
     enabled: isFocused,
     queryFn: getSpecialOffers,
+  });
+};
+/**
+ * Get Home Subscription Plan ---------------------------------------------------------
+ */
+export const useSubscriptionPlan = (isFocused: boolean) => {
+  return useQuery({
+    queryKey: ["sub-plans"],
+    enabled: isFocused,
+    queryFn: getSupscriptionPlan,
   });
 };

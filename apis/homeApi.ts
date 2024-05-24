@@ -16,11 +16,12 @@ export const getHomeServices = async () => {
         },
       }
     );
-    return response?.data?.services;
+    return response?.data?.services || [];
   } catch (error) {
     return Promise.reject(error);
   }
 };
+
 /**
  * Get Home Special Offers ---------------------------------------------------------
  */
@@ -36,7 +37,28 @@ export const getSpecialOffers = async () => {
         },
       }
     );
-    return response?.data?.special_offers;
+    return response?.data?.special_offers || [];
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+/**
+ * Get Home Subscription Plans ---------------------------------------------------------
+ */
+export const getSupscriptionPlan = async () => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  try {
+    const response = await axios.get(
+      `${process.env.EXPO_PUBLIC_API_URL}/subscription-plans`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          //   "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response?.data || [];
   } catch (error) {
     return Promise.reject(error);
   }
