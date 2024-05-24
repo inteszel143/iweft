@@ -72,3 +72,8 @@ export const paymentMethods = [
     label: "Master Card",
   },
 ];
+
+export const subscribeServices = [
+  { key: "Yes", value: "Yes" },
+  { key: "No", value: "No" },
+];

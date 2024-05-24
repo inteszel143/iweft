@@ -14,27 +14,28 @@ export default function index() {
     useEffect(() => {
         setTimeout(() => {
             validate();
-        }, 2500);
+        }, 1000);
     }, []);
 
     const validate = async () => {
         const refreshToken = await SecureStore.getItemAsync('refreshToken');
         const onboarded = await SecureStore.getItemAsync('onboarded');
         queryClient.invalidateQueries({ queryKey: ['user-data'] });
-        if (refreshToken === null) {
-            if (onboarded === null) {
-                router.push('/authPage/SelectLoginPage');
-            } else {
-                router.push('/authPage/OnboardingScreen');
-            }
-        } else {
+        if (refreshToken !== null) {
             try {
                 const response = await appOpenRefresh(refreshToken);
                 await SecureStore.setItemAsync('accessToken', response?.access?.token);
                 await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
                 router.push('/(tabs)/');
             } catch (error) {
+                console.log(errorRes(error));
                 router.push('/authPage/LoginScreen');
+            }
+        } else {
+            if (onboarded === null) {
+                router.push('/authPage/SelectLoginPage');
+            } else {
+                router.push('/authPage/OnboardingScreen');
             }
         }
     };

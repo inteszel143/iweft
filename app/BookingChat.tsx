@@ -23,7 +23,7 @@ export default function BookingChat() {
     }, []);
 
     return (
-        <View style={[styles.container, { paddingBottom: Platform.OS === 'ios' ? hp(6) : 0 }]}>
+        <View style={[styles.container, { paddingBottom: Platform.OS === 'ios' ? hp(5.5) : 0 }]}>
             <GiftedChat
                 messages={messages}
                 onSend={(messages: any) => onSend(messages)}
@@ -114,7 +114,7 @@ export default function BookingChat() {
                     </View>
                 )}
                 renderInputToolbar={(props) => (
-                    <InputToolbar {...props} containerStyle={{ backgroundColor: 'white', }}
+                    <InputToolbar {...props} containerStyle={{ backgroundColor: 'white', borderTopColor: '#DADADA' }}
 
                         renderActions={() => (
                             <View style={{ height: 44, justifyContent: 'center', alignItems: 'center', left: 4 }}>

@@ -12,7 +12,7 @@ import { useUserQuery } from '@/query/fetchAuthQuery';
 import DatePicker from 'react-native-date-picker';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { country, genderData } from '@/constants/profile/data';
-import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
 import UpdateProfileData from '../UpdateProfileData';
 import { useQueryClient } from '@tanstack/react-query';
@@ -218,6 +218,7 @@ export default function EditProflieData() {
                         placeholder='Country'
                         search={false}
                         boxStyles={styles.boxStyles}
+                        arrowicon={<FontAwesome name='caret-right' size={hp(2.5)} />}
                         inputStyles={{ fontFamily: "UrbanistSemiBold", fontSize: hp(2), }}
                         dropdownStyles={styles.dropdownStyles}
                         dropdownTextStyles={styles.dropdownTextStyles}

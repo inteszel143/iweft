@@ -1,4 +1,4 @@
-import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
@@ -35,7 +35,7 @@ export default function ServicesScreen() {
 
     const toggleAdd = () => {
         setAddbook(!addbook);
-    }
+    };
 
 
     // scrollview
@@ -105,7 +105,10 @@ export default function ServicesScreen() {
                         <Text style={styles.middleText}>{serviceItem.title}</Text>
                         <TouchableOpacity onPress={toggleAdd}>
                             {
-                                addbook ? <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5.5), marginTop: hp(1) }} /> : <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5.5) }} />
+                                addbook ?
+                                    <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5.4), marginTop: hp(1) }} />
+                                    :
+                                    <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5.5) }} />
                             }
                         </TouchableOpacity>
                     </View>
@@ -227,16 +230,19 @@ export default function ServicesScreen() {
 
             <View style={styles.footer}>
                 <View style={styles.bottomBtnRow}>
-                    <Link href={'/BookingChat'} asChild style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}>
-                        <TouchableOpacity>
-                            <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
-                        </TouchableOpacity>
-                    </Link>
-                    <Link href={'/homePage/services/BookNow'} style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]} asChild>
-                        <TouchableOpacity >
-                            <Text style={[styles.bottomText, { color: "white" }]}>Book Now </Text>
-                        </TouchableOpacity>
-                    </Link>
+                    <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}
+                        onPress={() => router.push('/BookingChat')}
+                    >
+                        <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
+                        onPress={() => router.push({
+                            pathname: 'homePage/services/BookNow',
+                            params: { item: item },
+                        })}
+                    >
+                        <Text style={[styles.bottomText, { color: "white" }]}>Book Now </Text>
+                    </TouchableOpacity>
                 </View>
             </View>
 
@@ -455,10 +461,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         width: wp(100),
-        height: hp(13),
+        height: Platform.OS === 'ios' ? hp(12) : hp(11),
         backgroundColor: 'white',
-        borderTopRightRadius: wp(4),
-        borderTopLeftRadius: wp(4),
         alignItems: 'center'
     },
 
@@ -466,7 +470,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: wp(3),
-        marginTop: hp(3),
+        marginTop: hp(2),
+        borderTopRightRadius: wp(4),
+        borderTopLeftRadius: wp(4),
     },
     bottomBtn: {
         width: wp(40),

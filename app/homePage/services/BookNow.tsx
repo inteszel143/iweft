@@ -1,10 +1,32 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList, TextInput } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link, router } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { Feather, FontAwesome } from '@expo/vector-icons';
-
+import { SelectList } from 'react-native-dropdown-select-list';
+import { subscribeServices } from '@/constants/booking/data';
+interface ServiceItem {
+    _id: string;
+    title: string;
+    sub_title: string;
+    base_price: number;
+    image: string;
+    other_images: string[];
+    details: string;
+    status: string;
+    created_by: {
+        _id: string;
+        email: string;
+    };
+    updated_by: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+}
 export default function BookNow() {
+    const { item } = useLocalSearchParams();
+    const serviceItem: ServiceItem = JSON.parse(item as string);
+    const [subscription, setSubscription] = useState(""); // service subscription data
     return (
         <View style={styles.container}>
 
@@ -47,19 +69,27 @@ export default function BookNow() {
                     <Text style={styles.topTitle}>Service name</Text>
                     <TouchableOpacity style={styles.textField}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <Text style={styles.textStyle}>Clean & Press</Text>
+                            <Text style={styles.textStyle}>{serviceItem?.title}</Text>
                             <FontAwesome name='caret-right' size={hp(2.5)} />
                         </View>
                     </TouchableOpacity>
                 </View>
                 <View style={{ marginTop: hp(4), }}>
                     <Text style={styles.topTitle}>Want to subscribe to this service?</Text>
-                    <TouchableOpacity style={styles.textField}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <Text style={styles.textStyle}>Yes</Text>
-                            <FontAwesome name='caret-down' size={hp(2.5)} />
-                        </View>
-                    </TouchableOpacity>
+                    <SelectList
+                        setSelected={(val: React.SetStateAction<null>) => setSubscription(val)}
+                        data={subscribeServices}
+                        save="value"
+                        placeholder='Gender'
+                        search={false}
+                        boxStyles={styles.boxStyles}
+                        inputStyles={{ fontFamily: "UrbanistMedium", fontSize: hp(1.9), }}
+                        dropdownStyles={styles.dropdownStyles}
+                        dropdownTextStyles={styles.dropdownTextStyles}
+                        arrowicon={<FontAwesome name='caret-right' size={hp(2.5)} />}
+                        maxHeight={300}
+                        defaultOption={{ key: 'Male', value: 'Male' }}
+                    />
                 </View>
                 <View style={{ marginTop: hp(4), }}>
                     <Text style={styles.topTitle}>Promo Code</Text>
@@ -197,7 +227,29 @@ const styles = StyleSheet.create({
         fontFamily: 'UrbanistBold',
         fontSize: hp(2),
         color: 'white'
-    }
+    },
+
+    boxStyles: {
+        width: wp(90),
+        height: hp(7),
+        backgroundColor: '#FAFAFA',
+        paddingHorizontal: wp(6),
+        alignItems: 'center',
+        borderColor: 'white',
+        marginTop: hp(2),
+        borderRadius: wp(4),
+    },
+
+    dropdownStyles: {
+        borderColor: '#DADADA',
+        borderRadius: 6,
+        borderWidth: 0.5,
+    },
+    dropdownTextStyles: {
+        fontFamily: 'UrbanistMedium',
+        fontSize: hp(1.9),
+        marginTop: hp(1.2),
+    },
 
 
 })
