@@ -4,12 +4,17 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { Link, router } from 'expo-router';
 import { itemList, items } from '@/constants/home/data';
 import { defaultStyles } from '@/constants/Styles';
+import { useItemCategory, useItems } from '@/query/homeQuery';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function ItemPage() {
-
-
+    const isFocused = useIsFocused();
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const { data: categoryData, isPending } = useItemCategory(isFocused);
+    const { data: DATA } = useItems(isFocused);
     // hook
-    const [topSelect, setTopSelect] = useState(0);
+    const [topSelect, setTopSelect] = useState(null);
     const [count, setCount] = useState(0);
 
     const increment = () => {
@@ -19,6 +24,12 @@ export default function ItemPage() {
     const decrement = () => {
         setCount(count - 1);
     };
+    const handleCategoryPress = (caterogydata: string) => {
+        setSelectedCategory(caterogydata);
+    }
+    const filteredData = selectedCategory === 'All' ? DATA : DATA?.filter((item: any) => item.item_category_id.toLowerCase().includes(selectedCategory.toLowerCase()));
+    const searchFilter = filteredData.filter((item: any) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
+
 
     return (
         <View style={styles.container}>
@@ -49,10 +60,13 @@ export default function ItemPage() {
                     <Image source={require('@/assets/icons/search.png')} resizeMode='contain' style={{ width: wp(6.5) }} />
                     <TextInput
                         placeholder='Seach items'
-                        placeholderTextColor={'#9E9E9E'}
-                        style={{ width: wp(60), fontFamily: 'UrbanistMedium', fontSize: hp(1.8) }} />
+                        placeholderTextColor={'#BDBDBD'}
+                        onChangeText={(text) => setSearchQuery(text)}
+                        style={{ flex: 1, fontFamily: 'UrbanistMedium', fontSize: hp(1.9) }} />
                 </View>
-                <Image source={require('@/assets/icons/filter.png')} resizeMode='contain' style={{ width: wp(6.5) }} />
+                <TouchableOpacity onPress={() => router.push('homePage/item/FilterPage')}>
+                    <Image source={require('@/assets/icons/filter.png')} resizeMode='contain' style={{ width: wp(6.5) }} />
+                </TouchableOpacity>
             </View>
 
 
@@ -60,13 +74,26 @@ export default function ItemPage() {
 
             <View style={{ paddingVertical: hp(1), backgroundColor: 'white' }}>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ marginTop: hp(2) }}>
+                    <TouchableOpacity
+                        style={topSelect === null ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
+                        onPress={() => {
+                            setTopSelect(null);
+                            handleCategoryPress("All");
+                        }}
+                    >
+                        <Text style={topSelect === null ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>All</Text>
+                    </TouchableOpacity>
+
                     {
-                        items.map((item, index) => {
+                        categoryData?.map((item: any, index: any) => {
                             return (
                                 <TouchableOpacity key={index} style={topSelect == index ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
-                                    onPress={() => setTopSelect(index)}
+                                    onPress={() => {
+                                        setTopSelect(index);
+                                        handleCategoryPress(item._id);
+                                    }}
                                 >
-                                    <Text style={topSelect == index ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item.label}</Text>
+                                    <Text style={topSelect == index ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item.name}</Text>
                                 </TouchableOpacity>
                             )
                         })
@@ -74,28 +101,20 @@ export default function ItemPage() {
                 </ScrollView>
             </View>
 
-
-            <View style={{ alignItems: 'center', paddingBottom: hp(40) }} >
-
-                <FlatList
-                    data={itemList}
-                    showsVerticalScrollIndicator={false}
-                    keyExtractor={(item) => item.icon}
-                    renderItem={({ item }) => (
-                        <View style={styles.cardStyle}>
-                            <View style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'space-between'
-                            }}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(5) }}>
-                                    <Image source={item.icon} resizeMode='contain' style={{ width: wp(12), height: hp(5) }} />
-                                    <View style={{ width: wp(32) }}>
-                                        <Text style={styles.bundleText}>{item.label}</Text>
-                                        <Text style={styles.price}>+ AED {item.price}</Text>
-                                    </View>
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(12) }}>
+                {
+                    searchFilter.map((item: any, index: any) => (
+                        <View style={[styles.cardStyle, { alignSelf: 'center' }]} key={index}>
+                            <View style={styles.innerCardStyle}>
+                                <Image
+                                    source={{ uri: item.image }}
+                                    resizeMode='contain'
+                                    style={{ width: wp(12), height: hp(5) }} />
+                                <View style={{ flex: 1, marginLeft: wp(4), paddingHorizontal: wp(1) }}>
+                                    <Text style={styles.bundleText}>{item.name}</Text>
+                                    <Text style={styles.price}>+ AED {item.price}</Text>
                                 </View>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(3) }}>
+                                <View style={styles.rightStyle}>
                                     <TouchableOpacity style={styles.circle}
                                         onPress={decrement}
                                         disabled={count == 0 ? true : false}
@@ -111,12 +130,9 @@ export default function ItemPage() {
                                 </View>
                             </View>
                         </View>
-                    )}
-
-                />
-            </View>
-
-
+                    ))
+                }
+            </ScrollView>
 
 
             <View style={styles.footer}>
@@ -163,6 +179,11 @@ const styles = StyleSheet.create({
         fontFamily: "UrbanistBold",
         fontSize: hp(2.5)
     },
+    innerCardStyle: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
 
 
 
@@ -170,18 +191,19 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: wp(5),
+        paddingHorizontal: wp(6),
         height: hp(7),
         width: wp(91),
         backgroundColor: "#F5F5F5",
         marginTop: hp(1.5),
-        borderRadius: 12,
+        borderRadius: wp(4),
         alignSelf: 'center'
     },
     searchLeft: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: wp(4),
+        width: '90%',
         backgroundColor: 'transparent'
     },
 
@@ -203,11 +225,11 @@ const styles = StyleSheet.create({
 
     cardStyle: {
         width: wp(90),
-        height: hp(12),
         backgroundColor: '#FFFFFF',
         borderRadius: wp(4),
         marginTop: hp(2.5),
         justifyContent: 'center',
+        paddingVertical: hp(4),
         paddingHorizontal: wp(5),
         shadowColor: "#DDDDDD",
         shadowOffset: {
@@ -244,6 +266,9 @@ const styles = StyleSheet.create({
         fontFamily: 'UrbanistSemiBold',
         fontSize: hp(2),
         color: '#0A5CA8'
+    },
+    rightStyle: {
+        flexDirection: 'row', alignItems: 'center', gap: wp(3)
     },
 
 

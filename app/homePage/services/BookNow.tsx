@@ -81,7 +81,7 @@ export default function BookNow() {
                         <TouchableOpacity style={styles.textField}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <Text style={styles.textStyle}>{serviceItem?.title}</Text>
-                                <FontAwesome name='caret-right' size={hp(2.5)} />
+                                <FontAwesome name='caret-down' size={hp(2.5)} />
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -97,7 +97,7 @@ export default function BookNow() {
                             inputStyles={{ fontFamily: "UrbanistMedium", fontSize: hp(1.9), }}
                             dropdownStyles={styles.dropdownStyles}
                             dropdownTextStyles={styles.dropdownTextStyles}
-                            arrowicon={<FontAwesome name='caret-right' size={hp(2.5)} />}
+                            arrowicon={<FontAwesome name='caret-down' size={hp(2.5)} />}
                             maxHeight={300}
                             defaultOption={{ key: 'Yes', value: 'Yes' }}
                         />
@@ -119,7 +119,7 @@ export default function BookNow() {
 
 
                     {/* Applied */}
-                    <View style={{ marginTop: hp(4), }}>
+                    {/* <View style={{ marginTop: hp(4), }}>
                         <Text style={[styles.topTitle, { paddingHorizontal: wp(5) }]}>Applied Promotions & Offers</Text>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             <View style={[styles.appliedInner, { paddingLeft: wp(5) }]}>
@@ -128,7 +128,7 @@ export default function BookNow() {
                                 </View>
                             </View>
                         </ScrollView>
-                    </View>
+                    </View> */}
 
                 </View>
             </ScrollView>

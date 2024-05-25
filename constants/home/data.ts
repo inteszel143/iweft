@@ -175,26 +175,31 @@ export const itemList = [
     icon: require("@/assets/temp/items/item1.jpg"),
     label: "Abaya",
     price: 4,
+    caterogy: "Mens",
   },
   {
     icon: require("@/assets/temp/items/item2.jpg"),
     label: "Apron",
     price: 1,
+    caterogy: "Womens",
   },
   {
     icon: require("@/assets/temp/items/item3.jpg"),
     label: "Backpack (L)",
     price: 10,
+    caterogy: "Mens",
   },
   {
     icon: require("@/assets/temp/items/item4.jpg"),
     label: "Baniya",
     price: 1,
+    caterogy: "Kids",
   },
   {
     icon: require("@/assets/temp/items/item5.jpg"),
     label: "Bedsheet",
     price: 4,
+    caterogy: "Home",
   },
 ];
 
@@ -249,5 +254,28 @@ export const subPlan = [
     collection: "unlimited services ",
     title: "Platinum VIP",
     price: "AED 2,999",
+  },
+];
+
+export const caterogy = [
+  {
+    id: 1,
+    label: "Clothing",
+  },
+  {
+    id: 2,
+    label: "Bedding",
+  },
+  {
+    id: 3,
+    label: "Furniture",
+  },
+  {
+    id: 4,
+    label: "Miscellaneous",
+  },
+  {
+    id: 5,
+    label: "Others",
   },
 ];

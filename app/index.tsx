@@ -44,7 +44,7 @@ export default function index() {
         <View style={styles.container}>
             <StatusBar style='dark' />
             <Animated.View style={styles.top} entering={BounceIn.delay(100).duration(800).springify()}>
-                <Image source={require('@/assets/icons/iweft.png')} resizeMode='contain' style={{ width: wp(65) }} />
+                <Image source={require('@/assets/icons/iweft.png')} resizeMode='contain' style={{ width: wp(60) }} />
             </Animated.View>
             <Animated.View style={styles.footer} entering={FadeIn.delay(300)}>
                 <BallIndicator color="#93C120" size={hp(4)} />

@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import {
   getHomeServices,
+  getItemCategory,
+  getItems,
   getSpecialOffers,
   getSupscriptionPlan,
 } from "@/apis/homeApi";
@@ -32,5 +34,26 @@ export const useSubscriptionPlan = (isFocused: boolean) => {
     queryKey: ["sub-plans"],
     enabled: isFocused,
     queryFn: getSupscriptionPlan,
+  });
+};
+
+/**
+ * Get Home Item Category ---------------------------------------------------------
+ */
+export const useItemCategory = (isFocused: boolean) => {
+  return useQuery({
+    queryKey: ["item-category"],
+    enabled: isFocused,
+    queryFn: getItemCategory,
+  });
+};
+/**
+ * Get Home Items ---------------------------------------------------------
+ */
+export const useItems = (isFocused: boolean) => {
+  return useQuery({
+    queryKey: ["items"],
+    enabled: isFocused,
+    queryFn: getItems,
   });
 };

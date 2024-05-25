@@ -116,6 +116,7 @@ function RootLayoutNav() {
 
       {/* items */}
       <Stack.Screen name='homePage/item/ItemPage' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/item/FilterPage' options={{ headerShown: false }} />
 
 
       {/* bundles */}

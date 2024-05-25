@@ -63,3 +63,43 @@ export const getSupscriptionPlan = async () => {
     return Promise.reject(error);
   }
 };
+/**
+ * Get Home Item Category ---------------------------------------------------------
+ */
+export const getItemCategory = async () => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  try {
+    const response = await axios.get(
+      `${process.env.EXPO_PUBLIC_API_URL}/item-category`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          //   "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response?.data?.services || [];
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+/**
+ * Get Home Items ---------------------------------------------------------
+ */
+export const getItems = async () => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  try {
+    const response = await axios.get(
+      `${process.env.EXPO_PUBLIC_API_URL}/items`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          //   "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response?.data?.items || [];
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
