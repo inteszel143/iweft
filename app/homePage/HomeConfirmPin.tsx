@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Platform, ActivityIndicator } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import {
     CodeField,
     Cursor,
@@ -10,6 +10,10 @@ import {
 } from 'react-native-confirmation-code-field';
 import { Octicons } from '@expo/vector-icons';
 import BookingSuccessModal from '@/components/booking/BookingSuccessModal';
+import { getPinNumber } from '@/apis/fetchAuth';
+import PinCodeModal from '@/components/PinCodeModal';
+import errorRes from '@/apis/errorRes';
+import { createBooking } from '@/apis/order';
 interface CellProps {
     index: number;
     symbol: string;
@@ -17,20 +21,11 @@ interface CellProps {
 }
 
 export default function HomeConfirmPin() {
+    const { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude } = useLocalSearchParams();
     const [modalVisible, setModalVisible] = useState(false);
     const [btnLoading, setBtnLoading] = useState(false);
-
-
-    const toggleModal = () => {
-        setBtnLoading(true);
-        setTimeout(() => {
-            setBtnLoading(false);
-            setModalVisible(true);
-        }, 2000);
-    }
-
     const CELL_COUNT = 4;
-
+    const [errorModalVisible, setErrorModalVisible] = useState(false);
     const [enableMask, setEnableMask] = useState(true);
     const [value, setValue] = useState('');
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
@@ -38,8 +33,11 @@ export default function HomeConfirmPin() {
         value,
         setValue,
     });
-
-
+    useEffect(() => {
+        if (ref?.current) {
+            ref.current.focus();
+        }
+    }, []);
     const toggleMask = () => setEnableMask((f) => !f);
     const renderCell = ({ index, symbol, isFocused }: CellProps) => {
         let textChild = null;
@@ -59,12 +57,39 @@ export default function HomeConfirmPin() {
             </View>
         );
     };
+    const onSubmit = async () => {
+        setBtnLoading(true);
+        const orderData = {
+            order_details: {
+                service,
+                order_items: JSON.parse(itemData as string),
+                promo_code: "N/A"
+            },
+            pick_up_date_time: pick_up_date_time,
+            delivery_date_time: delivery_date_time,
+            address,
+            delivery_instruction: "N/A",
+            total_amount: total,
+            latitude: parseFloat(latitude as string),
+            longitude: parseFloat(longitude as string),
+        };
 
+        const pin = parseInt(value);
+        const response = await getPinNumber(pin);
+        if (response?.isMatch) {
+            await createBooking(orderData);
+            setModalVisible(true);
+            setBtnLoading(false);
+        } else {
+            setErrorModalVisible(true);
+            setBtnLoading(false);
+        }
+    }
 
 
     return (
         <View style={styles.container}>
-
+            {errorModalVisible && <PinCodeModal modalVisible={errorModalVisible} setModalVisible={setErrorModalVisible} />}
             {modalVisible && <BookingSuccessModal modalVisible={modalVisible} setModalVisible={setModalVisible} />}
 
             <View style={styles.Headercontainer}>
@@ -96,7 +121,7 @@ export default function HomeConfirmPin() {
                 />
                 <TouchableOpacity style={[styles.footerBtn, { backgroundColor: value.length != 4 ? "#DADADA" : "#0A5CA8", }]}
                     disabled={value.length != 4 ? true : false}
-                    onPress={toggleModal}
+                    onPress={onSubmit}
                 >
                     {
                         btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>Continue</Text>
@@ -147,7 +172,7 @@ const styles = StyleSheet.create({
     },
 
     scollviewContainer: {
-        marginTop: hp(16),
+        marginTop: hp(10),
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -162,7 +187,7 @@ const styles = StyleSheet.create({
         marginTop: hp(8)
     },
     footerText: {
-        fontFamily: 'UrbanistSemiBold',
+        fontFamily: 'UrbanistBold',
         fontSize: hp(2),
         color: 'white'
     },
@@ -176,7 +201,7 @@ const styles = StyleSheet.create({
     },
     cell: {
         width: wp(17),
-        height: wp(16),
+        height: wp(17),
         borderRadius: wp(4),
         borderWidth: 1,
         borderColor: "#F1F1F1",
@@ -185,8 +210,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     focusCell: {
-        width: wp(16),
-        height: wp(16),
+        width: wp(17),
+        height: wp(17),
         textAlign: 'center',
         justifyContent: 'center',
         borderColor: '#0A5CA8',

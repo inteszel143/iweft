@@ -8,29 +8,21 @@ import { subscribeServices } from '@/constants/booking/data';
 import { defaultStyles } from '@/constants/Styles';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ErrorPromoCodeModa from '@/components/ErrorPromoCodeModa';
-interface ServiceItem {
-    _id: string;
-    title: string;
-    sub_title: string;
-    base_price: number;
-    image: string;
-    other_images: string[];
-    details: string;
-    status: string;
-    created_by: {
-        _id: string;
-        email: string;
-    };
-    updated_by: string;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-}
-export default function BookNow() {
-    const { item } = useLocalSearchParams();
-    const serviceItem: ServiceItem = JSON.parse(item as string);
+
+export default function AfterItemPage() {
+    const { service, service_name, itemData, total, total_data } = useLocalSearchParams();
     const [subscription, setSubscription] = useState<string | null>(null); // service subscription data
     const [errorModalVisible, setErrorModalVisible] = useState(false);
+    const toggleSubmit = () => {
+        if (subscription === "Yes") {
+            router.push('/homePage/services/ChooseSubscription');
+        } else {
+            router.push({
+                pathname: '/homePage/BookingDetails',
+                params: { service, service_name, itemData, total, total_data }
+            });
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -61,14 +53,12 @@ export default function BookNow() {
 
                     <View style={{ marginTop: hp(4), paddingHorizontal: wp(5) }}>
                         <Text style={styles.topTitle}>Total clothing items/bags</Text>
+
                         <TouchableOpacity style={styles.textField}
-                            onPress={() => router.push({
-                                pathname: '/homePage/item/ItemPage',
-                                params: { service: serviceItem?._id, service_name: serviceItem?.title },
-                            })}
+                            onPress={() => router.back()}
                         >
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <Text style={styles.textStyle}>0 items</Text>
+                                <Text style={styles.textStyle}>{total_data} items</Text>
                                 <FontAwesome name='caret-right' size={hp(2.5)} />
                             </View>
                         </TouchableOpacity>
@@ -77,7 +67,7 @@ export default function BookNow() {
                         <Text style={styles.topTitle}>Service name</Text>
                         <TouchableOpacity style={styles.textField}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <Text style={styles.textStyle}>{serviceItem?.title}</Text>
+                                <Text style={styles.textStyle}>{service_name}</Text>
                                 {/* <FontAwesome name='caret-down' size={hp(2.5)} /> */}
                             </View>
                         </TouchableOpacity>
@@ -136,10 +126,10 @@ export default function BookNow() {
 
 
             <View style={styles.footer}>
-                <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(1), backgroundColor: '#DADADA' }]}
-                    disabled={true}
+                <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(1) }]}
+                    onPress={toggleSubmit}
                 >
-                    <Text style={defaultStyles.footerText}>Continue AED 0.00</Text>
+                    <Text style={defaultStyles.footerText}>Continue AED {total}</Text>
                 </TouchableOpacity>
             </View>
 

@@ -1,21 +1,21 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform, ActivityIndicator } from 'react-native'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link, router } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import MapView, { Marker, PROVIDER_GOOGLE, } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Fontisto } from '@expo/vector-icons';
+import { defaultStyles } from '@/constants/Styles';
 export default function BookingAddress() {
-
-    const [location, setLocation] = useState<any>(null);
+    const { service, service_name, itemData, total, pick_up_date_time, delivery_date_time } = useLocalSearchParams();
     const [errorMsg, setErrorMsg] = useState("");
-    const [mapLocation, setMapLocation] = useState([]);
     const [nameAddress, setNameAddress] = useState<any>();
-
+    const [city, setCity] = useState<any>();
+    const [street, setStreet] = useState<any>();
     const [lat, setLat] = useState<any>("");
     const [long, setLong] = useState<any>("");
-
+    const [btnLoading, setBtnLoading] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -27,18 +27,12 @@ export default function BookingAddress() {
             }
             const location = await Location.getCurrentPositionAsync({});
             const { latitude, longitude } = location.coords;
-            setLat(latitude);
-            setLong(longitude)
         })();
-
     }, []);
 
-
-
     // bottomsheet
-    // ref
     const bottomSheetRef = useRef<BottomSheet>(null);
-    const snapPoints = useMemo(() => ['35%', '35%'], []);
+    const snapPoints = useMemo(() => ['35%', '64%'], []);
     // callbacks
     const handleSheetChanges = useCallback((index: number) => {
         // console.log('handleSheetChanges', index);
@@ -51,15 +45,27 @@ export default function BookingAddress() {
         longitudeDelta: 0.005005337297916412,
     };
     const onRegionChange = async (region: Region) => {
-        setMapLocation([region.latitude, region.longitude]);
-
+        setLat(region.latitude);
+        setLong(region.longitude);
         const userAddress = await Location.reverseGeocodeAsync({
             latitude: region.latitude,
             longitude: region.longitude
         });
         setNameAddress(userAddress[0].district + ', ' + userAddress[0].street + ', ' + userAddress[0].city + ', ' + userAddress[0].country);
+        setStreet(userAddress[0].street);
+        setCity(userAddress[0].district);
     };
 
+    const onSubmit = async () => {
+        const address = nameAddress;
+        const latitude = lat;
+
+        const longitude = long;
+        router.push({
+            pathname: 'homePage/services/DriverInstruction',
+            params: { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude }
+        });
+    }
 
     return (
         <View style={styles.container}>
@@ -76,27 +82,21 @@ export default function BookingAddress() {
 
                     <View style={styles.headerRight}>
                         <TouchableOpacity>
-                            <Image source={require('@/assets/icons/bookingMenu.png')} resizeMode='contain' style={{ width: wp(7.5) }} />
+                            <Image source={require('@/assets/icons/bookingMenu.png')} resizeMode='contain' style={{ width: wp(7.5), tintColor: 'white' }} />
                         </TouchableOpacity>
                     </View>
                 </View>
             </View>
 
 
-            <View style={{ height: hp(60) }}>
+            <View style={{ height: Platform.OS === 'ios' ? hp(53) : hp(55) }}>
                 <MapView
-                    style={styles.map}
+                    style={StyleSheet.absoluteFill}
                     provider={PROVIDER_GOOGLE}
-                    // showsUserLocation={true}
-                    // showsMyLocationButton
+                    showsUserLocation={true}
+                    showsMyLocationButton
                     loadingEnabled={true}
                     initialRegion={INITIAL_REGION}
-                    region={{
-                        latitude: lat,
-                        longitude: long,
-                        latitudeDelta: 0.1034042830388827383,
-                        longitudeDelta: 0.105005337297916412,
-                    }}
                     onRegionChangeComplete={onRegionChange}
                 />
                 <View style={styles.markerStyle}>
@@ -108,7 +108,7 @@ export default function BookingAddress() {
 
             <BottomSheet
                 ref={bottomSheetRef}
-                index={1}
+                index={0}
                 snapPoints={snapPoints}
                 handleIndicatorStyle={{ backgroundColor: '#DADADA' }}
                 onChange={handleSheetChanges}
@@ -123,15 +123,27 @@ export default function BookingAddress() {
                             <Fontisto name='map-marker-alt' size={hp(2)} />
                         </View>
                     </View>
-
-                    <Link href={'/homePage/HomePaymentMethods'} asChild>
-                        <TouchableOpacity style={styles.sheetBtn}>
-                            <Text style={styles.sheetText}>Continue</Text>
-                        </TouchableOpacity>
-                    </Link>
+                    <View>
+                        <Text style={styles.adddressTitle}>House/ Apartment number</Text>
+                        <View style={styles.textField}>
+                            <Text style={styles.address}>{street}</Text>
+                        </View>
+                    </View>
+                    <View>
+                        <Text style={styles.adddressTitle}>City</Text>
+                        <View style={styles.textField}>
+                            <Text style={styles.address}>{city}</Text>
+                        </View>
+                    </View>
                 </BottomSheetView>
             </BottomSheet>
-
+            <View style={styles.footer}>
+                <TouchableOpacity style={defaultStyles.footerBtn}
+                    onPress={onSubmit}
+                >
+                    {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.sheetText}>Continue</Text>}
+                </TouchableOpacity>
+            </View>
 
 
         </View>
@@ -174,7 +186,7 @@ const styles = StyleSheet.create({
 
     adddressTitle: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(2.4),
+        fontSize: hp(2.2),
         marginTop: hp(3)
     },
 
@@ -199,17 +211,8 @@ const styles = StyleSheet.create({
     markerStyle: {
         position: 'absolute',
         alignSelf: 'center',
-        top: hp(20)
+        top: hp(15.5),
     },
-
-
-
-
-
-
-
-
-
     contentContainer: {
         flex: 1,
         alignItems: 'center',
@@ -224,9 +227,15 @@ const styles = StyleSheet.create({
         width: wp(82),
         marginTop: hp(2.2)
     },
-    sheetBtn: {
+    footer: {
         position: 'absolute',
-        bottom: Platform.OS === 'ios' ? hp(4) : hp(2),
+        bottom: 0,
+        width: wp(100),
+        height: hp(10),
+        alignItems: 'center',
+        backgroundColor: '#FFFFFF',
+    },
+    sheetBtn: {
         width: wp(90),
         height: hp(6),
         alignItems: 'center',
@@ -237,6 +246,6 @@ const styles = StyleSheet.create({
     sheetText: {
         fontFamily: 'UrbanistBold',
         fontSize: hp(2),
-        color: '#FFFFFF',
+        color: '#FFFFFF'
     }
 })

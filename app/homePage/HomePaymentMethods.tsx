@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Platform } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link, router } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { paymentMethods } from '@/constants/booking/data';
 import { Fontisto } from '@expo/vector-icons';
+import { defaultStyles } from '@/constants/Styles';
 
 export default function HomePaymentMethods() {
+    const { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude } = useLocalSearchParams();
     const [isSelected, setIsSelected] = useState(0);
-
-
     return (
         <View style={styles.container}>
 
@@ -67,12 +67,18 @@ export default function HomePaymentMethods() {
 
 
             <View style={styles.footer}>
-
-                <Link href={'/homePage/HomeReviewSummary'} style={[styles.footerBtn, { backgroundColor: isSelected == 0 ? "#DADADA" : "#0A5CA8", }]} asChild disabled={isSelected == 0 ? true : false}>
-                    <TouchableOpacity>
-                        <Text style={styles.footerText}>Continue</Text>
-                    </TouchableOpacity>
-                </Link>
+                <TouchableOpacity
+                    style={[defaultStyles.footerBtn, { backgroundColor: isSelected == 0 ? "#DADADA" : "#0A5CA8", }]}
+                    disabled={isSelected == 0 ? true : false}
+                    // onPress={() => router.push('/homePage/HomeReviewSummary')}
+                    onPress={() =>
+                        router.push({
+                            pathname: '/homePage/HomeReviewSummary',
+                            params: { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude }
+                        })}
+                >
+                    <Text style={defaultStyles.footerText}>Continue</Text>
+                </TouchableOpacity>
             </View>
 
 
@@ -130,7 +136,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         height: hp(12),
         justifyContent: 'center',
-        borderRadius: wp(6),
+        borderRadius: wp(4),
         paddingHorizontal: wp(6),
         shadowColor: "#DDDDDD",
         shadowOffset: {
@@ -147,7 +153,7 @@ const styles = StyleSheet.create({
         fontSize: hp(2)
     },
     footer: {
-        height: Platform.OS === 'ios' ? hp(14) : hp(12),
+        height: Platform.OS === 'ios' ? hp(12) : hp(10),
         backgroundColor: "white",
         alignItems: 'center',
     },

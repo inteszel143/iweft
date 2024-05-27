@@ -1,35 +1,94 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, TextInput, FlatList } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link, router } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { itemList, items } from '@/constants/home/data';
 import { defaultStyles } from '@/constants/Styles';
 import { useItemCategory, useItems } from '@/query/homeQuery';
 import { useIsFocused } from '@react-navigation/native';
 
 export default function ItemPage() {
+    const { service, service_name } = useLocalSearchParams();
     const isFocused = useIsFocused();
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
-    const { data: categoryData, isPending } = useItemCategory(isFocused);
+    const [itemData, setItemData] = useState<any>({});
+    const { data: categoryData } = useItemCategory(isFocused);
     const { data: DATA } = useItems(isFocused);
     // hook
     const [topSelect, setTopSelect] = useState(null);
-    const [count, setCount] = useState(0);
 
-    const increment = () => {
-        setCount(count + 1);
+    const increment = (item: any) => {
+        setItemData((prevData: any) => ({
+            ...prevData,
+            [item._id]: {
+                quantity: (prevData[item._id]?.quantity || 0) + 1,
+                price: item.price,
+                item_total_amount: (prevData[item._id]?.quantity || 0) + 1 * item.price,
+            }
+        }));
     };
 
-    const decrement = () => {
-        setCount(count - 1);
+    // Function to decrement the quantity of a specific item
+    const decrement = (item: any) => {
+        setItemData((prevData: any) => {
+            const updatedQuantity = Math.max((prevData[item._id]?.quantity || 0) - 1, 0);
+
+            // If quantity becomes 0, remove the item
+            if (updatedQuantity === 0) {
+                const { [item._id]: removedItem, ...rest } = prevData;
+                return rest;
+            }
+
+            return {
+                ...prevData,
+                [item._id]: {
+                    quantity: updatedQuantity,
+                    price: item.price,
+                    item_total_amount: updatedQuantity * item.price,
+                }
+            };
+        });
+    };
+    // Function to calculate the total cost of all items
+    const getTotalCost = (): number => {
+        return Object.values(itemData).reduce((total: number, item: any) => total + (item.quantity * item.price), 0);
+    };
+    const getTotalItems = (): number => {
+        return Object.keys(itemData).filter(itemId => itemData[itemId].quantity > 0).length;
     };
     const handleCategoryPress = (caterogydata: string) => {
         setSelectedCategory(caterogydata);
     }
-    const filteredData = selectedCategory === 'All' ? DATA : DATA?.filter((item: any) => item.item_category_id.toLowerCase().includes(selectedCategory.toLowerCase()));
-    const searchFilter = filteredData.filter((item: any) => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
 
+    const transformData = (data: any) => {
+        // Initialize an empty array to store the transformed items
+        const transformedItems: any = [];
+
+        // Iterate over each key-value pair in the input data
+        Object.keys(data).forEach(key => {
+            const quantity = data[key].quantity; // Extract the quantity
+            const item_total_amount = data[key].item_total_amount;
+            transformedItems.push({
+                item: key,
+                quantity: quantity,
+                item_total_amount: item_total_amount
+            });
+        });
+        return transformedItems;
+    };
+    const transformedData = transformData(itemData);
+    const filteredData = selectedCategory === 'All' ? DATA : DATA?.filter((item: any) => item.item_category_id.toLowerCase().includes(selectedCategory.toLowerCase()));
+    const searchFilter = filteredData?.filter((item: any) => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    const total = getTotalCost().toFixed(2);
+    const onSubmit = async () => {
+        // const itemDataString = encodeURIComponent(JSON.stringify(transformedData));
+        const itemDataString = JSON.stringify(transformedData);
+        router.push({
+            pathname: 'homePage/services/AfterItemPage',
+            params: { service, service_name, total, itemData: itemDataString, total_data: getTotalItems() }
+        });
+    }
 
     return (
         <View style={styles.container}>
@@ -51,8 +110,6 @@ export default function ItemPage() {
                     </View>
                 </View>
             </View>
-
-
 
 
             <View style={styles.searchContainer}>
@@ -103,7 +160,7 @@ export default function ItemPage() {
 
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(12) }}>
                 {
-                    searchFilter.map((item: any, index: any) => (
+                    searchFilter?.map((item: any, index: any) => (
                         <View style={[styles.cardStyle, { alignSelf: 'center' }]} key={index}>
                             <View style={styles.innerCardStyle}>
                                 <Image
@@ -116,14 +173,14 @@ export default function ItemPage() {
                                 </View>
                                 <View style={styles.rightStyle}>
                                     <TouchableOpacity style={styles.circle}
-                                        onPress={decrement}
-                                        disabled={count == 0 ? true : false}
+                                        onPress={() => decrement(item)}
+                                        disabled={!itemData[item._id]?.quantity}
                                     >
                                         <Text style={styles.btnText}>-</Text>
                                     </TouchableOpacity>
-                                    <Text style={styles.quantity}>{count}</Text>
+                                    <Text style={styles.quantity}>{itemData[item._id]?.quantity || 0}</Text>
                                     <TouchableOpacity style={styles.circle}
-                                        onPress={increment}
+                                        onPress={() => increment(item)}
                                     >
                                         <Text style={styles.btnText}>+</Text>
                                     </TouchableOpacity>
@@ -136,8 +193,10 @@ export default function ItemPage() {
 
 
             <View style={styles.footer}>
-                <TouchableOpacity style={defaultStyles.footerBtn} onPress={() => router.back()}>
-                    <Text style={defaultStyles.footerText}>Continue AED 120</Text>
+                <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(1) }]} onPress={onSubmit}
+                    disabled={getTotalItems() === 0 ? true : false}
+                >
+                    <Text style={defaultStyles.footerText}>Continue AED {getTotalCost().toFixed(2)}</Text>
                 </TouchableOpacity>
             </View>
 
@@ -192,7 +251,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: wp(6),
-        height: hp(7),
+        height: hp(6.5),
         width: wp(91),
         backgroundColor: "#F5F5F5",
         marginTop: hp(1.5),
@@ -255,9 +314,9 @@ const styles = StyleSheet.create({
         fontSize: hp(2)
     },
     circle: {
-        width: wp(10),
-        height: wp(10),
-        borderRadius: wp(5),
+        width: wp(11),
+        height: wp(11),
+        borderRadius: wp(6),
         backgroundColor: '#DAE7F2',
         alignItems: 'center',
         justifyContent: 'center'
@@ -268,7 +327,7 @@ const styles = StyleSheet.create({
         color: '#0A5CA8'
     },
     rightStyle: {
-        flexDirection: 'row', alignItems: 'center', gap: wp(3)
+        flexDirection: 'row', alignItems: 'center', gap: wp(4)
     },
 
 
@@ -276,11 +335,11 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         width: wp(100),
-        height: hp(11),
+        height: hp(12),
         backgroundColor: 'white',
         borderTopRightRadius: wp(4),
         borderTopLeftRadius: wp(4),
-        alignItems: 'center'
+        alignItems: 'center',
     },
 
     footerBtn: {

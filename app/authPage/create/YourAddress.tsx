@@ -36,7 +36,6 @@ export default function YourAddress() {
 
 
     // bottomsheet
-    // ref
     const bottomSheetRef = useRef<BottomSheet>(null);
     const snapPoints = useMemo(() => ['35%', '64%'], []);
     // callbacks

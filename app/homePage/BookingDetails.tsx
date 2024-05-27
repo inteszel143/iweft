@@ -1,22 +1,24 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform } from 'react-native'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link, router } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { Calendar } from 'react-native-calendars';
 import { timeCollect } from '@/constants/home/data';
 import moment from 'moment';
 import {
     BottomSheetModal,
-    BottomSheetView,
     BottomSheetModalProvider,
-    BottomSheetBackdrop,
 } from '@gorhom/bottom-sheet';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { defaultStyles } from '@/constants/Styles';
+import ModalAlert from '@/components/home/items/ModalAlert';
 
 export default function BookingDetails() {
+    const { service, service_name, itemData, total, total_data } = useLocalSearchParams();
     const [selected, setSelected] = useState<any[]>([]);
+    const modalARef = useRef<BottomSheetModal>(null);
 
+    //date
     const currentDate = new Date();
     const formattedCurrentDate = currentDate.toISOString().split('T')[0];
     const yesterday = new Date(currentDate);
@@ -35,31 +37,36 @@ export default function BookingDetails() {
             setSelected([date]);
         }
     };
+    //formatedate
+    const formatDate = (dateString: string): string => {
+        if (!dateString) {
+            return "";
+        }
+        const [year, month, day] = dateString.split('-');
+        const formattedMonth = parseInt(month, 10);
+        const formattedDay = parseInt(day, 10);
+        return `${formattedMonth}/${formattedDay}/${year}`;
+    };
+    const collectDate = formatDate(selected[0]);
+    const deliveryDate = formatDate(selected[1]);
+
+
+    const onSubmit = () => {
+        const pick_up_date_time = collectDate + ' ' + topSelect;
+        const delivery_date_time = deliveryDate + ' ' + deliveryTime;
+        router.push({
+            pathname: '/homePage/BookingAddress',
+            params: { service, service_name, itemData, total, pick_up_date_time, delivery_date_time }
+        });
+    }
 
     useEffect(() => {
-        bottomSheetModalRef.current?.present();
+        modalARef.current?.present();
     }, []);
-    // bottomsheet
-    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-    const snapPoints = useMemo(() => ['25%', '54%'], []);
-    // callbacks
-    const handleSheetChanges = useCallback((index: number) => {
-        // console.log('handleSheetChanges', index);
-    }, []);
-    const handlePresentModalPress = useCallback(() => {
-        bottomSheetModalRef.current?.dismiss();
-    }, []);
-    const renderBackdrop = useCallback(
-        (props: any) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1}{...props} />, []
-    )
-
 
     return (
         <BottomSheetModalProvider>
             <View style={styles.container}>
-
-
-
                 <View style={styles.Headercontainer}>
                     <View style={styles.innerContainer}>
 
@@ -77,8 +84,6 @@ export default function BookingDetails() {
                         </View>
                     </View>
                 </View>
-
-
 
 
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(15) }}>
@@ -147,13 +152,11 @@ export default function BookingDetails() {
                     <View style={styles.choose}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: wp(5) }}>
                             <View>
-                                {selected[0] && <Text style={styles.chooseTime}>Collection Date:</Text>}
                                 <Text style={styles.chooseTime}>Choose Collection Time:</Text>
                             </View>
-                            <View>
-                                {selected[0] && <Text style={styles.chooseTimeStyle}>{moment(selected[0]).format('LL')}</Text>}
+                            {/* <View>
                                 {topSelect && <Text style={styles.chooseTimeStyle}>{topSelect}</Text>}
-                            </View>
+                            </View> */}
                         </View>
                         <View>
                             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ marginTop: hp(2) }}>
@@ -172,20 +175,17 @@ export default function BookingDetails() {
                         </View>
                     </View>
 
-
-
                     {
-                        selected[0] && <Animated.View style={[styles.choose, { marginTop: hp(4) }]}
+                        topSelect && <Animated.View style={[styles.choose, { marginTop: hp(4) }]}
                             entering={FadeIn}
                         >
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: wp(5) }}>
                                 <View>
-                                    {selected[1] && <Text style={styles.chooseTime}>Delivery Date:</Text>}
                                     <Text style={styles.chooseTime}>Choose Delivery Time:</Text>
                                 </View>
                                 <View>
-                                    {selected[1] && <Text style={styles.chooseTimeStyle}>{moment(selected[1]).format('LL')}</Text>}
-                                    {topSelect && <Text style={styles.chooseTimeStyle}>{deliveryTime}</Text>}
+                                    {/* {selected[1] && <Text style={styles.chooseTimeStyle}>{moment(selected[1]).format('LL')}</Text>} */}
+                                    {/* {topSelect && <Text style={styles.chooseTimeStyle}>{deliveryTime}</Text>} */}
                                 </View>
                             </View>
                             <View>
@@ -205,46 +205,20 @@ export default function BookingDetails() {
                             </View>
                         </Animated.View>
                     }
+
                 </ScrollView>
 
 
-
-
-
                 <View style={styles.footer}>
-                    <Link href={'/homePage/BookingAddress'} asChild>
-                        <TouchableOpacity style={defaultStyles.footerBtn}>
-                            <Text style={defaultStyles.footerText}>Continue AED 125</Text>
-                        </TouchableOpacity>
-                    </Link>
+                    <TouchableOpacity style={defaultStyles.footerBtn}
+                        onPress={onSubmit}
+                    >
+                        <Text style={defaultStyles.footerText}>Continue AED {total}</Text>
+                    </TouchableOpacity>
                 </View>
 
 
-                <BottomSheetModal
-                    ref={bottomSheetModalRef}
-                    index={1}
-                    snapPoints={snapPoints}
-                    backdropComponent={renderBackdrop}
-                    enablePanDownToClose={true}
-                    handleIndicatorStyle={{ backgroundColor: '#DADADA' }}
-                    onChange={handleSheetChanges}
-
-                >
-                    <BottomSheetView style={styles.contentContainer}>
-                        <Image source={require('@/assets/temp/bookingdetails.jpg')} resizeMode='contain' style={{ width: wp(90), height: hp(30) }} />
-                        <Text style={styles.bottomSheetText}>Before your first order, select a time to meet one of our drivers! They will hand over everything you need to get started. </Text>
-
-                        <View style={styles.bottomBtnRow}>
-                            <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
-                                onPress={handlePresentModalPress}
-                            >
-                                <Text style={[styles.bottomText, { color: "#FFFFFF" }]}>Got it</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </BottomSheetView>
-                </BottomSheetModal>
-
-
+                <ModalAlert modalRef={modalARef} />
             </View>
         </BottomSheetModalProvider>
     )
@@ -335,7 +309,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         width: wp(100),
-        height: hp(10),
+        height: hp(10.5),
         alignItems: 'center',
     },
     bottomBtn: {
@@ -355,7 +329,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         width: wp(100),
-        height: Platform.OS === 'ios' ? hp(12) : hp(10),
+        height: Platform.OS === 'ios' ? hp(11) : hp(19),
         backgroundColor: 'white',
         borderTopRightRadius: wp(4),
         borderTopLeftRadius: wp(4),
@@ -375,6 +349,7 @@ const styles = StyleSheet.create({
         fontFamily: 'UrbanistBold',
         fontSize: hp(2),
         color: 'white'
-    }
+    },
+
 
 })

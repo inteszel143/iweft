@@ -8,7 +8,7 @@ export default function HomeSearch() {
                 <Image source={require('@/assets/icons/search.png')} resizeMode='contain' style={{ width: wp(6.5) }} />
                 <TextInput placeholder='Seach what you need ...'
                     placeholderTextColor={'#d5d5d5'}
-                    style={{ fontFamily: 'UrbanistMedium', fontSize: hp(1.8) }} />
+                    style={{ fontFamily: 'UrbanistSemiBold', fontSize: hp(1.9) }} />
             </View>
             <Image source={require('@/assets/icons/filter.png')} resizeMode='contain' style={{ width: wp(6.5) }} />
         </View>

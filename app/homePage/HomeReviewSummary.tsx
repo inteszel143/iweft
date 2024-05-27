@@ -1,11 +1,13 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Platform, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link, router } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { paymentMethods } from '@/constants/booking/data';
 import { Entypo } from '@expo/vector-icons';
+import { defaultStyles } from '@/constants/Styles';
 
 export default function HomeReviewSummary() {
+    const { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude } = useLocalSearchParams();
     return (
         <View style={styles.container}>
 
@@ -20,7 +22,6 @@ export default function HomeReviewSummary() {
                     </View>
                 </View>
             </View>
-
 
 
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(2) }}>
@@ -94,11 +95,17 @@ export default function HomeReviewSummary() {
 
 
             <View style={styles.footer}>
-                <Link href={'/homePage/HomeConfirmPin'} style={[styles.footerBtn, { backgroundColor: "#0A5CA8", }]} asChild >
-                    <TouchableOpacity>
-                        <Text style={styles.footerText}>Continue</Text>
-                    </TouchableOpacity>
-                </Link>
+                <TouchableOpacity
+                    style={defaultStyles.footerBtn}
+                    // onPress={() => router.push('/homePage/HomeConfirmPin')}
+                    onPress={() =>
+                        router.push({
+                            pathname: '/homePage/HomeConfirmPin',
+                            params: { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude }
+                        })}
+                >
+                    <Text style={defaultStyles.footerText}>Confirm Payment</Text>
+                </TouchableOpacity>
             </View>
 
 
@@ -194,19 +201,9 @@ const styles = StyleSheet.create({
         height: Platform.OS === 'ios' ? hp(14) : hp(12),
         backgroundColor: "white",
         alignItems: 'center',
-    },
-    footerBtn: {
-        width: wp(90),
-        height: hp(6.4),
-        alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: wp(8),
-        marginTop: hp(2)
-    },
-    footerText: {
-        fontFamily: 'UrbanistSemiBold',
-        fontSize: hp(2),
-        color: 'white'
+        borderTopRightRadius: wp(8),
+        borderTopLeftRadius: wp(8),
     },
 
 })
