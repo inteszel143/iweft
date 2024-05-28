@@ -69,3 +69,28 @@ export const cancelBooking = async (bookingId: string) => {
     return Promise.reject(error);
   }
 };
+
+/**
+ * GET ORDER BY DATE  ---------------------------------------------------------
+ */
+
+export const getOrderByDate = async (date: string) => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  try {
+    const response = await axios.get(
+      `${process.env.EXPO_PUBLIC_API_URL}/order/bookings/date`,
+      {
+        params: {
+          date: date,
+        },
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          //   "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response?.data?.orders;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

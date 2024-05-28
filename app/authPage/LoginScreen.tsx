@@ -65,7 +65,6 @@ export default function LoginScreen() {
             const response = await manualLogin(data.email, data.password);
             const refreshToken = response?.refresh?.token;
             await SecureStore.setItemAsync('accessToken', response?.access?.token);
-            // await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
             const isVerify = await getVerifyCheck(data?.email as string);
             setTimeout(() => {
                 setLoadingBtn(false);

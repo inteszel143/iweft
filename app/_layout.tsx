@@ -12,6 +12,7 @@ import HeaderCustomerSupport from "@/components/inbox/HeaderCustomerSupport";
 import {
   QueryClient, QueryClientProvider,
 } from '@tanstack/react-query';
+import { LogBox } from "react-native";
 export {
   ErrorBoundary,
 } from 'expo-router';
@@ -21,7 +22,8 @@ export const unstable_settings = {
 };
 
 SplashScreen.preventAutoHideAsync();
-
+LogBox.ignoreLogs(['Sending `onAnimatedValueUpdate` with no listeners registered.']);
+LogBox.ignoreLogs(['Warning: CountryModal: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead..']);
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),

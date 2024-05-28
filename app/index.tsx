@@ -33,9 +33,9 @@ export default function index() {
             }
         } else {
             if (onboarded === null) {
-                router.push('/authPage/SelectLoginPage');
-            } else {
                 router.push('/authPage/OnboardingScreen');
+            } else {
+                router.push('/authPage/SelectLoginPage');
             }
         }
     };

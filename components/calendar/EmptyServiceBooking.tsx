@@ -21,8 +21,8 @@ export default function EmptyServiceBooking() {
                     source={require('@/assets/icons/emptybook.png')}
                     resizeMode='contain'
                     style={{
-                        width: wp(40),
-                        height: hp(28)
+                        width: wp(35),
+                        height: hp(24)
                     }}
                 />
             </View>
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     },
     textStyle: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(2.4),
+        fontSize: hp(2.2),
         textAlign: 'center',
     },
     textSubStyle: {

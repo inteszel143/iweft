@@ -91,7 +91,7 @@ export default function Page() {
                                 style={{ marginTop: hp(2) }}>
                                 <View style={styles.mapRow}>
                                     <Text style={styles.mapLabel} >Date & Time</Text>
-                                    <Text style={styles.mapLabelValue}>{moment(addHours(item?.pick_up_date_time, 4)).format('MMMM D YYYY, h:mm a')}</Text>
+                                    <Text style={styles.mapLabelValue}>{moment(addHours(item?.delivery_date_time, 4)).format('MMMM D YYYY, h:mm a')}</Text>
                                 </View>
                                 <View style={[styles.mapRow, { marginTop: hp(2) }]}>
                                     <Text style={styles.mapLabel} >Location</Text>
@@ -137,7 +137,7 @@ export default function Page() {
 
 
                         {
-                            isHiding != item?._id ? <TouchableOpacity style={styles.footerBtn} onPress={() => toggleHide(item.id)}>
+                            isHiding != item?._id ? <TouchableOpacity style={styles.footerBtn} onPress={() => toggleHide(item?._id)}>
                                 <Ionicons name='chevron-down-outline' size={hp(2.5)} />
                             </TouchableOpacity>
                                 :

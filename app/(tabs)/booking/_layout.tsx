@@ -3,7 +3,6 @@ import { ParamListBase, TabNavigationState } from "@react-navigation/native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { withLayoutContext } from "expo-router";
 const { Navigator } = createMaterialTopTabNavigator();
-
 export const MaterialTopTabs = withLayoutContext<
     MaterialTopTabNavigationOptions, typeof Navigator, TabNavigationState<ParamListBase>, MaterialTopTabNavigationEventMap
 >(Navigator);

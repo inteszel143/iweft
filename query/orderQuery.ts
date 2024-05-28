@@ -1,4 +1,4 @@
-import { getOrderByStatus } from "@/apis/order";
+import { getOrderByDate, getOrderByStatus } from "@/apis/order";
 import { useQuery } from "@tanstack/react-query";
 
 /**
@@ -10,5 +10,13 @@ export const useBooking = (isFocused: boolean, status: string) => {
     queryKey: ["booking-status", status],
     enabled: isFocused,
     queryFn: () => getOrderByStatus(status),
+  });
+};
+
+export const useGetBookingByDate = (isFocused: boolean, date: string) => {
+  return useQuery({
+    queryKey: ["booking-date", date],
+    enabled: isFocused,
+    queryFn: () => getOrderByDate(date),
   });
 };

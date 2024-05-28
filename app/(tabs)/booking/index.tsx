@@ -2,7 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList } from 'react
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Ionicons } from '@expo/vector-icons';
-import Animated, { FadeInUp, FadeOut, FadeOutUp, FadingTransition, JumpingTransition, Layout, withSpring } from 'react-native-reanimated';
+import Animated, { FadeInUp } from 'react-native-reanimated';
 import { Link, router } from 'expo-router';
 import {
     BottomSheetModal,
@@ -54,6 +54,7 @@ export default function Page() {
     if (!data || data.length === 0) {
         return <NoBooking />
     };
+
     return (
         <BottomSheetModalProvider>
             <View style={styles.container}>
