@@ -1,18 +1,20 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React, { useState } from 'react'
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
+import { Link } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
+import { upcoming } from '@/constants/booking/data';
+import Animated, { FadeInUp } from 'react-native-reanimated';
 export default function CalendarLayout() {
 
-    const [selected, setSelected] = useState('');
     const currentDate = new Date();
-
     const formattedCurrentDate = currentDate.toISOString().split('T')[0];
+    const [selected, setSelected] = useState(formattedCurrentDate);
     const yesterday = new Date(currentDate);
     yesterday.setDate(currentDate.getDate() - 1);
-
     const formattedYesterday = currentDate.toISOString().split('T')[0];
+    console.log(selected);
     return (
         <View style={styles.container}>
             <Calendar
@@ -44,7 +46,7 @@ export default function CalendarLayout() {
                 }}
                 current={formattedCurrentDate}
                 // current={'2024-03-26'}
-                minDate={formattedCurrentDate}
+                // minDate={formattedCurrentDate}
                 pagingEnabled={true}
                 onDayPress={day => {
                     setSelected(day.dateString);
@@ -60,12 +62,14 @@ export default function CalendarLayout() {
                             fontSize: hp(2),
                         },
                     },
-                    [formattedCurrentDate]: {
-                        selected: true,
-                        marked: true, dotColor: '#93C120', selectedColor: '#0A5CA8',
-                    },
                 }}
             />
+
+
+
+
+
+
         </View>
     )
 }
@@ -73,6 +77,9 @@ export default function CalendarLayout() {
 const styles = StyleSheet.create({
     container: {
         paddingTop: hp(2),
-        backgroundColor: '#FFFFFF',
+        backgroundColor: "white",
     },
+
+
+
 })

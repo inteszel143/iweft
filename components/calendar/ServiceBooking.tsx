@@ -5,6 +5,7 @@ import { upcoming } from '@/constants/booking/data';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { Link } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import EmptyServiceBooking from './EmptyServiceBooking';
 export default function ServiceBooking() {
     return (
         <View style={styles.container}>
@@ -22,12 +23,11 @@ export default function ServiceBooking() {
                     <Text style={styles.textTop}>Service Booking (2)</Text>
                     <Link href={'/(tabs)/booking/'} asChild>
                         <TouchableOpacity>
-                            <Text style={styles.textSeeAll}>See all</Text> 
+                            <Text style={styles.textSeeAll}>See all</Text>
                         </TouchableOpacity>
                     </Link>
                 </View>
             </LinearGradient>
-
 
             {
                 upcoming.map((item, index) => (
@@ -59,6 +59,7 @@ export default function ServiceBooking() {
                     </Animated.View>
                 ))
             }
+
 
 
         </View>

@@ -3,19 +3,24 @@ import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInUp, FadeOut, FadeOutUp, FadingTransition, JumpingTransition, Layout, withSpring } from 'react-native-reanimated';
-import { upcoming } from '@/constants/booking/data';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import {
     BottomSheetModal,
     BottomSheetView,
     BottomSheetModalProvider,
     BottomSheetBackdrop,
 } from '@gorhom/bottom-sheet';
-
+import { useIsFocused } from '@react-navigation/native';
+import { useBooking } from '@/query/orderQuery';
+import NoBooking from '@/components/booking/NoBooking';
+import BookingSkeleton from '@/components/booking/BookingSkeleton';
+import moment from 'moment';
+import MapView, { Marker, PROVIDER_GOOGLE, } from 'react-native-maps';
 export default function Page() {
-
+    const isFocused = useIsFocused();
+    const { data, isPending } = useBooking(isFocused, "Upcoming");
+    const [bookingId, setGetBookingId] = useState("");
     const [isHiding, setIsHiding] = useState(0);
-
     const toggleHide = (index: any) => {
         setIsHiding(index);
     };
@@ -23,7 +28,11 @@ export default function Page() {
         setIsHiding(0);
     };
 
-
+    const addHours = (dateString: string, hours: number): string => {
+        const date = new Date(dateString);
+        date.setHours(date.getHours() + hours);
+        return date.toISOString();
+    };
 
     // bottomSheet
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -39,76 +48,109 @@ export default function Page() {
     }, []);
     // end bottomSheet
 
-
+    if (isPending) {
+        return <BookingSkeleton />
+    };
+    if (!data || data.length === 0) {
+        return <NoBooking />
+    };
     return (
         <BottomSheetModalProvider>
             <View style={styles.container}>
 
                 <FlatList
-                    data={upcoming}
+                    data={data}
                     showsVerticalScrollIndicator={false}
-                    keyExtractor={(item) => item.id.toString()}
+                    keyExtractor={(item) => item?._id.toString()}
                     renderItem={({ item }) => (
                         <Animated.View style={styles.card}
                             entering={FadeInUp.duration(300).springify()}
                         >
-                            <Link href={'/bookingPage/BookingSummary'} style={styles.row} asChild>
-                                <TouchableOpacity>
-                                    <View style={styles.rowLeft}>
-                                        <View>
-                                            <Image
-                                                source={item.img}
-                                                resizeMode='contain'
-                                                style={styles.imageStyle}
-                                            />
-                                        </View>
-                                        <View style={styles.leftInner}>
-                                            <Text style={styles.titleStyle} >{item.title}</Text>
-                                            <Text style={styles.subTitle} >{item.sub}</Text>
-                                            <View style={styles.indicator}>
-                                                <Text style={styles.upcoming}>Upcoming</Text>
-                                            </View>
-                                        </View>
-                                    </View>
+                            <TouchableOpacity
+                                style={styles.row}
+                                onPress={() => router.push('/bookingPage/BookingSummary')}
+                            >
+                                <View style={styles.rowLeft}>
                                     <View>
-                                        <Link href={'/BookingChat'} style={styles.btnStyle} asChild>
-                                            <TouchableOpacity>
-                                                <Ionicons name='chatbubble-ellipses' size={hp(2.5)} color={'#0a5ca8'} />
-                                            </TouchableOpacity>
-                                        </Link>
+                                        <Image
+                                            source={{ uri: item?.order_details?.service?.image }}
+                                            resizeMode='contain'
+                                            style={styles.imageStyle}
+                                        />
                                     </View>
-                                </TouchableOpacity>
-                            </Link>
+                                    <View style={styles.leftInner}>
+                                        <Text style={styles.titleStyle} >{item?.order_details?.service?.title}</Text>
+                                        <Text style={styles.subTitle}>
+                                            {item?.order_details?.order_items?.length} {item?.order_details?.order_items?.length === 1 ? 'item' : 'items'}
+                                        </Text>
+                                        <View style={styles.indicator}>
+                                            <Text style={styles.upcoming}>Upcoming</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                                <View>
+                                    <Link href={'/BookingChat'} style={styles.btnStyle} asChild>
+                                        <TouchableOpacity>
+                                            <Ionicons name='chatbubble-ellipses' size={hp(2.5)} color={'#0a5ca8'} />
+                                        </TouchableOpacity>
+                                    </Link>
+                                </View>
+                            </TouchableOpacity>
 
 
                             <View style={styles.separator} />
 
 
                             {
-                                isHiding === item.id && <Animated.View
+                                isHiding === item?._id && <Animated.View
                                     entering={FadeInUp.duration(300).springify()}
                                     style={{ marginTop: hp(2) }}>
-                                    <View style={styles.mapRow}>
+                                    <View style={[styles.mapRow]}>
                                         <Text style={styles.mapLabel} >Date & Time</Text>
-                                        <Text style={styles.mapLabelValue}>Dec 23. 2024 | 10:00 - 12:00 AM</Text>
+                                        {/* <Text style={styles.mapLabelValue}>Dec 23. 2024 | 10:00 - 12:00 AM</Text> */}
+                                        <Text style={styles.mapLabelValue}>{moment(addHours(item?.pick_up_date_time, 4)).format('MMMM D YYYY, h:mm a')}</Text>
                                     </View>
                                     <View style={[styles.mapRow, { marginTop: hp(2) }]}>
                                         <Text style={styles.mapLabel} >Location</Text>
-                                        <Text style={styles.mapLabelValue}>267 New Avenue Park, New York</Text>
+                                        <Text style={[styles.mapLabelValue, { width: wp(50) }]}>{item?.address}</Text>
                                     </View>
 
-                                    <View>
-                                        <Image
+                                    <View style={styles.map}>
+                                        {/* <Image
                                             source={require('@/assets/temp/maps.png')}
                                             resizeMode='contain'
                                             style={styles.map}
-                                        />
+                                        /> */}
+                                        <MapView
+                                            style={StyleSheet.absoluteFill}
+                                            provider={PROVIDER_GOOGLE}
+                                            // showsUserLocation={true}
+                                            showsMyLocationButton
+                                            loadingEnabled={true}
+                                            initialRegion={{
+                                                latitude: item?.latitude,
+                                                longitude: item?.longitude,
+                                                latitudeDelta: 0.0034042830388827383,
+                                                longitudeDelta: 0.005005337297916412,
+                                            }}
+                                        >
+                                            <Marker
+                                                coordinate={{
+                                                    latitude: item?.latitude,
+                                                    longitude: item?.longitude,
+                                                }}
+                                            />
+
+                                        </MapView>
                                     </View>
 
                                     <View style={styles.mapRows}>
 
                                         <TouchableOpacity style={[styles.mapBtn, { borderWidth: 1, borderColor: "#0a5ca8" }]}
-                                            onPress={handlePresentModalPress}
+                                            onPress={() => {
+                                                setGetBookingId(item?._id);
+                                                handlePresentModalPress()
+                                            }}
                                         >
                                             <Text style={[styles.mapText, { color: '#0a5ca8' }]}>Cancel Booking</Text>
                                         </TouchableOpacity>
@@ -131,7 +173,7 @@ export default function Page() {
 
 
                             {
-                                isHiding != item.id ? <TouchableOpacity style={styles.footerBtn} onPress={() => toggleHide(item.id)}>
+                                isHiding != item?._id ? <TouchableOpacity style={styles.footerBtn} onPress={() => toggleHide(item?._id)}>
                                     <Ionicons name='chevron-down-outline' size={hp(2.5)} />
                                 </TouchableOpacity>
                                     :
@@ -143,9 +185,6 @@ export default function Page() {
                         </Animated.View>
                     )}
                 />
-
-
-
 
 
                 <BottomSheetModal
@@ -174,11 +213,15 @@ export default function Page() {
                             >
                                 <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Cancel</Text>
                             </TouchableOpacity>
-                            <Link href={'/bookingPage/BookingPaymentMethod'} style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]} asChild>
-                                <TouchableOpacity>
-                                    <Text style={[styles.bottomText, { color: "white" }]}>Yes, Cancel Booking</Text>
-                                </TouchableOpacity>
-                            </Link>
+                            <TouchableOpacity
+                                style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
+                                onPress={() => router.push({
+                                    pathname: '/bookingPage/BookingPaymentMethod',
+                                    params: { bookingId }
+                                })}
+                            >
+                                <Text style={[styles.bottomText, { color: "white" }]}>Yes, Cancel Booking</Text>
+                            </TouchableOpacity>
                         </View>
 
                     </BottomSheetView>
@@ -188,6 +231,7 @@ export default function Page() {
             </View >
         </BottomSheetModalProvider >
     )
+
 }
 
 const styles = StyleSheet.create({
@@ -265,6 +309,7 @@ const styles = StyleSheet.create({
         marginTop: hp(1)
     },
     mapRow: {
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between'
@@ -280,7 +325,10 @@ const styles = StyleSheet.create({
     },
     map: {
         width: wp(82),
-        height: hp(30)
+        height: hp(28),
+        marginVertical: hp(2),
+        borderRadius: wp(6),
+        overflow: 'hidden',
     },
     mapRows: {
         flexDirection: 'row',
@@ -344,6 +392,10 @@ const styles = StyleSheet.create({
     bottomText: {
         fontFamily: 'UrbanistSemiBold',
         fontSize: hp(1.8),
+    },
+    markerStyle: {
+        position: 'absolute',
+        alignSelf: 'center'
     }
 
 })

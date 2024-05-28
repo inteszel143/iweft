@@ -26,8 +26,8 @@ export default function CategoryModal({ modalRef }: ModalAProps) {
                     enablePanDownToClose={true}
                     handleIndicatorStyle={{ backgroundColor: '#DADADA' }}
                     style={{
-                        borderTopLeftRadius: wp(10),
-                        borderTopRightRadius: wp(10),
+                        borderTopLeftRadius: wp(8),
+                        borderTopRightRadius: wp(8),
                         overflow: 'hidden',
                     }}
 

@@ -1,13 +1,13 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link, router } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { paymentMethods } from '@/constants/booking/data';
 import { Fontisto } from '@expo/vector-icons';
+import { defaultStyles } from '@/constants/Styles';
 
 export default function BookingPaymentMethod() {
-
-
+    const { bookingId } = useLocalSearchParams();
     const [isSelected, setIsSelected] = useState(0);
 
 
@@ -77,11 +77,16 @@ export default function BookingPaymentMethod() {
                 </View>
 
 
-                <Link href={'/bookingPage/BookingPin'} style={[styles.footerBtn, { backgroundColor: isSelected == 0 ? "#DADADA" : "#0A5CA8", }]} asChild disabled={isSelected == 0 ? true : false}>
-                    <TouchableOpacity>
-                        <Text style={styles.footerText}>Continue</Text>
-                    </TouchableOpacity>
-                </Link>
+                <TouchableOpacity
+                    style={[defaultStyles.footerBtn, { backgroundColor: isSelected == 0 ? "#DADADA" : "#0A5CA8", marginTop: hp(2) }]}
+                    disabled={isSelected == 0 ? true : false}
+                    onPress={() => router.push({
+                        pathname: '/bookingPage/BookingPin',
+                        params: { bookingId }
+                    })}
+                >
+                    <Text style={defaultStyles.footerText}>Continue</Text>
+                </TouchableOpacity>
             </View>
 
 

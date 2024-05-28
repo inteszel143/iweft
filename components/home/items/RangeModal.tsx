@@ -41,8 +41,8 @@ export default function RangeModal({ modalRef }: ModalAProps) {
                     enablePanDownToClose={true}
                     handleIndicatorStyle={{ backgroundColor: '#DADADA' }}
                     style={{
-                        borderTopLeftRadius: wp(12),
-                        borderTopRightRadius: wp(12),
+                        borderTopLeftRadius: wp(8),
+                        borderTopRightRadius: wp(8),
                         overflow: 'hidden',
                     }}
 

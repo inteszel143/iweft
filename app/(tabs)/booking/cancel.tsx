@@ -3,12 +3,18 @@ import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInUp, FadeOut, FadeOutUp, FadingTransition, JumpingTransition, Layout, withSpring } from 'react-native-reanimated';
-import { upcoming } from '@/constants/booking/data';
 import { Link } from 'expo-router';
+import { useIsFocused } from '@react-navigation/native';
+import { useBooking } from '@/query/orderQuery';
+import BookingSkeleton from '@/components/booking/BookingSkeleton';
+import moment from 'moment';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import NoCancelBooking from '@/components/booking/NoCancelBooking';
 
 
 export default function Page() {
-
+    const isFocused = useIsFocused();
+    const { data: cancelData, isPending } = useBooking(isFocused, "Cancelled");
     const [isHiding, setIsHiding] = useState(0);
 
     const toggleHide = (index: any) => {
@@ -17,16 +23,26 @@ export default function Page() {
     const toggleClose = () => {
         setIsHiding(0);
     };
+    const addHours = (dateString: string, hours: number): string => {
+        const date = new Date(dateString);
+        date.setHours(date.getHours() + hours);
+        return date.toISOString();
+    };
 
-
+    if (isPending) {
+        return <BookingSkeleton />
+    };
+    if (!cancelData || cancelData.length === 0) {
+        return <NoCancelBooking />
+    };
 
     return (
         <View style={styles.container}>
 
             <FlatList
-                data={upcoming}
+                data={cancelData}
                 showsVerticalScrollIndicator={false}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item) => item?._id.toString()}
                 renderItem={({ item }) => (
                     <Animated.View style={styles.card}
                         entering={FadeInUp.duration(300).springify()}
@@ -37,14 +53,17 @@ export default function Page() {
                                 <View style={styles.rowLeft}>
                                     <View>
                                         <Image
-                                            source={item.img}
+                                            source={{ uri: item?.order_details?.service?.image }}
                                             resizeMode='contain'
                                             style={styles.imageStyle}
                                         />
                                     </View>
                                     <View style={styles.leftInner}>
-                                        <Text style={styles.titleStyle} >{item.title}</Text>
-                                        <Text style={styles.subTitle} >{item.sub}</Text>
+                                        <Text style={styles.titleStyle} >{item?.order_details?.service?.title}</Text>
+                                        <Text style={styles.subTitle}>
+                                            {item?.order_details?.order_items?.length} {item?.order_details?.order_items?.length === 1 ? 'item' : 'items'}
+                                        </Text>
+
                                         <View style={styles.indicator}>
                                             <Text style={styles.upcoming}>Cancelled</Text>
                                         </View>
@@ -66,26 +85,41 @@ export default function Page() {
 
                         <View style={styles.separator} />
 
-
                         {
-                            isHiding === item.id && <Animated.View
+                            isHiding === item?._id && <Animated.View
                                 entering={FadeInUp.duration(300).springify()}
                                 style={{ marginTop: hp(2) }}>
                                 <View style={styles.mapRow}>
                                     <Text style={styles.mapLabel} >Date & Time</Text>
-                                    <Text style={styles.mapLabelValue}>Dec 23. 2024 | 10:00 - 12:00 AM</Text>
+                                    <Text style={styles.mapLabelValue}>{moment(addHours(item?.pick_up_date_time, 4)).format('MMMM D YYYY, h:mm a')}</Text>
                                 </View>
                                 <View style={[styles.mapRow, { marginTop: hp(2) }]}>
                                     <Text style={styles.mapLabel} >Location</Text>
-                                    <Text style={styles.mapLabelValue}>267 New Avenue Park, New York</Text>
+                                    <Text style={[styles.mapLabelValue, { width: wp(50) }]}>{item?.address}</Text>
                                 </View>
 
-                                <View>
-                                    <Image
-                                        source={require('@/assets/temp/maps.png')}
-                                        resizeMode='contain'
-                                        style={styles.map}
-                                    />
+                                <View style={styles.map}>
+                                    <MapView
+                                        style={StyleSheet.absoluteFill}
+                                        provider={PROVIDER_GOOGLE}
+                                        // showsUserLocation={true}
+                                        showsMyLocationButton
+                                        loadingEnabled={true}
+                                        initialRegion={{
+                                            latitude: item?.latitude,
+                                            longitude: item?.longitude,
+                                            latitudeDelta: 0.0034042830388827383,
+                                            longitudeDelta: 0.005005337297916412,
+                                        }}
+                                    >
+                                        <Marker
+                                            coordinate={{
+                                                latitude: item?.latitude,
+                                                longitude: item?.longitude,
+                                            }}
+                                        />
+
+                                    </MapView>
                                 </View>
 
 
@@ -105,8 +139,9 @@ export default function Page() {
                         }
 
 
+
                         {
-                            isHiding != item.id ? <TouchableOpacity style={styles.footerBtn} onPress={() => toggleHide(item.id)}>
+                            isHiding != item?._id ? <TouchableOpacity style={styles.footerBtn} onPress={() => toggleHide(item?._id)}>
                                 <Ionicons name='chevron-down-outline' size={hp(2.5)} />
                             </TouchableOpacity>
                                 :
@@ -215,7 +250,10 @@ const styles = StyleSheet.create({
     },
     map: {
         width: wp(82),
-        height: hp(30)
+        height: hp(28),
+        marginVertical: hp(2),
+        borderRadius: wp(6),
+        overflow: 'hidden',
     },
     mapBtn: {
         width: wp(80),

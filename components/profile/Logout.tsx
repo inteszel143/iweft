@@ -32,15 +32,21 @@ export default function Logout() {
     const logout = async () => {
         setBtnLoading(true);
         const refreshToken = await SecureStore.getItemAsync('refreshToken');
-        const response = await logoutUser(refreshToken as string);
-        await SecureStore.deleteItemAsync('accessToken');
-        await SecureStore.deleteItemAsync('refreshToken');
-        await SecureStore.deleteItemAsync('onboarded');
-        setTimeout(() => {
+        try {
+            await logoutUser(refreshToken as string);
+            await SecureStore.deleteItemAsync('accessToken');
+            await SecureStore.deleteItemAsync('refreshToken');
+            await SecureStore.deleteItemAsync('onboarded');
+            setTimeout(() => {
+                setBtnLoading(false);
+                bottomSheetModalRef.current?.close();
+                router.push('/authPage/OnboardingScreen');
+            }, 2000);
+        } catch (error) {
+            console.log(error);
             setBtnLoading(false);
-            bottomSheetModalRef.current?.close();
-            router.push('/authPage/OnboardingScreen');
-        }, 2000);
+        }
+
     };
 
     return (

@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Platform, ActivityIndicator } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import {
     CodeField,
     Cursor,
@@ -10,25 +10,20 @@ import {
 } from 'react-native-confirmation-code-field';
 import { Octicons } from '@expo/vector-icons';
 import BookingCancelModal from '@/components/booking/BookingCancelModal';
+import PinCodeModal from '@/components/PinCodeModal';
+import { getPinNumber } from '@/apis/fetchAuth';
+import { cancelBooking } from '@/apis/order';
+import errorRes from '@/apis/errorRes';
 interface CellProps {
     index: number;
     symbol: string;
     isFocused: boolean;
 }
 export default function BookingPin() {
-
+    const { bookingId } = useLocalSearchParams();
     const [modalVisible, setModalVisible] = useState(false);
     const [btnLoading, setBtnLoading] = useState(false);
-
-
-    const toggleModal = () => {
-        setBtnLoading(true);
-        setTimeout(() => {
-            setBtnLoading(false);
-            setModalVisible(true);
-        }, 2000);
-    }
-
+    const [errorModalVisible, setErrorModalVisible] = useState(false);
     const CELL_COUNT = 4;
 
     const [enableMask, setEnableMask] = useState(true);
@@ -38,7 +33,11 @@ export default function BookingPin() {
         value,
         setValue,
     });
-
+    useEffect(() => {
+        if (ref?.current) {
+            ref.current.focus();
+        }
+    }, []);
 
     const toggleMask = () => setEnableMask((f) => !f);
     const renderCell = ({ index, symbol, isFocused }: CellProps) => {
@@ -59,12 +58,27 @@ export default function BookingPin() {
             </View>
         );
     };
+    const onSubmit = async () => {
+        setBtnLoading(true);
+        const pin = parseInt(value);
+        const response = await getPinNumber(pin);
+        if (response?.isMatch) {
+            await cancelBooking(bookingId as string);
+            setTimeout(() => {
+                setBtnLoading(false);
+                setModalVisible(true);
+            }, 2000);
+        } else {
+            setErrorModalVisible(true);
+            setBtnLoading(false);
+        }
+    };
 
 
 
     return (
         <View style={styles.container}>
-
+            {errorModalVisible && <PinCodeModal modalVisible={errorModalVisible} setModalVisible={setErrorModalVisible} />}
             {modalVisible && <BookingCancelModal modalVisible={modalVisible} setModalVisible={setModalVisible} />}
 
             <View style={styles.Headercontainer}>
@@ -96,7 +110,7 @@ export default function BookingPin() {
                 />
                 <TouchableOpacity style={[styles.footerBtn, { backgroundColor: value.length != 4 ? "#DADADA" : "#0A5CA8", }]}
                     disabled={value.length != 4 ? true : false}
-                    onPress={toggleModal}
+                    onPress={onSubmit}
                 >
                     {
                         btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>Continue</Text>
@@ -147,7 +161,7 @@ const styles = StyleSheet.create({
     },
 
     scollviewContainer: {
-        marginTop: hp(16),
+        marginTop: hp(10),
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -162,7 +176,7 @@ const styles = StyleSheet.create({
         marginTop: hp(8)
     },
     footerText: {
-        fontFamily: 'UrbanistSemiBold',
+        fontFamily: 'UrbanistBold',
         fontSize: hp(2),
         color: 'white'
     },
@@ -176,7 +190,7 @@ const styles = StyleSheet.create({
     },
     cell: {
         width: wp(17),
-        height: wp(16),
+        height: wp(17),
         borderRadius: wp(4),
         borderWidth: 1,
         borderColor: "#F1F1F1",
@@ -185,8 +199,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     focusCell: {
-        width: wp(16),
-        height: wp(16),
+        width: wp(17),
+        height: wp(17),
         textAlign: 'center',
         justifyContent: 'center',
         borderColor: '#0A5CA8',
