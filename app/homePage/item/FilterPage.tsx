@@ -81,7 +81,7 @@ export default function FilterPage() {
 
                 <View style={styles.footer}>
                     <TouchableOpacity style={defaultStyles.footerBtn}>
-                        <Text style={defaultStyles.footerText}>Continue - AED 277</Text>
+                        <Text style={defaultStyles.footerText}>Apply Filter</Text>
                     </TouchableOpacity>
                 </View>
 

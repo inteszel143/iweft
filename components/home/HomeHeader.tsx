@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Platform, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Image, Platform, TouchableOpacity, Linking } from 'react-native'
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
@@ -13,6 +13,17 @@ export default function HomeHeader() {
     if (!data) {
         return;
     }
+
+
+    const openAppStore = () => {
+        const appStoreURL = 'https://apps.apple.com/us/app/facebook/id284882215';
+        const playStoreURL = 'https://play.google.com/store/apps/details?id=com.paras23.iMotor.app';
+        const url = Platform.OS === 'ios' ? appStoreURL : playStoreURL;
+        Linking.openURL(url).catch(err => console.error("Couldn't load page", err));
+    };
+
+
+
     return (
         <View style={styles.header}>
             <View style={styles.headerLeft}>
@@ -47,19 +58,27 @@ export default function HomeHeader() {
 
 
             <View style={styles.headerIcon}>
-
-                <Link href={'/homePage/Notification'} asChild>
-                    <TouchableOpacity>
-                        <Image source={require('@/assets/icons/bell.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                <View>
+                    <TouchableOpacity
+                        onPress={() => router.push('/homePage/Notification')}
+                    >
+                        <Image source={require('@/assets/icons/bell.png')} resizeMode='contain' style={{ width: wp(8.2) }} />
                     </TouchableOpacity>
-                </Link>
+                    <View
+                        style={styles.notifRed}
+                    >
 
-                <Link href={'/homePage/Bookmarks'} asChild>
-                    <TouchableOpacity>
+                    </View>
+                </View>
+
+                {/* bookmark */}
+                <View>
+                    <TouchableOpacity
+                        onPress={() => router.push('/homePage/Bookmarks')}
+                    >
                         <Image source={require('@/assets/icons/bookmark.png')} resizeMode='contain' style={{ width: wp(8) }} />
                     </TouchableOpacity>
-                </Link>
-
+                </View>
             </View>
         </View>
     )
@@ -94,4 +113,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: wp(3.5)
     },
+    notifRed: {
+        position: 'absolute',
+        top: Platform.OS === 'ios' ? hp(1.2) : hp(2),
+        right: 1,
+        width: wp(3),
+        height: wp(3),
+        backgroundColor: '#F61705',
+        borderRadius: wp(2),
+    },
+
 })

@@ -45,11 +45,11 @@ export default function HomeSpecialOffers() {
                     onSnapToItem={(index) => setActiveIndex(index)}
                     renderItem={({ item, index }) => (
                         <View
-
                             style={{
                                 flex: 1,
                                 justifyContent: 'center',
                                 paddingTop: hp(6),
+                                backgroundColor: 'white'
                             }}
                         >
                             <View

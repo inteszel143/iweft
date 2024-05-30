@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
-import React, { useEffect } from 'react'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Platform, Linking } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { BallIndicator } from 'react-native-indicators'
 import * as SecureStore from 'expo-secure-store';
@@ -9,14 +9,17 @@ import { StatusBar } from 'expo-status-bar';
 import { appOpenRefresh } from '@/apis/auth';
 import { useQueryClient } from '@tanstack/react-query';
 import errorRes from '@/apis/errorRes';
+import ModalUpdate from '@/components/ModalUpdate';
+import BookingSuccessModal from '@/components/booking/BookingSuccessModal';
 export default function index() {
     const queryClient = useQueryClient();
+    const [updateApp, setUpdateApp] = useState(false);
+
     useEffect(() => {
         setTimeout(() => {
             validate();
         }, 1000);
     }, []);
-
     const validate = async () => {
         const refreshToken = await SecureStore.getItemAsync('refreshToken');
         const onboarded = await SecureStore.getItemAsync('onboarded');
@@ -39,10 +42,10 @@ export default function index() {
             }
         }
     };
-
     return (
         <View style={styles.container}>
             <StatusBar style='dark' />
+            {updateApp && <ModalUpdate modalVisible={updateApp} setModalVisible={setUpdateApp} />}
             <Animated.View style={styles.top} entering={BounceIn.delay(100).duration(800).springify()}>
                 <Image source={require('@/assets/icons/iweft.png')} resizeMode='contain' style={{ width: wp(60) }} />
             </Animated.View>
@@ -66,5 +69,5 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: hp(15),
         alignItems: 'center'
-    }
+    },
 })

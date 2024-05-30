@@ -2,12 +2,16 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Platform, 
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
-import { paymentMethods } from '@/constants/booking/data';
 import { Entypo } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
+import Animated, { FadeInUp, FadeOutUp } from 'react-native-reanimated';
 
 export default function HomeReviewSummary() {
     const { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude } = useLocalSearchParams();
+    const [isHiding, setIsHiding] = useState(false);
+    const toggleHide = () => {
+        setIsHiding(!isHiding);
+    };
     return (
         <View style={styles.container}>
 
@@ -52,10 +56,29 @@ export default function HomeReviewSummary() {
 
 
                 <View style={[styles.summarCard, { marginTop: hp(2) }]}>
-                    <TouchableOpacity style={styles.summarRow}>
+                    <TouchableOpacity style={styles.summarRow}
+                        onPress={toggleHide}
+                    >
                         <Text style={styles.summaryLabel}>Subscription Details</Text>
                         <Entypo name='chevron-thin-down' size={hp(2)} />
                     </TouchableOpacity>
+                    {
+                        isHiding && <Animated.View
+                            entering={FadeInUp.duration(200).damping(2)}
+                            style={styles.hiddenBox}>
+                            <View>
+                                <View style={[styles.summarRow, { marginTop: hp(2) }]}>
+                                    <Text style={styles.summaryLabel} >Basic Plan</Text>
+                                    <Text style={styles.summaryValue}>AED 899</Text>
+                                </View>
+                                <View style={[styles.separator, { marginTop: hp(2) }]} />
+                                <Text style={[styles.summaryLabel, { marginTop: hp(2.5) }]}>Collection Details</Text>
+                                <Text style={[styles.summaryValue, { marginTop: hp(1) }]}> • Clean/Press</Text>
+                                <Text style={[styles.summaryValue, { marginTop: hp(1) }]}> • Press Only</Text>
+                                <Text style={[styles.summaryValue, { marginTop: hp(1) }]}> • Wash/Fold</Text>
+                            </View>
+                        </Animated.View>
+                    }
                 </View>
 
 
@@ -86,7 +109,7 @@ export default function HomeReviewSummary() {
                             <Image source={require('@/assets/temp/bookingIcon/mastercard.jpg')} resizeMode='contain' style={{ width: wp(8) }} />
                             <Text style={styles.cardTextStyle}>**** **** **** **** 4679</Text>
                         </View>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => router.back()}>
                             <Text style={styles.btnText}>Change</Text>
                         </TouchableOpacity>
                     </TouchableOpacity>
@@ -205,5 +228,9 @@ const styles = StyleSheet.create({
         borderTopRightRadius: wp(8),
         borderTopLeftRadius: wp(8),
     },
+    hiddenBox: {
+        backgroundColor: 'white',
+        marginTop: hp(1)
+    }
 
 })

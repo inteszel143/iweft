@@ -70,7 +70,6 @@ export default function HomePaymentMethods() {
                 <TouchableOpacity
                     style={[defaultStyles.footerBtn, { backgroundColor: isSelected == 0 ? "#DADADA" : "#0A5CA8", }]}
                     disabled={isSelected == 0 ? true : false}
-                    // onPress={() => router.push('/homePage/HomeReviewSummary')}
                     onPress={() =>
                         router.push({
                             pathname: '/homePage/HomeReviewSummary',
@@ -152,10 +151,21 @@ const styles = StyleSheet.create({
         fontFamily: 'UrbanistBold',
         fontSize: hp(2)
     },
+    // footer: {
+    //     height: Platform.OS === 'ios' ? hp(12) : hp(10),
+    //     backgroundColor: "white",
+    //     alignItems: 'center',
+    // },
     footer: {
-        height: Platform.OS === 'ios' ? hp(12) : hp(10),
-        backgroundColor: "white",
+        position: 'absolute',
+        bottom: 0,
+        height: hp(14),
+        width: wp(100),
+        backgroundColor: 'white',
         alignItems: 'center',
+        justifyContent: 'center',
+        borderTopRightRadius: wp(8),
+        borderTopLeftRadius: wp(8),
     },
     footerBtn: {
         width: wp(90),

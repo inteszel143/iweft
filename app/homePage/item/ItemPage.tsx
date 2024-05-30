@@ -189,8 +189,8 @@ export default function ItemPage() {
                         </View>
                     ))
                 }
-            </ScrollView>
 
+            </ScrollView>
 
             <View style={styles.footer}>
                 <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(1) }]} onPress={onSubmit}
@@ -199,8 +199,6 @@ export default function ItemPage() {
                     <Text style={defaultStyles.footerText}>Continue AED {getTotalCost().toFixed(2)}</Text>
                 </TouchableOpacity>
             </View>
-
-
 
 
 
