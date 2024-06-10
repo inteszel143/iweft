@@ -1,4 +1,4 @@
-import { Alert, BackHandler, Image, SafeAreaView, ScrollView, StyleSheet, TextInput } from 'react-native';
+import { Alert, BackHandler, Image, SafeAreaView, ScrollView, StyleSheet, RefreshControl } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import HomeHeader from '@/components/home/HomeHeader';
@@ -10,9 +10,9 @@ import HomeAds from '@/components/home/HomeAds';
 import BundleOffers from '@/components/home/BundleOffers';
 import { StatusBar } from 'expo-status-bar';
 import { useFocusEffect } from 'expo-router';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 export default function TabOneScreen() {
-
+  const [refreshing, setRefreshing] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -28,12 +28,25 @@ export default function TabOneScreen() {
     }, [])
   );
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
+
+
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style='dark' />
       <HomeHeader />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(4), }}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#DADADA" />
+        }
+        showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(4), }}>
         <HomeSearch />
         <HomeSpecialOffers />
         <HomeServices />

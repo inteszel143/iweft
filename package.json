@@ -69,7 +69,11 @@
     "react-native-switch": "^1.5.1",
     "react-native-tab-view": "^3.5.2",
     "react-native-web": "^0.19.11",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "expo-notifications": "~0.28.7",
+    "@stripe/stripe-react-native": "0.37.2",
+    "expo-device": "~6.0.2",
+    "expo-constants": "~16.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

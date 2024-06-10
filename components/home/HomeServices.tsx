@@ -5,42 +5,47 @@ import { Ionicons } from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
 import { useHomeServices } from '@/query/homeQuery';
 import { useIsFocused } from '@react-navigation/native';
+import ServiceSkeleton from '../skeleton/ServiceSkeleton';
 export default function HomeServices() {
     const isFocused = useIsFocused();
-    const { data } = useHomeServices(isFocused)
+    const { data, isPending } = useHomeServices(isFocused)
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.specialText}>Services</Text>
             </View>
-            <View style={styles.listStyle}>
-                {
-                    data?.map((item: any, index: any) => {
-                        return (
-                            <TouchableOpacity key={index}
-                                onPress={() => router.push({
-                                    pathname: 'homePage/services/ServicesScreen',
-                                    params: { item: JSON.stringify(item) },
-                                })}
-                            >
-                                <Image
-                                    source={{ uri: item?.image }}
-                                    resizeMode='contain'
-                                    style={styles.imageStyle}
-                                />
-                                <Text style={styles.titleStyle} >{item?.title.replace(" Services", "")}</Text>
+            {
+                isPending ? <ServiceSkeleton />
+                    :
+                    <View style={styles.listStyle}>
+                        {
+                            data?.map((item: any, index: any) => {
+                                return (
+                                    <TouchableOpacity key={index}
+                                        onPress={() => router.push({
+                                            pathname: 'homePage/services/ServicesScreen',
+                                            params: { item: JSON.stringify(item) },
+                                        })}
+                                    >
+                                        <Image
+                                            source={{ uri: item?.image }}
+                                            resizeMode='contain'
+                                            style={styles.imageStyle}
+                                        />
+                                        <Text style={styles.titleStyle} >{item?.title.replace(" Services", "")}</Text>
+                                    </TouchableOpacity>
+                                )
+                            })
+                        }
+                        <Link href={'/homePage/services/AllServices'} asChild>
+                            <TouchableOpacity>
+                                <View style={styles.seeallStyle}>
+                                    <Ionicons name='arrow-forward' size={hp(3)} color={"#6F767E"} />
+                                </View>
                             </TouchableOpacity>
-                        )
-                    })
-                }
-                <Link href={'/homePage/services/AllServices'} asChild>
-                    <TouchableOpacity>
-                        <View style={styles.seeallStyle}>
-                            <Ionicons name='arrow-forward' size={hp(3)} color={"#6F767E"} />
-                        </View>
-                    </TouchableOpacity>
-                </Link>
-            </View>
+                        </Link>
+                    </View>
+            }
             {/* <Link href={'/homePage/services/ServicesScreen'} asChild>
                 <TouchableOpacity>
                     <Image source={require('@/assets/temp/services/list1.png')} resizeMode='contain' style={styles.imageStyle} />

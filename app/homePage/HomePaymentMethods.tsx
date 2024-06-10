@@ -1,19 +1,18 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, Platform } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Platform, Alert } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
 import { paymentMethods } from '@/constants/booking/data';
 import { Fontisto } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
-
+import { CardField, useStripe } from '@stripe/stripe-react-native';
 export default function HomePaymentMethods() {
     const { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude } = useLocalSearchParams();
     const [isSelected, setIsSelected] = useState(0);
+
+
     return (
         <View style={styles.container}>
-
-
-
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
                     <View style={styles.headerLeft}>
@@ -25,6 +24,27 @@ export default function HomePaymentMethods() {
                 </View>
             </View>
 
+            {/* <CardField
+                postalCodeEnabled={true}
+                placeholders={{
+                    number: '4242 4242 4242 4242',
+                }}
+                cardStyle={{
+                    backgroundColor: '#FFFFFF',
+                    textColor: '#000000',
+                }}
+                style={{
+                    width: '100%',
+                    height: 50,
+                    marginVertical: 30,
+                }}
+                onCardChange={(cardDetails) => {
+                    console.log('cardDetails', cardDetails);
+                }}
+                onFocus={(focusedField) => {
+                    console.log('focusField', focusedField);
+                }}
+            /> */}
 
             <View style={styles.infoStyle}>
                 <Text style={styles.infoText}>Select the payment method you want to use.</Text>
@@ -57,15 +77,7 @@ export default function HomePaymentMethods() {
             </View>
 
 
-
-
             <View style={{ flex: 1, }} />
-
-
-
-
-
-
             <View style={styles.footer}>
                 <TouchableOpacity
                     style={[defaultStyles.footerBtn, { backgroundColor: isSelected == 0 ? "#DADADA" : "#0A5CA8", }]}

@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import { useColorScheme } from '@/components/useColorScheme';
 import HeaderChat from "@/components/inbox/HeaderChat";
 import HeaderCustomerSupport from "@/components/inbox/HeaderCustomerSupport";
+import { StripeProvider } from '@stripe/stripe-react-native';
 import {
   QueryClient, QueryClientProvider,
 } from '@tanstack/react-query';
@@ -53,7 +54,13 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
-        <RootLayoutNav />
+        <StripeProvider
+          publishableKey={`${process.env.EXPO_PUBLIC_STRIPE_PUBLIC_KEY}`}
+          urlScheme="iweft" // required for 3D Secure and bank redirects
+          merchantIdentifier="merchant.com.iweft" // required for Apple Pay
+        >
+          <RootLayoutNav />
+        </StripeProvider>
       </QueryClientProvider>
     </GestureHandlerRootView>
   );

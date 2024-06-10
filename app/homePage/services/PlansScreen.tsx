@@ -7,8 +7,25 @@ import Animated, { interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewO
 import { StatusBar } from 'expo-status-bar';
 const IMG_HEIGHT = 350;
 const { width } = Dimensions.get('window');
-export default function PlansScreen() {
+interface SubscriptionItem {
+    _id: string;
+    title: string;
+    sub_title: string;
+    base_price: number;
+    image: string;
+    other_images: string[];
+    details: string;
+    status: string;
+    created_by: string;
+    updated_by: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+}
 
+export default function PlansScreen() {
+    const { item } = useLocalSearchParams();
+    const subItem: SubscriptionItem = JSON.parse(item as string);
     const [addbook, setAddbook] = useState(false);
 
     const toggleAdd = () => {
@@ -42,8 +59,6 @@ export default function PlansScreen() {
         };
     });
 
-
-
     return (
         <View style={styles.container}>
             <Animated.ScrollView
@@ -52,11 +67,10 @@ export default function PlansScreen() {
                 showsVerticalScrollIndicator={false}
                 scrollEventThrottle={16}
             >
-
                 <Animated.View style={[styles.topStyle, imageAnimatedStyle]}>
                     <Image
-                        // source={require('@/assets/temp/services/services1.jpg')}
-                        source={require('@/assets/temp/services/basicScreen.png')}
+                        source={{ uri: subItem?.image }}
+                        // source={require('@/assets/temp/services/basicScreen.png')}
                         resizeMode='cover'
                         style={[{ width: wp(100), height: IMG_HEIGHT }]} />
                     <View style={styles.topFooter}>
@@ -73,26 +87,26 @@ export default function PlansScreen() {
 
                 <View style={styles.middleStyle}>
                     <View style={styles.middelTopRow}>
-                        <Text style={styles.middleText}>Basic plan</Text>
+                        <Text style={styles.middleText}>{subItem?.title}</Text>
                         <TouchableOpacity>
                             <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5.5) }} />
                         </TouchableOpacity>
                     </View>
                     <View style={styles.rateStyle}>
-                        <Text style={styles.core}>3 Collections</Text>
+                        <Text style={styles.core}>{subItem?.sub_title}</Text>
                     </View>
                     <View style={styles.laundryStyle}>
                         <Text style={styles.laundryText}>Cleaning & pressing</Text>
                     </View>
 
                     <View style={styles.priceStyle}>
-                        <Text style={styles.priceText}>AED 899</Text>
+                        <Text style={styles.priceText}>AED {subItem?.base_price}</Text>
                         <Text style={styles.subText}>(base price)</Text>
                     </View>
                     <View style={styles.separator} />
                     <View style={styles.detailsStyle}>
                         <Text style={styles.detailText}>About me</Text>
-                        <Text style={styles.subDetailText}>With our iWeft basic plan, you will be set up for 3 collections every month, allowing you to stay on top of your laundry and get on with the better things in life. <Text style={{ fontFamily: 'UrbanistBold', fontSize: hp(2), color: '#0A5CA8' }}>Read more...</Text></Text>
+                        <Text style={styles.subDetailText}>{subItem?.details}<Text style={{ fontFamily: 'UrbanistBold', fontSize: hp(2), color: '#0A5CA8' }}> Read more...</Text></Text>
                     </View>
                     <View style={styles.detailsStyle}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>

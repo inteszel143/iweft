@@ -1,5 +1,5 @@
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View, RefreshControl } from 'react-native'
+import React, { useCallback, useState } from 'react'
 import { chatListing } from '@/constants/chat/data'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -7,6 +7,15 @@ import { Link } from 'expo-router';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import FloatButton from './FloatButton';
 export default function ChatList() {
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 2000);
+    }, []);
+
     return (
         <Animated.View style={styles.container}
             entering={FadeInUp.duration(300).springify()}
@@ -15,6 +24,14 @@ export default function ChatList() {
                 data={chatListing}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item) => item.id.toString()}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        tintColor="#DADADA"
+                    />
+                }
+
                 renderItem={({ item }) => (
                     <Link href={'/BookingChat'} asChild>
                         <TouchableOpacity style={styles.cardrow}>

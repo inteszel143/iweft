@@ -43,7 +43,7 @@ export default function CallList() {
                     </Link>
                 )}
             />
-            <FloatButton />
+            {/* <FloatButton /> */}
         </Animated.View>
     )
 }

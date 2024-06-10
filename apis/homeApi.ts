@@ -50,7 +50,7 @@ export const getSupscriptionPlan = async () => {
   const accessToken = await SecureStore.getItemAsync("accessToken");
   try {
     const response = await axios.get(
-      `${process.env.EXPO_PUBLIC_API_URL}/subscription-plans`,
+      `${process.env.EXPO_PUBLIC_API_URL}/subscriptions`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -58,7 +58,7 @@ export const getSupscriptionPlan = async () => {
         },
       }
     );
-    return response?.data || [];
+    return response?.data?.subscriptions || [];
   } catch (error) {
     return Promise.reject(error);
   }

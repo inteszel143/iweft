@@ -6,6 +6,8 @@ import { itemList, items } from '@/constants/home/data';
 import { defaultStyles } from '@/constants/Styles';
 import { useItemCategory, useItems } from '@/query/homeQuery';
 import { useIsFocused } from '@react-navigation/native';
+import ItemCategorySkeleton from '@/components/skeleton/ItemCategorySkeleton';
+import ItemDataSkeleton from '@/components/skeleton/ItemDataSkeleton';
 
 export default function ItemPage() {
     const { service, service_name } = useLocalSearchParams();
@@ -13,8 +15,8 @@ export default function ItemPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
     const [itemData, setItemData] = useState<any>({});
-    const { data: categoryData } = useItemCategory(isFocused);
-    const { data: DATA } = useItems(isFocused);
+    const { data: categoryData, isPending: categoryPending } = useItemCategory(isFocused);
+    const { data: DATA, isPending: dataPending } = useItems(isFocused);
     // hook
     const [topSelect, setTopSelect] = useState(null);
 
@@ -125,72 +127,77 @@ export default function ItemPage() {
                     <Image source={require('@/assets/icons/filter.png')} resizeMode='contain' style={{ width: wp(6.5) }} />
                 </TouchableOpacity>
             </View>
+            {
+                categoryPending ? <ItemCategorySkeleton />
+                    :
+                    <View style={{ paddingVertical: hp(1), backgroundColor: 'white' }}>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ marginTop: hp(2) }}>
+                            <TouchableOpacity
+                                style={topSelect === null ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
+                                onPress={() => {
+                                    setTopSelect(null);
+                                    handleCategoryPress("All");
+                                }}
+                            >
+                                <Text style={topSelect === null ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>All</Text>
+                            </TouchableOpacity>
+
+                            {
+                                categoryData?.map((item: any, index: any) => {
+                                    return (
+                                        <TouchableOpacity key={index} style={topSelect == index ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
+                                            onPress={() => {
+                                                setTopSelect(index);
+                                                handleCategoryPress(item._id);
+                                            }}
+                                        >
+                                            <Text style={topSelect == index ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item.name}</Text>
+                                        </TouchableOpacity>
+                                    )
+                                })
+                            }
+                        </ScrollView>
+                    </View>
+            }
 
 
-
-
-            <View style={{ paddingVertical: hp(1), backgroundColor: 'white' }}>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ marginTop: hp(2) }}>
-                    <TouchableOpacity
-                        style={topSelect === null ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
-                        onPress={() => {
-                            setTopSelect(null);
-                            handleCategoryPress("All");
-                        }}
-                    >
-                        <Text style={topSelect === null ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>All</Text>
-                    </TouchableOpacity>
-
-                    {
-                        categoryData?.map((item: any, index: any) => {
-                            return (
-                                <TouchableOpacity key={index} style={topSelect == index ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
-                                    onPress={() => {
-                                        setTopSelect(index);
-                                        handleCategoryPress(item._id);
-                                    }}
-                                >
-                                    <Text style={topSelect == index ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item.name}</Text>
-                                </TouchableOpacity>
-                            )
-                        })
-                    }
-                </ScrollView>
-            </View>
-
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(12) }}>
-                {
-                    searchFilter?.map((item: any, index: any) => (
-                        <View style={[styles.cardStyle, { alignSelf: 'center' }]} key={index}>
-                            <View style={styles.innerCardStyle}>
-                                <Image
-                                    source={{ uri: item.image }}
-                                    resizeMode='contain'
-                                    style={{ width: wp(12), height: hp(5) }} />
-                                <View style={{ flex: 1, marginLeft: wp(4), paddingHorizontal: wp(1) }}>
-                                    <Text style={styles.bundleText}>{item.name}</Text>
-                                    <Text style={styles.price}>+ AED {item.price}</Text>
+            {
+                dataPending ? <ItemDataSkeleton />
+                    :
+                    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(12) }}>
+                        {
+                            searchFilter?.map((item: any, index: any) => (
+                                <View style={[styles.cardStyle, { alignSelf: 'center' }]} key={index}>
+                                    <View style={styles.innerCardStyle}>
+                                        <Image
+                                            source={{ uri: item.image }}
+                                            resizeMode='contain'
+                                            style={{ width: wp(12), height: hp(5) }} />
+                                        <View style={{ flex: 1, marginLeft: wp(4), paddingHorizontal: wp(1) }}>
+                                            <Text style={styles.bundleText}>{item.name}</Text>
+                                            <Text style={styles.price}>+ AED {item.price}</Text>
+                                        </View>
+                                        <View style={styles.rightStyle}>
+                                            <TouchableOpacity style={styles.circle}
+                                                onPress={() => decrement(item)}
+                                                disabled={!itemData[item._id]?.quantity}
+                                            >
+                                                <Text style={styles.btnText}>-</Text>
+                                            </TouchableOpacity>
+                                            <Text style={styles.quantity}>{itemData[item._id]?.quantity || 0}</Text>
+                                            <TouchableOpacity style={styles.circle}
+                                                onPress={() => increment(item)}
+                                            >
+                                                <Text style={styles.btnText}>+</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
                                 </View>
-                                <View style={styles.rightStyle}>
-                                    <TouchableOpacity style={styles.circle}
-                                        onPress={() => decrement(item)}
-                                        disabled={!itemData[item._id]?.quantity}
-                                    >
-                                        <Text style={styles.btnText}>-</Text>
-                                    </TouchableOpacity>
-                                    <Text style={styles.quantity}>{itemData[item._id]?.quantity || 0}</Text>
-                                    <TouchableOpacity style={styles.circle}
-                                        onPress={() => increment(item)}
-                                    >
-                                        <Text style={styles.btnText}>+</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </View>
-                    ))
-                }
+                            ))
+                        }
 
-            </ScrollView>
+                    </ScrollView>
+            }
 
             <View style={styles.footer}>
                 <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(1) }]} onPress={onSubmit}

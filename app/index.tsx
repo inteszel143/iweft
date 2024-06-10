@@ -24,6 +24,9 @@ export default function index() {
         const refreshToken = await SecureStore.getItemAsync('refreshToken');
         const onboarded = await SecureStore.getItemAsync('onboarded');
         queryClient.invalidateQueries({ queryKey: ['user-data'] });
+        // queryClient.invalidateQueries({ queryKey: ['home-services'] });
+        // queryClient.invalidateQueries({ queryKey: ['special-offrs'] });
+        // queryClient.invalidateQueries({ queryKey: ['sub-plans'] });
         if (refreshToken !== null) {
             try {
                 const response = await appOpenRefresh(refreshToken);

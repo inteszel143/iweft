@@ -5,10 +5,13 @@ import { router } from 'expo-router';
 import { useIsFocused } from '@react-navigation/native';
 import { useSubscriptionPlan } from '@/query/homeQuery';
 import { subPlan } from '@/constants/home/data';
+import SubscriptionSkeleton from '@/components/skeleton/SubscriptionSkeleton';
 
 export default function ChooseSubscription() {
 
     const isFocused = useIsFocused();
+    const { data, isPending } = useSubscriptionPlan(isFocused);
+
     return (
         <View style={styles.container}>
 
@@ -28,31 +31,40 @@ export default function ChooseSubscription() {
                     </View>
                 </View>
             </View>
-
             {
-                subPlan.map((item, index) => (
-                    <TouchableOpacity style={styles.CardStyle} key={index}
-                        onPress={() => router.push('homePage/services/PlansScreen')}
-                    >
-                        <View style={styles.cardRow}>
-                            <View style={styles.cardLeft}>
-                                <Image source={item.image} resizeMode='contain' style={{ width: wp(32), height: hp(15), }} />
-                                <View style={{ width: wp(45) }}>
-                                    < Text style={styles.topText} >{item.collection}</Text>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2), marginTop: hp(1.5) }}>
-                                        <Image source={item.icon} resizeMode='contain' style={{ width: wp(6), height: hp(4) }} />
-                                        <Text style={styles.middleText}>{item.title}</Text>
+                isPending ? <SubscriptionSkeleton />
+                    :
+                    <View>
+                        {
+                            data?.map((item: any, index: any) => (
+                                <TouchableOpacity style={styles.CardStyle} key={index}
+                                    onPress={() => router.push({
+                                        pathname: 'homePage/services/PlansScreen',
+                                        params: { item: JSON.stringify(item) },
+                                    })}
+                                >
+                                    <View style={styles.cardRow}>
+                                        <View style={styles.cardLeft}>
+                                            <Image source={{ uri: item.image }} resizeMode='contain' style={{ width: wp(32), height: hp(15), }} />
+                                            <View style={{ width: wp(45) }}>
+                                                < Text style={styles.topText} >{item.sub_title}</Text>
+                                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2), marginTop: hp(1.5) }}>
+                                                    <Image source={item.icon} resizeMode='contain' style={{ width: wp(6), height: hp(4) }} />
+                                                    <Text style={styles.middleText}>{item.title}</Text>
+                                                </View>
+                                                <Text style={styles.priceText}>AED {item.base_price}</Text>
+                                            </View>
+                                        </View>
+                                        <View>
+                                            {/* <FontAwesome name='bookmark' size={hp(2.9)} color={'#0A5CA8'} /> */}
+                                        </View>
                                     </View>
-                                    <Text style={styles.priceText}>{item.price}</Text>
-                                </View>
-                            </View>
-                            <View>
-                                {/* <FontAwesome name='bookmark' size={hp(2.9)} color={'#0A5CA8'} /> */}
-                            </View>
-                        </View>
-                    </TouchableOpacity >
-                ))
+                                </TouchableOpacity >
+                            ))
+                        }
+                    </View>
             }
+
 
 
         </View>
@@ -117,7 +129,7 @@ const styles = StyleSheet.create({
         gap: wp(4)
     },
     topText: {
-        fontFamily: 'UrbanistRegular',
+        fontFamily: 'UrbanistMedium',
         fontSize: hp(1.8),
         color: '#616161',
         marginTop: hp(1)
