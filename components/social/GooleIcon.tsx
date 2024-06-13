@@ -8,18 +8,21 @@ import { router } from 'expo-router';
 import errorRes from '@/apis/errorRes';
 import ErrorFacebookAuthModal from '../ErrorFacebookAuthModal';
 import SuccessLogin from '../SuccessLogin';
+import { getEmailChecker } from '@/apis/fetchAuth';
+import useStoreRefresh from '@/store/useStoreRefresh';
 export default function GooleIcon() {
-
+    const [exists, setExists] = useState(false);
     const [errorLoginModal, setErrorLoginModal] = useState(false);
     const [successLogin, setSuccessLogin] = useState(false);
+    const setRefreshToken = useStoreRefresh(state => state.setRefreshToken);
     const configureGoogleSignIn = () => {
         GoogleSignin.configure({
             webClientId:
-                "1074449350724-4551a18a1fh18ujmm28ru8ahlm7bsau2.apps.googleusercontent.com",
+                "237084984780-3ea73mo0lin71riud43opsddgstkgckc.apps.googleusercontent.com",
             androidClientId:
-                "1074449350724-1uugfemegrn0sgsk9ma0fft5drb13ncf.apps.googleusercontent.com",
+                "237084984780-01ij1gfg9p4teptjt91fr46di35q3da3.apps.googleusercontent.com",
             iosClientId:
-                "1074449350724-ftu4aip9qs5tj8p3kr3agt0cidekbpak.apps.googleusercontent.com",
+                "237084984780-oj2g0uh2v47fsh0a20fp01le3c8kslek.apps.googleusercontent.com",
         });
     };
     useEffect(() => {
@@ -32,9 +35,14 @@ export default function GooleIcon() {
         try {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
+
+            const check = await getEmailChecker(userInfo?.user?.email as string);
+            setExists(check?.exists);
+
             const response = await signInWithGoogle(userInfo?.user?.email, userInfo?.user?.name, userInfo?.user?.id);
             await SecureStore.setItemAsync('accessToken', response?.access?.token);
-            await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+          
+            setRefreshToken(response?.refresh?.token);
             setSuccessLogin(true);
         } catch (e) {
             if (errorRes(e) === "The email you provided is already taken.") {
@@ -48,7 +56,7 @@ export default function GooleIcon() {
     return (
         <View>
             {errorLoginModal && <ErrorFacebookAuthModal modalVisible={errorLoginModal} setModalVisible={setErrorLoginModal} />}
-            {successLogin && <SuccessLogin modalVisible={successLogin} setModalVisible={setSuccessLogin} />}
+            {successLogin && <SuccessLogin modalVisible={successLogin} setModalVisible={setSuccessLogin} exist={exists} />}
             <TouchableOpacity style={styles.box} onPress={signIn}>
                 <Image source={require('@/assets/temp/authIcons/google.png')} resizeMode='contain' style={styles.btnImage} />
             </TouchableOpacity>

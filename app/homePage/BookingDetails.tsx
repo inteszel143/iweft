@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         width: wp(100),
-        height: Platform.OS === 'ios' ? hp(11) : hp(19),
+        height: Platform.OS === 'ios' ? hp(11) : hp(9),
         backgroundColor: 'white',
         borderTopRightRadius: wp(4),
         borderTopLeftRadius: wp(4),

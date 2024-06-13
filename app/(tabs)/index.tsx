@@ -11,6 +11,7 @@ import BundleOffers from '@/components/home/BundleOffers';
 import { StatusBar } from 'expo-status-bar';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
+import Test from '../Test';
 export default function TabOneScreen() {
   const [refreshing, setRefreshing] = useState(false);
 
@@ -35,9 +36,6 @@ export default function TabOneScreen() {
     }, 2000);
   }, []);
 
-
-
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style='dark' />
@@ -53,6 +51,7 @@ export default function TabOneScreen() {
         <LaundryBundles />
         <HomeAds />
         <BundleOffers />
+        {/* <Test /> */}
       </ScrollView>
     </SafeAreaView>
   );

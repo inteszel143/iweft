@@ -4,16 +4,16 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { Link, router } from 'expo-router';
 import { useUserQuery } from '@/query/fetchAuthQuery';
 import { useIsFocused } from '@react-navigation/native';
+import HomeHeaderSkeleton from '../skeleton/HomeHeaderSkeleton';
 export default function HomeHeader() {
     const isFocused = useIsFocused();
     const currentDate = new Date();
     const currentHour = currentDate.getHours();
     const isMorning = currentHour >= 0 && currentHour < 12;
-    const { data } = useUserQuery(isFocused);
-    if (!data) {
-        return;
+    const { data, isPending } = useUserQuery(isFocused);
+    if (isPending) {
+        return <HomeHeaderSkeleton />
     }
-
 
     const openAppStore = () => {
         const appStoreURL = 'https://apps.apple.com/us/app/facebook/id284882215';

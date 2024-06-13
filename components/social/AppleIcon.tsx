@@ -6,12 +6,19 @@ import { signInWithApple } from '@/apis/socalAuth';
 import * as SecureStore from 'expo-secure-store';
 import ErrorPage from '../ErrorPage';
 import SuccessLogin from '../SuccessLogin';
+import useStoreRefresh from '@/store/useStoreRefresh';
+import { getEmailChecker } from '@/apis/fetchAuth';
+import errorRes from '@/apis/errorRes';
 export default function AppleIcon() {
 
     const [errorLoginModal, setErrorLoginModal] = useState(false);
     const [successLogin, setSuccessLogin] = useState(false);
 
     const [appleAuthAvailable, setAppleAvailable] = useState(false);
+
+    const [exists, setExists] = useState(false);
+    const setRefreshToken = useStoreRefresh(state => state.setRefreshToken);
+
 
     useEffect(() => {
         const checkAvailable = async () => {
@@ -30,19 +37,55 @@ export default function AppleIcon() {
                     AppleAuthentication.AppleAuthenticationScope.EMAIL
                 ]
             });
-            const response = await signInWithApple(credential?.email, credential?.fullName?.givenName + ' ' + credential?.fullName?.familyName, credential?.identityToken);
-            await SecureStore.setItemAsync('accessToken', response?.access?.token);
-            await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
-            setSuccessLogin(true);
+
+            const appleEmail = await SecureStore.getItemAsync('appleEmail');
+
+            if (appleEmail === null) {
+                try {
+                    const check = await getEmailChecker(credential?.email as string);
+                    setExists(check?.exists);
+
+                    const response = await signInWithApple(credential?.email, credential?.fullName?.givenName + ' ' + credential?.fullName?.familyName, credential?.identityToken);
+                    await SecureStore.setItemAsync('accessToken', response?.access?.token);
+                    await SecureStore.setItemAsync('appleEmail', credential?.email as string);
+                    // await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+
+                    setRefreshToken(response?.refresh?.token);
+                    setSuccessLogin(true);
+                } catch (error) {
+                    setErrorLoginModal(true);
+                }
+            } else {
+                try {
+
+                    const check = await getEmailChecker(appleEmail as string);
+                    setExists(check?.exists);
+
+                    const response = await signInWithApple(credential?.email, credential?.fullName?.givenName + ' ' + credential?.fullName?.familyName, credential?.identityToken);
+                    await SecureStore.setItemAsync('accessToken', response?.access?.token);
+
+                    // await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+
+                    setRefreshToken(response?.refresh?.token);
+                    setSuccessLogin(true);
+                } catch (error) {
+                    setErrorLoginModal(true);
+
+                }
+            }
         } catch (e) {
-            setErrorLoginModal(true);
+            if (errorRes(e) === "The user canceled the authorization attempt") {
+                return;
+            } else {
+                setErrorLoginModal(true);
+            }
         }
     };
 
     return (
         <View>
             {errorLoginModal && <ErrorPage modalVisible={errorLoginModal} setModalVisible={setErrorLoginModal} />}
-            {successLogin && <SuccessLogin modalVisible={successLogin} setModalVisible={setSuccessLogin} />}
+            {successLogin && <SuccessLogin modalVisible={successLogin} setModalVisible={setSuccessLogin} exist={exists} />}
             <TouchableOpacity style={styles.box} onPress={() => login()}>
                 <Image source={require('@/assets/temp/authIcons/apple.png')} resizeMode='contain' style={styles.btnImage} />
             </TouchableOpacity>

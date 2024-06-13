@@ -103,3 +103,25 @@ export const getItems = async () => {
     return Promise.reject(error);
   }
 };
+
+/**
+ * Get All Bundles ---------------------------------------------------------
+ */
+
+export const getAllBundles = async () => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  try {
+    const response = await axios.get(
+      `${process.env.EXPO_PUBLIC_API_URL}/laundry-bundles`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          //   "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response?.data?.laundryBundles || [];
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

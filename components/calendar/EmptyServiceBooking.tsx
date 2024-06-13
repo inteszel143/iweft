@@ -18,7 +18,7 @@ export default function EmptyServiceBooking() {
 
             <View style={styles.imageStyle}>
                 <Image
-                    source={require('@/assets/icons/emptybook.png')}
+                    source={require('@/assets/icons/emptybook.jpg')}
                     resizeMode='contain'
                     style={{
                         width: wp(35),

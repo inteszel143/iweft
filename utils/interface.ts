@@ -1,10 +1,4 @@
-export interface User {
-  _id: string;
-  email: string;
-  fullname: string;
-}
-
-export interface Service {
+export interface ServiceItem {
   _id: string;
   title: string;
   sub_title: string;
@@ -13,44 +7,60 @@ export interface Service {
   other_images: string[];
   details: string;
   status: string;
-  __v: number;
-}
-
-export interface OrderItem {
-  _id: string;
-  name: string;
-  item_category_id: string;
-  price: number;
-  image: string;
-  __v: number;
-}
-
-export interface OrderDetails {
-  service: Service;
-  order_items: {
-    item: OrderItem;
-    quantity: number;
+  created_by: {
     _id: string;
-  }[];
-  promo_code: string;
-  _id: string;
+    email: string;
+  };
+  updated_by: string;
   createdAt: string;
   updatedAt: string;
+  __v: number;
 }
 
-export interface Order {
+export interface LaundryBundle {
   _id: string;
-  user: User;
-  order_details: OrderDetails;
-  date_ordered: string;
-  pick_up_date_time: string;
-  delivery_date_time: string;
+  title: string;
+  sub_title: string;
+  base_price: string;
+  image: string;
+  other_images: string;
+  details: string;
   status: string;
-  address: string;
-  delivery_instruction: string;
-  total_amount: number;
-  latitude: number;
-  longitude: number;
+  includes: [
+    {
+      _id: string;
+      name: string;
+      item_category_id: string;
+      price: number;
+      image: string;
+      created_by: string;
+      updated_by: string;
+      createdAt: string;
+      updatedAt: string;
+      __v: number;
+    }
+  ];
+  created_by: {
+    _id: string;
+    email: string;
+  };
+  updated_by: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+export interface SubscriptionItem {
+  _id: string;
+  title: string;
+  sub_title: string;
+  base_price: number;
+  image: string;
+  other_images: string[];
+  details: string;
+  status: string;
+  created_by: string;
+  updated_by: string;
   createdAt: string;
   updatedAt: string;
   __v: number;

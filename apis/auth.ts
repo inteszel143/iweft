@@ -141,6 +141,32 @@ export const postPhoneVerificationCode = async (contact_number: string) => {
 };
 
 /**
+ * Social Add Pin Code ---------------------------------------------------------
+ *
+ */
+
+export const socialAddPinCode = async (pin: number) => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  const data = {
+    pin: pin,
+  };
+  try {
+    const response = await axios.patch(
+      `${process.env.EXPO_PUBLIC_API_URL}/auth/client/pin-create`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response.data || [];
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+/**
  * PHONE CHECK VERIFICATION ---------------------------------------------------------
  *
  */

@@ -5,26 +5,10 @@ import { Link, router, useLocalSearchParams } from 'expo-router';
 import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import Animated, { interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, withSpring } from 'react-native-reanimated';
 import { customer, starRating } from '@/constants/home/data';
+import { ServiceItem } from '@/utils/interface';
 const IMG_HEIGHT = 300;
 const { width } = Dimensions.get('window');
-interface ServiceItem {
-    _id: string;
-    title: string;
-    sub_title: string;
-    base_price: number;
-    image: string;
-    other_images: string[];
-    details: string;
-    status: string;
-    created_by: {
-        _id: string;
-        email: string;
-    };
-    updated_by: string;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-}
+
 
 export default function ServicesScreen() {
     const { item } = useLocalSearchParams();
@@ -252,7 +236,8 @@ export default function ServicesScreen() {
             <View style={styles.topBtnStyle}>
                 <TouchableOpacity
                     onPress={() => router.back()}>
-                    <AntDesign name='arrowleft' size={hp(3)} color={'#212121'} />
+                    {/* <AntDesign name='arrowleft' size={hp(3)} color={'#212121'} /> */}
+                    <Ionicons name='chevron-back' size={hp(3)} />
                 </TouchableOpacity>
             </View>
             <Animated.View style={[styles.header, headerStyle]}>
@@ -297,7 +282,7 @@ const styles = StyleSheet.create({
         top: 0,
         width: wp(100),
         backgroundColor: "#fff",
-        height: 100,
+        height: Platform.OS === 'android' ? 92 : 100,
         justifyContent: 'flex-end',
         borderBottomColor: 'gray',
         paddingHorizontal: wp(5)
@@ -314,8 +299,8 @@ const styles = StyleSheet.create({
 
     topBtnStyle: {
         position: 'absolute',
-        top: hp(8),
-        left: wp(6),
+        top: Platform.OS === 'ios' ? hp(7) : hp(8),
+        left: wp(5),
     },
     topFooter: {
         position: 'absolute',

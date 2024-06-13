@@ -233,30 +233,6 @@ export const forgot = [
     value: "and***@yourdomain.com",
   },
 ];
-export const subPlan = [
-  {
-    image: require("@/assets/temp/services/basic.png"),
-    icon: require("@/assets/temp/subs/basic.jpg"),
-    collection: "3 collections a month",
-    title: "Basic plan",
-    price: "AED 899",
-  },
-  {
-    image: require("@/assets/temp/services/premium.png"),
-    icon: require("@/assets/temp/subs/premium.jpg"),
-    collection: "up to 5 collections a month! ",
-    title: "Premium",
-    price: "AED 1,499",
-  },
-  {
-    image: require("@/assets/temp/services/platinum.png"),
-    icon: require("@/assets/temp/subs/platinum.jpg"),
-    collection: "unlimited services ",
-    title: "Platinum VIP",
-    price: "AED 2,999",
-  },
-];
-
 export const caterogy = [
   {
     id: 1,

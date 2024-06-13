@@ -5,23 +5,10 @@ import { Link, router, useLocalSearchParams } from 'expo-router';
 import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import Animated, { interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, withSpring } from 'react-native-reanimated';
 import { StatusBar } from 'expo-status-bar';
+import { SubscriptionItem } from '@/utils/interface';
 const IMG_HEIGHT = 350;
 const { width } = Dimensions.get('window');
-interface SubscriptionItem {
-    _id: string;
-    title: string;
-    sub_title: string;
-    base_price: number;
-    image: string;
-    other_images: string[];
-    details: string;
-    status: string;
-    created_by: string;
-    updated_by: string;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-}
+
 
 export default function PlansScreen() {
     const { item } = useLocalSearchParams();

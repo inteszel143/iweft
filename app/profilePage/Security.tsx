@@ -45,6 +45,7 @@ export default function Security() {
                 await SecureStore.deleteItemAsync('refreshToken');
                 await SecureStore.deleteItemAsync('onboarded');
                 router.push('/authPage/OnboardingScreen');
+                bottomSheetModalRef.current?.close();
                 setDeleteBtnLoading(false);
             } catch (error) {
                 console.log(error);

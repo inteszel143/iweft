@@ -5,21 +5,15 @@ import { router } from 'expo-router';
 import { BallIndicator } from 'react-native-indicators'
 interface ModalProps {
     modalVisible: boolean;
-    exist: boolean;
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>; // Ensure correct typing
 }
 
-export default function SuccessLogin({ modalVisible, setModalVisible, exist }: ModalProps) {
-
+export default function CreateNewUserSocialSuccess({ modalVisible, setModalVisible }: ModalProps) {
     useEffect(() => {
         const timer = setTimeout(() => {
             setModalVisible(false);
-            // router.push('/(tabs)/');
-            router.push({
-                pathname: '/authPage/AfterSocialLogin',
-                params: { exist: exist.toString() }
-            });
-        }, 2000);
+            router.push('/(tabs)/');
+        }, 3000);
         return () => clearTimeout(timer);
     }, []);
 
@@ -33,13 +27,15 @@ export default function SuccessLogin({ modalVisible, setModalVisible, exist }: M
         >
             <View style={styles.modalStyle}>
                 <View style={styles.modalBox}>
-                    <View style={styles.indicator}>
-                        <BallIndicator color="#0A5CA8" size={hp(4)} />
+                    <View>
+                        <Image source={require('@/assets/temp/success.jpg')} resizeMode='contain' style={styles.imageStyle} />
                     </View>
-                    <View style={{ marginTop: hp(4) }} />
-                    <Text style={styles.titleStyle}>Please wait</Text>
-                    <Text style={styles.subStyle}>Fetching user data...</Text>
-
+                    <Text style={styles.titleStyle}>Congratulations!</Text>
+                    <Text style={styles.subStyle}>Your account is ready to use. You will be redirected to the Home page in a few seconds..</Text>
+                    <View style={{ marginTop: hp(8) }} />
+                    <View style={styles.indicator}>
+                        <BallIndicator color="#93C120" size={hp(4)} />
+                    </View>
                 </View>
             </View>
 
@@ -55,8 +51,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     modalBox: {
-        width: wp(82),
-        height: Platform.OS === 'ios' ? hp(28) : hp(30),
+        width: wp(86),
+        height: Platform.OS === 'ios' ? hp(50) : hp(52),
         backgroundColor: "white",
         borderRadius: wp(6),
         alignItems: 'center',
@@ -97,6 +93,6 @@ const styles = StyleSheet.create({
     },
     indicator: {
         position: 'absolute',
-        top: hp(6),
+        bottom: hp(4),
     }
 })

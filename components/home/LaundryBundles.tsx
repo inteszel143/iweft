@@ -2,26 +2,13 @@ import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList } from 'react
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
+import { useIsFocused } from '@react-navigation/native';
+import { useLaundryBundles } from '@/query/homeQuery';
+import HomeBundleSkeleton from '../skeleton/HomeBundleSkeleton';
 export default function LaundryBundles() {
-
-    const data = [
-        {
-            id: 1,
-            name: "Bedding Set",
-            img: require('@/assets/temp/laundryBundle/laundry1.png')
-        },
-        {
-            id: 2,
-            name: "Suit Care",
-            img: require('@/assets/temp/laundryBundle/laundry2.png')
-        },
-        {
-            id: 3,
-            name: "Bedding Set",
-            img: require('@/assets/temp/laundryBundle/laundry1.png')
-        }
-    ]
+    const isFocused = useIsFocused();
+    const { data: laundryData, isPending } = useLaundryBundles(isFocused);
 
     return (
         <View style={styles.container}>
@@ -42,32 +29,40 @@ export default function LaundryBundles() {
             </View>
 
 
-            <View>
-                <FlatList
-                    data={data}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    keyExtractor={(item) => item.id.toString()}
-                    renderItem={({ item }) => {
-                        return (
-                            <Link href={{ pathname: '/homePage/budles/BuddleScreen', params: item }} asChild>
-                                <TouchableOpacity style={{ paddingLeft: wp(2), alignItems: 'center' }}>
-                                    <Image
-                                        source={item.img}
-                                        resizeMode='contain'
-                                        style={{
-                                            width: wp(30),
-                                            height: hp(20),
-                                        }}
-                                    />
-                                    <Text style={styles.bundleText}>{item.name}</Text>
-                                </TouchableOpacity>
-                            </Link>
-                        )
-                    }}
+            {
+                isPending ? <HomeBundleSkeleton />
+                    :
+                    <View>
+                        <FlatList
+                            data={laundryData}
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            keyExtractor={(item) => item?._id.toString()}
+                            renderItem={({ item }) => {
+                                return (
+                                    <TouchableOpacity style={{ paddingLeft: wp(2), alignItems: 'center' }}
+                                        onPress={() => router.push({
+                                            pathname: '/homePage/budles/BuddleScreen',
+                                            params: { item: JSON.stringify(item) },
+                                        })}
+                                    >
+                                        <Image
+                                            source={{ uri: item?.image }}
+                                            resizeMode='contain'
+                                            style={{
+                                                width: wp(30),
+                                                height: hp(20),
+                                            }}
+                                        />
+                                        <Text style={styles.bundleText}>{item?.title.replace(" Bundle", "")}</Text>
+                                    </TouchableOpacity>
+                                )
+                            }}
 
-                />
-            </View>
+                        />
+                    </View>
+            }
+
             <View style={{ height: 0.7, backgroundColor: "#DADADA", marginTop: hp(6), marginHorizontal: wp(4) }} />
 
         </View>

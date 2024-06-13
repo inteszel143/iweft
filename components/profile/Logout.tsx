@@ -12,6 +12,7 @@ import * as SecureStore from 'expo-secure-store';
 import { logoutUser } from '@/apis/auth';
 import { router } from 'expo-router';
 import * as AppleAuthentication from 'expo-apple-authentication';
+import errorRes from '@/apis/errorRes';
 export default function Logout() {
 
     const [btnLoading, setBtnLoading] = useState(false);
@@ -37,13 +38,14 @@ export default function Logout() {
             await SecureStore.deleteItemAsync('accessToken');
             await SecureStore.deleteItemAsync('refreshToken');
             await SecureStore.deleteItemAsync('onboarded');
+
             setTimeout(() => {
                 setBtnLoading(false);
                 bottomSheetModalRef.current?.close();
                 router.push('/authPage/OnboardingScreen');
             }, 2000);
         } catch (error) {
-            console.log(error);
+            console.log(errorRes(error));
             setBtnLoading(false);
         }
 
@@ -79,7 +81,7 @@ export default function Logout() {
                 <BottomSheetView style={styles.contentContainer}>
                     <Text style={styles.bottomSheetIndi}>Logout</Text>
                     <View style={styles.BottomSheetSeparator} />
-                    <View style={{ marginTop: hp(3), paddingHorizontal: wp(10) }}>
+                    <View style={{ marginTop: Platform.OS === 'ios' ? hp(3) : hp(4), paddingHorizontal: wp(10) }}>
                         <Text style={styles.bottomSheetTitle}>Are you sure you want to log out?</Text>
                     </View>
 
@@ -162,7 +164,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: wp(3),
-        marginTop: hp(3.5),
+        marginTop: Platform.OS === 'ios' ? hp(3.5) : hp(4),
     },
     bottomBtn: {
         width: wp(40),

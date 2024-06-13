@@ -49,7 +49,7 @@ export default function RootLayout() {
 
   if (!loaded) {
     return null;
-  }
+  };
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -93,6 +93,7 @@ function RootLayoutNav() {
       <Stack.Screen name="authPage/forgot/ForgotPassScreen" options={{ headerShown: false }} />
       <Stack.Screen name="authPage/forgot/ForgotCode" options={{ headerShown: false }} />
       <Stack.Screen name="authPage/forgot/CreateNewPassword" options={{ headerShown: false }} />
+      <Stack.Screen name="authPage/AfterSocialLogin" options={{ headerShown: false, gestureEnabled: false }} />
 
 
       <Stack.Screen name="authPage/create/ProfileData" options={{ headerShown: false }} />

@@ -7,6 +7,21 @@ import { FontAwesome } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
 
 export default function PlanType() {
+
+    const data = [
+        {
+            image: require('@/assets/temp/services/plansa.jpg'),
+            label: "Clean/Press"
+        },
+        {
+            image: require('@/assets/temp/services/plansa.jpg'),
+            label: "Press Only"
+        },
+        {
+            image: require('@/assets/temp/services/plansa.jpg'),
+            label: "Wash/Fold"
+        },
+    ]
     return (
         <View style={styles.container}>
 
@@ -32,27 +47,17 @@ export default function PlanType() {
 
 
                 {/* card */}
-                <TouchableOpacity style={styles.cardStyle}>
-                    <View style={styles.cardRow}>
-                        <Image source={require('@/assets/temp/services/plan.png')} resizeMode='contain' style={{ width: wp(10) }} />
-                        <Text style={styles.titleStyle}>Clean/Press</Text>
-                        <FontAwesome name='check-circle' size={hp(3)} color={'#0A5CA8'} />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cardStyle}>
-                    <View style={styles.cardRow}>
-                        <Image source={require('@/assets/temp/services/plan.png')} resizeMode='contain' style={{ width: wp(10) }} />
-                        <Text style={styles.titleStyle}>Press Only</Text>
-                        <FontAwesome name='check-circle' size={hp(3)} color={'#0A5CA8'} />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cardStyle}>
-                    <View style={styles.cardRow}>
-                        <Image source={require('@/assets/temp/services/plan.png')} resizeMode='contain' style={{ width: wp(10) }} />
-                        <Text style={styles.titleStyle}>Wash/Fold</Text>
-                        <FontAwesome name='check-circle' size={hp(3)} color={'#0A5CA8'} />
-                    </View>
-                </TouchableOpacity>
+                {
+                    data?.map((item, index) => (
+                        <TouchableOpacity style={styles.cardStyle} key={index}>
+                            <View style={styles.cardRow}>
+                                <Image source={item?.image} resizeMode='contain' style={{ width: wp(10) }} />
+                                <Text style={styles.titleStyle}>{item?.label}</Text>
+                                <FontAwesome name='check-circle' size={hp(3)} color={'#0A5CA8'} />
+                            </View>
+                        </TouchableOpacity>
+                    ))
+                }
 
             </View>
 

@@ -20,31 +20,39 @@ export default function index() {
             validate();
         }, 1000);
     }, []);
+
     const validate = async () => {
-        const refreshToken = await SecureStore.getItemAsync('refreshToken');
-        const onboarded = await SecureStore.getItemAsync('onboarded');
-        queryClient.invalidateQueries({ queryKey: ['user-data'] });
-        // queryClient.invalidateQueries({ queryKey: ['home-services'] });
-        // queryClient.invalidateQueries({ queryKey: ['special-offrs'] });
-        // queryClient.invalidateQueries({ queryKey: ['sub-plans'] });
-        if (refreshToken !== null) {
-            try {
-                const response = await appOpenRefresh(refreshToken);
-                await SecureStore.setItemAsync('accessToken', response?.access?.token);
-                await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
-                router.push('/(tabs)/');
-            } catch (error) {
-                console.log(errorRes(error));
-                router.push('/authPage/LoginScreen');
-            }
-        } else {
-            if (onboarded === null) {
-                router.push('/authPage/OnboardingScreen');
+        try {
+            const refreshToken = await SecureStore.getItemAsync('refreshToken');
+            const onboarded = await SecureStore.getItemAsync('onboarded');
+            queryClient.invalidateQueries({ queryKey: ['user-data'] });
+
+            if (refreshToken !== null) {
+                try {
+                    const response = await appOpenRefresh(refreshToken);
+                    await SecureStore.setItemAsync('accessToken', response?.access?.token);
+                    await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+                    router.push('/(tabs)/');
+                } catch (error) {
+                    console.log('Error during token refresh:', errorRes(error));
+                    router.push('/authPage/LoginScreen');
+                }
             } else {
-                router.push('/authPage/SelectLoginPage');
+                if (onboarded === null) {
+                    router.push('/authPage/OnboardingScreen');
+                } else {
+                    router.push('/authPage/SelectLoginPage');
+                }
             }
+        } catch (error) {
+            await SecureStore.deleteItemAsync('accessToken');
+            await SecureStore.deleteItemAsync('refreshToken');
+            await SecureStore.deleteItemAsync('onboarded');
+
+            router.push('/authPage/LoginScreen');
         }
     };
+
     return (
         <View style={styles.container}>
             <StatusBar style='dark' />
@@ -53,7 +61,7 @@ export default function index() {
                 <Image source={require('@/assets/icons/iweft.png')} resizeMode='contain' style={{ width: wp(60) }} />
             </Animated.View>
             <Animated.View style={styles.footer} entering={FadeIn.delay(300)}>
-                <BallIndicator color="#93C120" size={hp(4)} />
+                <BallIndicator color="#93C120" size={Platform.OS === 'ios' ? hp(4) : hp(4.5)} />
             </Animated.View>
         </View >
     )

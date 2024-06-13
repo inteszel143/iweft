@@ -8,6 +8,41 @@ import { defaultStyles } from '@/constants/Styles';
 
 export default function DriverInstruction() {
     const { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude } = useLocalSearchParams();
+
+    const topData = [
+        {
+            image: require('@/assets/temp/services/plansa.jpg'),
+            label: "No Preferences"
+        },
+        {
+            image: require('@/assets/temp/services/plansa.jpg'),
+            label: "Ring the door bell"
+        },
+        {
+            image: require('@/assets/temp/services/plansa.jpg'),
+            label: "Ring the door bell"
+        },
+        {
+            image: require('@/assets/temp/services/plansa.jpg'),
+            label: "Knock on the door"
+        },
+        {
+            image: require('@/assets/temp/services/plansa.jpg'),
+            label: "Do not disturb, bags outside"
+        },
+    ];
+
+    const botData = [
+        {
+            image: require('@/assets/temp/services/plansa.jpg'),
+            label: "No Preferences"
+        },
+        {
+            image: require('@/assets/temp/services/plansa.jpg'),
+            label: "Ring the door bell"
+        },
+    ]
+
     return (
         <View style={styles.container}>
             <View style={styles.Headercontainer}>
@@ -34,54 +69,33 @@ export default function DriverInstruction() {
 
 
                     {/* card */}
-                    <TouchableOpacity style={styles.cardStyle}>
-                        <View style={styles.cardRow}>
-                            <Image source={require('@/assets/temp/services/plan.png')} resizeMode='contain' style={{ width: wp(10) }} />
-                            <Text style={styles.titleStyle}>No Preferences</Text>
-                            <FontAwesome name='check-circle' size={hp(3)} color={'#0A5CA8'} />
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.cardStyle}>
-                        <View style={styles.cardRow}>
-                            <Image source={require('@/assets/temp/services/plan.png')} resizeMode='contain' style={{ width: wp(10) }} />
-                            <Text style={styles.titleStyle}>Ring the door bell</Text>
-                            <FontAwesome name='check-circle' size={hp(3)} color={'#0A5CA8'} />
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.cardStyle}>
-                        <View style={styles.cardRow}>
-                            <Image source={require('@/assets/temp/services/plan.png')} resizeMode='contain' style={{ width: wp(10) }} />
-                            <Text style={styles.titleStyle}>Knock on the door</Text>
-                            <FontAwesome name='check-circle' size={hp(3)} color={'#0A5CA8'} />
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.cardStyle}>
-                        <View style={styles.cardRow}>
-                            <Image source={require('@/assets/temp/services/plan.png')} resizeMode='contain' style={{ width: wp(10) }} />
-                            <Text style={styles.titleStyle}>Do not disturb, bags outside</Text>
-                            <FontAwesome name='check-circle' size={hp(3)} color={'#0A5CA8'} />
-                        </View>
-                    </TouchableOpacity>
+                    {
+                        topData?.map((item, index) => (
+                            <TouchableOpacity style={styles.cardStyle} key={index}>
+                                <View style={styles.cardRow}>
+                                    <Image source={item?.image} resizeMode='contain' style={{ width: wp(10) }} />
+                                    <Text style={styles.titleStyle}>{item?.label}</Text>
+                                    <FontAwesome name='check-circle' size={hp(3)} color={'#0A5CA8'} />
+                                </View>
+                            </TouchableOpacity>
+                        ))
+                    }
 
 
 
                     <Text style={[styles.topText, { marginTop: hp(3) }]}>Do you have any delivery instructions?</Text>
                     {/* card */}
-                    <TouchableOpacity style={styles.cardStyle}>
-                        <View style={styles.cardRow}>
-                            <Image source={require('@/assets/temp/services/plan.png')} resizeMode='contain' style={{ width: wp(10) }} />
-                            <Text style={styles.titleStyle}>No Preferences</Text>
-                            <FontAwesome name='check-circle' size={hp(3)} color={'#0A5CA8'} />
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.cardStyle}>
-                        <View style={styles.cardRow}>
-                            <Image source={require('@/assets/temp/services/plan.png')} resizeMode='contain' style={{ width: wp(10) }} />
-                            <Text style={styles.titleStyle}>Ring the door bell</Text>
-                            <FontAwesome name='check-circle' size={hp(3)} color={'#0A5CA8'} />
-                        </View>
-                    </TouchableOpacity>
-
+                    {
+                        botData?.map((item, index) => (
+                            <TouchableOpacity style={styles.cardStyle} key={index}>
+                                <View style={styles.cardRow}>
+                                    <Image source={item?.image} resizeMode='contain' style={{ width: wp(10) }} />
+                                    <Text style={styles.titleStyle}>{item?.label}</Text>
+                                    <FontAwesome name='check-circle' size={hp(3)} color={'#0A5CA8'} />
+                                </View>
+                            </TouchableOpacity>
+                        ))
+                    }
 
                 </View>
             </ScrollView>

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import {
+  getAllBundles,
   getHomeServices,
   getItemCategory,
   getItems,
@@ -57,3 +58,30 @@ export const useItems = (isFocused: boolean) => {
     queryFn: getItems,
   });
 };
+
+/**
+ * Get Home Laundry Bundles ---------------------------------------------------------
+ */
+
+export const useLaundryBundles = (isFocused: boolean) => {
+  return useQuery({
+    queryKey: ["bundles"],
+    enabled: isFocused,
+    queryFn: getAllBundles,
+  });
+};
+
+// /**
+//  * Get Home Laundry Bundles By ID ---------------------------------------------------------
+//  */
+
+// export const useLaundryBundlesById = (
+//   isFocused: boolean,
+//   laundryId: string
+// ) => {
+//   return useQuery({
+//     queryKey: ["bundle-id"],
+//     enabled: isFocused,
+//     queryFn: () => getBundleById(laundryId),
+//   });
+// };

@@ -32,8 +32,8 @@ export default function ErrorPage({ modalVisible, setModalVisible }: ModalProps)
                             source={require('@/assets/animate/invalid.json')}
                         />
                     </View>
-                    <Text style={styles.titleStyle}>404</Text>
-                    <Text style={styles.subStyle}>The page you're searching is currently unavailable.</Text>
+                    <Text style={styles.titleStyle}>Authentication failed</Text>
+                    <Text style={styles.subStyle}>Please ensure your email address is correct.</Text>
                     <View style={{ marginTop: hp(3) }} />
                     <TouchableOpacity style={styles.btnStyle} onPress={toggleModal}>
                         <Text style={styles.btnText}>Try again</Text>

@@ -6,8 +6,14 @@ import { AccessToken, LoginManager, Settings, Profile } from 'react-native-fbsdk
 import { signInWithFacebook } from '@/apis/socalAuth';
 import ErrorFacebookAuthModal from '../ErrorFacebookAuthModal';
 import * as SecureStore from 'expo-secure-store';
+import { getEmailChecker } from '@/apis/fetchAuth';
+import useStoreRefresh from '@/store/useStoreRefresh';
+import SuccessLogin from '../SuccessLogin';
 export default function FacebookIcon() {
     const [errorLoginModal, setErrorLoginModal] = useState(false);
+    const [successLogin, setSuccessLogin] = useState(false);
+    const [exists, setExists] = useState(false);
+    const setRefreshToken = useStoreRefresh(state => state.setRefreshToken);
     useEffect(() => {
         const requestTracking = async () => {
             const { status } = await requestTrackingPermissionsAsync();
@@ -31,47 +37,64 @@ export default function FacebookIcon() {
                 "limited",
                 "my_nonce", // Optional
             );
-            if (Platform.OS === "ios") {
-                // This token **cannot** be used to access the Graph API.
-                // https://developers.facebook.com/docs/facebook-login/limited-login/
-                // const result = await AuthenticationToken.getAuthenticationTokenIOS();
-                Profile.getCurrentProfile().then(
-                    async function (currentProfile) {
-                        if (currentProfile) {
-                            try {
-                                const response = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
-                                await SecureStore.setItemAsync('accessToken', response?.access?.token);
-                                await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
-                            } catch (error) {
-                                setErrorLoginModal(true);
-                            }
-                        }
-                    }
-                );
+            if (result?.isCancelled) {
+                return;
             } else {
-                const result = await AccessToken.getCurrentAccessToken();
-                console.log(result);
-                Profile.getCurrentProfile().then(
-                    async function (currentProfile) {
-                        if (currentProfile) {
-                            try {
-                                const data = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
-                                console.log(data);
-                            } catch (error) {
-                                setErrorLoginModal(true);
+                if (Platform.OS === "ios") {
+                    // This token **cannot** be used to access the Graph API.
+                    // https://developers.facebook.com/docs/facebook-login/limited-login/
+                    // const result = await AuthenticationToken.getAuthenticationTokenIOS();
+                    Profile.getCurrentProfile().then(
+                        async function (currentProfile) {
+                            if (currentProfile) {
+                                try {
+
+                                    const check = await getEmailChecker(currentProfile?.email as string);
+                                    setExists(check?.exists);
+
+
+                                    const response = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
+                                    await SecureStore.setItemAsync('accessToken', response?.access?.token);
+                                    // await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+                                    setRefreshToken(response?.refresh?.token);
+                                    setSuccessLogin(true);
+                                } catch (error) {
+                                    setErrorLoginModal(true);
+                                }
                             }
                         }
-                    }
-                );
+                    );
+                } else {
+                    const result = await AccessToken.getCurrentAccessToken();
+                    console.log(result);
+                    Profile.getCurrentProfile().then(
+                        async function (currentProfile) {
+                            if (currentProfile) {
+                                try {
+                                    const response = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
+                                    await SecureStore.setItemAsync('accessToken', response?.access?.token);
+                                    await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+                                    setSuccessLogin(true);
+                                    // setTimeout(() => {
+                                    //     router.push('/(tabs)/');
+                                    // }, 2000)
+                                } catch (error) {
+                                    setErrorLoginModal(true);
+                                }
+                            }
+                        }
+                    );
+                }
             }
         } catch (error) {
             console.log(error);
         }
-    }
+    };
 
     return (
         <View>
             {errorLoginModal && <ErrorFacebookAuthModal modalVisible={errorLoginModal} setModalVisible={setErrorLoginModal} />}
+            {successLogin && <SuccessLogin modalVisible={successLogin} setModalVisible={setSuccessLogin} exist={exists} />}
             <TouchableOpacity style={styles.box} onPress={login}>
                 <Image source={require('@/assets/temp/authIcons/fb.png')} resizeMode='contain' style={styles.btnImage} />
             </TouchableOpacity>

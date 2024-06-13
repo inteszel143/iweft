@@ -7,10 +7,14 @@ import { signInWithFacebook } from '@/apis/socalAuth';
 import ErrorFacebookAuthModal from '../ErrorFacebookAuthModal';
 import * as SecureStore from 'expo-secure-store';
 import SuccessLogin from '../SuccessLogin';
+import { getEmailChecker } from '@/apis/fetchAuth';
+import useStoreRefresh from '@/store/useStoreRefresh';
 export default function FacebookSigninSelect() {
-
+    const [exists, setExists] = useState(false);
     const [errorLoginModal, setErrorLoginModal] = useState(false);
     const [successLogin, setSuccessLogin] = useState(false);
+    const setRefreshToken = useStoreRefresh(state => state.setRefreshToken);
+
 
     useEffect(() => {
         const requestTracking = async () => {
@@ -45,13 +49,16 @@ export default function FacebookSigninSelect() {
                         async function (currentProfile) {
                             if (currentProfile) {
                                 try {
+
+                                    const check = await getEmailChecker(currentProfile?.email as string);
+                                    setExists(check?.exists);
+
+
                                     const response = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
                                     await SecureStore.setItemAsync('accessToken', response?.access?.token);
-                                    await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+                                    // await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+                                    setRefreshToken(response?.refresh?.token);
                                     setSuccessLogin(true);
-                                    // setTimeout(() => {
-                                    //     router.push('/(tabs)/');
-                                    // }, 2000)
                                 } catch (error) {
                                     setErrorLoginModal(true);
                                 }
@@ -88,7 +95,7 @@ export default function FacebookSigninSelect() {
     return (
         <View>
             {errorLoginModal && <ErrorFacebookAuthModal modalVisible={errorLoginModal} setModalVisible={setErrorLoginModal} />}
-            {successLogin && <SuccessLogin modalVisible={successLogin} setModalVisible={setSuccessLogin} />}
+            {successLogin && <SuccessLogin modalVisible={successLogin} setModalVisible={setSuccessLogin} exist={exists} />}
             <TouchableOpacity style={styles.btnStyle} onPress={login}>
                 <View style={styles.btnInner}>
                     <Image source={require('@/assets/temp/authIcons/fb.png')} resizeMode='contain' style={styles.btnImage} />

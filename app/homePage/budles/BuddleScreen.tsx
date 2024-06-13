@@ -5,12 +5,16 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import Animated, { interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, withSpring } from 'react-native-reanimated';
 import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { bundle } from '@/constants/home/data';
+import { useIsFocused } from '@react-navigation/native';
+import { LaundryBundle } from '@/utils/interface';
 const IMG_HEIGHT = 300;
+
 export default function BuddleScreen() {
-    const item = useLocalSearchParams();
+    const { item } = useLocalSearchParams();
+    const bundleData: LaundryBundle = JSON.parse(item as string);
+
     const [topSelect, setTopSelect] = useState(0);
     const [addbook, setAddbook] = useState(false);
-
     const toggleAdd = () => {
         setAddbook(!addbook);
     }
@@ -51,7 +55,8 @@ export default function BuddleScreen() {
             >
 
                 <Animated.View style={[styles.topStyle, imageAnimatedStyle]}>
-                    <Image source={require('@/assets/temp/laundryBundle/laundry1.png')} resizeMode='contain' style={[{ width: wp(60), height: hp(25), }]} />
+                    {/* <Image source={require('@/assets/temp/laundryBundle/laundry1.png')} resizeMode='contain' style={[{ width: wp(60), height: hp(25), }]} /> */}
+                    <Image source={{ uri: bundleData?.image }} resizeMode='contain' style={[{ width: wp(60), height: hp(25), }]} />
                     <View style={styles.topFooter}>
                         <View style={{ width: wp(8), height: 10, borderRadius: 8, backgroundColor: '#0A5CA8' }} />
                         <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
@@ -62,9 +67,8 @@ export default function BuddleScreen() {
 
                 <View style={styles.middleStyle}>
 
-
                     <View style={styles.middelTopRow}>
-                        <Text style={styles.middleText}>{item.name} Bundle</Text>
+                        <Text style={styles.middleText}>{bundleData?.title}</Text>
                         <TouchableOpacity onPress={toggleAdd}>
                             {
                                 addbook ? <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5.5), marginTop: hp(1) }} /> : <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5.5) }} />
@@ -73,7 +77,7 @@ export default function BuddleScreen() {
                     </View>
 
                     <View style={styles.rateStyle}>
-                        <Text style={styles.core}>Laundry Bundle</Text>
+                        <Text style={styles.core}>{bundleData?.sub_title}</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, }}>
                             <Image source={require('@/assets/icons/star.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
                             <Text style={styles.rating}>48 (3,824 reviews)</Text>
@@ -88,7 +92,7 @@ export default function BuddleScreen() {
 
 
                     <View style={styles.priceStyle}>
-                        <Text style={styles.priceText}>AED 40</Text>
+                        <Text style={styles.priceText}>AED {bundleData?.base_price}</Text>
                         <Text style={styles.subText}>(base price)</Text>
                     </View>
 
@@ -99,7 +103,7 @@ export default function BuddleScreen() {
                     <View style={styles.detailsStyle}>
                         <Text style={styles.detailText}>Bundle Includes:</Text>
                         {
-                            bundle.map((item, index) => (
+                            bundleData?.includes?.map((item, index) => (
                                 <View key={index} style={styles.cardStyle}>
                                     <View style={{
                                         flexDirection: 'row',
@@ -107,8 +111,10 @@ export default function BuddleScreen() {
                                         justifyContent: 'space-between'
                                     }}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(5) }}>
-                                            <Image source={item.img} resizeMode='contain' style={{ width: wp(10) }} />
-                                            <Text style={styles.bundleText}>{item.labe}</Text>
+                                            <Image source={{ uri: item?.image }}
+                                                resizeMode='contain'
+                                                style={{ width: wp(10), height: hp(6) }} />
+                                            <Text style={styles.bundleText}>{item?.name}</Text>
                                         </View>
                                         <View>
                                             <MaterialCommunityIcons name='check-circle' size={hp(3)} color={'#0A5CA8'} />
@@ -128,20 +134,11 @@ export default function BuddleScreen() {
 
                     <View style={[styles.detailsStyle, { paddingBottom: hp(15) }]}>
                         <Text style={styles.detailText}>Details</Text>
-                        <Text style={styles.subDetailText}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla, odio a neque nemo quae sequi repudiandae, non asperiores atque ut quisquam excepturi tempora quaerat facilis, adipisci delectus quia maiores. Tenetur?</Text>
+                        <Text style={styles.subDetailText}>{bundleData?.details}</Text>
                     </View>
 
-
-
-
-
                 </View>
-
-
-
             </Animated.ScrollView>
-
-
 
 
             <View style={styles.footer}>
@@ -151,11 +148,14 @@ export default function BuddleScreen() {
                             <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
                         </TouchableOpacity>
                     </Link>
-                    <Link href={'/homePage/services/BookNow'} style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]} asChild>
+                    {/* <Link href={'/homePage/services/BookNow'} style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]} asChild>
                         <TouchableOpacity >
                             <Text style={[styles.bottomText, { color: "white" }]}>Book Now </Text>
                         </TouchableOpacity>
-                    </Link>
+                    </Link> */}
+                    <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}>
+                        <Text style={[styles.bottomText, { color: "white" }]}>Book Now </Text>
+                    </TouchableOpacity>
                 </View>
             </View>
 
@@ -163,7 +163,8 @@ export default function BuddleScreen() {
             <View style={styles.topBtnStyle}>
                 <TouchableOpacity
                     onPress={() => router.back()}>
-                    <AntDesign name='arrowleft' size={hp(3)} />
+                    {/* <AntDesign name='arrowleft' size={hp(3)} /> */}
+                    <Ionicons name='chevron-back' size={hp(3)} />
                 </TouchableOpacity>
             </View>
 
@@ -173,7 +174,7 @@ export default function BuddleScreen() {
                         <TouchableOpacity onPress={() => router.back()}>
                             <Ionicons name='chevron-back' size={hp(3)} />
                         </TouchableOpacity>
-                        <Text style={styles.headerText}>{item.name} Bundle</Text>
+                        <Text style={styles.headerText}>{bundleData?.title}</Text>
                     </View>
                     <TouchableOpacity>
                         {addbook ? <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5) }} /> : <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5) }} />}
@@ -209,7 +210,7 @@ const styles = StyleSheet.create({
     topBtnStyle: {
         position: 'absolute',
         top: Platform.OS === 'ios' ? hp(7) : hp(8),
-        left: wp(6),
+        left: wp(5),
     },
     middleStyle: {
         paddingHorizontal: wp(5),
@@ -293,10 +294,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         width: wp(100),
-        height: hp(13),
+        height: Platform.OS === 'ios' ? hp(12) : hp(11),
         backgroundColor: 'white',
-        borderTopRightRadius: wp(4),
-        borderTopLeftRadius: wp(4),
         alignItems: 'center'
     },
 
