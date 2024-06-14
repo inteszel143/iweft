@@ -7,12 +7,14 @@ import MapView, { Marker, PROVIDER_GOOGLE, } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Fontisto } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
-import { userUpdateProfileData } from '@/apis/userupdate';
+
 import { useQueryClient } from '@tanstack/react-query';
+import useStoreAddress from '@/store/useStoreAddress';
 
 export default function CurrentAddress() {
     const queryClient = useQueryClient();
     const { latitude, longitude, fullname, nickname, dob } = useLocalSearchParams();
+    const { setAddress, setStreets, setCitys, setLatitude, setLongitude } = useStoreAddress();
     const [mapLocation, setMapLocation] = useState<any>([]);
     const [nameAddress, setNameAddress] = useState<any>();
     const [city, setCity] = useState<any>();
@@ -45,30 +47,18 @@ export default function CurrentAddress() {
         setStreet(userAddress[0].street);
         setCity(userAddress[0].district);
     };
-
-
     const onSubmit = async () => {
         setBtnLoading(true);
-        const data = {
-            fullname: fullname,
-            nickname: nickname,
-            address: nameAddress,
-            apartment_number: street,
-            city: city,
-            dob: dob,
-            latitude: lat as number,
-            longitude: long as number,
-        }
-        try {
-            await userUpdateProfileData(data);
-            queryClient.invalidateQueries({ queryKey: ['user-data'] });
-            setTimeout(() => {
-                router.back();
-                setBtnLoading(false);
-            }, 2000)
-        } catch (error) {
+        setTimeout(() => {
+            setAddress(nameAddress);
+            setStreets(street);
+            setCitys(city);
+            setLatitude(lat as number);
+            setLongitude(long as number);
+            router.back();
             setBtnLoading(false);
-        }
+        }, 1000)
+
     }
 
     return (

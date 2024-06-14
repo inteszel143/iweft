@@ -21,17 +21,20 @@ export default function UpdateProfileData({ modalVisible, setModalVisible }: Mod
             <View style={styles.modalStyle}>
                 <View style={styles.modalBox}>
                     <View>
-                        <LottieView
+                        {/* <LottieView
                             autoPlay
                             style={styles.errorLottieStyle}
                             source={require('@/assets/animate/check.json')}
-                        />
+                        /> */}
+                        <View>
+                            <Image source={require('@/assets/temp/success.jpg')} resizeMode='contain' style={styles.imageStyle} />
+                        </View>
                     </View>
-                    <Text style={styles.titleStyle}>Success !</Text>
-                    <Text style={styles.subStyle}>Your information has been successfully updated</Text>
+                    <Text style={styles.titleStyle}>Update Successful !</Text>
+                    <Text style={styles.subStyle}>Your account info has been successfully updated.</Text>
                     <View style={{ marginTop: hp(5) }} />
                     <View style={styles.indicator}>
-                        <BallIndicator color="#6DCC5B" size={hp(4)} />
+                        <BallIndicator color="#93C120" size={hp(4)} />
                     </View>
                 </View>
             </View>
@@ -49,7 +52,7 @@ const styles = StyleSheet.create({
     },
     modalBox: {
         width: wp(86),
-        height: Platform.OS === 'ios' ? hp(46) : hp(46),
+        height: Platform.OS === 'ios' ? hp(50) : hp(52),
         backgroundColor: "white",
         borderRadius: wp(6),
         alignItems: 'center',
@@ -62,10 +65,10 @@ const styles = StyleSheet.create({
     },
     titleStyle: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(3),
+        fontSize: hp(2.9),
         textAlign: 'center',
-        color: '#6DCC5B',
-        marginTop: hp(1.5)
+        color: '#0A5CA8',
+        marginTop: hp(1)
     },
     subStyle: {
         fontFamily: 'UrbanistMedium',

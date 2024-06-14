@@ -34,6 +34,7 @@
         "CFBundleURLTypes": [
           {
             "CFBundleURLSchemes": [
+              "iweft",
               "com.googleusercontent.apps.237084984780-oj2g0uh2v47fsh0a20fp01le3c8kslek"
             ]
           }

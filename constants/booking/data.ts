@@ -69,7 +69,7 @@ export const paymentMethods = [
   {
     id: 4,
     icon: require("@/assets/temp/bookingIcon/mastercard.jpg"),
-    label: "Master Card",
+    label: "Credit Card",
   },
 ];
 

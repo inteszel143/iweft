@@ -20,15 +20,18 @@ export default function ApprovedPhone({ modalVisible, setModalVisible }: ModalPr
         >
             <View style={styles.modalStyle}>
                 <View style={styles.modalBox}>
-                    <View>
+                    {/* <View>
                         <LottieView
                             autoPlay
                             style={styles.errorLottieStyle}
                             source={require('@/assets/animate/check.json')}
                         />
+                    </View> */}
+                    <View>
+                        <Image source={require('@/assets/temp/success.jpg')} resizeMode='contain' style={styles.imageStyle} />
                     </View>
-                    <Text style={styles.titleStyle}>Success !</Text>
-                    <Text style={styles.subStyle}>Your phone number has been verified.</Text>
+                    <Text style={styles.titleStyle}>Verification Success !</Text>
+                    <Text style={styles.subStyle}>Your phone number has been successfully verified.</Text>
                     <View style={{ marginTop: hp(5) }} />
                     <View style={styles.indicator}>
                         <BallIndicator color="#6DCC5B" size={hp(4)} />
@@ -49,7 +52,7 @@ const styles = StyleSheet.create({
     },
     modalBox: {
         width: wp(86),
-        height: Platform.OS === 'ios' ? hp(46) : hp(46),
+        height: Platform.OS === 'ios' ? hp(50) : hp(52),
         backgroundColor: "white",
         borderRadius: wp(6),
         alignItems: 'center',
@@ -64,12 +67,12 @@ const styles = StyleSheet.create({
         fontFamily: 'UrbanistBold',
         fontSize: hp(2.9),
         textAlign: 'center',
-        color: '#6DCC5B',
-        marginTop: hp(1.5)
+        color: '#0A5CA8',
+        marginTop: hp(1)
     },
     subStyle: {
         fontFamily: 'UrbanistMedium',
-        fontSize: hp(2.5),
+        fontSize: hp(2.4),
         textAlign: 'center',
         color: "gray",
         marginTop: hp(2),

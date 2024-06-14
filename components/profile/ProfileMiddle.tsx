@@ -8,11 +8,9 @@ import { useIsFocused } from '@react-navigation/native';
 export default function ProfileMiddle() {
     const isFocused = useIsFocused();
     const { data, isFetching } = useUserQuery(isFocused);
+
     const validate =
         ((data?.address === null) ||
-            (data?.apartment_number === null) ||
-            (data?.city === null) ||
-            (data?.contact_number === null) ||
             (data?.nickname === null)) as boolean;
     const profileData = [
         {

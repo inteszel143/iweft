@@ -17,11 +17,15 @@ import { useIsFocused } from '@react-navigation/native';
 import UpdateProfileData from '../UpdateProfileData';
 import { useQueryClient } from '@tanstack/react-query';
 import { userUpdateProfileData } from '@/apis/userupdate';
+import useStoreAddress from '@/store/useStoreAddress';
 
 export default function EditProflieData() {
     const isFocused = useIsFocused();
     const queryClient = useQueryClient();
     const { data, isFetching } = useUserQuery(isFocused);
+
+    const { address, street, citys, latitude, longitude } = useStoreAddress();
+
     const phoneInput = useRef<PhoneInput>(null);
     const [value, setValue] = useState('');
     const [formattedValue, setFormattedValue] = useState(""); // Phone value
@@ -41,14 +45,6 @@ export default function EditProflieData() {
     const { control, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(schema),
     });
-    // fullname, nickname, dob
-    const toggleAddress = async (item: any) => {
-        router.push({
-            pathname: '/profilePage/CurrentAddress',
-            params: { latitude: data?.latitude, longitude: data?.longitude, fullname: data?.fullname, nickname: item?.n_name, dob: dateVal }
-        })
-    };
-
 
     const onSubmit = async (insidedata: any) => {
         setBtnLoading(true);
@@ -62,17 +58,42 @@ export default function EditProflieData() {
             latitude: data?.latitude,
             longitude: data?.longitude,
         }
-        try {
-            await userUpdateProfileData(formdata);
-            queryClient.invalidateQueries({ queryKey: ['user-data'] });
-            setSuccessModal(true);
-            setBtnLoading(false);
-            setTimeout(() => {
-                setSuccessModal(false);
-            }, 2000)
-        } catch (error) {
-            console.log(formdata);
-            setBtnLoading(false);
+        const formdataglobal = {
+            fullname: insidedata?.full_name,
+            nickname: insidedata?.n_name,
+            address: address,
+            apartment_number: street,
+            city: citys,
+            dob: dateVal,
+            latitude: latitude,
+            longitude: longitude,
+        }
+        if (address === "") {
+            try {
+                await userUpdateProfileData(formdata);
+                queryClient.invalidateQueries({ queryKey: ['user-data'] });
+                setSuccessModal(true);
+                setBtnLoading(false);
+                setTimeout(() => {
+                    setSuccessModal(false);
+                    router.back();
+                }, 2000)
+            } catch (error) {
+                setBtnLoading(false);
+            }
+        } else {
+            try {
+                await userUpdateProfileData(formdataglobal);
+                queryClient.invalidateQueries({ queryKey: ['user-data'] });
+                setSuccessModal(true);
+                setBtnLoading(false);
+                setTimeout(() => {
+                    setSuccessModal(false);
+                    router.back();
+                }, 2000)
+            } catch (error) {
+                setBtnLoading(false);
+            }
         }
     }
 
@@ -229,7 +250,7 @@ export default function EditProflieData() {
 
 
 
-                <View>
+                {/* <View>
                     <PhoneInput
                         ref={phoneInput}
                         defaultValue={data?.contact_number ? data.contact_number.slice(3, 14) : value}
@@ -247,7 +268,7 @@ export default function EditProflieData() {
                         containerStyle={{ borderRadius: wp(4), width: wp(90), marginTop: hp(3), minHeight: hp(7.5), maxHeight: hp(8), }}
                     />
 
-                </View>
+                </View> */}
 
 
 
@@ -269,12 +290,22 @@ export default function EditProflieData() {
 
 
                 <TouchableOpacity style={styles.textFieldStyle}
+                    // onPress={handleSubmit(toggleAddress)}
+                    onPress={() => router.push('/profilePage/CurrentAddress')}
+                >
+                    {
+                        !address ?
+                            <View style={styles.innerTextField}>
+                                <Text style={styles.textStyle}>{data?.address ? data?.address : "Your Address"}</Text>
+                                {data?.address === null && <AntDesign name='exclamationcircle' size={hp(2)} color={'red'} />}
+                            </View>
+                            :
+                            <View style={styles.innerTextField}>
+                                <Text style={styles.textStyle}>{address}</Text>
+                            </View>
 
-                    onPress={handleSubmit(toggleAddress)}>
-                    <View style={styles.innerTextField}>
-                        <Text style={styles.textStyle}>{data?.address ? data?.address : "Your Address"}</Text>
-                        {data?.address === null && <AntDesign name='exclamationcircle' size={hp(2)} color={'red'} />}
-                    </View>
+                    }
+
                 </TouchableOpacity>
 
                 <View style={styles.footer}>
