@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Platform, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router } from 'expo-router';
 import {
     CodeField,
     Cursor,
@@ -14,6 +14,7 @@ import { getPinNumber } from '@/apis/fetchAuth';
 import PinCodeModal from '@/components/PinCodeModal';
 import errorRes from '@/apis/errorRes';
 import { createBooking } from '@/apis/order';
+import useStoreBooking from '@/store/useStoreBooking';
 interface CellProps {
     index: number;
     symbol: string;
@@ -21,7 +22,8 @@ interface CellProps {
 }
 
 export default function HomeConfirmPin() {
-    const { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude } = useLocalSearchParams();
+    // const { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude } = useLocalSearchParams();
+    const { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude } = useStoreBooking();
     const [modalVisible, setModalVisible] = useState(false);
     const [btnLoading, setBtnLoading] = useState(false);
     const CELL_COUNT = 4;
@@ -62,7 +64,7 @@ export default function HomeConfirmPin() {
         const orderData = {
             order_details: {
                 service,
-                order_items: JSON.parse(itemData as string),
+                order_items: JSON.parse(itemData),
                 promo_code: "N/A"
             },
             pick_up_date_time: pick_up_date_time,
@@ -70,14 +72,15 @@ export default function HomeConfirmPin() {
             address,
             delivery_instruction: "N/A",
             total_amount: total,
-            latitude: parseFloat(latitude as string),
-            longitude: parseFloat(longitude as string),
+            latitude: parseFloat(latitude),
+            longitude: parseFloat(longitude),
         };
 
         const pin = parseInt(value);
         const response = await getPinNumber(pin);
         if (response?.isMatch) {
             await createBooking(orderData);
+
             setModalVisible(true);
             setBtnLoading(false);
         } else {

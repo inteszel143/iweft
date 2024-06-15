@@ -6,24 +6,31 @@ import { postPaymentIntent } from '@/apis/stripe';
 export default function Test() {
     const { initPaymentSheet, presentPaymentSheet } = useStripe();
     const [loading, setLoading] = useState(false);
-    const { handleURLCallback } = useStripe();
+    // const { handleURLCallback } = useStripe();
 
 
-    const handleDeepLink = useCallback(
-        async (url: string | null) => {
-            if (url) {
-                const stripeHandled = await handleURLCallback(url);
-                if (stripeHandled) {
-                    // This was a Stripe URL - you can return or add extra handling here as you see fit
-                } else {
-                    // This was NOT a Stripe URL – handle as you normally would
-                }
-            }
-        },
-        [handleURLCallback]
-    );
-
-
+    // const handleDeepLink = useCallback(
+    //     async (url: string | null) => {
+    //         if (url) {
+    //             const stripeHandled = await handleURLCallback(url);
+    //             if (stripeHandled) {
+    //                 // This was a Stripe URL - log success or handle accordingly
+    //                 console.log('Stripe handled the URL successfully:', url);
+    //                 Alert.alert('Stripe URL Handled', 'Stripe has handled the URL successfully.');
+    //             } else {
+    //                 // This was NOT a Stripe URL - handle as you normally would
+    //                 console.log('Non-Stripe URL detected:', url);
+    //                 Alert.alert('Non-Stripe URL', 'This URL is not handled by Stripe.');
+    //                 // Additional handling for non-Stripe URLs
+    //                 // For example, you might want to navigate to a specific screen
+    //                 if (url.startsWith('https://yourapp.com/some-path')) {
+    //                     // navigate to a specific screen or perform a custom action
+    //                 }
+    //             }
+    //         }
+    //     },
+    //     [handleURLCallback]
+    // );
     const initializePaymentSheet = async () => {
         const {
             paymentIntent,
@@ -31,10 +38,9 @@ export default function Test() {
             customer,
             // publishableKey,
         } = await postPaymentIntent();
-
         const { error } = await initPaymentSheet({
-            returnURL: 'iweft',
-            merchantDisplayName: "Example, Inc.",  
+            returnURL: 'https://com.paras23.iweft/exp+iweft://expo-development-client/?url=http%3A%2F%2F192.168.100.20%3A8081',
+            merchantDisplayName: "iMotor Portal",
             customerId: customer,
             customerEphemeralKeySecret: ephemeralKey,
             paymentIntentClientSecret: paymentIntent,
@@ -62,23 +68,23 @@ export default function Test() {
         initializePaymentSheet();
     }, []);
 
-    useEffect(() => {
-        const getUrlAsync = async () => {
-            const initialUrl = await Linking.getInitialURL();
-            handleDeepLink(initialUrl);
-        };
+    // useEffect(() => {
+    //     const getUrlAsync = async () => {
+    //         const initialUrl = await Linking.getInitialURL();
+    //         handleDeepLink(initialUrl);
+    //     };
 
-        getUrlAsync();
+    //     getUrlAsync();
 
-        const deepLinkListener = Linking.addEventListener(
-            'url',
-            (event: { url: string }) => {
-                handleDeepLink(event.url);
-            }
-        );
+    //     const deepLinkListener = Linking.addEventListener(
+    //         'url',
+    //         (event: { url: string }) => {
+    //             handleDeepLink(event.url);
+    //         }
+    //     );
 
-        return () => deepLinkListener.remove();
-    }, [handleDeepLink]);
+    //     return () => deepLinkListener.remove();
+    // }, [handleDeepLink]);
 
 
     return (
@@ -97,6 +103,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        marginVertical: 20
     },
     counter: {
         fontSize: 48,

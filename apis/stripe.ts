@@ -18,7 +18,6 @@ export const postPaymentIntent = async () => {
     }
   );
   const { paymentIntent, ephemeralKey, customer } = await response.json();
-
   return {
     paymentIntent,
     ephemeralKey,

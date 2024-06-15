@@ -6,11 +6,13 @@ import { paymentMethods } from '@/constants/booking/data';
 import { Fontisto } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
 import { CardField, useStripe } from '@stripe/stripe-react-native';
+import useStoreBooking from '@/store/useStoreBooking';
 export default function HomePaymentMethods() {
     const { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude } = useLocalSearchParams();
+    const { setItemData, setService, setServiceName, setTotal, setPickUpDateTime, setDeliveryDateTime, setAddress, setLatitude, setLongitude } = useStoreBooking();
     const [isSelected, setIsSelected] = useState(0);
-
-
+    const [imageUrl, setImageUrl] = useState(null);
+    const [method, setMethod] = useState("");
     return (
         <View style={styles.container}>
             <View style={styles.Headercontainer}>
@@ -23,29 +25,6 @@ export default function HomePaymentMethods() {
                     </View>
                 </View>
             </View>
-
-            {/* <CardField
-                postalCodeEnabled={true}
-                placeholders={{
-                    number: '4242 4242 4242 4242',
-                }}
-                cardStyle={{
-                    backgroundColor: '#FFFFFF',
-                    textColor: '#000000',
-                }}
-                style={{
-                    width: '100%',
-                    height: 50,
-                    marginVertical: 30,
-                }}
-                onCardChange={(cardDetails) => {
-                    console.log('cardDetails', cardDetails);
-                }}
-                onFocus={(focusedField) => {
-                    console.log('focusField', focusedField);
-                }}
-            /> */}
-
             <View style={styles.infoStyle}>
                 <Text style={styles.infoText}>Select the payment method you want to use.</Text>
             </View>
@@ -58,7 +37,11 @@ export default function HomePaymentMethods() {
                     paymentMethods.map((item, index) => {
                         return (
                             <TouchableOpacity style={styles.selectedRow} key={index}
-                                onPress={() => setIsSelected(item.id)}
+                                onPress={() => {
+                                    setIsSelected(item?.id);
+                                    setImageUrl(item?.icon);
+                                    setMethod(item?.label);
+                                }}
                             >
                                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(4) }}>
@@ -82,11 +65,21 @@ export default function HomePaymentMethods() {
                 <TouchableOpacity
                     style={[defaultStyles.footerBtn, { backgroundColor: isSelected == 0 ? "#DADADA" : "#0A5CA8", }]}
                     disabled={isSelected == 0 ? true : false}
-                    onPress={() =>
+                    onPress={() => {
+                        setService(service as string);
+                        setServiceName(service_name as string);
+                        setTotal(total);
+                        setPickUpDateTime(pick_up_date_time as string);
+                        setDeliveryDateTime(delivery_date_time as string);
+                        setAddress(address as string);
+                        setLatitude(latitude as string);
+                        setLongitude(longitude as string);
+                        setItemData(itemData);
                         router.push({
                             pathname: '/homePage/HomeReviewSummary',
-                            params: { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude }
-                        })}
+                            params: { imageUrl, method }
+                        })
+                    }}
                 >
                     <Text style={defaultStyles.footerText}>Continue</Text>
                 </TouchableOpacity>

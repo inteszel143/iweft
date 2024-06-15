@@ -5,13 +5,21 @@ import { Link, router, useLocalSearchParams } from 'expo-router';
 import { Entypo } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
 import Animated, { FadeInUp, FadeOutUp } from 'react-native-reanimated';
+import CreditCard from '@/components/stripe/CreditCard';
+import useStoreBooking from '@/store/useStoreBooking';
+import moment from 'moment';
+import Paypal from '@/components/stripe/Paypal';
+import GooglePay from '@/components/stripe/GooglePay';
+import ApplePay from '@/components/stripe/ApplePay';
 
 export default function HomeReviewSummary() {
-    const { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude } = useLocalSearchParams();
+    const { imageUrl, method } = useLocalSearchParams();
+    const { service_name, total } = useStoreBooking();
     const [isHiding, setIsHiding] = useState(false);
     const toggleHide = () => {
         setIsHiding(!isHiding);
     };
+
     return (
         <View style={styles.container}>
 
@@ -33,7 +41,7 @@ export default function HomeReviewSummary() {
                 <View style={[styles.summarCard, { marginTop: hp(3) }]}>
                     <View style={styles.summarRow}>
                         <Text style={styles.summaryLabel}>Services</Text>
-                        <Text style={styles.summaryValue}>Clean/Press</Text>
+                        <Text style={styles.summaryValue}>{service_name}</Text>
                     </View>
                     <View style={[styles.summarRow, { marginTop: hp(3) }]}>
                         <Text style={styles.summaryLabel}>Category</Text>
@@ -45,7 +53,7 @@ export default function HomeReviewSummary() {
                     </View>
                     <View style={[styles.summarRow, { marginTop: hp(3) }]}>
                         <Text style={styles.summaryLabel}>Date & Time</Text>
-                        <Text style={styles.summaryValue}>Dec 23, 2024 | 10: 00 AM</Text>
+                        <Text style={styles.summaryValue}>{moment().format("MMM D YYYY")} | {moment().format("h:mm A")}</Text>
                     </View>
                     <View style={[styles.summarRow, { marginTop: hp(3) }]}>
                         <Text style={styles.summaryLabel}>Working Hours</Text>
@@ -82,7 +90,6 @@ export default function HomeReviewSummary() {
                 </View>
 
 
-
                 <View style={[styles.summarCard, { marginTop: hp(2) }]}>
                     <View style={styles.summarRow}>
                         <Text style={styles.summaryLabel}>House Cleaning</Text>
@@ -97,38 +104,36 @@ export default function HomeReviewSummary() {
 
                     <View style={[styles.summarRow, { marginTop: hp(3) }]}>
                         <Text style={styles.summaryLabel}>Total</Text>
-                        <Text style={[styles.summaryValue]}>AED 125.00</Text>
+                        <Text style={[styles.summaryValue, { fontFamily: 'UrbanistBold', }]}>AED {total}</Text>
                     </View>
                 </View>
 
 
 
                 <View style={[styles.summarCard, { marginTop: hp(2) }]}>
-                    <TouchableOpacity style={styles.summarRow}>
+                    <View style={styles.summarRow}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(4) }}>
-                            <Image source={require('@/assets/temp/bookingIcon/mastercard.jpg')} resizeMode='contain' style={{ width: wp(8) }} />
-                            <Text style={styles.cardTextStyle}>**** **** **** **** 4679</Text>
+                            <Image source={imageUrl} resizeMode='contain' style={{ width: wp(8) }} />
+                            <Text style={styles.cardTextStyle}>{method}</Text>
                         </View>
                         <TouchableOpacity onPress={() => router.back()}>
                             <Text style={styles.btnText}>Change</Text>
                         </TouchableOpacity>
-                    </TouchableOpacity>
+                    </View>
                 </View>
             </ScrollView>
 
 
             <View style={styles.footer}>
-                <TouchableOpacity
-                    style={defaultStyles.footerBtn}
-                    // onPress={() => router.push('/homePage/HomeConfirmPin')}
-                    onPress={() =>
-                        router.push({
-                            pathname: '/homePage/HomeConfirmPin',
-                            params: { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude }
-                        })}
-                >
-                    <Text style={defaultStyles.footerText}>Confirm Payment</Text>
-                </TouchableOpacity>
+
+                {
+                    method === "Credit Card" ?
+                        <CreditCard />
+                        : method === "PayPal" ?
+                            <Paypal /> : method === "Google Pay" ?
+                                <GooglePay /> :
+                                <ApplePay />
+                }
             </View>
 
 
@@ -140,7 +145,7 @@ export default function HomeReviewSummary() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F8F8F8',
+        backgroundColor: '#F9F9F9',
     },
     Headercontainer: {
         paddingHorizontal: wp(5),
