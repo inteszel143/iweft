@@ -1,30 +1,49 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useIsFocused } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
+import { useHomeServices } from '@/query/homeQuery';
+import { postAvailSubscription } from '@/apis/stripe';
+import AvailSubscriptionModal from '@/components/home/AvailSubscriptionModal';
+import useStoreSub from '@/store/useStoreSub';
 
 export default function PlanType() {
+    const { collection, total, priceId } = useStoreSub();
+    const isFocused = useIsFocused();
+    const { data, isPending } = useHomeServices(isFocused);
+    const [loading, setLoading] = useState(false);
+    const [selected, setSelected] = useState<number[]>([]);
+    const [modalSuccess, setModalSuccess] = useState(false);
+    const handleSelect = (index: number) => {
+        setSelected(prevSelected => {
+            if (prevSelected.includes(index)) {
+                return prevSelected.filter(item => item !== index);
+            } else {
+                return [...prevSelected, index];
+            }
+        });
+    };
 
-    const data = [
-        {
-            image: require('@/assets/temp/services/plansa.jpg'),
-            label: "Clean/Press"
-        },
-        {
-            image: require('@/assets/temp/services/plansa.jpg'),
-            label: "Press Only"
-        },
-        {
-            image: require('@/assets/temp/services/plansa.jpg'),
-            label: "Wash/Fold"
-        },
-    ]
+    const onSubmit = async () => {
+        setLoading(true);
+        try {
+            await postAvailSubscription(priceId as string);
+            setTimeout(() => {
+                setLoading(false);
+                setModalSuccess(true);
+            }, 1000)
+        } catch (error) {
+            setLoading(false);
+            console.log(error);
+        }
+    };
+
     return (
         <View style={styles.container}>
-
+            {modalSuccess && <AvailSubscriptionModal modalVisible={modalSuccess} setModalVisible={setModalSuccess} />}
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
                     <View style={styles.headerLeft}>
@@ -43,30 +62,36 @@ export default function PlanType() {
             </View>
 
             <View style={styles.containerStyle}>
-                <Text style={[styles.topText,]}>Choose the service you want to subscribe to:</Text>
+                <Text style={[styles.topText,]}>Choose {collection} the service you want to subscribe to:</Text>
 
 
                 {/* card */}
-                {
-                    data?.map((item, index) => (
-                        <TouchableOpacity style={styles.cardStyle} key={index}>
+                <FlatList
+                    data={data}
+                    keyExtractor={item => item?._id}
+                    renderItem={({ item, index }) => (
+                        <TouchableOpacity style={styles.cardStyle}
+                            onPress={() => handleSelect(index)}
+                        >
                             <View style={styles.cardRow}>
-                                <Image source={item?.image} resizeMode='contain' style={{ width: wp(10) }} />
-                                <Text style={styles.titleStyle}>{item?.label}</Text>
-                                <FontAwesome name='check-circle' size={hp(3)} color={'#0A5CA8'} />
+                                <Image source={{ uri: item?.image }} resizeMode='contain' style={{ width: wp(18), height: hp(10) }} />
+                                <Text style={styles.titleStyle}>{item?.title}</Text>
+                                {selected.includes(index) ? <FontAwesome name='check-circle' size={hp(3)} color={'#0A5CA8'} /> : <FontAwesome name='circle-thin' size={hp(3)} color={'#0A5CA8'} />}
                             </View>
                         </TouchableOpacity>
-                    ))
-                }
-
+                    )}
+                />
             </View>
 
-
             <View style={styles.footer}>
-                <TouchableOpacity style={defaultStyles.footerBtn}
-                    onPress={() => router.push('/homePage/BookingDetails')}
+                <TouchableOpacity
+                    // style={[defaultStyles.footerBtn, { backgroundColor: selected.length === parseInt(collection as string) ? "#0A5CA8" : "#DADADA" }]}
+                    style={defaultStyles.footerBtn}
+                    // disabled={selected.length === parseInt(collection as string) ? false : true}
+                    // onPress={() => router.push('/homePage/BookingDetails')}
+                    onPress={onSubmit}
                 >
-                    <Text style={defaultStyles.footerText}>Continue - AED 145 Monthly</Text>
+                    {loading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={defaultStyles.footerText}>Continue - AED {total} Monthly</Text>}
                 </TouchableOpacity>
             </View>
 
@@ -104,12 +129,14 @@ const styles = StyleSheet.create({
         fontSize: hp(2.5)
     },
     containerStyle: {
+        flex: 1,
         marginTop: hp(3),
-        paddingHorizontal: wp(5)
+
     },
     topText: {
         fontFamily: 'UrbanistMedium',
-        fontSize: hp(2)
+        fontSize: hp(2),
+        paddingHorizontal: wp(5)
     },
     cardStyle: {
         alignSelf: 'center',
@@ -137,7 +164,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: wp(5),
         fontFamily: 'UrbanistBold',
-        fontSize: hp(2.2)
+        fontSize: hp(2.2),
     },
     footer: {
         position: 'absolute',

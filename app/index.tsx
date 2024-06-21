@@ -16,9 +16,10 @@ export default function index() {
     const [updateApp, setUpdateApp] = useState(false);
 
     useEffect(() => {
-        setTimeout(() => {
-            validate();
-        }, 1000);
+        // setTimeout(() => {
+        //     validate();
+        // }, 1000);
+        validate();
     }, []);
 
     const validate = async () => {
@@ -26,6 +27,7 @@ export default function index() {
             const refreshToken = await SecureStore.getItemAsync('refreshToken');
             const onboarded = await SecureStore.getItemAsync('onboarded');
             queryClient.invalidateQueries({ queryKey: ['user-data'] });
+            queryClient.invalidateQueries({ queryKey: ['default-method'] });
 
             if (refreshToken !== null) {
                 try {
@@ -48,7 +50,6 @@ export default function index() {
             await SecureStore.deleteItemAsync('accessToken');
             await SecureStore.deleteItemAsync('refreshToken');
             await SecureStore.deleteItemAsync('onboarded');
-
             router.push('/authPage/LoginScreen');
         }
     };

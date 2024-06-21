@@ -51,10 +51,12 @@ export interface LaundryBundle {
 }
 
 export interface SubscriptionItem {
-  _id: string;
-  title: string;
-  sub_title: string;
-  base_price: number;
+  product_id: string;
+  price_id: string;
+  collection_count: number;
+  name: string;
+  description: string;
+  unit_amount: number;
   image: string;
   other_images: string[];
   details: string;

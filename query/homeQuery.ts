@@ -7,6 +7,7 @@ import {
   getSpecialOffers,
   getSupscriptionPlan,
 } from "@/apis/homeApi";
+import { getProductCategroy } from "@/apis/stripe";
 /**
  * Get Home Services ---------------------------------------------------------
  */
@@ -34,7 +35,7 @@ export const useSubscriptionPlan = (isFocused: boolean) => {
   return useQuery({
     queryKey: ["sub-plans"],
     enabled: isFocused,
-    queryFn: getSupscriptionPlan,
+    queryFn: getProductCategroy,
   });
 };
 

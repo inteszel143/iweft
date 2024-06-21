@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router } from 'expo-router';
@@ -33,35 +33,36 @@ export default function ChooseSubscription() {
             {
                 isPending ? <SubscriptionSkeleton />
                     :
-                    <View>
-                        {
-                            data?.map((item: any, index: any) => (
-                                <TouchableOpacity style={styles.CardStyle} key={index}
-                                    onPress={() => router.push({
-                                        pathname: 'homePage/services/PlansScreen',
-                                        params: { item: JSON.stringify(item) },
-                                    })}
-                                >
-                                    <View style={styles.cardRow}>
-                                        <View style={styles.cardLeft}>
-                                            <Image source={{ uri: item?.image }} resizeMode='contain' style={{ width: wp(32), height: hp(15), }} />
-                                            <View style={{ width: wp(45) }}>
-                                                < Text style={styles.topText} >{item.sub_title}</Text>
-                                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2), marginTop: hp(1.5) }}>
-                                                    {/* <Image source={item?.icon} resizeMode='contain' style={{ width: wp(6), height: hp(4) }} /> */}
-                                                    <Text style={styles.middleText}>{item.title}</Text>
-                                                </View>
-                                                <Text style={styles.priceText}>AED {item.base_price}</Text>
+                    <FlatList
+                        data={data}
+                        keyExtractor={item => item.product_id}
+                        renderItem={({ item }) => (
+                            <TouchableOpacity style={styles.CardStyle}
+                                onPress={() => router.push({
+                                    pathname: 'homePage/services/PlansScreen',
+                                    params: { item: JSON.stringify(item) },
+                                })}
+                            >
+                                <View style={styles.cardRow}>
+                                    <View style={styles.cardLeft}>
+                                        <Image source={{ uri: item?.image }} resizeMode='contain' style={{ width: wp(32), height: hp(15), }} />
+                                        <View style={{ width: wp(45) }}>
+                                            < Text style={styles.topText} >{item?.description}</Text>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2), marginTop: hp(1.5) }}>
+                                                {/* <Image source={item?.icon} resizeMode='contain' style={{ width: wp(6), height: hp(4) }} /> */}
+                                                <Text style={styles.middleText}>{item.name}</Text>
                                             </View>
-                                        </View>
-                                        <View>
-                                            {/* <FontAwesome name='bookmark' size={hp(2.9)} color={'#0A5CA8'} /> */}
+                                            <Text style={styles.priceText}>AED {item.unit_amount / 100}</Text>
                                         </View>
                                     </View>
-                                </TouchableOpacity >
-                            ))
-                        }
-                    </View>
+                                    <View>
+                                        {/* <FontAwesome name='bookmark' size={hp(2.9)} color={'#0A5CA8'} /> */}
+                                    </View>
+                                </View>
+                            </TouchableOpacity >
+                        )}
+                    />
+
             }
 
 

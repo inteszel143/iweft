@@ -55,7 +55,7 @@ export default function CreditCard() {
             style={defaultStyles.footerBtn}
             onPress={openPaymentSheet}
         >
-            <Text style={defaultStyles.footerText}>Pay Credit Card</Text>
+            <Text style={defaultStyles.footerText}>Confirm Payment</Text>
         </TouchableOpacity>
     )
 }

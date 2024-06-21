@@ -1,11 +1,14 @@
-import { Dimensions, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import { ActivityIndicator, Alert, Dimensions, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
 import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import Animated, { interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, withSpring } from 'react-native-reanimated';
 import { StatusBar } from 'expo-status-bar';
 import { SubscriptionItem } from '@/utils/interface';
+import { postAvailSubscription, postCollectPayment } from '@/apis/stripe';
+import { useStripe } from '@stripe/stripe-react-native';
+import useStoreSub from '@/store/useStoreSub';
 const IMG_HEIGHT = 350;
 const { width } = Dimensions.get('window');
 
@@ -13,11 +16,27 @@ const { width } = Dimensions.get('window');
 export default function PlansScreen() {
     const { item } = useLocalSearchParams();
     const subItem: SubscriptionItem = JSON.parse(item as string);
+    const { initPaymentSheet, presentPaymentSheet } = useStripe();
+    const { setCollection, setTotal, setPriceId } = useStoreSub();
     const [addbook, setAddbook] = useState(false);
-
+    const [loading, setLoading] = useState(false);
     const toggleAdd = () => {
         setAddbook(!addbook);
     };
+
+    const onSubmit = async () => {
+        setLoading(true);
+        const total = subItem?.unit_amount / 100;
+        setPriceId(subItem?.price_id);
+        setCollection(subItem?.collection_count);
+        setTotal(total);
+        setTimeout(() => {
+            setLoading(false);
+            router.push('homePage/services/PlantSelectMethod');
+        }, 1000);
+    }
+
+
 
     // scrollview
     const scrollRef = useAnimatedRef<Animated.ScrollView>();
@@ -74,20 +93,20 @@ export default function PlansScreen() {
 
                 <View style={styles.middleStyle}>
                     <View style={styles.middelTopRow}>
-                        <Text style={styles.middleText}>{subItem?.title}</Text>
+                        <Text style={styles.middleText}>{subItem?.name}</Text>
                         <TouchableOpacity>
                             <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5.5) }} />
                         </TouchableOpacity>
                     </View>
                     <View style={styles.rateStyle}>
-                        <Text style={styles.core}>{subItem?.sub_title}</Text>
+                        <Text style={styles.core}>{subItem?.description}</Text>
                     </View>
                     <View style={styles.laundryStyle}>
                         <Text style={styles.laundryText}>Cleaning & pressing</Text>
                     </View>
 
                     <View style={styles.priceStyle}>
-                        <Text style={styles.priceText}>AED {subItem?.base_price}</Text>
+                        <Text style={styles.priceText}>AED {subItem?.unit_amount / 100}</Text>
                         <Text style={styles.subText}>(base price)</Text>
                     </View>
                     <View style={styles.separator} />
@@ -125,13 +144,9 @@ export default function PlansScreen() {
                         <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
-                        // onPress={() => router.push({
-                        //     pathname: 'homePage/services/BookNow',
-                        //     params: { item: item },
-                        // })}
-                        onPress={() => router.push('homePage/services/PlanType')}
+                        onPress={onSubmit}
                     >
-                        <Text style={[styles.bottomText, { color: "white" }]}>Subscribe Now </Text>
+                        {loading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={[styles.bottomText, { color: "white" }]}>Subscribe Now </Text>}
                     </TouchableOpacity>
                 </View>
             </View>

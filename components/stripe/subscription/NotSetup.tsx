@@ -1,9 +1,11 @@
-import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
-import { Linking } from 'react-native';
-import { initPaymentSheet, useStripe } from '@stripe/stripe-react-native';
-import { postCollectPayment, postPaymentIntent } from '@/apis/stripe';
-export default function Test() {
+import { Alert, StyleSheet, Text, TouchableOpacity } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { defaultStyles } from '@/constants/Styles'
+import { useStripe } from '@stripe/stripe-react-native';
+import { postCollectPayment } from '@/apis/stripe';
+
+export default function NotSetup() {
+
 
     const { initPaymentSheet, presentPaymentSheet } = useStripe();
     const [loading, setLoading] = useState(false);
@@ -27,7 +29,6 @@ export default function Test() {
         }
     };
 
-
     const openPaymentSheet = async () => {
         const { error } = await presentPaymentSheet();
 
@@ -38,46 +39,18 @@ export default function Test() {
         }
     };
 
-
     useEffect(() => {
         initializePaymentSheet();
     }, []);
 
+
     return (
-        <View style={styles.container}>
-            <Button
-                disabled={!loading}
-                title="Set up"
-                onPress={openPaymentSheet}
-            />
-        </View>
+        <TouchableOpacity style={defaultStyles.footerBtn}
+            onPress={openPaymentSheet}
+        >
+            <Text style={defaultStyles.footerText}>Continue</Text>
+        </TouchableOpacity>
     )
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginVertical: 20
-    },
-    counter: {
-        fontSize: 48,
-        marginBottom: 20,
-    },
-    label: {
-        marginTop: 20,
-        fontSize: 18,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 10,
-        width: 200,
-        marginVertical: 10,
-    },
-    userInfo: {
-        marginTop: 20,
-        fontSize: 20,
-    },
-});
+const styles = StyleSheet.create({})
