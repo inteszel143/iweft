@@ -163,8 +163,12 @@ function RootLayoutNav() {
       <Stack.Screen name='profilePage/Language' options={{ headerShown: false }} />
       <Stack.Screen name='profilePage/Subscription' options={{ headerShown: false }} />
       <Stack.Screen name='profilePage/SubscriptionSummary' options={{ headerShown: false }} />
+      <Stack.Screen name='profilePage/SubscriptionCancelSummary' options={{ headerShown: false }} />
       <Stack.Screen name='profilePage/PrivacyPolicy' options={{ headerShown: false }} />
       <Stack.Screen name='profilePage/InviteFriends' options={{ headerShown: false }} />
+
+      {/* payment */}
+      <Stack.Screen name='profilePage/payment/ManagePayment' options={{ headerShown: false }} />
 
     </Stack>
     // </ThemeProvider>

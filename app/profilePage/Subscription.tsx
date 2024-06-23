@@ -1,11 +1,38 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { SubscriptionData } from '@/constants/profile/data';
+import { useGetAllSubscription } from '@/query/stripeQuery';
+import { useIsFocused } from '@react-navigation/native';
+import SubSkeleton from '@/components/skeleton/SubSkeleton';
 
 export default function Subscription() {
+    const isFocused = useIsFocused();
+    const { data, isPending } = useGetAllSubscription(isFocused);
+
+    const convertDay = (unixTimestamp: number) => {
+        const date = new Date(unixTimestamp * 1000).getDate();
+        return date;
+    };
+    const covertMonth = (unixTimestamp: number) => {
+        const date = new Date(unixTimestamp * 1000);
+        const month = date.toLocaleString('default', { month: 'long' });
+        return month;
+    }
+
+    const formatDate = (unixTimestamp: number) => {
+        const date = new Date(unixTimestamp * 1000);
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        return date.toLocaleDateString('en-US', options as any);
+    };
+    const formatTime = (unixTimestamp: number) => {
+        const date = new Date(unixTimestamp * 1000);
+        const options = { hour: '2-digit', minute: '2-digit', hour12: true }; // Change hour12 to true for 12-hour format
+        return date.toLocaleTimeString('en-US', options as any);
+    };
+
     return (
         <View style={styles.container}>
 
@@ -27,81 +54,88 @@ export default function Subscription() {
                 </View>
             </View>
 
-
-            <View style={styles.containerStyle}>
-                <Text style={styles.titleText}>Active</Text>
-            </View>
-
             {
-                SubscriptionData.map((item, index) => {
-                    if (item.active) {
-                        return (
-                            <Link href={'/profilePage/SubscriptionSummary'} asChild key={index}>
-                                <TouchableOpacity style={styles.cardRow}>
-                                    <View style={styles.cardRowStyle}>
-                                        <View style={styles.leftInner}>
-                                            <Image
-                                                source={item.img}
-                                                resizeMode='contain'
-                                                style={styles.imageStyle}
-                                            />
-                                            <View style={{ width: wp(50) }}>
-                                                <Text style={styles.titleStyle} >{item.title}</Text>
-                                                <Text style={styles.subStyle}>{item.subtitle}</Text>
-                                                <Text style={styles.subStyle}>{item.renew}</Text>
+                isPending ? <SubSkeleton />
+                    :
+                    <ScrollView>
+                        <View style={styles.containerStyle}>
+                            <Text style={styles.titleText}>Active</Text>
+                        </View>
+
+                        {
+                            data?.map((item: any, index: any) => {
+                                if (!item?.cancel_at_period_end) {
+                                    return (
+                                        <TouchableOpacity style={styles.cardRow}
+                                            key={index}
+                                            onPress={() => router.push({
+                                                pathname: '/profilePage/SubscriptionSummary',
+                                                params: { subId: item?.id }
+                                            })}
+                                        >
+                                            <View style={styles.cardRowStyle}>
+                                                <View style={styles.leftInner}>
+                                                    <Image
+                                                        source={{ uri: item?.plan?.product?.images[0] }}
+                                                        resizeMode='contain'
+                                                        style={styles.imageStyle}
+                                                    />
+                                                    <View style={{ width: wp(50) }}>
+                                                        <Text style={styles.titleStyle} >{item?.plan?.product?.name}</Text>
+                                                        <Text style={styles.subStyle}>{item?.plan?.product?.description}</Text>
+                                                        <Text style={styles.subStyle}>Renews {convertDay(item?.current_period_end)} {covertMonth(item?.current_period_end)}</Text>
+                                                    </View>
+                                                </View>
+                                                <View>
+                                                    <Feather name='chevron-right' size={hp(2.5)} />
+                                                </View>
                                             </View>
-                                        </View>
-                                        <View>
+                                        </TouchableOpacity>
+                                    )
+                                }
+                            })
+                        }
+
+                        {
+                            data?.map((item: any, index: any) => {
+                                if (item?.cancel_at_period_end) {
+                                    return (
+                                        <TouchableOpacity style={styles.cardRow}
+                                            key={index}
+                                        onPress={() => router.push({
+                                            pathname: '/profilePage/SubscriptionCancelSummary',
+                                            params: { subId: item?.id }
+                                        })}
+                                        >
+                                            <View style={styles.cardRowStyle}>
+                                                <View style={styles.leftInner}>
+                                                    <Image
+                                                        source={{ uri: item?.plan?.product?.images[0] }}
+                                                        resizeMode='contain'
+                                                        style={styles.imageStyle}
+                                                    />
+                                                    <View style={{ width: wp(50) }}>
+                                                        <Text style={styles.titleStyle} >{item?.plan?.product?.name}</Text>
+                                                        <Text style={styles.subStyle}>{item?.plan?.product?.description}</Text>
+                                                        <Text style={[styles.subStyle]}>Cancelled date:</Text>
+                                                        <Text style={[styles.subStyle, { color: '#F75555' }]}>{formatDate(item?.canceled_at)} || {formatTime(item?.canceled_at)}</Text>
+                                                    </View>
+                                                </View>
+                                                {/* <View>
                                             <Feather name='chevron-right' size={hp(2.5)} />
-                                        </View>
-                                    </View>
-                                </TouchableOpacity>
-                            </Link>
-                        )
-                    }
-                })
-            }
-
-
-
-            <View style={styles.containerStyle}>
-                <Text style={styles.titleText}>Inactive</Text>
-            </View>
-
-
-
-            {
-                SubscriptionData.map((item, index) => {
-                    if (!item.active) {
-                        return (
-                            <Link href={'/profilePage/SubscriptionSummary'} asChild key={index}>
-                                <TouchableOpacity style={styles.cardRow}>
-                                    <View style={styles.cardRowStyle}>
-                                        <View style={styles.leftInner}>
-                                            <Image
-                                                source={item.img}
-                                                resizeMode='contain'
-                                                style={styles.imageStyle}
-                                            />
-                                            <View style={{ width: wp(50) }}>
-                                                <Text style={styles.titleStyle} >{item.title}</Text>
-                                                <Text style={styles.subStyle}>{item.subtitle}</Text>
-                                                <Text style={styles.subStyle}>{item.renew}</Text>
+                                        </View> */}
                                             </View>
-                                        </View>
-                                        <View>
-                                            <Feather name='chevron-right' size={hp(2.5)} />
-                                        </View>
-                                    </View>
-                                </TouchableOpacity>
-                            </Link>
-                        )
-                    }
-                })
+                                        </TouchableOpacity>
+                                    )
+                                }
+                            })
+                        }
+
+                    </ScrollView>
             }
-
-
-
+            {/* <View style={styles.containerStyle}>
+                                <Text style={styles.titleText}>Cancelled Plan</Text>
+                            </View> */}
 
         </View>
     )
@@ -158,7 +192,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#FFFFFF',
         borderRadius: wp(4),
-        marginTop: hp(3),
+        marginTop: hp(2.5),
         paddingHorizontal: wp(5),
     },
     cardRowStyle: {
@@ -168,8 +202,8 @@ const styles = StyleSheet.create({
     },
 
     imageStyle: {
-        width: wp(20),
-        height: hp(10)
+        width: wp(22),
+        height: hp(12)
     },
     leftInner: {
         flexDirection: 'row',

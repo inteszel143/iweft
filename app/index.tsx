@@ -27,17 +27,18 @@ export default function index() {
             const refreshToken = await SecureStore.getItemAsync('refreshToken');
             const onboarded = await SecureStore.getItemAsync('onboarded');
             queryClient.invalidateQueries({ queryKey: ['user-data'] });
-            queryClient.invalidateQueries({ queryKey: ['default-method'] });
-
+            // queryClient.invalidateQueries({ queryKey: ['default-method'] });
             if (refreshToken !== null) {
                 try {
                     const response = await appOpenRefresh(refreshToken);
                     await SecureStore.setItemAsync('accessToken', response?.access?.token);
                     await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
                     router.push('/(tabs)/');
+
                 } catch (error) {
                     console.log('Error during token refresh:', errorRes(error));
                     router.push('/authPage/LoginScreen');
+
                 }
             } else {
                 if (onboarded === null) {
@@ -51,6 +52,7 @@ export default function index() {
             await SecureStore.deleteItemAsync('refreshToken');
             await SecureStore.deleteItemAsync('onboarded');
             router.push('/authPage/LoginScreen');
+
         }
     };
 

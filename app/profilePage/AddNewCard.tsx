@@ -1,8 +1,52 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, Platform } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, Image, Platform, Alert, TextInput, ScrollView, Button } from 'react-native'
+import React, { useState } from 'react'
 import { Link, router } from 'expo-router'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { CardField, useStripe, CardForm } from '@stripe/stripe-react-native';
+import { addPaymentMethod } from '@/apis/stripe';
+import errorRes from '@/apis/errorRes';
 export default function AddNewCard() {
+
+
+    const { createPaymentMethod } = useStripe();
+    const [cardDetails, setCardDetails] = useState<any>(null);
+    const [complete, setComplete] = useState(false);
+
+
+    const handleAddPaymentMethod = async () => {
+        if (!complete) {
+            Alert.alert('Please enter complete card details');
+            return;
+        }
+        try {
+            const { paymentMethod, error } = await createPaymentMethod({
+                paymentMethodType: "Card",
+                paymentMethodData: cardDetails
+                // paymentMethodData: {
+                //     billingDetails: {
+                //         name: "Edzel Intes",
+                //         phone: "09284856233",
+                //         email: "intesedzel@gmail.com"
+                //     }
+                // },
+            });
+            if (error) {
+                console.log('Error creating payment method:', error);
+                Alert.alert('Error creating payment method', error.message);
+            } else {
+                try {
+                    const response = await addPaymentMethod(paymentMethod?.id as string);
+                    console.log(response);
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
     return (
         <View style={styles.container}>
 
@@ -34,6 +78,53 @@ export default function AddNewCard() {
 
 
 
+
+            <CardForm
+                // disabled={inputDisabled}
+                placeholders={{
+                    number: '4242 4242 4242 4242',
+                    postalCode: '12345',
+                    cvc: 'CVC',
+                    expiration: 'MM|YY',
+                }}
+                // autofocus
+                cardStyle={{
+                    // backgroundColor: '#D3D3D3',
+                    // textColor: '#A020F0',
+                    // borderColor: 'white',
+                    // borderWidth: 0,
+                    // borderRadius: 10,
+                    // fontSize: 50,
+                    // fontFamily: 'Macondo-Regular',
+                    // placeholderColor: '#A020F0',
+                    // textErrorColor: '#ff0000',
+                }}
+                style={{
+                    width: wp(90),
+                    ...Platform.select({
+                        ios: {
+                            height: 250,
+                        },
+                        android: {
+                            height: 320,
+                        },
+                    }),
+                    alignSelf: 'center',
+                    marginTop: 30,
+                }}
+                onFormComplete={(cardDetails) => {
+                    console.log(cardDetails);
+                    setCardDetails(cardDetails);
+                    setComplete(cardDetails.complete);
+                }}
+                defaultValues={{
+                    countryCode: 'US',
+                }}
+            />
+
+
+
+            {/* 
             <View style={{ alignItems: 'center' }}>
 
                 <View style={{ marginTop: hp(3) }}>
@@ -65,13 +156,33 @@ export default function AddNewCard() {
                     </View>
                 </View>
 
-            </View>
+            </View> */}
 
 
+            {/* <CardField
+                postalCodeEnabled={true}
+                placeholders={{
+                    number: '4242 4242 4242 4242',
+                    // postalCode: '12345',
+                    cvc: 'CVC',
+                    expiration: 'MM / YY',
+                }}
+                cardStyle={{ backgroundColor: '#FFFFFF', }}
+                style={{
+                    width: wp(90),
+                    height: hp(20),
+                    marginVertical: 30,
+                    alignSelf: 'center'
+                }}
+                onCardChange={(cardDetails) => {
+                    setCardDetails(cardDetails);
+                    // console.log(cardDetails);
+                }}
+            /> */}
 
             <View style={styles.footer} >
                 <TouchableOpacity style={styles.footerBtn}
-                    onPress={() => router.back()}
+                    onPress={handleAddPaymentMethod}
                 >
                     <Text style={styles.footerText}>Add New Card</Text>
                 </TouchableOpacity>

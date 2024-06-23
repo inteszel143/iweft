@@ -1,23 +1,15 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link, router, useLocalSearchParams } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
-import { defaultStyles } from '@/constants/Styles';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useIsFocused } from '@react-navigation/native';
 import { useGetUserSubById } from '@/query/stripeQuery';
-import { cancelSubscription } from '@/apis/stripe';
 import SubSummarySkeleton from '@/components/skeleton/SubSummarySkeleton';
 import numeral from 'numeral';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import CancelSubscription from '@/components/bottomsheet/CancelSubscription';
-import CancelSubSuccess from '@/components/bottomsheet/CancelSubSuccess';
-export default function SubscriptionSummary() {
+export default function SubscriptionCancelSummary() {
     const { subId } = useLocalSearchParams();
     const isFocused = useIsFocused();
     const { data, isFetching } = useGetUserSubById(subId, isFocused);
-    const [modalVisible, setModalVisible] = useState(false);
-
     const formatDate = (unixTimestamp: number) => {
         const date = new Date(unixTimestamp * 1000);
         const options = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -29,15 +21,9 @@ export default function SubscriptionSummary() {
         return date.toLocaleTimeString('en-US', options as any);
     };
 
-    const modalARef = useRef<BottomSheetModal>(null);
-    const openModalA = () => {
-        modalARef.current?.present();
-    };
-
 
     return (
         <View style={styles.container}>
-            {modalVisible && <CancelSubSuccess modalVisible={modalVisible} setModalVisible={setModalVisible} />}
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
 
@@ -56,15 +42,11 @@ export default function SubscriptionSummary() {
                 </View>
             </View>
 
+
             {
-                isFetching ? <SubSummarySkeleton />
-                    :
+                isFetching ? <SubSummarySkeleton /> :
                     <View>
                         <View style={[styles.summarCard, { marginTop: hp(3) }]}>
-                            {/* <View style={styles.summarRow}>
-                    <Text style={styles.summaryLabel}>Services</Text>
-                    <Text style={styles.summaryValue}>Clean/Press</Text>
-                </View> */}
                             <View style={[styles.summarRow]}>
                                 <Text style={styles.summaryLabel}>Subscription Plan </Text>
                                 <Text style={styles.summaryValue}>{data?.plan?.product?.name}</Text>
@@ -79,45 +61,34 @@ export default function SubscriptionSummary() {
                             </View>
                         </View>
 
+
                         <View style={[styles.summarCard, { marginTop: hp(3) }]}>
                             <View style={styles.summarRow}>
                                 <Text style={styles.summaryLabel}>Monthly Subscription Fee</Text>
                                 <Text style={styles.summaryValue}>AED {numeral(data?.plan?.amount / 100).format('0,0')}</Text>
                             </View>
-                            {/* <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                    <Text style={[styles.summaryLabel, { color: '#2F75B5' }]}>Promo </Text>
-                    <Text style={[styles.summaryValue, { color: '#0A5CA8' }]}>- AED 199.00</Text>
-                </View> */}
                             <View style={styles.separator} />
                             <View style={[styles.summarRow, { marginTop: hp(4) }]}>
                                 <Text style={styles.summaryLabel}>Total</Text>
                                 <Text style={styles.summaryValue}>AED {numeral(data?.plan?.amount / 100).format('0,0')}</Text>
                             </View>
                         </View>
-                        <View style={[styles.summarCard, { marginTop: hp(2) }]}>
-                            <TouchableOpacity style={[styles.summarRow, { alignItems: 'center' }]}>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(4) }}>
-                                    <Image source={require('@/assets/temp/bookingIcon/mastercard.jpg')} resizeMode='contain' style={{ width: wp(8) }} />
-                                    <Text style={styles.cardTextStyle}>**** **** **** **** {data?.default_payment_method?.card?.last4}</Text>
-                                </View>
-                                <TouchableOpacity>
-                                    <Text style={styles.btnText}>Change</Text>
-                                </TouchableOpacity>
-                            </TouchableOpacity>
+
+                        <View style={[styles.summarCard, { marginTop: hp(3) }]}>
+                            <View style={styles.summarRow}>
+                                <Text style={styles.summaryLabel}>Cancelled Date:</Text>
+                                <Text style={[styles.summaryValue]}>{formatDate(data?.canceled_at)} || {formatTime(data?.canceled_at)}</Text>
+                            </View>
+                            <View style={styles.separator} />
+                            <View style={[styles.summarRow, { marginTop: hp(4) }]}>
+                                <Text style={styles.summaryLabel}>Cancelled At: </Text>
+                                <Text style={[styles.summaryValue, { color: '#F75555' }]}>{formatDate(data?.cancel_at)} || {formatTime(data?.cancel_at)}</Text>
+                            </View>
                         </View>
 
-                        <View style={{ flex: 1, }} />
-                        <View style={styles.footer}>
-                            <TouchableOpacity style={[defaultStyles.footerBtn, { backgroundColor: "#F75555" }]}
-                                // onPress={onSubmit}
-                                onPress={openModalA}
-                            >
-                                <Text style={defaultStyles.footerText}>Cancel Subscription</Text>
-                            </TouchableOpacity>
-                        </View>
+
                     </View>
             }
-            <CancelSubscription modalRef={modalARef} subId={subId as string} setModalVisible={setModalVisible} />
         </View>
     )
 }

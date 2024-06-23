@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { defaultStyles } from '@/constants/Styles'
 import { useStripe } from '@stripe/stripe-react-native';
 import { postCollectPayment } from '@/apis/stripe';
+import { router } from 'expo-router';
 
 export default function NotSetup() {
 
@@ -11,12 +12,12 @@ export default function NotSetup() {
     const [loading, setLoading] = useState(false);
 
     const initializePaymentSheet = async () => {
+
         const {
             setupIntent,
             ephemeralKey,
             customer,
         } = await postCollectPayment();
-
         const { error } = await initPaymentSheet({
             returnURL: 'https://com.paras23.iweft/exp+iweft://expo-development-client/?url=http%3A%2F%2F192.168.100.20%3A8081',
             merchantDisplayName: "Example, Inc.",
@@ -33,9 +34,11 @@ export default function NotSetup() {
         const { error } = await presentPaymentSheet();
 
         if (error) {
-            Alert.alert(`Error code: ${error.code}`, error.message);
+            // Alert.alert(`Error code: ${error.code}`, error.message);
+            return;
         } else {
-            Alert.alert('Success', 'Your payment method is successfully set up for future payments!');
+            // Alert.alert('Success', 'Your payment method is successfully set up for future payments!');
+            router.push('homePage/services/PlanType');
         }
     };
 

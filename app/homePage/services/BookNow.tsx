@@ -2,7 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList, 
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
-import { Feather, FontAwesome } from '@expo/vector-icons';
+import { Feather, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { subscribeServices } from '@/constants/booking/data';
 import { defaultStyles } from '@/constants/Styles';
@@ -31,6 +31,10 @@ export default function BookNow() {
     const serviceItem: ServiceItem = JSON.parse(item as string);
     const [subscription, setSubscription] = useState<string | null>(null); // service subscription data
     const [errorModalVisible, setErrorModalVisible] = useState(false);
+    const [errorItem, setErrorItem] = useState(false);
+    const toggleContinue = () => {
+        setErrorItem(true);
+    }
 
     return (
         <View style={styles.container}>
@@ -72,6 +76,12 @@ export default function BookNow() {
                                 <FontAwesome name='caret-right' size={hp(2.5)} />
                             </View>
                         </TouchableOpacity>
+                        {
+                            errorItem && <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: hp(1), gap: wp(2) }}>
+                                <Ionicons name='information-circle-outline' size={hp(2)} color={'red'} />
+                                <Text style={styles.errorStyle}>This items cannot be zero.</Text>
+                            </View>
+                        }
                     </View>
                     <View style={styles.viewTop}>
                         <Text style={styles.topTitle}>Service name</Text>
@@ -136,8 +146,9 @@ export default function BookNow() {
 
 
             <View style={styles.footer}>
-                <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(1), backgroundColor: '#DADADA' }]}
-                    disabled={true}
+                <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(1) }]}
+                    // disabled={true}
+                    onPress={toggleContinue}
                 >
                     <Text style={defaultStyles.footerText}>Continue AED 0.00</Text>
                 </TouchableOpacity>
@@ -226,12 +237,11 @@ const styles = StyleSheet.create({
     },
 
 
-
     footer: {
         position: 'absolute',
         bottom: 0,
         width: wp(100),
-        height: hp(11.5),
+        height: hp(12),
         backgroundColor: 'white',
         borderTopRightRadius: wp(4),
         borderTopLeftRadius: wp(4),
@@ -293,6 +303,11 @@ const styles = StyleSheet.create({
         fontFamily: 'UrbanistSemiBold',
         fontSize: hp(2),
         color: 'white'
+    },
+    errorStyle: {
+        fontFamily: 'UrbanistRegular',
+        fontSize: hp(1.8),
+        color: "red",
     }
 
 })

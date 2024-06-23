@@ -7,7 +7,7 @@ export default function NoBooking() {
         <View style={styles.container}>
 
             <View>
-                <Image source={require('@/assets/temp/under.jpg')} resizeMode='contain' style={{ width: wp(100), height: hp(22) }} />
+                <Image source={require('@/assets/icons/under.png')} resizeMode='contain' style={{ width: wp(100), height: hp(22) }} />
             </View>
 
             <View>

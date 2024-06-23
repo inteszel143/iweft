@@ -46,6 +46,7 @@
     "expo-web-browser": "~13.0.3",
     "lottie-react-native": "6.7.0",
     "moment": "^2.30.1",
+    "numeral": "^2.0.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.51.3",

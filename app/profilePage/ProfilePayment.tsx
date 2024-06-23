@@ -1,17 +1,16 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, Platform } from 'react-native'
-import React, { useState } from 'react'
-import { Link, router } from 'expo-router'
+import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { paymentMethods } from '@/constants/booking/data';
-import { Fontisto } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import PaymentPaypal from '@/components/profile/paymentmethod/PaymentPaypal';
+import PaymentGoogle from '@/components/profile/paymentmethod/PaymentGoogle';
+import PaymentApple from '@/components/profile/paymentmethod/PaymentApple';
+import PaymentCreditCard from '@/components/profile/paymentmethod/PaymentCreditCard';
+import { defaultStyles } from '@/constants/Styles';
 export default function ProfilePayment() {
-
-
+    
     return (
         <View style={styles.container}>
-
-
-
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
 
@@ -30,47 +29,21 @@ export default function ProfilePayment() {
                 </View>
             </View>
 
-
-
-
-
-            <View style={styles.selectedStyle}>
-                {
-                    paymentMethods.map((item, index) => {
-                        return (
-                            <TouchableOpacity style={styles.selectedRow} key={index}
-                            // onPress={() => setIsSelected(item.id)}
-                            >
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(4) }}>
-                                        <Image source={item.icon} resizeMode='contain' style={{ width: wp(8) }} />
-                                        <Text style={styles.selectedText}>{item.label}</Text>
-                                    </View>
-
-                                    <TouchableOpacity>
-                                        <Text style={styles.connectedStyle}>Connected</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </TouchableOpacity>
-                        )
-                    })
-                }
+            <View>
+                <PaymentPaypal />
+                <PaymentGoogle />
+                <PaymentApple />
+                <PaymentCreditCard />
             </View>
-
-
 
 
             <View style={styles.footer} >
-                <Link href={'/profilePage/AddNewCard'} asChild>
-                    <TouchableOpacity style={styles.footerBtn}>
-                        <Text style={styles.footerText}>Add New Card</Text>
-                    </TouchableOpacity>
-                </Link>
+                <TouchableOpacity style={defaultStyles.footerBtn}
+                    onPress={() => router.push('/profilePage/AddNewCard')}
+                >
+                    <Text style={defaultStyles.footerText}>Add New Card</Text>
+                </TouchableOpacity>
             </View>
-
-
-
-
 
 
         </View>
@@ -91,6 +64,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between'
     },
+
     headerRight: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -105,86 +79,12 @@ const styles = StyleSheet.create({
         fontFamily: "UrbanistBold",
         fontSize: hp(2.5)
     },
-
-    headerCard: {
-        width: wp(56),
-        height: hp(20),
-        position: 'absolute',
-        top: hp(11.5),
-        right: wp(5),
-        borderRadius: wp(6),
-        backgroundColor: '#FFFFFF',
-        justifyContent: 'center',
-        paddingHorizontal: wp(4),
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 1,
-        },
-        shadowOpacity: 0.18,
-        shadowRadius: 1.00,
-        elevation: 1,
-    },
-    cardRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: wp(4),
-        height: hp(5),
-    },
-    cardText: {
-        fontFamily: 'UrbanistSemiBold',
-        fontSize: hp(1.9)
-    },
-    separator: {
-        height: 1,
-        backgroundColor: "#EEEEEE",
-        marginHorizontal: wp(2),
-        marginTop: 4,
-    },
-
-
-    selectedStyle: {
-        paddingHorizontal: wp(6),
-        marginTop: hp(2),
-    },
-    selectedRow: {
-        marginTop: hp(2.5),
-        backgroundColor: 'white',
-        height: hp(12),
-        justifyContent: 'center',
-        borderRadius: wp(6),
-        paddingHorizontal: wp(6)
-    },
-    selectedText: {
-        fontFamily: 'UrbanistBold',
-        fontSize: hp(2.1),
-    },
-    connectedStyle: {
-        fontFamily: 'UrbanistBold',
-        fontSize: hp(1.8),
-        color: '#0A5CA8'
-    },
-
     footer: {
         position: 'absolute',
         bottom: 0,
+        backgroundColor: 'white',
         width: wp(100),
-        height: Platform.OS === 'ios' ? hp(14) : hp(12),
+        height: Platform.OS === 'ios' ? hp(12) : hp(10),
         alignItems: 'center'
     },
-    footerBtn: {
-        width: wp(90),
-        height: hp(7),
-        backgroundColor: "#0A5CA8",
-        borderRadius: wp(10),
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    footerText: {
-        fontFamily: 'UrbanistBold',
-        fontSize: hp(2),
-        color: 'white',
-    }
-
-
 })

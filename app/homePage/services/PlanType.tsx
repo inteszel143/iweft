@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList, ActivityIndicator, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -9,6 +9,7 @@ import { useHomeServices } from '@/query/homeQuery';
 import { postAvailSubscription } from '@/apis/stripe';
 import AvailSubscriptionModal from '@/components/home/AvailSubscriptionModal';
 import useStoreSub from '@/store/useStoreSub';
+import errorRes from '@/apis/errorRes';
 
 export default function PlanType() {
     const { collection, total, priceId } = useStoreSub();
@@ -37,7 +38,7 @@ export default function PlanType() {
             }, 1000)
         } catch (error) {
             setLoading(false);
-            console.log(error);
+            Alert.alert(errorRes(error));
         }
     };
 
