@@ -1,18 +1,44 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Platform, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link, router, useLocalSearchParams } from 'expo-router';
+import { router } from 'expo-router';
 import { paymentMethods } from '@/constants/booking/data';
 import { Fontisto } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
-import { CardField, useStripe } from '@stripe/stripe-react-native';
-import useStoreBooking from '@/store/useStoreBooking';
+import { useIsFocused } from '@react-navigation/native';
+import { useDefaultMethod } from '@/query/stripeQuery';
 export default function HomePaymentMethods() {
-    const { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude } = useLocalSearchParams();
-    const { setItemData, setService, setServiceName, setTotal, setPickUpDateTime, setDeliveryDateTime, setAddress, setLatitude, setLongitude } = useStoreBooking();
     const [isSelected, setIsSelected] = useState(0);
     const [imageUrl, setImageUrl] = useState(null);
     const [method, setMethod] = useState("");
+
+    const isFocused = useIsFocused();
+    const { data } = useDefaultMethod(isFocused);
+
+    const methodData = [
+        {
+            id: 1,
+            icon: require("@/assets/temp/bookingIcon/paypal.jpg"),
+            label: "PayPal",
+        },
+        {
+            id: 2,
+            icon: require("@/assets/temp/bookingIcon/google.jpg"),
+            label: "Google Pay",
+        },
+        {
+            id: 3,
+            icon: require("@/assets/temp/bookingIcon/apple.jpg"),
+            label: "Apple Pay",
+        },
+        {
+            id: 4,
+            icon: require("@/assets/temp/bookingIcon/mastercard.jpg"),
+            label: !data || data == 0 ? "Credit Card" : `**** **** **** **** ${data?.card?.last4}`,
+        },
+    ];
+
+
     return (
         <View style={styles.container}>
             <View style={styles.Headercontainer}>
@@ -30,11 +56,9 @@ export default function HomePaymentMethods() {
             </View>
 
 
-
-
             <View style={styles.selectedStyle}>
                 {
-                    paymentMethods.map((item, index) => {
+                    methodData.map((item, index) => {
                         return (
                             <TouchableOpacity style={styles.selectedRow} key={index}
                                 onPress={() => {
@@ -66,18 +90,9 @@ export default function HomePaymentMethods() {
                     style={[defaultStyles.footerBtn, { backgroundColor: isSelected == 0 ? "#DADADA" : "#0A5CA8", }]}
                     disabled={isSelected == 0 ? true : false}
                     onPress={() => {
-                        setService(service as string);
-                        setServiceName(service_name as string);
-                        setTotal(total);
-                        setPickUpDateTime(pick_up_date_time as string);
-                        setDeliveryDateTime(delivery_date_time as string);
-                        setAddress(address as string);
-                        setLatitude(latitude as string);
-                        setLongitude(longitude as string);
-                        setItemData(itemData);
                         router.push({
                             pathname: '/homePage/HomeReviewSummary',
-                            params: { imageUrl, method }
+                            params: { imageUrl, method, isSelected }
                         })
                     }}
                 >
@@ -156,15 +171,10 @@ const styles = StyleSheet.create({
         fontFamily: 'UrbanistBold',
         fontSize: hp(2)
     },
-    // footer: {
-    //     height: Platform.OS === 'ios' ? hp(12) : hp(10),
-    //     backgroundColor: "white",
-    //     alignItems: 'center',
-    // },
     footer: {
         position: 'absolute',
         bottom: 0,
-        height: hp(14),
+        height: Platform.OS === 'ios' ? hp(16) : hp(14),
         width: wp(100),
         backgroundColor: 'white',
         alignItems: 'center',

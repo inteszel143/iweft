@@ -11,6 +11,7 @@ interface ItemData {
 interface State {
   service: string;
   service_name: string;
+  base_price: number;
   itemData: ItemData[];
   total: number;
   pick_up_date_time: string;
@@ -20,6 +21,7 @@ interface State {
   longitude: string;
   setService: (service: string) => void;
   setServiceName: (service_name: string) => void;
+  setBasePrice: (base_price: any) => void;
   setItemData: (itemData: ItemData[]) => void;
   setTotal: (total: number) => void;
   setPickUpDateTime: (pick_up_date_time: string) => void;
@@ -34,6 +36,7 @@ const useStoreBooking = create<State>((set) => ({
   service: "",
   service_name: "",
   itemData: [],
+  base_price: 0,
   total: 0,
   pick_up_date_time: "",
   delivery_date_time: "",
@@ -42,6 +45,7 @@ const useStoreBooking = create<State>((set) => ({
   longitude: "",
   setService: (service: string) => set({ service }),
   setServiceName: (service_name: string) => set({ service_name }),
+  setBasePrice: (base_price: number) => set({ base_price }),
   setItemData: (itemData: ItemData[]) => set({ itemData }),
   setTotal: (total: number) => set({ total }),
   setPickUpDateTime: (pick_up_date_time: string) => set({ pick_up_date_time }),

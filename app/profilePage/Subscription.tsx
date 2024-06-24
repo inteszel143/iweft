@@ -7,6 +7,7 @@ import { SubscriptionData } from '@/constants/profile/data';
 import { useGetAllSubscription } from '@/query/stripeQuery';
 import { useIsFocused } from '@react-navigation/native';
 import SubSkeleton from '@/components/skeleton/SubSkeleton';
+import NoSubscription from '@/components/empty/NoSubscription';
 
 export default function Subscription() {
     const isFocused = useIsFocused();
@@ -57,81 +58,87 @@ export default function Subscription() {
             {
                 isPending ? <SubSkeleton />
                     :
-                    <ScrollView>
-                        <View style={styles.containerStyle}>
-                            <Text style={styles.titleText}>Active</Text>
-                        </View>
-
+                    <>
                         {
-                            data?.map((item: any, index: any) => {
-                                if (!item?.cancel_at_period_end) {
-                                    return (
-                                        <TouchableOpacity style={styles.cardRow}
-                                            key={index}
-                                            onPress={() => router.push({
-                                                pathname: '/profilePage/SubscriptionSummary',
-                                                params: { subId: item?.id }
-                                            })}
-                                        >
-                                            <View style={styles.cardRowStyle}>
-                                                <View style={styles.leftInner}>
-                                                    <Image
-                                                        source={{ uri: item?.plan?.product?.images[0] }}
-                                                        resizeMode='contain'
-                                                        style={styles.imageStyle}
-                                                    />
-                                                    <View style={{ width: wp(50) }}>
-                                                        <Text style={styles.titleStyle} >{item?.plan?.product?.name}</Text>
-                                                        <Text style={styles.subStyle}>{item?.plan?.product?.description}</Text>
-                                                        <Text style={styles.subStyle}>Renews {convertDay(item?.current_period_end)} {covertMonth(item?.current_period_end)}</Text>
-                                                    </View>
-                                                </View>
-                                                <View>
-                                                    <Feather name='chevron-right' size={hp(2.5)} />
-                                                </View>
-                                            </View>
-                                        </TouchableOpacity>
-                                    )
-                                }
-                            })
-                        }
+                            !data || data == 0 ? <NoSubscription />
+                                :
+                                <ScrollView>
+                                    <View style={styles.containerStyle}>
+                                        <Text style={styles.titleText}>Active</Text>
+                                    </View>
 
-                        {
-                            data?.map((item: any, index: any) => {
-                                if (item?.cancel_at_period_end) {
-                                    return (
-                                        <TouchableOpacity style={styles.cardRow}
-                                            key={index}
-                                        onPress={() => router.push({
-                                            pathname: '/profilePage/SubscriptionCancelSummary',
-                                            params: { subId: item?.id }
-                                        })}
-                                        >
-                                            <View style={styles.cardRowStyle}>
-                                                <View style={styles.leftInner}>
-                                                    <Image
-                                                        source={{ uri: item?.plan?.product?.images[0] }}
-                                                        resizeMode='contain'
-                                                        style={styles.imageStyle}
-                                                    />
-                                                    <View style={{ width: wp(50) }}>
-                                                        <Text style={styles.titleStyle} >{item?.plan?.product?.name}</Text>
-                                                        <Text style={styles.subStyle}>{item?.plan?.product?.description}</Text>
-                                                        <Text style={[styles.subStyle]}>Cancelled date:</Text>
-                                                        <Text style={[styles.subStyle, { color: '#F75555' }]}>{formatDate(item?.canceled_at)} || {formatTime(item?.canceled_at)}</Text>
-                                                    </View>
-                                                </View>
-                                                {/* <View>
-                                            <Feather name='chevron-right' size={hp(2.5)} />
-                                        </View> */}
-                                            </View>
-                                        </TouchableOpacity>
-                                    )
-                                }
-                            })
-                        }
+                                    {
+                                        data?.map((item: any, index: any) => {
+                                            if (!item?.cancel_at_period_end) {
+                                                return (
+                                                    <TouchableOpacity style={styles.cardRow}
+                                                        key={index}
+                                                        onPress={() => router.push({
+                                                            pathname: '/profilePage/SubscriptionSummary',
+                                                            params: { subId: item?.id }
+                                                        })}
+                                                    >
+                                                        <View style={styles.cardRowStyle}>
+                                                            <View style={styles.leftInner}>
+                                                                <Image
+                                                                    source={{ uri: item?.plan?.product?.images[0] }}
+                                                                    resizeMode='contain'
+                                                                    style={styles.imageStyle}
+                                                                />
+                                                                <View style={{ width: wp(50) }}>
+                                                                    <Text style={styles.titleStyle} >{item?.plan?.product?.name}</Text>
+                                                                    <Text style={styles.subStyle}>{item?.plan?.product?.description}</Text>
+                                                                    <Text style={styles.subStyle}>Renews {convertDay(item?.current_period_end)} {covertMonth(item?.current_period_end)}</Text>
+                                                                </View>
+                                                            </View>
+                                                            <View>
+                                                                <Feather name='chevron-right' size={hp(2.5)} />
+                                                            </View>
+                                                        </View>
+                                                    </TouchableOpacity>
+                                                )
+                                            }
+                                        })
+                                    }
 
-                    </ScrollView>
+                                    {
+                                        data?.map((item: any, index: any) => {
+                                            if (item?.cancel_at_period_end) {
+                                                return (
+                                                    <TouchableOpacity style={styles.cardRow}
+                                                        key={index}
+                                                        onPress={() => router.push({
+                                                            pathname: '/profilePage/SubscriptionCancelSummary',
+                                                            params: { subId: item?.id }
+                                                        })}
+                                                    >
+                                                        <View style={styles.cardRowStyle}>
+                                                            <View style={styles.leftInner}>
+                                                                <Image
+                                                                    source={{ uri: item?.plan?.product?.images[0] }}
+                                                                    resizeMode='contain'
+                                                                    style={styles.imageStyle}
+                                                                />
+                                                                <View style={{ width: wp(50) }}>
+                                                                    <Text style={styles.titleStyle} >{item?.plan?.product?.name}</Text>
+                                                                    <Text style={styles.subStyle}>{item?.plan?.product?.description}</Text>
+                                                                    <Text style={[styles.subStyle]}>Cancelled date:</Text>
+                                                                    <Text style={[styles.subStyle, { color: '#F75555' }]}>{formatDate(item?.canceled_at)} || {formatTime(item?.canceled_at)}</Text>
+                                                                </View>
+                                                            </View>
+                                                            {/* <View>
+                                                <Feather name='chevron-right' size={hp(2.5)} />
+                                            </View> */}
+                                                        </View>
+                                                    </TouchableOpacity>
+                                                )
+                                            }
+                                        })
+                                    }
+
+                                </ScrollView>
+                        }
+                    </>
             }
             {/* <View style={styles.containerStyle}>
                                 <Text style={styles.titleText}>Cancelled Plan</Text>

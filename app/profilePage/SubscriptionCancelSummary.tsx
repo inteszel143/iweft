@@ -81,7 +81,7 @@ export default function SubscriptionCancelSummary() {
                             </View>
                             <View style={styles.separator} />
                             <View style={[styles.summarRow, { marginTop: hp(4) }]}>
-                                <Text style={styles.summaryLabel}>Cancelled At: </Text>
+                                <Text style={styles.summaryLabel}>Cancel At: </Text>
                                 <Text style={[styles.summaryValue, { color: '#F75555' }]}>{formatDate(data?.cancel_at)} || {formatTime(data?.cancel_at)}</Text>
                             </View>
                         </View>

@@ -20,6 +20,7 @@ export default function Page() {
     const isFocused = useIsFocused();
     const { data, isPending } = useBooking(isFocused, "Upcoming");
     const [bookingId, setGetBookingId] = useState("");
+    const [total, setTotal] = useState(0);
     const [isHiding, setIsHiding] = useState(0);
     const toggleHide = (index: any) => {
         setIsHiding(index);
@@ -54,7 +55,6 @@ export default function Page() {
     if (!data || data.length === 0) {
         return <NoBooking />
     };
-
     return (
         <BottomSheetModalProvider>
             <View style={styles.container}>
@@ -149,7 +149,9 @@ export default function Page() {
 
                                         <TouchableOpacity style={[styles.mapBtn, { borderWidth: 1, borderColor: "#0a5ca8" }]}
                                             onPress={() => {
+
                                                 setGetBookingId(item?._id);
+                                                setTotal(item?.total_amount);
                                                 handlePresentModalPress()
                                             }}
                                         >
@@ -172,7 +174,6 @@ export default function Page() {
                                 </Animated.View>
                             }
 
-
                             {
                                 isHiding != item?._id ? <TouchableOpacity style={styles.footerBtn} onPress={() => toggleHide(item?._id)}>
                                     <Ionicons name='chevron-down-outline' size={hp(2.5)} />
@@ -180,9 +181,6 @@ export default function Page() {
                                     :
                                     <></>
                             }
-
-
-
                         </Animated.View>
                     )}
                 />
@@ -218,7 +216,7 @@ export default function Page() {
                                 style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
                                 onPress={() => router.push({
                                     pathname: '/bookingPage/BookingPaymentMethod',
-                                    params: { bookingId }
+                                    params: { bookingId, total }
                                 })}
                             >
                                 <Text style={[styles.bottomText, { color: "white" }]}>Yes, Cancel Booking</Text>

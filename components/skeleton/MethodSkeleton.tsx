@@ -14,29 +14,41 @@ export default function MethodSkeleton() {
             <View style={styles.card}>
                 <View style={styles.row}>
                     <ShimmerPlaceholder style={styles.circle} />
-                    <ShimmerPlaceholder style={styles.label} />
-                    <ShimmerPlaceholder style={styles.circleRight} />
+                    <View>
+                        <ShimmerPlaceholder style={styles.label} />
+                        <ShimmerPlaceholder style={styles.sub} />
+                    </View>
+                    {/* <ShimmerPlaceholder style={styles.circleRight} /> */}
                 </View>
             </View>
             <View style={styles.card}>
                 <View style={styles.row}>
                     <ShimmerPlaceholder style={styles.circle} />
-                    <ShimmerPlaceholder style={styles.label} />
-                    <ShimmerPlaceholder style={styles.circleRight} />
+                    <View>
+                        <ShimmerPlaceholder style={styles.label} />
+                        <ShimmerPlaceholder style={styles.sub} />
+                    </View>
+                    {/* <ShimmerPlaceholder style={styles.circleRight} /> */}
                 </View>
             </View>
             <View style={styles.card}>
                 <View style={styles.row}>
                     <ShimmerPlaceholder style={styles.circle} />
-                    <ShimmerPlaceholder style={styles.label} />
-                    <ShimmerPlaceholder style={styles.circleRight} />
+                    <View>
+                        <ShimmerPlaceholder style={styles.label} />
+                        <ShimmerPlaceholder style={styles.sub} />
+                    </View>
+                    {/* <ShimmerPlaceholder style={styles.circleRight} /> */}
                 </View>
             </View>
             <View style={styles.card}>
                 <View style={styles.row}>
                     <ShimmerPlaceholder style={styles.circle} />
-                    <ShimmerPlaceholder style={styles.label} />
-                    <ShimmerPlaceholder style={styles.circleRight} />
+                    <View>
+                        <ShimmerPlaceholder style={styles.label} />
+                        <ShimmerPlaceholder style={styles.sub} />
+                    </View>
+                    {/* <ShimmerPlaceholder style={styles.circleRight} /> */}
                 </View>
             </View>
         </View>
@@ -52,7 +64,7 @@ const styles = StyleSheet.create({
         height: hp(12),
         borderRadius: wp(4),
         alignSelf: 'center',
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderColor: "#F1F1F1",
         marginTop: hp(3),
         justifyContent: 'center',
@@ -61,7 +73,7 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: wp(4)
+        gap: wp(5)
     },
     circle: {
         width: wp(14),
@@ -79,10 +91,18 @@ const styles = StyleSheet.create({
         marginLeft: wp(6)
     },
     label: {
-        width: wp(40),
+        width: wp(50),
         height: hp(3),
         backgroundColor: "#DADADA",
         borderRadius: wp(10),
         opacity: 0.3,
+    },
+    sub: {
+        width: wp(40),
+        height: hp(2),
+        backgroundColor: "#DADADA",
+        borderRadius: wp(10),
+        opacity: 0.3,
+        marginTop: hp(1)
     }
 })

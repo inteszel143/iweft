@@ -8,24 +8,8 @@ import { subscribeServices } from '@/constants/booking/data';
 import { defaultStyles } from '@/constants/Styles';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ErrorPromoCodeModa from '@/components/ErrorPromoCodeModa';
-interface ServiceItem {
-    _id: string;
-    title: string;
-    sub_title: string;
-    base_price: number;
-    image: string;
-    other_images: string[];
-    details: string;
-    status: string;
-    created_by: {
-        _id: string;
-        email: string;
-    };
-    updated_by: string;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-}
+import { ServiceItem } from '@/utils/interface';
+
 export default function BookNow() {
     const { item } = useLocalSearchParams();
     const serviceItem: ServiceItem = JSON.parse(item as string);
@@ -68,7 +52,7 @@ export default function BookNow() {
                         <TouchableOpacity style={styles.textField}
                             onPress={() => router.push({
                                 pathname: '/homePage/item/ItemPage',
-                                params: { service: serviceItem?._id, service_name: serviceItem?.title },
+                                params: { service: serviceItem?._id, service_name: serviceItem?.title, base_price: serviceItem?.base_price },
                             })}
                         >
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>

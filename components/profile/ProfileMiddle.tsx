@@ -29,43 +29,49 @@ export default function ProfileMiddle() {
         {
             id: 3,
             icon: require('@/assets/temp/profileicons/payment.jpg'),
-            label: "Payment",
+            label: "Payment Methods",
             url: '/profilePage/ProfilePayment'
         },
         {
             id: 4,
+            icon: require('@/assets/temp/profileicons/payment.jpg'),
+            label: "Payment History",
+            url: '/profilePage/ProfilePaymentHistory'
+        },
+        {
+            id: 5,
             icon: require('@/assets/temp/profileicons/security.jpg'),
             label: "Security",
             url: '/profilePage/Security'
         },
         {
-            id: 5,
+            id: 6,
             icon: require('@/assets/temp/profileicons/language.jpg'),
             label: "Language",
             value: 'English (US)',
             url: '/profilePage/Language'
         },
         {
-            id: 6,
+            id: 7,
             icon: require('@/assets/temp/profileicons/subs.jpg'),
             label: "Subscription",
             url: '/profilePage/Subscription',
             switch: true
         },
         {
-            id: 7,
+            id: 8,
             icon: require('@/assets/temp/profileicons/privacy.jpg'),
             label: "Privacy Policy",
             url: '/profilePage/PrivacyPolicy'
         },
         {
-            id: 8,
+            id: 9,
             icon: require('@/assets/temp/profileicons/help.jpg'),
             label: "Help Center",
             url: '/profilePage/EditProfile'
         },
         {
-            id: 9,
+            id: 10,
             icon: require('@/assets/temp/profileicons/invite.jpg'),
             label: "Invite Friends",
             url: '/profilePage/InviteFriends'

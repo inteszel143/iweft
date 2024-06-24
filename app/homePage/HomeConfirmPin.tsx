@@ -15,6 +15,8 @@ import PinCodeModal from '@/components/PinCodeModal';
 import errorRes from '@/apis/errorRes';
 import { createBooking } from '@/apis/order';
 import useStoreBooking from '@/store/useStoreBooking';
+import { addPayUsingCard } from '@/apis/stripe';
+import ErrorBookingModal from '@/components/ErrorBookingModal';
 interface CellProps {
     index: number;
     symbol: string;
@@ -22,12 +24,12 @@ interface CellProps {
 }
 
 export default function HomeConfirmPin() {
-    // const { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude } = useLocalSearchParams();
-    const { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude } = useStoreBooking();
+    const { service, base_price, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude } = useStoreBooking();
     const [modalVisible, setModalVisible] = useState(false);
     const [btnLoading, setBtnLoading] = useState(false);
     const CELL_COUNT = 4;
     const [errorModalVisible, setErrorModalVisible] = useState(false);
+    const [errorBooking, setErrorBooking] = useState(false);
     const [enableMask, setEnableMask] = useState(true);
     const [value, setValue] = useState('');
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
@@ -59,8 +61,13 @@ export default function HomeConfirmPin() {
             </View>
         );
     };
+
+
+
+
     const onSubmit = async () => {
         setBtnLoading(true);
+        const totalPayment = parseFloat(base_price as any) + parseFloat(total as any);
         const orderData = {
             order_details: {
                 service,
@@ -71,29 +78,38 @@ export default function HomeConfirmPin() {
             delivery_date_time: delivery_date_time,
             address,
             delivery_instruction: "N/A",
-            total_amount: total,
+            total_amount: totalPayment,
             latitude: parseFloat(latitude),
             longitude: parseFloat(longitude),
         };
-
         const pin = parseInt(value);
         const response = await getPinNumber(pin);
         if (response?.isMatch) {
-            await createBooking(orderData);
-
-            setModalVisible(true);
-            setBtnLoading(false);
+            try {
+                const orderResult = await createBooking(orderData);
+                if (orderResult?.message === "Order successfully created") {
+                    await addPayUsingCard(totalPayment, orderResult?.orders?._id);
+                    setModalVisible(true);
+                    setBtnLoading(false);
+                }
+            } catch (error) {
+                setErrorBooking(true);
+                setBtnLoading(false);
+            }
         } else {
             setErrorModalVisible(true);
             setBtnLoading(false);
         }
-    }
+    };
+
+
 
 
     return (
         <View style={styles.container}>
             {errorModalVisible && <PinCodeModal modalVisible={errorModalVisible} setModalVisible={setErrorModalVisible} />}
             {modalVisible && <BookingSuccessModal modalVisible={modalVisible} setModalVisible={setModalVisible} />}
+            {errorBooking && <ErrorBookingModal modalVisible={errorBooking} setModalVisible={setErrorBooking} />}
 
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>

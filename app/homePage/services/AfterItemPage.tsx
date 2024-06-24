@@ -10,7 +10,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import ErrorPromoCodeModa from '@/components/ErrorPromoCodeModa';
 
 export default function AfterItemPage() {
-    const { service, service_name, itemData, total, total_data } = useLocalSearchParams();
+    const { service, service_name, itemData, total, total_data, base_price } = useLocalSearchParams();
     const [subscription, setSubscription] = useState<string | null>(null); // service subscription data
     const [errorModalVisible, setErrorModalVisible] = useState(false);
     const toggleSubmit = () => {
@@ -19,7 +19,7 @@ export default function AfterItemPage() {
         } else {
             router.push({
                 pathname: '/homePage/BookingDetails',
-                params: { service, service_name, itemData, total, total_data }
+                params: { service, service_name, itemData, total, total_data, base_price }
             });
         }
     };

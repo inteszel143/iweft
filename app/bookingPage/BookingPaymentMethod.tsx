@@ -5,10 +5,40 @@ import { Link, router, useLocalSearchParams } from 'expo-router';
 import { paymentMethods } from '@/constants/booking/data';
 import { Fontisto } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
-
+import numeral from 'numeral';
+import { useIsFocused } from '@react-navigation/native';
+import { useDefaultMethod } from '@/query/stripeQuery';
+import PaymentSkeleton from '@/components/skeleton/PaymentSkeleton';
+import MethodSkeleton from '@/components/skeleton/MethodSkeleton';
 export default function BookingPaymentMethod() {
-    const { bookingId } = useLocalSearchParams();
+    const isFocused = useIsFocused();
+    const { bookingId, total } = useLocalSearchParams();
     const [isSelected, setIsSelected] = useState(0);
+    const { data, isPending } = useDefaultMethod(isFocused);
+
+
+    const method = [
+        {
+            id: 1,
+            icon: require("@/assets/temp/bookingIcon/paypal.jpg"),
+            label: "PayPal",
+        },
+        {
+            id: 2,
+            icon: require("@/assets/temp/bookingIcon/google.jpg"),
+            label: "Google Pay",
+        },
+        {
+            id: 3,
+            icon: require("@/assets/temp/bookingIcon/apple.jpg"),
+            label: "Apple Pay",
+        },
+        {
+            id: 4,
+            icon: require("@/assets/temp/bookingIcon/mastercard.jpg"),
+            label: !data || data == 0 ? "Credit Card" : `**** **** **** **** ${data?.card?.last4}`,
+        },
+    ];
 
 
     return (
@@ -33,49 +63,40 @@ export default function BookingPaymentMethod() {
             </View>
 
 
+            {
+                isPending ? <MethodSkeleton /> : <View style={styles.selectedStyle}>
+                    {
+                        method.map((item, index) => {
+                            return (
+                                <TouchableOpacity style={styles.selectedRow} key={index}
+                                    onPress={() => setIsSelected(item.id)}
+                                >
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(4) }}>
+                                            <Image source={item.icon} resizeMode='contain' style={{ width: wp(8) }} />
+                                            <Text style={styles.selectedText}>{item.label}</Text>
+                                        </View>
 
-
-            <View style={styles.selectedStyle}>
-                {
-                    paymentMethods.map((item, index) => {
-                        return (
-                            <TouchableOpacity style={styles.selectedRow} key={index}
-                                onPress={() => setIsSelected(item.id)}
-                            >
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(4) }}>
-                                        <Image source={item.icon} resizeMode='contain' style={{ width: wp(8) }} />
-                                        <Text style={styles.selectedText}>{item.label}</Text>
+                                        <TouchableOpacity>
+                                            {isSelected === item.id ? <Fontisto name='radio-btn-active' size={hp(2.5)} color={'#0A5CA8'} /> : <Fontisto name='radio-btn-passive' size={hp(2.5)} color={'#0A5CA8'} />}
+                                        </TouchableOpacity>
                                     </View>
-
-                                    <TouchableOpacity>
-                                        {isSelected === item.id ? <Fontisto name='radio-btn-active' size={hp(2.5)} color={'#0A5CA8'} /> : <Fontisto name='radio-btn-passive' size={hp(2.5)} color={'#0A5CA8'} />}
-                                    </TouchableOpacity>
-                                </View>
-                            </TouchableOpacity>
-                        )
-                    })
-                }
-            </View>
-
+                                </TouchableOpacity>
+                            )
+                        })
+                    }
+                </View>
+            }
 
 
 
             <View style={{ flex: 1, }} />
 
-
-
-
-
-
             <View style={styles.footer}>
-
-
                 <View style={styles.footerTop}>
-                    <Text style={[styles.footerTopText, { fontFamily: 'UrbanistMedium', textDecorationLine: "line-through", color: "#424242" }]}>Paid $87.50</Text>
-                    <Text style={[styles.footerTopText, { fontFamily: 'UrbanistBold' }]}>Refund: $70.00</Text>
+                    <Text style={[styles.footerTopText, { fontFamily: 'UrbanistMedium', textDecorationLine: "line-through", color: "#424242" }]}>Paid AED {numeral(total).format('0,0')}.00</Text>
+                    <Text style={[styles.footerTopText, { fontFamily: 'UrbanistBold' }]}>Refund: AED {numeral(total as any * .80).format('0,0')}.00</Text>
                 </View>
-
 
                 <TouchableOpacity
                     style={[defaultStyles.footerBtn, { backgroundColor: isSelected == 0 ? "#DADADA" : "#0A5CA8", marginTop: hp(2) }]}
@@ -185,7 +206,7 @@ const styles = StyleSheet.create({
         marginTop: hp(3),
     },
     footerTopText: {
-        fontSize: hp(1.8)
+        fontSize: hp(2)
     }
 
 

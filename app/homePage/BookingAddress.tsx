@@ -8,7 +8,7 @@ import * as Location from 'expo-location';
 import { Fontisto } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
 export default function BookingAddress() {
-    const { service, service_name, itemData, total, pick_up_date_time, delivery_date_time } = useLocalSearchParams();
+    const { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, base_price } = useLocalSearchParams();
     const [errorMsg, setErrorMsg] = useState("");
     const [nameAddress, setNameAddress] = useState<any>();
     const [city, setCity] = useState<any>();
@@ -63,7 +63,7 @@ export default function BookingAddress() {
         const longitude = long;
         router.push({
             pathname: 'homePage/services/DriverInstruction',
-            params: { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude }
+            params: { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude, base_price }
         });
     }
 

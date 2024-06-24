@@ -18,7 +18,7 @@ export default function ProfilePayment() {
                         <TouchableOpacity onPress={() => router.back()}>
                             <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
                         </TouchableOpacity>
-                        <Text style={styles.bookingText} >Payment</Text>
+                        <Text style={styles.bookingText} >Payment Methods</Text>
                     </View>
 
                     <View style={styles.headerRight}>
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         backgroundColor: 'white',
         width: wp(100),
-        height: Platform.OS === 'ios' ? hp(12) : hp(10),
+        height: hp(12),
         alignItems: 'center'
     },
 })

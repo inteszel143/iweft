@@ -10,7 +10,7 @@ import ItemCategorySkeleton from '@/components/skeleton/ItemCategorySkeleton';
 import ItemDataSkeleton from '@/components/skeleton/ItemDataSkeleton';
 
 export default function ItemPage() {
-    const { service, service_name } = useLocalSearchParams();
+    const { service, service_name, base_price } = useLocalSearchParams();
     const isFocused = useIsFocused();
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -88,7 +88,7 @@ export default function ItemPage() {
         const itemDataString = JSON.stringify(transformedData);
         router.push({
             pathname: 'homePage/services/AfterItemPage',
-            params: { service, service_name, total, itemData: itemDataString, total_data: getTotalItems() }
+            params: { service, service_name, base_price, total, itemData: itemDataString, total_data: getTotalItems() }
         });
     }
 

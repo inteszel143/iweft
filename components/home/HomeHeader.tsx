@@ -64,11 +64,11 @@ export default function HomeHeader() {
                     >
                         <Image source={require('@/assets/icons/bell.png')} resizeMode='contain' style={{ width: wp(8.2) }} />
                     </TouchableOpacity>
-                    <View
+                    {/* <View
                         style={styles.notifRed}
                     >
 
-                    </View>
+                    </View> */}
                 </View>
 
                 {/* bookmark */}

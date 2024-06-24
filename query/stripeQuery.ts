@@ -1,4 +1,5 @@
 import {
+  getAllPaymentHistory,
   getAllSubscription,
   getDefaultPaymentMethod,
   getListPaymentMethod,
@@ -47,5 +48,16 @@ export const useGetListPaymentMethod = (isFocused: any) => {
     queryKey: ["list-methods"],
     enabled: isFocused,
     queryFn: getListPaymentMethod,
+  });
+};
+
+/**
+ *  GET PAYMENT HISTORY ---------------------------------------------------------
+ */
+export const useGetPaymentHistory = (isFocused: any) => {
+  return useQuery({
+    queryKey: ["payment-history"],
+    enabled: isFocused,
+    queryFn: getAllPaymentHistory,
   });
 };

@@ -14,6 +14,7 @@ import PinCodeModal from '@/components/PinCodeModal';
 import { getPinNumber } from '@/apis/fetchAuth';
 import { cancelBooking } from '@/apis/order';
 import errorRes from '@/apis/errorRes';
+import { postRefundPayment } from '@/apis/stripe';
 interface CellProps {
     index: number;
     symbol: string;
@@ -63,11 +64,19 @@ export default function BookingPin() {
         const pin = parseInt(value);
         const response = await getPinNumber(pin);
         if (response?.isMatch) {
-            await cancelBooking(bookingId as string);
-            setTimeout(() => {
+            try {
+                const cancelResult = await cancelBooking(bookingId as string);
+                if (cancelResult?.message === "Booking successfully cancelled") {
+                    await postRefundPayment(bookingId as string);
+                    setTimeout(() => {
+                        setBtnLoading(false);
+                        setModalVisible(true);
+                    }, 2000);
+                }
+            } catch (error) {
                 setBtnLoading(false);
-                setModalVisible(true);
-            }, 2000);
+                console.log(errorRes(error));
+            }
         } else {
             setErrorModalVisible(true);
             setBtnLoading(false);

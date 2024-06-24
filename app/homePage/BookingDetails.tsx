@@ -14,7 +14,7 @@ import { defaultStyles } from '@/constants/Styles';
 import ModalAlert from '@/components/home/items/ModalAlert';
 
 export default function BookingDetails() {
-    const { service, service_name, itemData, total, total_data } = useLocalSearchParams();
+    const { service, service_name, itemData, total, total_data, base_price } = useLocalSearchParams();
     const [selected, setSelected] = useState<any[]>([]);
     const modalARef = useRef<BottomSheetModal>(null);
 
@@ -56,7 +56,7 @@ export default function BookingDetails() {
         const delivery_date_time = deliveryDate + ' ' + deliveryTime;
         router.push({
             pathname: '/homePage/BookingAddress',
-            params: { service, service_name, itemData, total, pick_up_date_time, delivery_date_time }
+            params: { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, base_price }
         });
     }
 

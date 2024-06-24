@@ -9,6 +9,7 @@ import ServiceSkeleton from '../skeleton/ServiceSkeleton';
 export default function HomeServices() {
     const isFocused = useIsFocused();
     const { data, isPending } = useHomeServices(isFocused)
+  
     return (
         <View style={styles.container}>
             <View style={styles.header}>

@@ -5,8 +5,11 @@ import * as SecureStore from "expo-secure-store";
 /**
  * CREATE PAYMENT INTENT  ---------------------------------------------------------
  */
-export const postPaymentIntent = async () => {
+export const postPaymentIntent = async (total_amount: number) => {
   const accessToken = await SecureStore.getItemAsync("accessToken");
+  const data = {
+    total_amount: total_amount,
+  };
   const response = await fetch(
     `${process.env.EXPO_PUBLIC_API_URL}/stripe/payment-sheet`,
     {
@@ -15,6 +18,7 @@ export const postPaymentIntent = async () => {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
+      body: JSON.stringify(data),
     }
   );
   const { paymentIntent, ephemeralKey, customer } = await response.json();
@@ -24,10 +28,39 @@ export const postPaymentIntent = async () => {
     customer,
   };
 };
+
+/**
+ * CREATE PAYMENT FOR NOT SUBSCRIPTION  ---------------------------------------------------------
+ */
+export const addPayUsingCard = async (
+  total_amount: number,
+  order_id: string
+) => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  const data = {
+    total_amount: total_amount,
+    order_id: order_id,
+  };
+  try {
+    const response = await axios.post(
+      `${process.env.EXPO_PUBLIC_API_URL}/stripe/payment-sheet`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          // "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response?.data || [];
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 /**
  * CREATE COLLECT PAYMEND DETAILS  ---------------------------------------------------------
  */
-
 
 export const postCollectPayment = async () => {
   const accessToken = await SecureStore.getItemAsync("accessToken");
@@ -49,8 +82,6 @@ export const postCollectPayment = async () => {
     customer,
   };
 };
-
-
 
 /**
  * GET ALL PAYMENT METHODS  ---------------------------------------------------------
@@ -292,6 +323,52 @@ export const addPaymentMethod = async (payment_method_id: string) => {
   try {
     const response = await axios.post(
       `${process.env.EXPO_PUBLIC_API_URL}/stripe/add-card-payment-method`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          // "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response?.data || [];
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+/**
+ * GET ALL PAYMENT HISTORY   ---------------------------------------------------------
+ */
+export const getAllPaymentHistory = async () => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  try {
+    const response = await axios.get(
+      `${process.env.EXPO_PUBLIC_API_URL}/stripe/payments-history`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          // "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response?.data?.payment_history?.data || [];
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+/**
+ * REFUND PAYMENT USER  ---------------------------------------------------------
+ */
+export const postRefundPayment = async (order_id: string) => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  const data = {
+    order_id: order_id,
+  };
+  try {
+    const response = await axios.post(
+      `${process.env.EXPO_PUBLIC_API_URL}/stripe/refund-payment`,
       data,
       {
         headers: {

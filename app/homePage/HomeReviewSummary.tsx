@@ -11,10 +11,10 @@ import moment from 'moment';
 import Paypal from '@/components/stripe/Paypal';
 import GooglePay from '@/components/stripe/GooglePay';
 import ApplePay from '@/components/stripe/ApplePay';
-
+import numeral from 'numeral';
 export default function HomeReviewSummary() {
-    const { imageUrl, method } = useLocalSearchParams();
-    const { service_name, total } = useStoreBooking();
+    const { imageUrl, method, isSelected } = useLocalSearchParams();
+    const { service_name, total, base_price } = useStoreBooking();
     const [isHiding, setIsHiding] = useState(false);
     const toggleHide = () => {
         setIsHiding(!isHiding);
@@ -38,7 +38,7 @@ export default function HomeReviewSummary() {
 
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(2) }}>
 
-                <View style={[styles.summarCard, { marginTop: hp(3) }]}>
+                <View style={[styles.summarCard, { marginTop: hp(2.5), paddingVertical: hp(4) }]}>
                     <View style={styles.summarRow}>
                         <Text style={styles.summaryLabel}>Services</Text>
                         <Text style={styles.summaryValue}>{service_name}</Text>
@@ -47,10 +47,10 @@ export default function HomeReviewSummary() {
                         <Text style={styles.summaryLabel}>Category</Text>
                         <Text style={styles.summaryValue}>Premium Bundle</Text>
                     </View>
-                    <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                    {/* <View style={[styles.summarRow, { marginTop: hp(3) }]}>
                         <Text style={styles.summaryLabel}>Subscription Plan </Text>
                         <Text style={styles.summaryValue}>Basic</Text>
-                    </View>
+                    </View> */}
                     <View style={[styles.summarRow, { marginTop: hp(3) }]}>
                         <Text style={styles.summaryLabel}>Date & Time</Text>
                         <Text style={styles.summaryValue}>{moment().format("MMM D YYYY")} | {moment().format("h:mm A")}</Text>
@@ -63,7 +63,7 @@ export default function HomeReviewSummary() {
 
 
 
-                <View style={[styles.summarCard, { marginTop: hp(2) }]}>
+                {/* <View style={[styles.summarCard, { marginTop: hp(2) }]}>
                     <TouchableOpacity style={styles.summarRow}
                         onPress={toggleHide}
                     >
@@ -87,24 +87,24 @@ export default function HomeReviewSummary() {
                             </View>
                         </Animated.View>
                     }
-                </View>
+                </View> */}
 
 
-                <View style={[styles.summarCard, { marginTop: hp(2) }]}>
+                <View style={[styles.summarCard, { marginTop: hp(2), paddingVertical: hp(3.5) }]}>
                     <View style={styles.summarRow}>
-                        <Text style={styles.summaryLabel}>House Cleaning</Text>
-                        <Text style={styles.summaryValue}>AED 277.00</Text>
+                        <Text style={styles.summaryLabel}>Services Fee</Text>
+                        <Text style={styles.summaryValue}>AED {numeral(base_price).format('0,0')}.00</Text>
                     </View>
                     <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                        <Text style={styles.summaryLabel}>Promo</Text>
-                        <Text style={[styles.summaryValue, { color: '#0a5ca8' }]}>- AED 37.50</Text>
+                        <Text style={styles.summaryLabel}>Total Items</Text>
+                        <Text style={[styles.summaryValue, { color: '#0a5ca8' }]}>AED {numeral(total).format('0,0')}.00</Text>
                     </View>
 
                     <View style={styles.separator} />
 
                     <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                        <Text style={styles.summaryLabel}>Total</Text>
-                        <Text style={[styles.summaryValue, { fontFamily: 'UrbanistBold', }]}>AED {total}</Text>
+                        <Text style={styles.summaryValue}>Total</Text>
+                        <Text style={[styles.summaryValue, { fontFamily: 'UrbanistBold', }]}>AED {parseFloat(base_price as numeral) + parseFloat(total as numeral)}.00</Text>
                     </View>
                 </View>
 
@@ -127,10 +127,10 @@ export default function HomeReviewSummary() {
             <View style={styles.footer}>
 
                 {
-                    method === "Credit Card" ?
+                    isSelected === "4" ?
                         <CreditCard />
-                        : method === "PayPal" ?
-                            <Paypal /> : method === "Google Pay" ?
+                        : isSelected === "1" ?
+                            <Paypal /> : isSelected === "2" ?
                                 <GooglePay /> :
                                 <ApplePay />
                 }
@@ -212,10 +212,14 @@ const styles = StyleSheet.create({
     },
     summaryValue: {
         fontFamily: 'UrbanistSemiBold',
-        fontSize: hp(2)
+        fontSize: hp(2),
+        textAlign: 'right'
     },
     status: {
-        width: wp(20), height: hp(4), backgroundColor: "#0A5CA826", borderRadius: 10,
+        width: wp(20),
+        height: hp(4),
+        backgroundColor: "#0A5CA826",
+        borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center'
     },
