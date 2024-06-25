@@ -42,7 +42,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: "#0a5ca8",
         headerShadowVisible: false,
         tabBarLabelStyle: {
-          fontFamily: "UrbanistMedium",
+          fontFamily: "UrbanistSemiBold",
           paddingBottom: Platform.OS === "android" ? 2 : 0,
         },
         // lazy: false

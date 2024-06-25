@@ -26,7 +26,9 @@ export default function PaymentCreditCard() {
                     }
                     {
                         isPending ? <ShimmerPlaceholder style={styles.circle} /> :
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => router.push('/profilePage/AddNewCard')}
+                            >
                                 <Text style={styles.connectStyle} >Connect</Text>
                             </TouchableOpacity>
                     }

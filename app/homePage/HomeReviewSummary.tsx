@@ -2,8 +2,6 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Platform, 
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
-import { Entypo } from '@expo/vector-icons';
-import { defaultStyles } from '@/constants/Styles';
 import Animated, { FadeInUp, FadeOutUp } from 'react-native-reanimated';
 import CreditCard from '@/components/stripe/CreditCard';
 import useStoreBooking from '@/store/useStoreBooking';
@@ -38,15 +36,15 @@ export default function HomeReviewSummary() {
 
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(2) }}>
 
-                <View style={[styles.summarCard, { marginTop: hp(2.5), paddingVertical: hp(4) }]}>
+                <View style={[styles.summarCard, { marginTop: hp(3), paddingVertical: hp(4) }]}>
                     <View style={styles.summarRow}>
                         <Text style={styles.summaryLabel}>Services</Text>
                         <Text style={styles.summaryValue}>{service_name}</Text>
                     </View>
-                    <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                    {/* <View style={[styles.summarRow, { marginTop: hp(3) }]}>
                         <Text style={styles.summaryLabel}>Category</Text>
                         <Text style={styles.summaryValue}>Premium Bundle</Text>
-                    </View>
+                    </View> */}
                     {/* <View style={[styles.summarRow, { marginTop: hp(3) }]}>
                         <Text style={styles.summaryLabel}>Subscription Plan </Text>
                         <Text style={styles.summaryValue}>Basic</Text>
@@ -128,7 +126,7 @@ export default function HomeReviewSummary() {
 
                 {
                     isSelected === "4" ?
-                        <CreditCard />
+                        <CreditCard method={method as string} />
                         : isSelected === "1" ?
                             <Paypal /> : isSelected === "2" ?
                                 <GooglePay /> :

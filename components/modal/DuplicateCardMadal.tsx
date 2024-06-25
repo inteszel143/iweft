@@ -2,13 +2,13 @@ import { StyleSheet, Text, View, Modal, Platform, Image, TouchableOpacity } from
 import React, { useEffect } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router } from 'expo-router';
+import LottieView from 'lottie-react-native';
 interface ModalProps {
     modalVisible: boolean;
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>; // Ensure correct typing
 }
 
-export default function SuccessAddPaymentMethod({ modalVisible, setModalVisible }: ModalProps) {
-
+export default function DuplicateCardMadal({ modalVisible, setModalVisible }: ModalProps) {
     return (
         <Modal
             animationType="fade"
@@ -20,23 +20,23 @@ export default function SuccessAddPaymentMethod({ modalVisible, setModalVisible 
             <View style={styles.modalStyle}>
                 <View style={styles.modalBox}>
                     <View>
-                        <Image source={require('@/assets/temp/success.jpg')} resizeMode='contain' style={styles.imageStyle} />
+                        <LottieView
+                            autoPlay
+                            style={styles.errorLottieStyle}
+                            source={require('@/assets/animate/invalid.json')}
+                        />
                     </View>
-                    <Text style={styles.titleStyle}>Added Successful!</Text>
-                    <Text style={styles.subStyle}>Your payment method has been added successfully!</Text>
-
-                    <TouchableOpacity style={[styles.btnStyle, { backgroundColor: '#0A5CA8', }]}
-                        onPress={() => {
-                            setModalVisible(false);
-                            router.back();
-                        }}
-                    >
-                        <Text style={[styles.btnText, { color: '#FFFFFF' }]}>OK</Text>
+                    <Text style={styles.titleStyle}>Card already added</Text>
+                    <Text style={styles.subStyle}>You’ve already added this card. Please add a different one.</Text>
+                    <View style={{ marginTop: hp(2.5) }} />
+                    <TouchableOpacity style={styles.btnStyle} onPress={() => setModalVisible(false)}>
+                        <Text style={styles.btnText}>Try again</Text>
                     </TouchableOpacity>
                 </View>
             </View>
 
         </Modal>
+
     )
 }
 
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     },
     modalBox: {
         width: wp(86),
-        height: Platform.OS === 'ios' ? hp(52) : hp(54),
+        height: Platform.OS === 'ios' ? hp(48) : hp(50),
         backgroundColor: "white",
         borderRadius: wp(6),
         alignItems: 'center',
@@ -64,20 +64,20 @@ const styles = StyleSheet.create({
         fontFamily: 'UrbanistBold',
         fontSize: hp(2.9),
         textAlign: 'center',
-        color: '#0A5CA8',
+        color: '#DB3747',
         marginTop: hp(1)
     },
     subStyle: {
-        fontFamily: 'UrbanistRegular',
-        fontSize: hp(2.1),
+        fontFamily: 'UrbanistMedium',
+        fontSize: hp(2.3),
         textAlign: 'center',
-        color: "#212121",
+        color: "gray",
         marginTop: hp(2),
     },
     btnStyle: {
-        marginTop: hp(2.5),
         height: hp(7),
-        width: wp(65),
+        width: wp(50),
+        backgroundColor: '#DC3545',
         borderRadius: wp(10),
         alignItems: 'center',
         justifyContent: 'center'
@@ -85,5 +85,14 @@ const styles = StyleSheet.create({
     btnText: {
         fontFamily: 'UrbanistBold',
         fontSize: hp(2),
+        color: 'white'
+    },
+    indicator: {
+        position: 'absolute',
+        bottom: hp(4),
+    },
+    errorLottieStyle: {
+        width: wp(34),
+        height: hp(15)
     }
 })

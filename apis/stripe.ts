@@ -382,3 +382,24 @@ export const postRefundPayment = async (order_id: string) => {
     return Promise.reject(error);
   }
 };
+
+/**
+ * GET E - RECEIPT BOOKING  ---------------------------------------------------------
+ */
+export const getBookingEreciept = async (orderId: string) => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  try {
+    const response = await axios.get(
+      `${process.env.EXPO_PUBLIC_API_URL}/stripe/receipt/${orderId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          // "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response?.data?.receipt || [];
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

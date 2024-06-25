@@ -6,11 +6,15 @@ import { router } from 'expo-router';
 interface ModalProps {
     modalVisible: boolean;
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>; // Ensure correct typing
+    orderId: string;
 }
-export default function BookingSuccessModal({ modalVisible, setModalVisible }: ModalProps) {
+export default function BookingSuccessModal({ modalVisible, setModalVisible, orderId }: ModalProps) {
     const toggleEreciept = () => {
         setModalVisible(false);
-        router.push('/homePage/HomeBookingReceipt');
+        router.push({
+            pathname: '/homePage/HomeBookingReceipt',
+            params: { orderId }
+        });
     };
     const toggleBookings = () => {
         setModalVisible(false);

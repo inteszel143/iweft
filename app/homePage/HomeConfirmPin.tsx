@@ -33,6 +33,7 @@ export default function HomeConfirmPin() {
     const [enableMask, setEnableMask] = useState(true);
     const [value, setValue] = useState('');
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
+    const [orderId, setOrderId] = useState("");
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
         value,
         setValue,
@@ -89,6 +90,7 @@ export default function HomeConfirmPin() {
                 const orderResult = await createBooking(orderData);
                 if (orderResult?.message === "Order successfully created") {
                     await addPayUsingCard(totalPayment, orderResult?.orders?._id);
+                    setOrderId(orderResult?.orders?._id);
                     setModalVisible(true);
                     setBtnLoading(false);
                 }
@@ -108,7 +110,7 @@ export default function HomeConfirmPin() {
     return (
         <View style={styles.container}>
             {errorModalVisible && <PinCodeModal modalVisible={errorModalVisible} setModalVisible={setErrorModalVisible} />}
-            {modalVisible && <BookingSuccessModal modalVisible={modalVisible} setModalVisible={setModalVisible} />}
+            {modalVisible && <BookingSuccessModal modalVisible={modalVisible} setModalVisible={setModalVisible} orderId={orderId} />}
             {errorBooking && <ErrorBookingModal modalVisible={errorBooking} setModalVisible={setErrorBooking} />}
 
             <View style={styles.Headercontainer}>

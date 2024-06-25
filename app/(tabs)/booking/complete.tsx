@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInUp, FadeOut, FadeOutUp, FadingTransition, JumpingTransition, Layout, withSpring } from 'react-native-reanimated';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { useIsFocused } from '@react-navigation/native';
 import { useBooking } from '@/query/orderQuery';
 import BookingSkeleton from '@/components/booking/BookingSkeleton';
@@ -122,11 +122,15 @@ export default function Page() {
                                     </MapView>
                                 </View>
 
-                                <Link href={'/bookingPage/Ereceipt'} style={[styles.mapBtn, { backgroundColor: "#0a5ca8" }]} asChild>
-                                    <TouchableOpacity >
-                                        <Text style={[styles.mapText, { color: 'white' }]}>View E-Receipt</Text>
-                                    </TouchableOpacity>
-                                </Link>
+                                <TouchableOpacity
+                                    style={[styles.mapBtn, { backgroundColor: "#0a5ca8" }]}
+                                    onPress={() => router.push({
+                                        pathname: '/bookingPage/Ereceipt',
+                                        params: { orderId: item?._id }
+                                    })}
+                                >
+                                    <Text style={[styles.mapText, { color: 'white' }]}>View E-Receipt</Text>
+                                </TouchableOpacity>
 
                                 <TouchableOpacity style={styles.footerBtn} onPress={() => toggleClose()}>
                                     <Ionicons name='chevron-up-outline' size={hp(2.5)} />

@@ -159,11 +159,14 @@ export default function Page() {
                                         </TouchableOpacity>
 
 
-                                        <Link href={'/bookingPage/Ereceipt'} style={[styles.mapBtn, { backgroundColor: "#0a5ca8" }]} asChild>
-                                            <TouchableOpacity >
-                                                <Text style={[styles.mapText, { color: 'white' }]}>View E-Receipt</Text>
-                                            </TouchableOpacity>
-                                        </Link>
+                                        <TouchableOpacity style={[styles.mapBtn, { backgroundColor: "#0a5ca8" }]}
+                                            onPress={() => router.push({
+                                                pathname: '/bookingPage/Ereceipt',
+                                                params: { orderId: item?._id }
+                                            })}
+                                        >
+                                            <Text style={[styles.mapText, { color: 'white' }]}>View E-Receipt</Text>
+                                        </TouchableOpacity>
 
                                     </View>
 

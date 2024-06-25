@@ -7,25 +7,31 @@ import { addPaymentMethod } from '@/apis/stripe';
 import SuccessAddPaymentMethod from '@/components/modal/SuccessAddPaymentMethod';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Ionicons } from '@expo/vector-icons';
+import { useQueryClient } from '@tanstack/react-query';
+import DuplicateCardMadal from '@/components/modal/DuplicateCardMadal';
 export default function AddNewCard() {
-
+    const queryClient = useQueryClient();
     const { createPaymentMethod } = useStripe();
     const [modalVisible, setModalVisible] = useState(false);
-    const [cardDetails, setCardDetails] = useState<any>(null);
-    const [complete, setComplete] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [duplicateModal, setDuplicateModal] = useState(false);
 
+    const [loading, setLoading] = useState(false);
+    const [cardDetails, setCardDetails] = useState<any>({})
+    const [complete, setComplete] = useState(false);
+    const [cardName, setCardName] = useState('');
     const [cardNumber, setCardNumber] = useState('');
     const [expiryDate, setExpiryDate] = useState('');
     const [errors, setErrors] = useState({});
+    const [cvc, setCvc] = useState('');
+
+    const validateCardName = (name: string) => {
+        return name.trim().length > 0;
+    };
 
     const validateCardNumber = (number: string) => {
         const regex = /^[0-9]{16}$/;
         return regex.test(number.replace(/\s+/g, ''));
     };
-
-
-
     const handleExpiryDateChange = (text: string) => {
         const cleaned = text.replace(/\D/g, '');
         let formatted = cleaned;
@@ -34,7 +40,26 @@ export default function AddNewCard() {
         }
         setExpiryDate(formatted);
     };
+    const getCardBrand = (number: string) => {
+        if (number.startsWith('4')) return 'Visa';
+        if (number.startsWith('5')) return 'MasterCard';
+        // Add more logic for other card brands
+        return 'Unknown';
+    };
+    const validateExpiryDate = (date: any) => {
+        const regex = /^(0[1-9]|1[0-2]) \/ ([0-9]{2})$/;
+        if (!regex.test(date)) return false;
 
+        const [month, year] = date.split(' / ').map(Number);
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth() + 1; // getMonth() returns 0-based month
+        const currentYear = currentDate.getFullYear() % 100; // get last two digits of the year
+
+        if (year < currentYear) return false;
+        if (year === currentYear && month < currentMonth) return false;
+
+        return true;
+    };
     const handleCardNumberChange = (text: string) => {
         const cleaned = text.replace(/\D/g, '');
         let formatted = '';
@@ -45,14 +70,49 @@ export default function AddNewCard() {
         setCardNumber(formatted.trim());
     };
 
+    const validateCvc = (cvc: any) => {
+        const regex = /^[0-9]{3,4}$/;
+        return regex.test(cvc);
+    };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const newErrors: any = {};
+        if (!validateCardName(cardName)) newErrors.cardName = 'Invalid card name';
         if (!validateCardNumber(cardNumber)) newErrors.cardNumber = 'Invalid card number';
+        if (!validateExpiryDate(expiryDate)) newErrors.expiryDate = 'Invalid expiry date';
+        if (!validateCvc(cvc)) newErrors.cvc = 'Invalid CVC';
 
         setErrors(newErrors);
+        if (Object.keys(newErrors).length === 0) {
+            setLoading(true);
+            const [expiryMonth, expiryYear] = expiryDate.split(' / ').map(Number);
+            const cardData = {
+                brand: getCardBrand(cardNumber.replace(/\s+/g, '')),
+                complete: true,
+                expiryMonth: expiryMonth,
+                expiryYear: 2000 + expiryYear,
+                last4: cardNumber.slice(-4),
+                postalCode: "1",
+                validCVC: 'Valid',
+                validExpiryDate: 'Valid',
+                validNumber: 'Valid'
+            };
+            setCardDetails(cardData);
+            setLoading(false);
+            try {
+                const { paymentMethod, error } = await createPaymentMethod({
+                    paymentMethodType: "Card",
+                    card: cardDetails
+                });
+                console.log(paymentMethod);
+                console.log(error);
+                setLoading(false);
+            } catch (error) {
+                setLoading(false);
+            }
+        }
 
-    }
+    };
 
 
     const handleAddPaymentMethod = async () => {
@@ -71,36 +131,35 @@ export default function AddNewCard() {
                 //         name: "Edzel Intes",
                 //         phone: "09284856233",
                 //         email: "intesedzel@gmail.com"
+                // default-method
                 //     }
                 // },
 
             });
-            setLoading(false);
             if (error) {
                 setLoading(false);
                 console.log('Error creating payment method:', error);
                 Alert.alert('Error creating payment method', error.message);
             } else {
-                // try {
-                //     const response = await addPaymentMethod(paymentMethod?.id as string);
-                //     console.log(response);
-                //     setLoading(false);
-                // } catch (error) {
-                //     setLoading(false);
-                //     console.log(error)
-                // }
+                try {
+                    await addPaymentMethod(paymentMethod?.id as string);
+                    queryClient.invalidateQueries({ queryKey: ['default-method'] });
+                    setModalVisible(true);
+                    setLoading(false);
+                } catch (error) {
+                    setLoading(false);
+                    setDuplicateModal(true);
+                }
             }
         } catch (error) {
             setLoading(false);
             console.log(error)
         }
     }
-
-
     return (
         <View style={styles.container}>
-
             {modalVisible && <SuccessAddPaymentMethod modalVisible={modalVisible} setModalVisible={setModalVisible} />}
+            {duplicateModal && <DuplicateCardMadal modalVisible={duplicateModal} setModalVisible={setDuplicateModal} />}
 
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
@@ -119,15 +178,19 @@ export default function AddNewCard() {
                 </View>
             </View>
 
-            <KeyboardAwareScrollView keyboardDismissMode='on-drag' extraScrollHeight={hp(4)} contentContainerStyle={{ flex: 1, }}>
+            <KeyboardAwareScrollView
+                keyboardDismissMode='on-drag'
+                extraScrollHeight={hp(4)}
+                contentContainerStyle={{ paddingBottom: Platform.OS === 'ios' ? hp(14) : hp(6) }}
+                showsVerticalScrollIndicator={false}
+            >
                 <View style={{ alignItems: 'center', marginTop: Platform.OS === 'ios' ? hp(2) : hp(1) }}>
                     <Image source={require('@/assets/temp/profileicons/card.jpg')}
                         resizeMode='contain'
                         style={{ width: wp(90), height: hp(25) }} />
                 </View>
 
-
-                {/* <CardForm
+                <CardForm
                     // disabled={inputDisabled}
                     placeholders={{
                         number: '4242 4242 4242 4242',
@@ -161,40 +224,15 @@ export default function AddNewCard() {
 
                     }}
                     onFormComplete={(cardDetails) => {
-                        console.log(cardDetails);
                         setCardDetails(cardDetails);
                         setComplete(cardDetails.complete);
                     }}
                     defaultValues={{
                         countryCode: 'US',
                     }}
-                /> */}
+                />
                 {/* <Button title='Add Payment Method' onPress={handleAddPaymentMethod} /> */}
-
-                {/* <CardField
-                    postalCodeEnabled={false}
-                    placeholders={{
-                        number: '4242 4242 4242 4242',
-                        // postalCode: '12345',
-                        cvc: 'CVC',
-                        expiration: 'MM / YY',
-                    }}
-                    cardStyle={{ backgroundColor: '#FFFFFF', }}
-                    style={{
-                        width: wp(90),
-                        height: hp(20),
-                        marginVertical: 30,
-                        alignSelf: 'center'
-                    }}
-                    onCardChange={(cardDetails) => {
-                        setCardDetails(cardDetails);
-                        console.log(cardDetails);
-                        setComplete(cardDetails.complete);
-                        // console.log(cardDetails);
-                    }}
-                /> */}
-
-
+                {/* 
                 <View style={{ alignItems: 'center' }}>
 
                     <View style={{ marginTop: hp(3) }}>
@@ -203,10 +241,13 @@ export default function AddNewCard() {
                             <TextInput
                                 placeholder='Andrew Ainsley'
                                 placeholderTextColor={'#9E9E9E'}
+                                value={cardName}
+                                onChangeText={setCardName}
                                 style={styles.textStyle}
                                 autoCapitalize='words'
                             />
                         </View>
+                        {errors.cardName && <Text style={styles.error}>{errors.cardName}</Text>}
                     </View>
                     <View style={{ marginTop: hp(3) }}>
                         <Text style={styles.textStyleLabel}>Card Number</Text>
@@ -245,6 +286,7 @@ export default function AddNewCard() {
                                     <Image source={require('@/assets/temp/profileicons/calendar.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
                                 </View>
                             </View>
+                            {errors.expiryDate && <Text style={styles.error}>{errors.expiryDate}</Text>}
                         </View>
                         <View>
                             <Text style={styles.textStyleLabel}>CVV</Text>
@@ -253,31 +295,41 @@ export default function AddNewCard() {
                                     style={styles.textStyle}
                                     placeholder="123"
                                     placeholderTextColor={'#9E9E9E'}
-                                    // value={expiryDate}
-                                    // onChangeText={handleExpiryDateChange}
+                                    value={cvc}
+                                    onChangeText={setCvc}
                                     keyboardType="numeric"
                                     maxLength={4}
                                 />
                             </View>
+                            {errors.cvc && <Text style={styles.error}>{errors.cvc}</Text>}
                         </View>
                     </View>
 
-                </View>
+                </View> */}
 
-                <View style={{ flex: 1, }} />
-                <View style={{ alignItems: 'center', paddingBottom: hp(4) }}>
+                {
+                    Platform.OS === 'android' && <View style={{ alignItems: 'center', marginTop: hp(6) }}>
+                        <TouchableOpacity style={styles.footerBtn}
+                            onPress={handleAddPaymentMethod}
+                        >
+                            {loading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>Add New Card</Text>}
+                        </TouchableOpacity>
+                    </View>
+                }
+
+            </KeyboardAwareScrollView>
+            {
+                Platform.OS === 'ios' && <View style={styles.footer} >
                     <TouchableOpacity style={styles.footerBtn}
-                        onPress={handleSubmit}
+                        onPress={handleAddPaymentMethod}
                     >
                         {loading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>Add New Card</Text>}
                     </TouchableOpacity>
                 </View>
-
-            </KeyboardAwareScrollView>
-
+            }
 
 
-        </View>
+        </View >
     )
 }
 
@@ -354,22 +406,16 @@ const styles = StyleSheet.create({
         paddingHorizontal: wp(6)
     },
 
-
-
-
     row: {
         flexDirection: 'row',
         alignItems: 'center',
     },
 
-
-
-
-
     footer: {
         position: 'absolute',
         bottom: 0,
         width: wp(100),
+        backgroundColor: "white",
         height: Platform.OS === 'ios' ? hp(12) : hp(12),
         alignItems: 'center'
     },

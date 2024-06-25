@@ -1,6 +1,7 @@
 import {
   getAllPaymentHistory,
   getAllSubscription,
+  getBookingEreciept,
   getDefaultPaymentMethod,
   getListPaymentMethod,
   getUserSubscriptionById,
@@ -59,5 +60,16 @@ export const useGetPaymentHistory = (isFocused: any) => {
     queryKey: ["payment-history"],
     enabled: isFocused,
     queryFn: getAllPaymentHistory,
+  });
+};
+
+/**
+ *  GET E-RECEIPT ---------------------------------------------------------
+ */
+export const useGetEReceipt = (isFocused: any, orderId: string) => {
+  return useQuery({
+    queryKey: ["e-receipt"],
+    enabled: isFocused,
+    queryFn: () => getBookingEreciept(orderId),
   });
 };

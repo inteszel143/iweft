@@ -53,17 +53,35 @@ export default function ProfilePaymentHistory() {
                                     renderItem={({ item }) => (
                                         <TouchableOpacity style={styles.cardRow}>
                                             <View style={styles.cardInner}>
-                                                <Image
-                                                    source={require("@/assets/temp/notif/notif1.png")}
-                                                    resizeMode='contain'
-                                                    style={styles.imageStyle}
-                                                />
-                                                <View style={{ flex: 1 }}>
-                                                    <Text style={styles.titleStyle}>Payment Successful!</Text>
-                                                    <Text style={styles.subStyle}>You have made a services payment</Text>
-                                                    <Text style={styles.priceStyle}>AED {item?.amount / 100}.00</Text>
-                                                    <Text style={styles.dateStyle} >{formatDate(item?.created)} | {formatTime(item?.created)}</Text>
-                                                </View>
+                                                {
+                                                    item?.amount_refunded == 0 ? <Image
+                                                        source={require("@/assets/temp/notif/notif1.png")}
+                                                        resizeMode='contain'
+                                                        style={styles.imageStyle}
+                                                    />
+                                                        :
+                                                        <Image
+                                                            source={require("@/assets/temp/notif/notif3.png")}
+                                                            resizeMode='contain'
+                                                            style={styles.imageStyle}
+                                                        />
+                                                }
+                                                {
+                                                    item?.amount_refunded == 0 ?
+                                                        <View style={{ flex: 1 }}>
+                                                            <Text style={styles.titleStyle}>Payment Successful!</Text>
+                                                            <Text style={styles.subStyle}>You have made a services payment</Text>
+                                                            <Text style={styles.priceStyle}>AED {item?.amount / 100}.00</Text>
+                                                            <Text style={styles.dateStyle} >{formatDate(item?.created)} | {formatTime(item?.created)}</Text>
+                                                        </View>
+                                                        :
+                                                        <View style={{ flex: 1 }}>
+                                                            <Text style={styles.titleStyle}>Refund Successfully!</Text>
+                                                            <Text style={styles.subStyle}>Your refund has been completed successfully.</Text>
+                                                            <Text style={[styles.priceStyle, { color: "#FF981F" }]}>AED {item?.amount_refunded / 100}.00</Text>
+                                                            <Text style={styles.dateStyle} >{formatDate(item?.created)} | {formatTime(item?.created)}</Text>
+                                                        </View>
+                                                }
                                                 <Ionicons name="ellipsis-horizontal" size={hp(2)} />
                                             </View>
                                         </TouchableOpacity>

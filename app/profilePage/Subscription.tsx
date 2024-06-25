@@ -12,7 +12,6 @@ import NoSubscription from '@/components/empty/NoSubscription';
 export default function Subscription() {
     const isFocused = useIsFocused();
     const { data, isPending } = useGetAllSubscription(isFocused);
-
     const convertDay = (unixTimestamp: number) => {
         const date = new Date(unixTimestamp * 1000).getDate();
         return date;
@@ -123,7 +122,7 @@ export default function Subscription() {
                                                                     <Text style={styles.titleStyle} >{item?.plan?.product?.name}</Text>
                                                                     <Text style={styles.subStyle}>{item?.plan?.product?.description}</Text>
                                                                     <Text style={[styles.subStyle]}>Cancelled date:</Text>
-                                                                    <Text style={[styles.subStyle, { color: '#F75555' }]}>{formatDate(item?.canceled_at)} || {formatTime(item?.canceled_at)}</Text>
+                                                                    <Text style={[styles.subStyle, { color: '#F75555' }]}>{formatDate(item?.canceled_at)} | {formatTime(item?.canceled_at)}</Text>
                                                                 </View>
                                                             </View>
                                                             {/* <View>

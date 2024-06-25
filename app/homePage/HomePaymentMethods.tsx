@@ -7,13 +7,14 @@ import { Fontisto } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
 import { useIsFocused } from '@react-navigation/native';
 import { useDefaultMethod } from '@/query/stripeQuery';
+import PaymentSkeleton from '@/components/skeleton/PaymentSkeleton';
 export default function HomePaymentMethods() {
     const [isSelected, setIsSelected] = useState(0);
     const [imageUrl, setImageUrl] = useState(null);
     const [method, setMethod] = useState("");
 
     const isFocused = useIsFocused();
-    const { data } = useDefaultMethod(isFocused);
+    const { data, isPending } = useDefaultMethod(isFocused);
 
     const methodData = [
         {
@@ -55,33 +56,37 @@ export default function HomePaymentMethods() {
                 <Text style={styles.infoText}>Select the payment method you want to use.</Text>
             </View>
 
+            {
+                isPending ? <PaymentSkeleton />
+                    :
+                    <View style={styles.selectedStyle}>
+                        {
+                            methodData.map((item, index) => {
+                                return (
+                                    <TouchableOpacity style={styles.selectedRow} key={index}
+                                        onPress={() => {
+                                            setIsSelected(item?.id);
+                                            setImageUrl(item?.icon);
+                                            setMethod(item?.label);
+                                        }}
+                                    >
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(4) }}>
+                                                <Image source={item.icon} resizeMode='contain' style={{ width: wp(8) }} />
+                                                <Text style={styles.selectedText}>{item.label}</Text>
+                                            </View>
 
-            <View style={styles.selectedStyle}>
-                {
-                    methodData.map((item, index) => {
-                        return (
-                            <TouchableOpacity style={styles.selectedRow} key={index}
-                                onPress={() => {
-                                    setIsSelected(item?.id);
-                                    setImageUrl(item?.icon);
-                                    setMethod(item?.label);
-                                }}
-                            >
-                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(4) }}>
-                                        <Image source={item.icon} resizeMode='contain' style={{ width: wp(8) }} />
-                                        <Text style={styles.selectedText}>{item.label}</Text>
-                                    </View>
-
-                                    <TouchableOpacity>
-                                        {isSelected === item.id ? <Fontisto name='radio-btn-active' size={hp(2.5)} color={'#0A5CA8'} /> : <Fontisto name='radio-btn-passive' size={hp(2.5)} color={'#0A5CA8'} />}
+                                            <TouchableOpacity>
+                                                {isSelected === item.id ? <Fontisto name='radio-btn-active' size={hp(2.5)} color={'#0A5CA8'} /> : <Fontisto name='radio-btn-passive' size={hp(2.5)} color={'#0A5CA8'} />}
+                                            </TouchableOpacity>
+                                        </View>
                                     </TouchableOpacity>
-                                </View>
-                            </TouchableOpacity>
-                        )
-                    })
-                }
-            </View>
+                                )
+                            })
+                        }
+                    </View>
+            }
+
 
 
             <View style={{ flex: 1, }} />

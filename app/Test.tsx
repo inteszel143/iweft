@@ -1,3 +1,28 @@
+// import { StyleSheet, Text, View } from 'react-native'
+// import React from 'react'
+// import Barcode from '@kichiyaki/react-native-barcode-generator';
+// export default function Test() {
+//     return (
+//         <View>
+//             <Barcode
+//                 format="CODE128"
+//                 value="SK7263727399"
+//                 text="SK7263727399"
+//                 width={3}
+//                 maxWidth={350}
+//                 height={120}
+//                 textStyle={{ fontFamily: 'UrbanistSemiBold', fontSize: 16, marginTop: 10 }}
+//                 lineColor="#000000"
+//                 background="#FFFFFF"
+//                 style={{ marginTop: 10 }}
+//             />
+
+//         </View>
+//     )
+// }
+
+// const styles = StyleSheet.create({})
+
 import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Linking } from 'react-native';
@@ -81,3 +106,5 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
 });
+
+

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "iweft",
+    "name": "iWeft",
     "slug": "iweft",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -123,7 +123,8 @@
           "merchantIdentifier": "merchant.com.iweft",
           "enableGooglePay": true
         }
-      ]
+      ],
+      "expo-build-properties"
     ],
     "experiments": {
       "typedRoutes": true
