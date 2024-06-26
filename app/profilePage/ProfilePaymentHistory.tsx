@@ -7,20 +7,11 @@ import { useIsFocused } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import HistoryPaymentSkeleton from '@/components/skeleton/HistoryPaymentSkeleton';
 import NoHistoryPayment from '@/components/empty/NoHistoryPayment';
+import { formatDate, formatNumber, formatTime } from '@/utils/format';
 
 export default function ProfilePaymentHistory() {
     const isFocused = useIsFocused();
     const { data, isPending } = useGetPaymentHistory(isFocused);
-    const formatDate = (unixTimestamp: number) => {
-        const date = new Date(unixTimestamp * 1000);
-        const options = { year: 'numeric', month: 'short', day: 'numeric' };
-        return date.toLocaleDateString('en-US', options as any);
-    };
-    const formatTime = (unixTimestamp: number) => {
-        const date = new Date(unixTimestamp * 1000);
-        const options = { hour: '2-digit', minute: '2-digit', hour12: true }; // Change hour12 to true for 12-hour format
-        return date.toLocaleTimeString('en-US', options as any);
-    };
     return (
         <View style={styles.container}>
             <View style={styles.Headercontainer}>
@@ -71,14 +62,14 @@ export default function ProfilePaymentHistory() {
                                                         <View style={{ flex: 1 }}>
                                                             <Text style={styles.titleStyle}>Payment Successful!</Text>
                                                             <Text style={styles.subStyle}>You have made a services payment</Text>
-                                                            <Text style={styles.priceStyle}>AED {item?.amount / 100}.00</Text>
+                                                            <Text style={styles.priceStyle}>AED  {formatNumber(item?.amount / 100)}.00</Text>
                                                             <Text style={styles.dateStyle} >{formatDate(item?.created)} | {formatTime(item?.created)}</Text>
                                                         </View>
                                                         :
                                                         <View style={{ flex: 1 }}>
                                                             <Text style={styles.titleStyle}>Refund Successfully!</Text>
                                                             <Text style={styles.subStyle}>Your refund has been completed successfully.</Text>
-                                                            <Text style={[styles.priceStyle, { color: "#FF981F" }]}>AED {item?.amount_refunded / 100}.00</Text>
+                                                            <Text style={[styles.priceStyle, { color: "#FF981F" }]}>AED {formatNumber(item?.amount_refunded / 100)}.00</Text>
                                                             <Text style={styles.dateStyle} >{formatDate(item?.created)} | {formatTime(item?.created)}</Text>
                                                         </View>
                                                 }

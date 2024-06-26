@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList, TextInput } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList, TextInput, Platform } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
@@ -43,7 +43,8 @@ export default function BookNow() {
             </View>
             <KeyboardAwareScrollView
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: hp(14) }}>
+                extraScrollHeight={hp(2)}
+            >
                 <View style={[styles.containerStyle]}>
                     <Text style={[styles.topText, { paddingHorizontal: wp(5) }]}>Enter the amount of items or bags you need.</Text>
 
@@ -122,6 +123,15 @@ export default function BookNow() {
                         </ScrollView>
                     </View> */}
 
+                    {
+                        Platform.OS === 'android' && <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(10), alignSelf: 'center' }]}
+                            onPress={toggleContinue}
+                        >
+                            <Text style={defaultStyles.footerText}>Continue AED 0.00</Text>
+                        </TouchableOpacity>
+                    }
+
+
                 </View>
             </KeyboardAwareScrollView>
 
@@ -129,14 +139,16 @@ export default function BookNow() {
 
 
 
-            <View style={styles.footer}>
-                <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(1) }]}
-                    // disabled={true}
-                    onPress={toggleContinue}
-                >
-                    <Text style={defaultStyles.footerText}>Continue AED 0.00</Text>
-                </TouchableOpacity>
-            </View>
+            {
+                Platform.OS === 'ios' && <View style={styles.footer}>
+                    <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(1) }]}
+                        // disabled={true}
+                        onPress={toggleContinue}
+                    >
+                        <Text style={defaultStyles.footerText}>Continue AED 0.00</Text>
+                    </TouchableOpacity>
+                </View>
+            }
 
 
         </View>

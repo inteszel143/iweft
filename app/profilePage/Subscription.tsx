@@ -12,6 +12,7 @@ import NoSubscription from '@/components/empty/NoSubscription';
 export default function Subscription() {
     const isFocused = useIsFocused();
     const { data, isPending } = useGetAllSubscription(isFocused);
+    console.log(data);
     const convertDay = (unixTimestamp: number) => {
         const date = new Date(unixTimestamp * 1000).getDate();
         return date;

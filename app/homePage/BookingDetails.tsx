@@ -12,12 +12,13 @@ import {
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { defaultStyles } from '@/constants/Styles';
 import ModalAlert from '@/components/home/items/ModalAlert';
+import useStoreBooking from '@/store/useStoreBooking';
 
 export default function BookingDetails() {
-    const { service, service_name, itemData, total, total_data, base_price } = useLocalSearchParams();
+    const { setPickUpDateTime, setDeliveryDateTime } = useStoreBooking();
     const [selected, setSelected] = useState<any[]>([]);
     const modalARef = useRef<BottomSheetModal>(null);
-
+    const { total } = useStoreBooking();
     //date
     const currentDate = new Date();
     const formattedCurrentDate = currentDate.toISOString().split('T')[0];
@@ -54,10 +55,13 @@ export default function BookingDetails() {
     const onSubmit = () => {
         const pick_up_date_time = collectDate + ' ' + topSelect;
         const delivery_date_time = deliveryDate + ' ' + deliveryTime;
-        router.push({
-            pathname: '/homePage/BookingAddress',
-            params: { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, base_price }
-        });
+        setPickUpDateTime(pick_up_date_time as string);
+        setDeliveryDateTime(delivery_date_time as string);
+        router.push('/homePage/BookingAddress');
+        // router.push({
+        //     pathname: '/homePage/BookingAddress',
+        //     params: { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, base_price }
+        // });
     }
 
     useEffect(() => {

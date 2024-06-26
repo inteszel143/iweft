@@ -47,16 +47,6 @@ export default function SubscriptionSkeleton() {
                     </View>
                 </View>
             </View>
-            <View style={styles.CardStyle}>
-                <View style={styles.inner}>
-                    <ShimmerPlaceholder style={styles.image} />
-                    <View>
-                        <ShimmerPlaceholder style={styles.collection} />
-                        <ShimmerPlaceholder style={styles.title} />
-                        <ShimmerPlaceholder style={styles.price} />
-                    </View>
-                </View>
-            </View>
         </View>
     )
 }

@@ -246,10 +246,11 @@ export default function ServicesScreen() {
                         <TouchableOpacity onPress={() => router.back()}>
                             <Ionicons name='chevron-back' size={hp(3)} />
                         </TouchableOpacity>
-                        <Text style={styles.headerText}>Clean & Press Services</Text>
+                        <Text style={styles.headerText}>{serviceItem.title} Services</Text>
                     </View>
                     <TouchableOpacity>
-                        {addbook ? <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5) }} /> : <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5) }} />}
+                        {addbook ? <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
+                            : <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5) }} />}
                     </TouchableOpacity>
                 </View>
             </Animated.View>

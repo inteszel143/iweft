@@ -2,14 +2,10 @@ import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from 'rea
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useIsFocused } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
-import useStoreBooking from '@/store/useStoreBooking';
 
 export default function DriverInstruction() {
-    const { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude, base_price } = useLocalSearchParams();
-    const { setItemData, setBasePrice, setService, setServiceName, setTotal, setPickUpDateTime, setDeliveryDateTime, setAddress, setLatitude, setLongitude } = useStoreBooking();
     const topData = [
         {
             image: require('@/assets/temp/services/plansa.jpg'),
@@ -105,20 +101,7 @@ export default function DriverInstruction() {
 
             <View style={styles.footer}>
                 <TouchableOpacity style={defaultStyles.footerBtn}
-                    onPress={() => {
-                        setService(service as string);
-                        setBasePrice(base_price);
-                        setServiceName(service_name as string);
-                        setTotal(total);
-                        setPickUpDateTime(pick_up_date_time as string);
-                        setDeliveryDateTime(delivery_date_time as string);
-                        setAddress(address as string);
-                        setLatitude(latitude as string);
-                        setLongitude(longitude as string);
-                        setItemData(itemData);
-                        router.push('homePage/HomePaymentMethods');
-                    }}
-
+                    onPress={() => router.push('homePage/HomePaymentMethods')}
                 >
                     <Text style={defaultStyles.footerText}>Apply</Text>
                 </TouchableOpacity>

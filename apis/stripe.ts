@@ -34,12 +34,14 @@ export const postPaymentIntent = async (total_amount: number) => {
  */
 export const addPayUsingCard = async (
   total_amount: number,
-  order_id: string
+  order_id: string,
+  subscription_id: string
 ) => {
   const accessToken = await SecureStore.getItemAsync("accessToken");
   const data = {
     total_amount: total_amount,
     order_id: order_id,
+    subscription_id: subscription_id,
   };
   try {
     const response = await axios.post(
@@ -150,10 +152,14 @@ export const getProductCategroy = async () => {
  * AVAI SUBSCRIPTION  ---------------------------------------------------------
  */
 
-export const postAvailSubscription = async (priceId: string) => {
+export const postAvailSubscription = async (
+  priceId: string,
+  services: string[]
+) => {
   const accessToken = await SecureStore.getItemAsync("accessToken");
   const data = {
     priceId: priceId,
+    services: services,
   };
   try {
     const response = await axios.post(

@@ -12,11 +12,11 @@ import { Octicons } from '@expo/vector-icons';
 import BookingSuccessModal from '@/components/booking/BookingSuccessModal';
 import { getPinNumber } from '@/apis/fetchAuth';
 import PinCodeModal from '@/components/PinCodeModal';
-import errorRes from '@/apis/errorRes';
 import { createBooking } from '@/apis/order';
 import useStoreBooking from '@/store/useStoreBooking';
 import { addPayUsingCard } from '@/apis/stripe';
 import ErrorBookingModal from '@/components/ErrorBookingModal';
+import useStoreSub from '@/store/useStoreSub';
 interface CellProps {
     index: number;
     symbol: string;
@@ -24,6 +24,7 @@ interface CellProps {
 }
 
 export default function HomeConfirmPin() {
+    const { subscriptionId } = useStoreSub();
     const { service, base_price, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude } = useStoreBooking();
     const [modalVisible, setModalVisible] = useState(false);
     const [btnLoading, setBtnLoading] = useState(false);
@@ -64,8 +65,6 @@ export default function HomeConfirmPin() {
     };
 
 
-
-
     const onSubmit = async () => {
         setBtnLoading(true);
         const totalPayment = parseFloat(base_price as any) + parseFloat(total as any);
@@ -89,7 +88,7 @@ export default function HomeConfirmPin() {
             try {
                 const orderResult = await createBooking(orderData);
                 if (orderResult?.message === "Order successfully created") {
-                    await addPayUsingCard(totalPayment, orderResult?.orders?._id);
+                    await addPayUsingCard(totalPayment, orderResult?.orders?._id, subscriptionId);
                     setOrderId(orderResult?.orders?._id);
                     setModalVisible(true);
                     setBtnLoading(false);

@@ -8,6 +8,7 @@ import { Entypo, Ionicons } from '@expo/vector-icons';
 import Barcode from '@kichiyaki/react-native-barcode-generator';
 import { useGetEReceipt } from '@/query/stripeQuery';
 import { useIsFocused } from '@react-navigation/native';
+import { formatDate, formatNumber, formatTime } from '@/utils/format';
 export default function HomeBookingReceipt() {
     const { orderId } = useLocalSearchParams();
     const isFocused = useIsFocused();
@@ -17,19 +18,19 @@ export default function HomeBookingReceipt() {
         setCardShow(!cardShow);
     };
 
-    const formatDate = (unixTimestamp: number) => {
-        const date = new Date(unixTimestamp * 1000);
-        const options = { year: 'numeric', month: 'short', day: 'numeric' };
-        return date.toLocaleDateString('en-US', options as any);
-    };
-    const formatTime = (unixTimestamp: number) => {
-        const date = new Date(unixTimestamp * 1000);
-        const options = { hour: '2-digit', minute: '2-digit', hour12: true }; // Change hour12 to true for 12-hour format
-        return date.toLocaleTimeString('en-US', options as any);
-    };
-    const formatNumber = (number: number) => {
-        return new Intl.NumberFormat('en-US').format(number);
-    };
+    // const formatDate = (unixTimestamp: number) => {
+    //     const date = new Date(unixTimestamp * 1000);
+    //     const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    //     return date.toLocaleDateString('en-US', options as any);
+    // };
+    // const formatTime = (unixTimestamp: number) => {
+    //     const date = new Date(unixTimestamp * 1000);
+    //     const options = { hour: '2-digit', minute: '2-digit', hour12: true }; // Change hour12 to true for 12-hour format
+    //     return date.toLocaleTimeString('en-US', options as any);
+    // };
+    // const formatNumber = (number: number) => {
+    //     return new Intl.NumberFormat('en-US').format(number);
+    // };
 
     return (
         <View style={styles.container}>

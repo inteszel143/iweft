@@ -27,19 +27,19 @@ export default function EditProflieData() {
     const { address, street, citys, latitude, longitude } = useStoreAddress();
 
     const phoneInput = useRef<PhoneInput>(null);
-    const [value, setValue] = useState('');
-    const [formattedValue, setFormattedValue] = useState(""); // Phone value
     const [gender, setGender] = useState(""); // Gender Value
     const [contry, setCountry] = useState(""); // Country Value
+
+    const [addressError, setAddressError] = useState(false);
     const [date, setDate] = useState(new Date(data?.dob));
     const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
     const [open, setOpen] = useState(false);
     const dateVal = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`; // DOB value
-    const [successModal, setSuccessModal] = useState(false);
+    const [successModal, setSuccessModal] = useState(true);
     const [btnLoading, setBtnLoading] = useState(false);
     const schema = yup.object().shape({
-        full_name: yup.string().required('Full Name is requred').default(data?.fullname as string),
-        n_name: yup.string().required('Nickname is requred').default(data?.nickname as string),
+        full_name: yup.string().required('Full Name is required').default(data?.fullname as string),
+        n_name: yup.string().required('Nickname is required').default(data?.nickname as string),
         email: yup.string().email('Invalid email').required('Email is required').default(data?.email as string),
     });
     const { control, handleSubmit, formState: { errors } } = useForm({
@@ -79,6 +79,7 @@ export default function EditProflieData() {
                     router.back();
                 }, 2000)
             } catch (error) {
+                setAddressError(true);
                 setBtnLoading(false);
             }
         } else {
@@ -93,6 +94,7 @@ export default function EditProflieData() {
                 }, 2000)
             } catch (error) {
                 setBtnLoading(false);
+                console.log(error);
             }
         }
     }
@@ -307,7 +309,13 @@ export default function EditProflieData() {
                     }
 
                 </TouchableOpacity>
-
+                {
+                    addressError && <View style={styles.errorViewStyle}>
+                        <Ionicons name='alert-circle-outline' size={hp(2.4)} color={'#ED4337'} />
+                        <Text style={styles.errorStyle} >Address is required.</Text>
+                    </View>
+                }
+                {/* Full Name is requred */}
                 <View style={styles.footer}>
                     <TouchableOpacity style={defaultStyles.footerBtn}
                         onPress={handleSubmit(onSubmit)}

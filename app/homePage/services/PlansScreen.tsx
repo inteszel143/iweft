@@ -16,7 +16,6 @@ const { width } = Dimensions.get('window');
 export default function PlansScreen() {
     const { item } = useLocalSearchParams();
     const subItem: SubscriptionItem = JSON.parse(item as string);
-    const { initPaymentSheet, presentPaymentSheet } = useStripe();
     const { setCollection, setTotal, setPriceId } = useStoreSub();
     const [addbook, setAddbook] = useState(false);
     const [loading, setLoading] = useState(false);

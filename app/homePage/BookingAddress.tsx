@@ -7,8 +7,10 @@ import MapView, { Marker, PROVIDER_GOOGLE, } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Fontisto } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
+import useStoreBooking from '@/store/useStoreBooking';
 export default function BookingAddress() {
-    const { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, base_price } = useLocalSearchParams();
+    const { setAddress, setLatitude,
+        setLongitude } = useStoreBooking();
     const [errorMsg, setErrorMsg] = useState("");
     const [nameAddress, setNameAddress] = useState<any>();
     const [city, setCity] = useState<any>();
@@ -59,12 +61,15 @@ export default function BookingAddress() {
     const onSubmit = async () => {
         const address = nameAddress;
         const latitude = lat;
-
         const longitude = long;
-        router.push({
-            pathname: 'homePage/services/DriverInstruction',
-            params: { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude, base_price }
-        });
+        setAddress(address as string);
+        setLatitude(latitude as string);
+        setLongitude(longitude as string);
+        router.push('homePage/services/DriverInstruction');
+        // router.push({
+        //     pathname: 'homePage/services/DriverInstruction',
+        //     params: { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude, base_price }
+        // });
     }
 
     return (

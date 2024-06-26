@@ -95,7 +95,6 @@ export const userUpdateProfileData = async (data: object) => {
     );
     return response.data;
   } catch (error) {
-    console.log(errorRes(error));
     return Promise.reject(error);
   }
 };

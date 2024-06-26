@@ -8,6 +8,7 @@ import { Entypo, Ionicons } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
 import { useGetEReceipt } from '@/query/stripeQuery';
 import Barcode from '@kichiyaki/react-native-barcode-generator';
+import { formatDate, formatNumber, formatTime } from '@/utils/format';
 export default function Ereceipt() {
     const { orderId } = useLocalSearchParams();
     const isFocused = useIsFocused();
@@ -15,21 +16,8 @@ export default function Ereceipt() {
     const [cardShow, setCardShow] = useState(false);
     const toggleShowCard = () => {
         setCardShow(!cardShow);
-    }
-    const formatDate = (unixTimestamp: number) => {
-        const date = new Date(unixTimestamp * 1000);
-        const options = { year: 'numeric', month: 'short', day: 'numeric' };
-        return date.toLocaleDateString('en-US', options as any);
     };
-    const formatTime = (unixTimestamp: number) => {
-        const date = new Date(unixTimestamp * 1000);
-        const options = { hour: '2-digit', minute: '2-digit', hour12: true }; // Change hour12 to true for 12-hour format
-        return date.toLocaleTimeString('en-US', options as any);
-    };
-    const formatNumber = (number: number) => {
-        return new Intl.NumberFormat('en-US').format(number);
-    };
-
+    // console.log(data?.trm_customer_subscriptions?.subscription);
     return (
         <View style={styles.container}>
 
@@ -86,10 +74,13 @@ export default function Ereceipt() {
                                 <Text style={styles.summaryLabel}>Category</Text>
                                 <Text style={styles.summaryValue}>{data?.trm_order?.service?.service?.sub_title}</Text>
                             </View>
-                            {/* <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                    <Text style={styles.summaryLabel}>Subscription Plan </Text>
-                    <Text style={styles.summaryValue}>Basic</Text>
-                </View> */}
+                            {
+                                data?.trm_customer_subscriptions?.subscription && <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                                    <Text style={styles.summaryLabel}>Subscription Plan </Text>
+                                    <Text style={styles.summaryValue}>{data?.trm_customer_subscriptions?.subscription}</Text>
+                                </View>
+                            }
+
                             <View style={[styles.summarRow, { marginTop: hp(3) }]}>
                                 <Text style={styles.summaryLabel}>Date & Time</Text>
                                 <Text style={styles.summaryValue}>{formatDate(data?.trm_charge?.date)} | {formatTime(data?.trm_charge?.date)}</Text>
@@ -100,14 +91,13 @@ export default function Ereceipt() {
                             </View>
                         </View>
 
-                        {/* <View style={[styles.summarCard, { marginTop: hp(3) }]}>
-                <TouchableOpacity style={styles.summarRow}>
-                    <Text style={styles.summaryLabel}>Subscription Details</Text>
-                    <Entypo name='chevron-thin-down' size={hp(2)} />
-                </TouchableOpacity>
-            </View> */}
-
-
+                        <View style={[styles.summarCard, { marginTop: hp(3) }]}>
+                            <TouchableOpacity style={styles.summarRow}
+                            >
+                                <Text style={styles.summaryLabel}>Subscription Details</Text>
+                                <Entypo name='chevron-thin-down' size={hp(2)} />
+                            </TouchableOpacity>
+                        </View>
 
                         <View style={[styles.summarCard, { marginTop: hp(2) }]}>
                             <View style={styles.summarRow}>

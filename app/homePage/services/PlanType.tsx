@@ -12,12 +12,14 @@ import useStoreSub from '@/store/useStoreSub';
 import errorRes from '@/apis/errorRes';
 
 export default function PlanType() {
-    const { collection, total, priceId } = useStoreSub();
+    const { collection, total, priceId, setSubscriptionId } = useStoreSub();
     const isFocused = useIsFocused();
     const { data, isPending } = useHomeServices(isFocused);
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = useState<number[]>([]);
+    const [selectedServices, setSelectedServices] = useState<string[]>([]);
     const [modalSuccess, setModalSuccess] = useState(false);
+
     const handleSelect = (index: number) => {
         setSelected(prevSelected => {
             if (prevSelected.includes(index)) {
@@ -28,14 +30,25 @@ export default function PlanType() {
         });
     };
 
+    const handleSelectServices = (id: string): void => {
+        setSelectedServices((prevSelected: string[]) => {
+            if (prevSelected.includes(id)) {
+                return prevSelected.filter((serviceId: string) => serviceId !== id);
+            } else {
+                return [...prevSelected, id];
+            }
+        });
+    };
+
     const onSubmit = async () => {
         setLoading(true);
         try {
-            await postAvailSubscription(priceId as string);
+            const response = await postAvailSubscription(priceId as string, selectedServices);
+            setSubscriptionId(response?.subscriptionId);
             setTimeout(() => {
                 setLoading(false);
                 setModalSuccess(true);
-            }, 1000)
+            }, 1000);
         } catch (error) {
             setLoading(false);
             Alert.alert(errorRes(error));
@@ -72,7 +85,10 @@ export default function PlanType() {
                     keyExtractor={item => item?._id}
                     renderItem={({ item, index }) => (
                         <TouchableOpacity style={styles.cardStyle}
-                            onPress={() => handleSelect(index)}
+                            onPress={() => {
+                                handleSelect(index);
+                                handleSelectServices(item?._id);
+                            }}
                         >
                             <View style={styles.cardRow}>
                                 <Image source={{ uri: item?.image }} resizeMode='contain' style={{ width: wp(18), height: hp(10) }} />
@@ -86,10 +102,9 @@ export default function PlanType() {
 
             <View style={styles.footer}>
                 <TouchableOpacity
-                    // style={[defaultStyles.footerBtn, { backgroundColor: selected.length === parseInt(collection as string) ? "#0A5CA8" : "#DADADA" }]}
-                    style={defaultStyles.footerBtn}
-                    // disabled={selected.length === parseInt(collection as string) ? false : true}
-                    // onPress={() => router.push('/homePage/BookingDetails')}
+                    // style={[defaultStyles.footerBtn, { backgroundColor: selected.length > parseInt(collection as any) ? "#0A5CA8" : "#DADADA" }]}
+                    style={[defaultStyles.footerBtn, { backgroundColor: "#0A5CA8" }]}
+                    disabled={selected.length >= 1 ? false : true}
                     onPress={onSubmit}
                 >
                     {loading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={defaultStyles.footerText}>Continue - AED {total} Monthly</Text>}

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList, TextInput } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList, TextInput, Platform } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
@@ -8,19 +8,36 @@ import { subscribeServices } from '@/constants/booking/data';
 import { defaultStyles } from '@/constants/Styles';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ErrorPromoCodeModa from '@/components/ErrorPromoCodeModa';
+import useStoreBooking from '@/store/useStoreBooking';
 
 export default function AfterItemPage() {
     const { service, service_name, itemData, total, total_data, base_price } = useLocalSearchParams();
     const [subscription, setSubscription] = useState<string | null>(null); // service subscription data
     const [errorModalVisible, setErrorModalVisible] = useState(false);
+    const { setService, setServiceName, setBasePrice, setItemData, setTotal, setTotalData } = useStoreBooking();
+
+
     const toggleSubmit = () => {
         if (subscription === "Yes") {
+            setService(service as string);
+            setServiceName(service_name as string);
+            setBasePrice(base_price);
+            setItemData(itemData);
+            setTotal(total);
+            setTotalData(total_data as string);
             router.push('/homePage/services/ChooseSubscription');
         } else {
-            router.push({
-                pathname: '/homePage/BookingDetails',
-                params: { service, service_name, itemData, total, total_data, base_price }
-            });
+            setService(service as string);
+            setServiceName(service_name as string);
+            setBasePrice(base_price);
+            setItemData(itemData);
+            setTotal(total);
+            setTotalData(total_data as string);
+            router.push('/homePage/BookingDetails');
+            // router.push({
+            //     pathname: '/homePage/BookingDetails',
+            //     params: { service, service_name, itemData, total, total_data, base_price }
+            // });
         }
     };
 
@@ -47,7 +64,9 @@ export default function AfterItemPage() {
             </View>
             <KeyboardAwareScrollView
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: hp(14) }}>
+                extraScrollHeight={hp(2)}
+            // contentContainerStyle={{ paddingBottom: hp(14) }}
+            >
                 <View style={[styles.containerStyle]}>
                     <Text style={[styles.topText, { paddingHorizontal: wp(5) }]}>Enter the amount of items or bags you need.</Text>
 
@@ -118,20 +137,28 @@ export default function AfterItemPage() {
                         </ScrollView>
                     </View> */}
 
+                    {
+                        Platform.OS === 'android' && <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(10), alignSelf: 'center' }]}
+                            onPress={toggleSubmit}
+                        >
+                            <Text style={defaultStyles.footerText}>Continue AED {total}</Text>
+                        </TouchableOpacity>
+                    }
+
                 </View>
             </KeyboardAwareScrollView>
 
 
 
-
-
-            <View style={styles.footer}>
-                <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(1) }]}
-                    onPress={toggleSubmit}
-                >
-                    <Text style={defaultStyles.footerText}>Continue AED {total}</Text>
-                </TouchableOpacity>
-            </View>
+            {
+                Platform.OS === 'ios' && <View style={styles.footer}>
+                    <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(1) }]}
+                        onPress={toggleSubmit}
+                    >
+                        <Text style={defaultStyles.footerText}>Continue AED {total}</Text>
+                    </TouchableOpacity>
+                </View>
+            }
 
 
         </View>
