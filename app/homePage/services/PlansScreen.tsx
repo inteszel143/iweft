@@ -22,7 +22,6 @@ export default function PlansScreen() {
     const toggleAdd = () => {
         setAddbook(!addbook);
     };
-
     const onSubmit = async () => {
         setLoading(true);
         const total = subItem?.unit_amount / 100;

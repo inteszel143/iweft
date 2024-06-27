@@ -190,7 +190,27 @@ export default function AddNewCard() {
                         style={{ width: wp(90), height: hp(25) }} />
                 </View>
 
-                <CardForm
+                <CardField
+                    postalCodeEnabled={true}
+                    placeholders={{
+                        number: '4242 4242 4242 4242',
+                    }}
+                    cardStyle={{
+                        backgroundColor: '#FFFFFF',
+                        textColor: '#000000',
+                    }}
+                    style={{
+                        width: '100%',
+                        height: 50,
+                        marginVertical: 30,
+                    }}
+                    onCardChange={cardDetails => {
+                        setCardDetails(cardDetails);
+                        setComplete(cardDetails.complete);
+                    }}
+                />
+
+                {/* <CardForm
                     // disabled={inputDisabled}
                     placeholders={{
                         number: '4242 4242 4242 4242',
@@ -230,7 +250,7 @@ export default function AddNewCard() {
                     defaultValues={{
                         countryCode: 'US',
                     }}
-                />
+                /> */}
                 {/* <Button title='Add Payment Method' onPress={handleAddPaymentMethod} /> */}
                 {/* 
                 <View style={{ alignItems: 'center' }}>

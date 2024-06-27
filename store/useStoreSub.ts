@@ -4,9 +4,11 @@ interface State {
   subscriptionId: string | null;
   collection: number;
   total: number;
+  unit_amount: string;
   priceId: string;
   services: string[];
   setSubscriptionId: (subscriptionId: string) => void;
+  setUnitAmount: (unit_amount: string) => void;
   setCollection: (collection: number) => void;
   setTotal: (total: number) => void;
   setPriceId: (priceId: string) => void;
@@ -17,9 +19,11 @@ const useStoreSub = create<State>((set) => ({
   subscriptionId: null,
   collection: 0,
   total: 0,
+  unit_amount: "",
   priceId: "",
   services: [],
   setSubscriptionId: (subscriptionId) => set({ subscriptionId }),
+  setUnitAmount: (unit_amount) => set({ unit_amount }),
   setCollection: (collection) => set({ collection }),
   setTotal: (total) => set({ total }),
   setPriceId: (priceId) => set({ priceId }),

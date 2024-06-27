@@ -39,7 +39,7 @@ export default function TabOneScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style='dark' />
-      <HomeHeader />
+      <HomeHeader/>
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#DADADA" />

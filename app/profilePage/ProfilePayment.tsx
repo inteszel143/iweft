@@ -8,7 +8,7 @@ import PaymentApple from '@/components/profile/paymentmethod/PaymentApple';
 import PaymentCreditCard from '@/components/profile/paymentmethod/PaymentCreditCard';
 import { defaultStyles } from '@/constants/Styles';
 export default function ProfilePayment() {
-    
+
     return (
         <View style={styles.container}>
             <View style={styles.Headercontainer}>

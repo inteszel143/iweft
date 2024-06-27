@@ -1,9 +1,53 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, Image, Alert } from 'react-native'
+import React, { useEffect } from 'react'
 import { Link, router } from 'expo-router'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
+import { PlatformPayButton, usePlatformPay } from '@stripe/stripe-react-native';
+import { addPaymentMethod } from '@/apis/stripe';
 export default function PaymentGoogle() {
+
+    const {
+        isPlatformPaySupported,
+        createPlatformPayPaymentMethod,
+    } = usePlatformPay();
+
+
+    useEffect(() => {
+        (async function () {
+            if (!(await isPlatformPaySupported({ googlePay: { testEnv: true } }))) {
+                Alert.alert('Google Pay is not supported.');
+                return;
+            }
+        })();
+    }, []);
+
+
+
+    const createPaymentMethod = async () => {
+        const { error, paymentMethod } = await createPlatformPayPaymentMethod({
+            googlePay: {
+                amount: 0,
+                currencyCode: 'AED',
+                testEnv: true,
+                merchantName: 'Iweft',
+                merchantCountryCode: 'AE',
+            },
+        });
+
+        if (error) {
+            Alert.alert(error.code, error.message);
+            return;
+        } else if (paymentMethod) {
+            const response = await addPaymentMethod(paymentMethod.id as string);
+            console.log(response?.message);
+            // Alert.alert(
+            //     'Success',
+            //     `The payment method was created successfully. paymentMethodId: ${paymentMethod.id}`
+            // );
+        }
+    };
+
+
     return (
         <View style={styles.btnStyle}>
             <View style={styles.innerStyle}>
@@ -12,7 +56,9 @@ export default function PaymentGoogle() {
                     style={{ width: wp(8) }}
                 />
                 <Text style={styles.textStyle}>Google Pay</Text>
-                <TouchableOpacity>
+                <TouchableOpacity
+                    onPress={createPaymentMethod}
+                >
                     <Text style={styles.connectStyle} >Connect</Text>
                 </TouchableOpacity>
             </View>

@@ -89,6 +89,7 @@ export default function HomeConfirmPin() {
                 const orderResult = await createBooking(orderData);
                 if (orderResult?.message === "Order successfully created") {
                     await addPayUsingCard(totalPayment, orderResult?.orders?._id, subscriptionId);
+
                     setOrderId(orderResult?.orders?._id);
                     setModalVisible(true);
                     setBtnLoading(false);

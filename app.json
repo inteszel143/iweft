@@ -57,6 +57,12 @@
         "android.permission.READ_CALENDAR",
         "android.permission.WRITE_CALENDAR"
       ],
+      "meta-data": [
+        {
+          "name": "com.google.android.gms.wallet.api.enabled",
+          "value": "true"
+        }
+      ],
       "package": "com.paras23.iweft"
     },
     "web": {

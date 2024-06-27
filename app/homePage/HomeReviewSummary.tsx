@@ -10,6 +10,7 @@ import Paypal from '@/components/stripe/Paypal';
 import GooglePay from '@/components/stripe/GooglePay';
 import ApplePay from '@/components/stripe/ApplePay';
 import numeral from 'numeral';
+import { formatNumber } from '@/utils/format';
 export default function HomeReviewSummary() {
     const { imageUrl, method, isSelected } = useLocalSearchParams();
     const { service_name, total, base_price } = useStoreBooking();
@@ -91,11 +92,11 @@ export default function HomeReviewSummary() {
                 <View style={[styles.summarCard, { marginTop: hp(2), paddingVertical: hp(3.5) }]}>
                     <View style={styles.summarRow}>
                         <Text style={styles.summaryLabel}>Services Fee</Text>
-                        <Text style={styles.summaryValue}>AED {numeral(base_price).format('0,0')}.00</Text>
+                        <Text style={styles.summaryValue}>AED {formatNumber(base_price)}.00</Text>
                     </View>
                     <View style={[styles.summarRow, { marginTop: hp(3) }]}>
                         <Text style={styles.summaryLabel}>Total Items</Text>
-                        <Text style={[styles.summaryValue, { color: '#0a5ca8' }]}>AED {numeral(total).format('0,0')}.00</Text>
+                        <Text style={[styles.summaryValue, { color: '#0a5ca8' }]}>AED {formatNumber(total)}.00</Text>
                     </View>
 
                     <View style={styles.separator} />

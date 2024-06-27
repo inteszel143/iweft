@@ -57,38 +57,42 @@ export default function ManagePayment() {
                                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(15) }}>
                                     {/* <Text style={styles.titleStyle}>PAYMENT METHOD</Text> */}
                                     {
-                                        data?.map((item: any, index: any) => (
-                                            <TouchableOpacity key={index}
-                                                style={styles.cardStyle}
-                                                onPress={() => openModalA(item?.id)}
-                                            >
-                                                <View style={styles.topBtn}
-                                                >
-                                                    <Ionicons name='ellipsis-horizontal' size={hp(2.5)} color={'gray'} />
-                                                </View>
+                                        data?.map((item: any, index: any) => {
+                                            if (item?.card?.wallet === null) {
+                                                return (
+                                                    <TouchableOpacity key={index}
+                                                        style={styles.cardStyle}
+                                                        onPress={() => openModalA(item?.id)}
+                                                    >
+                                                        <View style={styles.topBtn}
+                                                        >
+                                                            <Ionicons name='ellipsis-horizontal' size={hp(2.5)} color={'gray'} />
+                                                        </View>
 
-                                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(4) }}>
-                                                    <View style={{ width: wp(15), }}>
-                                                        {
-                                                            item?.card?.brand === "mastercard" ?
-                                                                <Image source={require("@/assets/temp/bookingIcon/mastercard.jpg")} resizeMode='contain' style={styles.imageStyle} />
-                                                                :
-                                                                <Image source={require('@/assets/icons/visa.png')} resizeMode='contain' style={styles.imageStyle} />
-                                                        }
-                                                    </View>
-                                                    <View>
-                                                        <Text style={styles.selectedText}>**** **** **** **** {item?.card?.last4}</Text>
-                                                        <Text style={styles.subtext}>Expire: {item?.card?.exp_month}/{item?.card?.exp_year}</Text>
-                                                        {
-                                                            item?.id === defaultMethod?.id && <View style={styles.defaultStyle}>
-                                                                <Text style={styles.defaultText}>Default</Text>
+                                                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(4) }}>
+                                                            <View style={{ width: wp(15), }}>
+                                                                {
+                                                                    item?.card?.brand === "mastercard" ?
+                                                                        <Image source={require("@/assets/temp/bookingIcon/mastercard.jpg")} resizeMode='contain' style={styles.imageStyle} />
+                                                                        :
+                                                                        <Image source={require('@/assets/icons/visa.png')} resizeMode='contain' style={styles.imageStyle} />
+                                                                }
                                                             </View>
-                                                        }
-                                                    </View>
+                                                            <View>
+                                                                <Text style={styles.selectedText}>**** **** **** **** {item?.card?.last4}</Text>
+                                                                <Text style={styles.subtext}>Expire: {item?.card?.exp_month}/{item?.card?.exp_year}</Text>
+                                                                {
+                                                                    item?.id === defaultMethod?.id && <View style={styles.defaultStyle}>
+                                                                        <Text style={styles.defaultText}>Default</Text>
+                                                                    </View>
+                                                                }
+                                                            </View>
 
-                                                </View>
-                                            </TouchableOpacity>
-                                        ))
+                                                        </View>
+                                                    </TouchableOpacity>
+                                                )
+                                            }
+                                        })
                                     }
 
                                 </ScrollView>
