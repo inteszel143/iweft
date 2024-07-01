@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     selectedRow: {
         marginTop: hp(2.5),
         backgroundColor: 'white',
-        height: hp(12),
+        height: Platform.OS === 'ios' ? hp(12) : hp(14),
         justifyContent: 'center',
         borderRadius: wp(4),
         paddingHorizontal: wp(6),

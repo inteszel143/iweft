@@ -30,7 +30,7 @@ export default function BookingPaymentMethod() {
         },
         {
             id: 3,
-            icon: require("@/assets/temp/bookingIcon/apple.jpg"),
+            icon: require("@/assets/temp/bookingIcon/apple.jpg"),   
             label: "Apple Pay",
         },
         {
@@ -43,9 +43,6 @@ export default function BookingPaymentMethod() {
 
     return (
         <View style={styles.container}>
-
-
-
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
                     <View style={styles.headerLeft}>
@@ -61,8 +58,6 @@ export default function BookingPaymentMethod() {
             <View style={styles.infoStyle}>
                 <Text style={styles.infoText}>Please select a payment refund method (only 80% will be refunded).</Text>
             </View>
-
-
             {
                 isPending ? <MethodSkeleton /> : <View style={styles.selectedStyle}>
                     {
@@ -87,8 +82,6 @@ export default function BookingPaymentMethod() {
                     }
                 </View>
             }
-
-
 
             <View style={{ flex: 1, }} />
 

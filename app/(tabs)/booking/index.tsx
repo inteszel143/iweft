@@ -188,7 +188,6 @@ export default function Page() {
                     )}
                 />
 
-
                 <BottomSheetModal
                     ref={bottomSheetModalRef}
                     index={1}
@@ -217,9 +216,13 @@ export default function Page() {
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
+                                // onPress={() => router.push({
+                                //     pathname: '/bookingPage/BookingPaymentMethod',
+                                //     params: { bookingId, total }
+                                // })}
                                 onPress={() => router.push({
-                                    pathname: '/bookingPage/BookingPaymentMethod',
-                                    params: { bookingId, total }
+                                    pathname: '/bookingPage/BookingPin',
+                                    params: { bookingId }
                                 })}
                             >
                                 <Text style={[styles.bottomText, { color: "white" }]}>Yes, Cancel Booking</Text>

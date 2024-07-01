@@ -29,6 +29,8 @@ export default function DriverInstruction() {
         },
     ];
 
+    const [selected, setSelected] = useState<number[]>([]);
+
     const botData = [
         {
             image: require('@/assets/temp/services/plansa.jpg'),
@@ -38,7 +40,19 @@ export default function DriverInstruction() {
             image: require('@/assets/temp/services/plansa.jpg'),
             label: "Ring the door bell"
         },
-    ]
+    ];
+
+
+    const handleSelect = (index: number) => {
+        setSelected(prevSelected => {
+            if (prevSelected.includes(index)) {
+                return prevSelected.filter(item => item !== index);
+            } else {
+                return [...prevSelected, index];
+            }
+        });
+    };
+
 
     return (
         <View style={styles.container}>
@@ -68,11 +82,13 @@ export default function DriverInstruction() {
                     {/* card */}
                     {
                         topData?.map((item, index) => (
-                            <TouchableOpacity style={styles.cardStyle} key={index}>
+                            <TouchableOpacity style={styles.cardStyle} key={index}
+                                onPress={() => handleSelect(index)}
+                            >
                                 <View style={styles.cardRow}>
                                     <Image source={item?.image} resizeMode='contain' style={{ width: wp(10) }} />
                                     <Text style={styles.titleStyle}>{item?.label}</Text>
-                                    <FontAwesome name='check-circle' size={hp(3)} color={'#0A5CA8'} />
+                                    {selected.includes(index) ? <FontAwesome name='check-circle' size={hp(3)} color={'#0A5CA8'} /> : <FontAwesome name='circle-thin' size={hp(3)} color={'#0A5CA8'} />}
                                 </View>
                             </TouchableOpacity>
                         ))
@@ -95,7 +111,7 @@ export default function DriverInstruction() {
                     }
 
                 </View>
-            </ScrollView>
+            </ScrollView >
 
 
 

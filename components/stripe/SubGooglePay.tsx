@@ -1,4 +1,4 @@
-import { ActivityIndicator, Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Alert, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { defaultStyles } from '@/constants/Styles'
 import { useIsFocused } from '@react-navigation/native';
@@ -6,7 +6,7 @@ import { useGetListPaymentMethod } from '@/query/stripeQuery';
 import { addPaymentMethod, changeToDefaultMethod } from '@/apis/stripe';
 import { router } from 'expo-router';
 import errorRes from '@/apis/errorRes';
-import { PlatformPayButton, createPlatformPayPaymentMethod, usePlatformPay } from '@stripe/stripe-react-native';
+import { createPlatformPayPaymentMethod } from '@stripe/stripe-react-native';
 export default function SubGooglePay() {
     const isFocused = useIsFocused();
     const { data, isPending } = useGetListPaymentMethod(isFocused);
@@ -15,13 +15,11 @@ export default function SubGooglePay() {
 
 
     const toggleGooglePay = async () => {
-        setLoading(true);
-        // Check if data is empty or undefined
-        if (!data || data.length === 0) {
-            setLoading(false);
-            Alert.alert("No payment methods available.");
+        if (Platform.OS === 'ios') {
+            Alert.alert('Google Pay is not supported.');
             return;
         }
+        setLoading(true);
         const walletMethods = data.filter((method: any) => method.card.wallet !== null);
         const googlePayMethod = walletMethods.find((method: any) => method?.card?.wallet?.type === "google_pay");
 
@@ -33,7 +31,7 @@ export default function SubGooglePay() {
             } catch (error) {
                 setLoading(false);
                 Alert.alert(errorRes(error));
-            }
+            };
         } else {
             const createPaymentMethod = async () => {
                 const { error, paymentMethod } = await createPlatformPayPaymentMethod({

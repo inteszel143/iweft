@@ -35,7 +35,7 @@ export default function EditProflieData() {
     const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
     const [open, setOpen] = useState(false);
     const dateVal = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`; // DOB value
-    const [successModal, setSuccessModal] = useState(true);
+    const [successModal, setSuccessModal] = useState(false);
     const [btnLoading, setBtnLoading] = useState(false);
     const schema = yup.object().shape({
         full_name: yup.string().required('Full Name is required').default(data?.fullname as string),

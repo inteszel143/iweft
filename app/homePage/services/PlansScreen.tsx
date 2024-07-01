@@ -16,7 +16,7 @@ const { width } = Dimensions.get('window');
 export default function PlansScreen() {
     const { item } = useLocalSearchParams();
     const subItem: SubscriptionItem = JSON.parse(item as string);
-    const { setCollection, setTotal, setPriceId } = useStoreSub();
+    const { setCollection, setTotal, setPriceId, setPlanName } = useStoreSub();
     const [addbook, setAddbook] = useState(false);
     const [loading, setLoading] = useState(false);
     const toggleAdd = () => {
@@ -25,6 +25,7 @@ export default function PlansScreen() {
     const onSubmit = async () => {
         setLoading(true);
         const total = subItem?.unit_amount / 100;
+        setPlanName(subItem?.name);
         setPriceId(subItem?.price_id);
         setCollection(subItem?.collection_count);
         setTotal(total);

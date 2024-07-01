@@ -11,9 +11,12 @@ import GooglePay from '@/components/stripe/GooglePay';
 import ApplePay from '@/components/stripe/ApplePay';
 import numeral from 'numeral';
 import { formatNumber } from '@/utils/format';
+import useStoreSub from '@/store/useStoreSub';
+import { Entypo } from '@expo/vector-icons';
 export default function HomeReviewSummary() {
     const { imageUrl, method, isSelected } = useLocalSearchParams();
     const { service_name, total, base_price } = useStoreBooking();
+    const { plan_name, total: totalSub } = useStoreSub();
     const [isHiding, setIsHiding] = useState(false);
     const toggleHide = () => {
         setIsHiding(!isHiding);
@@ -34,10 +37,9 @@ export default function HomeReviewSummary() {
                 </View>
             </View>
 
-
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(2) }}>
 
-                <View style={[styles.summarCard, { marginTop: hp(3), paddingVertical: hp(4) }]}>
+                <View style={[styles.summarCard, { marginTop: hp(2), paddingVertical: hp(4) }]}>
                     <View style={styles.summarRow}>
                         <Text style={styles.summaryLabel}>Services</Text>
                         <Text style={styles.summaryValue}>{service_name}</Text>
@@ -46,10 +48,10 @@ export default function HomeReviewSummary() {
                         <Text style={styles.summaryLabel}>Category</Text>
                         <Text style={styles.summaryValue}>Premium Bundle</Text>
                     </View> */}
-                    {/* <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                    {plan_name && <View style={[styles.summarRow, { marginTop: hp(3) }]}>
                         <Text style={styles.summaryLabel}>Subscription Plan </Text>
-                        <Text style={styles.summaryValue}>Basic</Text>
-                    </View> */}
+                        <Text style={styles.summaryValue}>{plan_name}</Text>
+                    </View>}
                     <View style={[styles.summarRow, { marginTop: hp(3) }]}>
                         <Text style={styles.summaryLabel}>Date & Time</Text>
                         <Text style={styles.summaryValue}>{moment().format("MMM D YYYY")} | {moment().format("h:mm A")}</Text>
@@ -61,32 +63,34 @@ export default function HomeReviewSummary() {
                 </View>
 
 
-
-                {/* <View style={[styles.summarCard, { marginTop: hp(2) }]}>
-                    <TouchableOpacity style={styles.summarRow}
-                        onPress={toggleHide}
-                    >
-                        <Text style={styles.summaryLabel}>Subscription Details</Text>
-                        <Entypo name='chevron-thin-down' size={hp(2)} />
-                    </TouchableOpacity>
-                    {
-                        isHiding && <Animated.View
-                            entering={FadeInUp.duration(200).damping(2)}
-                            style={styles.hiddenBox}>
-                            <View>
-                                <View style={[styles.summarRow, { marginTop: hp(2) }]}>
-                                    <Text style={styles.summaryLabel} >Basic Plan</Text>
-                                    <Text style={styles.summaryValue}>AED 899</Text>
-                                </View>
-                                <View style={[styles.separator, { marginTop: hp(2) }]} />
+                {
+                    plan_name && <View style={[styles.summarCard, { marginTop: hp(2) }]}>
+                        <TouchableOpacity style={styles.summarRow}
+                            onPress={toggleHide}
+                        >
+                            <Text style={styles.summaryLabel}>Subscription Details</Text>
+                            <Entypo name='chevron-thin-down' size={hp(2)} />
+                        </TouchableOpacity>
+                        {
+                            isHiding && <Animated.View
+                                entering={FadeInUp.duration(200).damping(2)}
+                                style={styles.hiddenBox}>
+                                <View>
+                                    <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                                        <Text style={styles.summaryLabel} >{plan_name}</Text>
+                                        <Text style={styles.summaryValue}>AED {formatNumber(totalSub)}.00</Text>
+                                    </View>
+                                    {/* <View style={[styles.separator, { marginTop: hp(2) }]} />
                                 <Text style={[styles.summaryLabel, { marginTop: hp(2.5) }]}>Collection Details</Text>
                                 <Text style={[styles.summaryValue, { marginTop: hp(1) }]}> • Clean/Press</Text>
                                 <Text style={[styles.summaryValue, { marginTop: hp(1) }]}> • Press Only</Text>
-                                <Text style={[styles.summaryValue, { marginTop: hp(1) }]}> • Wash/Fold</Text>
-                            </View>
-                        </Animated.View>
-                    }
-                </View> */}
+                                <Text style={[styles.summaryValue, { marginTop: hp(1) }]}> • Wash/Fold</Text> */}
+                                </View>
+                            </Animated.View>
+                        }
+                    </View>
+                }
+
 
 
                 <View style={[styles.summarCard, { marginTop: hp(2), paddingVertical: hp(3.5) }]}>
@@ -94,6 +98,7 @@ export default function HomeReviewSummary() {
                         <Text style={styles.summaryLabel}>Services Fee</Text>
                         <Text style={styles.summaryValue}>AED {formatNumber(base_price)}.00</Text>
                     </View>
+
                     <View style={[styles.summarRow, { marginTop: hp(3) }]}>
                         <Text style={styles.summaryLabel}>Total Items</Text>
                         <Text style={[styles.summaryValue, { color: '#0a5ca8' }]}>AED {formatNumber(total)}.00</Text>

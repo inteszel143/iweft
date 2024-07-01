@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, Platform } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router } from 'expo-router';
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     selectedRow: {
         marginTop: hp(2.5),
         backgroundColor: 'white',
-        height: hp(12),
+        height: Platform.OS === 'android' ? hp(14) : hp(12),
         justifyContent: 'center',
         borderRadius: wp(4),
         paddingHorizontal: wp(6),

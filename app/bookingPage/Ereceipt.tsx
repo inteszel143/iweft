@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator, Platform } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -56,7 +56,7 @@ export default function Ereceipt() {
                             value={`${data?.trm_charge?.transaction_id}`}
                             text={`${data?.trm_charge?.transaction_id}`}
                             width={3}
-                            maxWidth={340}
+                            maxWidth={Platform.OS === 'android' ? 310 : 340}
                             height={109}
                             textStyle={{ fontFamily: 'UrbanistMedium', fontSize: hp(1.9), marginTop: hp(1), letterSpacing: wp(1) }}
                             lineColor="#000000"

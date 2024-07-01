@@ -1,61 +1,86 @@
-import { ActivityIndicator, Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Alert, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { defaultStyles } from '@/constants/Styles'
-import { addPayUsingCard } from '@/apis/stripe';
-import useStoreSub from '@/store/useStoreSub';
-import useStoreBooking from '@/store/useStoreBooking';
-import { createBooking } from '@/apis/order';
-import { PlatformPay, PlatformPayButton, confirmPlatformPayPayment, isPlatformPaySupported } from '@stripe/stripe-react-native';
+import { useIsFocused } from '@react-navigation/native';
+import { useGetListPaymentMethod } from '@/query/stripeQuery';
+import { addPaymentMethod, changeToDefaultMethod } from '@/apis/stripe';
+import { router } from 'expo-router';
 import errorRes from '@/apis/errorRes';
+import { createPlatformPayPaymentMethod } from '@stripe/stripe-react-native';
 export default function GooglePay() {
+    const isFocused = useIsFocused();
+    const { data, isPending } = useGetListPaymentMethod(isFocused);
     const [btnLoading, setBtnLoading] = useState(false);
 
-    React.useEffect(() => {
-        (async function () {
-            if (!(await isPlatformPaySupported({ googlePay: { testEnv: true } }))) {
-                Alert.alert('Google Pay is not supported.');
-                return;
-            }
-        })();
-    }, []);
 
-
-    const pay = async () => {
-        setBtnLoading(true);
-        const clientSecret = "pi_3PWDgmHEVoHd2ycx1q1MJzdy_secret_1O02JWki0cuh0A7AWvHSQeBJI";
-        const { error } = await confirmPlatformPayPayment(
-            clientSecret,
-            {
-                googlePay: {
-                    testEnv: true,
-                    merchantName: 'My merchant name',
-                    merchantCountryCode: 'US',
-                    currencyCode: 'USD',
-                    // billingAddressConfig: {
-                    //     format: PlatformPay.BillingAddressFormat.Full,
-                    //     isPhoneNumberRequired: true,
-                    //     isRequired: true,
-                    // },
-                },
-            }
-        );
-
-        if (error) {
-            setBtnLoading(false);
-            Alert.alert(error.code, error.message);
-            // Update UI to prompt user to retry payment (and possibly another payment method)
+    const toggleGooglePay = async () => {
+        if (Platform.OS === 'ios') {
+            Alert.alert('Google Pay is not supported.');
             return;
+        };
+        setBtnLoading(true);
+        const walletMethods = data.filter((method: any) => method.card.wallet !== null);
+        const googlePayMethod = walletMethods.find((method: any) => method?.card?.wallet?.type === "google_pay");
+
+
+        if (googlePayMethod) {
+            try {
+                await changeToDefaultMethod(googlePayMethod.id as string);
+                setBtnLoading(false);
+                router.push('/homePage/HomeConfirmPin');
+            } catch (error) {
+                setBtnLoading(false);
+                Alert.alert(errorRes(error));
+            }
+        } else {
+            const createPaymentMethod = async () => {
+                const { error, paymentMethod } = await createPlatformPayPaymentMethod({
+                    googlePay: {
+                        amount: 0,
+                        currencyCode: 'AED',
+                        testEnv: true,
+                        merchantName: 'Iweft',
+                        merchantCountryCode: 'AE',
+                    },
+                });
+
+                if (error) {
+                    setBtnLoading(false);
+                    Alert.alert(error.code, error.message);
+                    return;
+                } else if (paymentMethod) {
+                    try {
+                        await addPaymentMethod(paymentMethod.id as string);
+                        await changeToDefaultMethod(paymentMethod.id as string);
+                        setBtnLoading(false);
+                        router.push('/homePage/HomeConfirmPin');
+                    } catch (error) {
+                        setBtnLoading(false);
+                        Alert.alert(errorRes(error));
+                    }
+                }
+            };
+            await createPaymentMethod();
         }
-        setBtnLoading(false);
-        Alert.alert('Success', 'The payment was confirmed successfully.');
     };
 
+
+    if (isPending) {
+        return (
+            <TouchableOpacity
+                disabled
+                style={defaultStyles.footerBtn}
+            >
+                {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={defaultStyles.footerText}>Confirm Payment</Text>}
+            </TouchableOpacity>
+        )
+    };
     return (
         <TouchableOpacity
             style={defaultStyles.footerBtn}
-            onPress={pay}
+            onPress={toggleGooglePay}
         >
-            {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={defaultStyles.footerText}>Pay GooglePay</Text>}
+            {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={defaultStyles.footerText}>Confirm Payment</Text>}
         </TouchableOpacity>
     )
 }

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, ActivityIndicator, Platform } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -17,21 +17,6 @@ export default function HomeBookingReceipt() {
     const toggleShowCard = () => {
         setCardShow(!cardShow);
     };
-
-    // const formatDate = (unixTimestamp: number) => {
-    //     const date = new Date(unixTimestamp * 1000);
-    //     const options = { year: 'numeric', month: 'short', day: 'numeric' };
-    //     return date.toLocaleDateString('en-US', options as any);
-    // };
-    // const formatTime = (unixTimestamp: number) => {
-    //     const date = new Date(unixTimestamp * 1000);
-    //     const options = { hour: '2-digit', minute: '2-digit', hour12: true }; // Change hour12 to true for 12-hour format
-    //     return date.toLocaleTimeString('en-US', options as any);
-    // };
-    // const formatNumber = (number: number) => {
-    //     return new Intl.NumberFormat('en-US').format(number);
-    // };
-
     return (
         <View style={styles.container}>
 
@@ -70,7 +55,7 @@ export default function HomeBookingReceipt() {
                             value={`${data?.trm_charge?.transaction_id}`}
                             text={`${data?.trm_charge?.transaction_id}`}
                             width={3}
-                            maxWidth={340}
+                            maxWidth={Platform.OS === 'android' ? 310 : 340}
                             height={109}
                             textStyle={{ fontFamily: 'UrbanistMedium', fontSize: hp(1.9), marginTop: hp(1), letterSpacing: wp(1) }}
                             lineColor="#000000"

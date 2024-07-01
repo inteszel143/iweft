@@ -16,15 +16,10 @@ export default function SubApplePay() {
 
     const toggleApplePay = async () => {
         if (Platform.OS === 'android') {
-            Alert.alert("");
+            Alert.alert('Apple Pay is not supported.');
             return;
         }
         setLoading(true);
-        if (!data || data.length === 0) {
-            setLoading(false);
-            Alert.alert("No payment methods available.");
-            return;
-        }
         const walletMethods = data.filter((method: any) => method.card.wallet !== null);
         const applePayMethod = walletMethods.find((method: any) => method?.card?.wallet?.type === "apple_pay");
 

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, Alert } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, Alert, Platform } from 'react-native'
 import React, { useEffect } from 'react'
 import { Link, router } from 'expo-router'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
         marginTop: hp(2.5),
         backgroundColor: 'white',
         width: wp(90),
-        height: hp(12),
+        height: Platform.OS === 'android' ? hp(15) : hp(12),
         justifyContent: 'center',
         alignSelf: 'center',
         borderRadius: wp(5),
