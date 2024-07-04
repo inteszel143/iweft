@@ -23,9 +23,7 @@ export default function EditProflieData() {
     const isFocused = useIsFocused();
     const queryClient = useQueryClient();
     const { data, isFetching } = useUserQuery(isFocused);
-
     const { address, street, citys, latitude, longitude } = useStoreAddress();
-
     const phoneInput = useRef<PhoneInput>(null);
     const [gender, setGender] = useState(""); // Gender Value
     const [contry, setCountry] = useState(""); // Country Value
@@ -97,7 +95,7 @@ export default function EditProflieData() {
                 console.log(error);
             }
         }
-    }
+    };
 
     return (
         <View style={styles.container}>

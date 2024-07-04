@@ -1,5 +1,4 @@
-import { Alert, BackHandler, Image, SafeAreaView, ScrollView, StyleSheet, RefreshControl } from 'react-native';
-import { Text, View } from '@/components/Themed';
+import { Alert, BackHandler, SafeAreaView, ScrollView, StyleSheet, RefreshControl } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import HomeHeader from '@/components/home/HomeHeader';
 import HomeSearch from '@/components/home/HomeSearch';
@@ -14,7 +13,6 @@ import { useCallback, useState } from 'react';
 import Test from '../Test';
 export default function TabOneScreen() {
   const [refreshing, setRefreshing] = useState(false);
-
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
@@ -39,7 +37,7 @@ export default function TabOneScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style='dark' />
-      <HomeHeader/>
+      <HomeHeader />
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#DADADA" />

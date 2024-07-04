@@ -1,6 +1,6 @@
 import { Platform, StyleSheet, Text, View } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
-import { Bubble, GiftedChat, IMessage, InputToolbar, Send, SystemMessage } from 'react-native-gifted-chat'
+import { Avatar, Bubble, GiftedChat, IMessage, InputToolbar, Send, SystemMessage } from 'react-native-gifted-chat'
 import { messageChat } from '@/constants/chat/data';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
@@ -33,7 +33,7 @@ export default function BookingChat() {
                 textInputProps={styles.composer}
                 onInputTextChanged={setText}
                 bottomOffset={insets.bottom}
-                renderAvatar={null}
+                renderAvatar={(props) => <Avatar {...props} />}
                 maxComposerHeight={100}
                 renderSystemMessage={(props) => <SystemMessage {...props} />}
                 renderBubble={(props) => {

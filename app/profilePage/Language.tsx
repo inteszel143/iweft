@@ -1,14 +1,43 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList, } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link, router } from 'expo-router';
-import { Switch } from 'react-native-switch';
-import { Feather, Ionicons } from '@expo/vector-icons';
-
+import { router } from 'expo-router';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import i18n from '@/services/i18n';
+import { languageData } from '@/constants/profile/data';
+import { setItem, setLanguage, getItem } from '@/storage/languageStorage';
+import ChangeLanguage from '@/components/modal/ChangeLanguage';
 export default function Language() {
+    const { t } = useTranslation();
+    const [selectedLang, setSelectedLang] = useState<string>('en');
+    const [showModal, setShowModal] = useState(false);
+    useEffect(() => {
+        const fetchLanguage = async () => {
+            const storedLanguage = await getItem('language');
+            if (storedLanguage) {
+                setSelectedLang(storedLanguage);
+                i18n.changeLanguage(storedLanguage);
+            }
+        };
+        fetchLanguage();
+    }, []);
+
+    const changeLanguage = async (lng: string, name: string) => {
+        try {
+            setShowModal(true);
+            setItem('language', lng);
+            setLanguage('languageName', name);
+            i18n.changeLanguage(lng);
+            setSelectedLang(lng);
+        } catch (e) {
+            console.error('Failed to save the language to storage', e);
+        }
+    };
+
     return (
         <View style={styles.container}>
-
+            {showModal && <ChangeLanguage modalVisible={showModal} setModalVisible={setShowModal} />}
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
 
@@ -16,7 +45,7 @@ export default function Language() {
                         <TouchableOpacity onPress={() => router.back()}>
                             <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
                         </TouchableOpacity>
-                        <Text style={styles.bookingText} >Language</Text>
+                        <Text style={styles.bookingText} >{t('Language')}</Text>
                     </View>
 
                     <View style={styles.headerRight}>
@@ -29,20 +58,27 @@ export default function Language() {
 
 
             <View style={styles.containerStyle}>
-
                 <Text style={styles.titleStyle}>Suggested</Text>
+                <FlatList
+                    data={languageData}
+                    keyExtractor={(item) => item?.key}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity style={styles.containerInner}
+                            onPress={() => changeLanguage(item?.key, item?.name)}
+                        >
+                            <Text style={styles.textStyle}>{item?.name}</Text>
+                            {selectedLang === item?.key ? <Ionicons name='radio-button-on' size={hp(3)} color={'#0A5CA8'} /> : <MaterialCommunityIcons name="circle-outline" size={hp(3)} color={'#0A5CA8'} />}
+                        </TouchableOpacity>
+                    )}
+                />
 
-                <TouchableOpacity style={styles.containerInner}>
-                    <Text style={styles.textStyle}>English (US)</Text>
-                    <Ionicons name='radio-button-on' size={hp(3)} color={'#0A5CA8'} />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.containerInner}>
+                {/* <TouchableOpacity style={styles.containerInner}>
                     <Text style={styles.textStyle}>Arabic</Text>
                     <Ionicons name='radio-button-off' size={hp(3)} color={'#0A5CA8'} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
 
-                <View style={styles.separator} />
+                {/* <View style={styles.separator} /> */}
             </View>
 
 
@@ -94,7 +130,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginTop: hp(4)
+        marginTop: hp(5)
     },
     textStyle: {
         fontFamily: 'UrbanistSemiBold',
@@ -108,6 +144,6 @@ const styles = StyleSheet.create({
     separator: {
         height: 1,
         backgroundColor: '#EEEEEE',
-        marginTop: hp(4)
+        marginTop: hp(3)
     }
 })

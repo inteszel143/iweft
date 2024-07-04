@@ -5,7 +5,9 @@ import { Link, router } from 'expo-router';
 import { useUserQuery } from '@/query/fetchAuthQuery';
 import { useIsFocused } from '@react-navigation/native';
 import HomeHeaderSkeleton from '../skeleton/HomeHeaderSkeleton';
+import { useTranslation } from 'react-i18next';
 export default function HomeHeader() {
+    const { t } = useTranslation();
     const isFocused = useIsFocused();
     const currentDate = new Date();
     const currentHour = currentDate.getHours();
@@ -46,9 +48,9 @@ export default function HomeHeader() {
                 <View>
                     <Text style={styles.headerGood}>
                         {currentHour >= 0 && currentHour < 12
-                            ? 'Good Morning! 👋'
+                            ? `${t('Good Morning!')} 👋`
                             : currentHour >= 12 && currentHour < 18
-                                ? 'Good Afternoon! ☀️'
+                                ? `${t('Good Afternoon!')} ☀️`
                                 : 'Good Evening! 🌙'}
                     </Text>
                     <Text style={styles.headerName} >{data?.fullname}</Text>

@@ -12,6 +12,7 @@ export default function ProfileMiddle() {
     const validate =
         ((data?.address === null) ||
             (data?.nickname === null)) as boolean;
+
     const profileData = [
         {
             id: 1,
@@ -48,7 +49,7 @@ export default function ProfileMiddle() {
             id: 6,
             icon: require('@/assets/temp/profileicons/language.jpg'),
             label: "Language",
-            value: 'English (US)',
+            value: "English (US)",
             url: '/profilePage/Language'
         },
         {

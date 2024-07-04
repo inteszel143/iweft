@@ -6,7 +6,7 @@ export const messageChat = [
     user: {
       _id: 1,
       name: "Me",
-      avatar: "https://placeimg.com/140/140/any",
+      avatar: require("@/assets/icons/iweft.png"),
     },
   },
   {
@@ -16,7 +16,7 @@ export const messageChat = [
     user: {
       _id: 1,
       name: "Me",
-      avatar: "https://placeimg.com/140/140/any",
+      avatar: require("@/assets/icons/iweft.png"),
     },
   },
   {
@@ -26,7 +26,7 @@ export const messageChat = [
     user: {
       _id: 2,
       name: "Jenny",
-      avatar: "https://placeimg.com/140/140/any",
+      avatar: require("@/assets/icons/iweft.png"),
     },
   },
   {
@@ -36,7 +36,7 @@ export const messageChat = [
     user: {
       _id: 2,
       name: "Jenny",
-      avatar: "https://placeimg.com/140/140/any",
+      avatar: require("@/assets/icons/iweft.png"),
     },
   },
   {
@@ -46,7 +46,7 @@ export const messageChat = [
     user: {
       _id: 1,
       name: "Me",
-      avatar: "https://placeimg.com/140/140/any",
+      avatar: require("@/assets/icons/iweft.png"),
     },
   },
   {
@@ -56,7 +56,7 @@ export const messageChat = [
     user: {
       _id: 1,
       name: "Me",
-      avatar: "https://placeimg.com/140/140/any",
+      avatar: require("@/assets/icons/iweft.png"),
     },
   },
 ];

@@ -150,3 +150,44 @@ export const country = [
     { key: 'United Arab Emirates', value: 'United Arab Emirates' },
     { key: 'Philippines', value: 'Philippines' },
 ]
+
+
+export const languageData = [
+    {
+        key: "en",
+        name: "English (US)",
+    },
+    {
+        key: "ar",
+        name: "Arabic",
+    },
+    {
+        key: "man",
+        name: "Mandarin",
+    },
+    {
+        key: "hindi",
+        name: "Hindi",
+    },
+    {
+        key: "spa",
+        name: "Spanish",
+    },
+    {
+        key: "fr",
+        name: "French",
+    },
+    {
+        key: "ben",
+        name: "Bengali",
+    },
+    {
+        key: "rus",
+        name: "Russian",
+    },
+    {
+        key: "indo",
+        name: "Indonesia",
+    },
+
+]
