@@ -12,6 +12,7 @@ import { Octicons } from '@expo/vector-icons';
 import { getPinNumber } from '@/apis/fetchAuth';
 import PinCodeModal from '../PinCodeModal';
 import * as SecureStore from 'expo-secure-store';
+import { useTranslation } from 'react-i18next';
 interface CellProps {
     index: number;
     symbol: string;
@@ -19,6 +20,7 @@ interface CellProps {
 }
 
 export default function PinChecker() {
+    const { t } = useTranslation();
     const { refreshToken } = useLocalSearchParams();
     const [btnLoading, setBtnLoading] = useState(false);
     const CELL_COUNT = 4;
@@ -78,14 +80,14 @@ export default function PinChecker() {
                         <TouchableOpacity onPress={() => router.back()}>
                             <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
                         </TouchableOpacity>
-                        <Text style={styles.bookingText} >Enter Your PIN</Text>
+                        <Text style={styles.bookingText} >{t('Enter Your PIN')}</Text>
                     </View>
                 </View>
             </View>
 
             <ScrollView contentContainerStyle={styles.scollviewContainer}>
                 <View>
-                    <Text style={styles.conatinertitle}>Never share your PIN number with anyone.</Text>
+                    <Text style={styles.conatinertitle}>{t('Never share your PIN number with anyone.')}</Text>
                 </View>
                 <CodeField
                     ref={ref}
@@ -103,7 +105,7 @@ export default function PinChecker() {
                     onPress={onSubmit}
                 >
                     {
-                        btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>Continue</Text>
+                        btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>{t('Continue')}</Text>
                     }
                 </TouchableOpacity>
             </ScrollView>

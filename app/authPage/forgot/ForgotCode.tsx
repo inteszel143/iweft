@@ -10,9 +10,11 @@ import {
 } from 'react-native-confirmation-code-field';
 import { verifyEmailCode } from '@/apis/forgot';
 import WrongCode from '@/components/WrongCode';
+import { useTranslation } from 'react-i18next';
 const CELL_COUNT = 4;
 
 export default function ForgotCode() {
+    const { t } = useTranslation();
     const { item } = useLocalSearchParams();
     const [value, setValue] = useState('');
     const [btnLoading, setBtnLoading] = useState(false);
@@ -48,7 +50,7 @@ export default function ForgotCode() {
                         <TouchableOpacity onPress={() => router.back()}>
                             <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
                         </TouchableOpacity>
-                        <Text style={styles.bookingText} >Forgot Password</Text>
+                        <Text style={styles.bookingText} >{t('Forgot Password')}</Text>
                     </View>
                     <View style={styles.headerRight}>
                         <TouchableOpacity>
@@ -60,7 +62,7 @@ export default function ForgotCode() {
 
 
             <View style={styles.containerStyle}>
-                <Text style={styles.titleStyle}>Code has been send to <Text style={{ color: "#0A5CA8" }} >{item.slice(0, 4)}******{item.slice(-9)}</Text> </Text>
+                <Text style={styles.titleStyle}>{t('Code has been send to')} <Text style={{ color: "#0A5CA8" }} >{item.slice(0, 4)}******{item.slice(-9)}</Text> </Text>
                 <CodeField
                     ref={ref}
                     {...props}
@@ -81,8 +83,8 @@ export default function ForgotCode() {
                     )}
                 />
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: hp(6) }}>
-                    <Text style={[styles.titleStyle]}>Didn't receive?</Text>
-                    <TouchableOpacity><Text style={[styles.titleStyle, { color: '#0A5CA8' }]}>Resend code</Text></TouchableOpacity>
+                    <Text style={[styles.titleStyle]}>{t(`Didn't receive?`)}</Text>
+                    <TouchableOpacity><Text style={[styles.titleStyle, { color: '#0A5CA8' }]}>{t('Resend code')}</Text></TouchableOpacity>
                 </View>
             </View>
 
@@ -101,7 +103,7 @@ export default function ForgotCode() {
                     disabled={value.length !== 4 ? true : false}
                     onPress={onSubmit}
                 >
-                    {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.btnText}>Verify</Text>}
+                    {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.btnText}>{t('Verify')}</Text>}
                 </TouchableOpacity>
             </View>
 

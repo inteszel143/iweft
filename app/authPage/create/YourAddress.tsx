@@ -8,10 +8,11 @@ import * as Location from 'expo-location';
 import { Fontisto } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
 import { postPhoneVerificationCode } from '@/apis/auth';
+import { useTranslation } from 'react-i18next';
 
 export default function YourAddress() {
     const { image, fullName, nickName, dob, email, password, phone } = useLocalSearchParams();
-
+    const { t } = useTranslation();
     const [errorMsg, setErrorMsg] = useState("");
     const [nameAddress, setNameAddress] = useState<any>();
     const [city, setCity] = useState<any>();
@@ -102,7 +103,7 @@ export default function YourAddress() {
                         <TouchableOpacity onPress={() => router.back()}>
                             <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
                         </TouchableOpacity>
-                        <Text style={styles.bookingText} >Your Address/Location</Text>
+                        <Text style={styles.bookingText} >{t('Your Address/Location')}</Text>
                     </View>
 
                     <View style={styles.headerRight}>
@@ -139,23 +140,23 @@ export default function YourAddress() {
                 onChange={handleSheetChanges}
             >
                 <BottomSheetView style={styles.contentContainer}>
-                    <Text style={styles.bottomSheetTitle}>Location Details</Text>
+                    <Text style={styles.bottomSheetTitle}>{t('Location Details')}</Text>
                     <View style={styles.BottomSheetSeparator} />
                     <View>
-                        <Text style={styles.adddressTitle}>Address</Text>
+                        <Text style={styles.adddressTitle}>{t('Address')}</Text>
                         <View style={styles.textField}>
                             <Text style={styles.address}>{nameAddress}</Text>
                             <Fontisto name='map-marker-alt' size={hp(2)} />
                         </View>
                     </View>
                     <View>
-                        <Text style={styles.adddressTitle}>House/ Apartment number</Text>
+                        <Text style={styles.adddressTitle}>{t('House/ Apartment number')}</Text>
                         <View style={styles.textField}>
                             <Text style={styles.address}>{street}</Text>
                         </View>
                     </View>
                     <View>
-                        <Text style={styles.adddressTitle}>City</Text>
+                        <Text style={styles.adddressTitle}>{t('City')}</Text>
                         <View style={styles.textField}>
                             <Text style={styles.address}>{city}</Text>
                         </View>
@@ -164,7 +165,7 @@ export default function YourAddress() {
             </BottomSheet>
             <View style={styles.footer}>
                 <TouchableOpacity style={defaultStyles.footerBtn} onPress={onSubmit}>
-                    {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.sheetText}>Continue</Text>}
+                    {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.sheetText}>{t('Continue')}</Text>}
                 </TouchableOpacity>
             </View>
 

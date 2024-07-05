@@ -12,9 +12,10 @@ import { Ionicons } from '@expo/vector-icons';
 import ForgotCodeModal from '@/components/ForgotCodeModal';
 import errorRes from '@/apis/errorRes';
 import EmailNotFound from '@/components/EmailNotFound';
+import { useTranslation } from 'react-i18next';
 
 export default function ForgotPassScreen() {
-
+    const { t } = useTranslation();
     const [loadingBtn, setLoadingBtn] = useState(false);
     const [codeSuccessModal, setCodeSuccesModal] = useState(false);
     const [emailNotFound, setEmailNotFound] = useState(false);
@@ -66,7 +67,7 @@ export default function ForgotPassScreen() {
                         <TouchableOpacity onPress={() => router.back()}>
                             <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
                         </TouchableOpacity>
-                        <Text style={styles.bookingText} >Forgot Password</Text>
+                        <Text style={styles.bookingText} >{t('Forgot Password')}</Text>
                     </View>
 
                     <View style={styles.headerRight}>
@@ -90,10 +91,10 @@ export default function ForgotPassScreen() {
                 </View>
 
                 <View style={styles.dataStyle}>
-                    <Text style={styles.dataTextStyle} >Please enter your email address or phone number to request a password reset.</Text>
+                    <Text style={styles.dataTextStyle} >{t('Please enter your email address or phone number to request a password reset.')}</Text>
                 </View>
                 <View style={styles.titleStyle}>
-                    <Text style={styles.textTitleStyle} >Email or Phone number</Text>
+                    <Text style={styles.textTitleStyle} >{t('Email or Phone number')}</Text>
                 </View>
                 {/* TextInput */}
                 <View style={{ alignItems: 'center', marginTop: hp(1) }}>
@@ -109,7 +110,7 @@ export default function ForgotPassScreen() {
                                         onBlur={onBlur}
                                         onChangeText={onChange}
                                         value={value}
-                                        placeholder='Email or Phone number '
+                                        placeholder={t('Email or Phone number')}
                                         keyboardType="email-address"
                                         autoCapitalize="none"
                                         autoComplete='email'
@@ -136,7 +137,7 @@ export default function ForgotPassScreen() {
                 }
                 <View style={{ alignItems: 'center', marginTop: hp(6) }}>
                     <TouchableOpacity style={defaultStyles.footerBtn} onPress={handleSubmit(onSubmit)}>
-                        {loadingBtn ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>Continue</Text>}
+                        {loadingBtn ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>{t('Continue')}</Text>}
                     </TouchableOpacity>
                 </View>
 

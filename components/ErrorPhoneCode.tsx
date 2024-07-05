@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router } from 'expo-router';
 import LottieView from 'lottie-react-native';
+import { useTranslation } from 'react-i18next';
 interface ModalProps {
     modalVisible: boolean;
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>; // Ensure correct typing
@@ -10,6 +11,7 @@ interface ModalProps {
 
 
 export default function ErrorPhoneCode({ modalVisible, setModalVisible }: ModalProps) {
+    const { t } = useTranslation();
     const toggleModal = () => {
         setModalVisible(!modalVisible);
     };
@@ -31,11 +33,11 @@ export default function ErrorPhoneCode({ modalVisible, setModalVisible }: ModalP
                             source={require('@/assets/animate/invalid.json')}
                         />
                     </View>
-                    <Text style={styles.titleStyle}>Verification failed</Text>
-                    <Text style={styles.subStyle}>The verification code you entered doesn't match what we expected.</Text>
+                    <Text style={styles.titleStyle}>{t('Verification failed!')}</Text>
+                    <Text style={styles.subStyle}>{t(`The verification code you entered doesn't match what we expected.`)}</Text>
                     <View style={{ marginTop: hp(2.5) }} />
                     <TouchableOpacity style={styles.btnStyle} onPress={toggleModal}>
-                        <Text style={styles.btnText}>Try again</Text>
+                        <Text style={styles.btnText}>{t('Try again')}</Text>
                     </TouchableOpacity>
                 </View>
             </View>

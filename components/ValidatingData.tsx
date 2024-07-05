@@ -3,12 +3,14 @@ import React, { useEffect } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router } from 'expo-router';
 import { BallIndicator, WaveIndicator } from 'react-native-indicators'
+import { useTranslation } from 'react-i18next';
 interface ModalProps {
     modalVisible: boolean;
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>; // Ensure correct typing
 }
 
 export default function ValidatingData({ modalVisible, setModalVisible }: ModalProps) {
+    const { t } = useTranslation();
     return (
         <Modal
             animationType="fade"
@@ -23,8 +25,8 @@ export default function ValidatingData({ modalVisible, setModalVisible }: ModalP
                         <BallIndicator color="#0A5CA8" size={hp(4)} />
                     </View>
                     <View style={{ marginTop: hp(4) }} />
-                    <Text style={styles.titleStyle}>Please wait</Text>
-                    <Text style={styles.subStyle}>Validating user data...</Text>
+                    <Text style={styles.titleStyle}>{t('Please wait')}</Text>
+                    <Text style={styles.subStyle}>{t('Validating user data...')}</Text>
                 </View>
             </View>
 

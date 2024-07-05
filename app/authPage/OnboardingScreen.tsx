@@ -9,23 +9,10 @@ import ListItem from '@/components/boarding/ListItem';
 import PaginationElement from '@/components/boarding/PaginationElement';
 import Button from '@/components/boarding/Button';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
-const pages = [
-    {
-        text: 'We provide professional service at a friendly price',
-        image: require('@/assets/temp/onboarding/onboarding1.jpg'),
-    },
-    {
-        text: 'The best results and your satisfaction is our top priority',
-        image: require('@/assets/temp/onboarding/onboarding2.jpg'),
-    },
-    {
-        text: 'Never worry about laundry again with iweft',
-        image: require('@/assets/temp/onboarding/onboarding3.jpg'),
-    },
-];
+import { useTranslation } from 'react-i18next';
 
 export default function OnboardingScreen() {
+    const { t } = useTranslation();
     const x = useSharedValue(0);
     const flatListIndex = useSharedValue(0);
     const flatListRef = useAnimatedRef<
@@ -60,6 +47,22 @@ export default function OnboardingScreen() {
         },
         [x]
     );
+
+    const pages = [
+        {
+            text: t('We provide professional service at a friendly price'),
+            image: require('@/assets/temp/onboarding/onboarding1.jpg'),
+        },
+        {
+            text: t('The best results and your satisfaction is our top priority'),
+            image: require('@/assets/temp/onboarding/onboarding2.jpg'),
+        },
+        {
+            text: t('Never worry about laundry again with iweft'),
+            image: require('@/assets/temp/onboarding/onboarding3.jpg'),
+        },
+    ];
+
 
     return (
         <SafeAreaView style={styles.container}>

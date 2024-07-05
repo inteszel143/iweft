@@ -3,13 +3,14 @@ import React, { useEffect } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router } from 'expo-router';
 import { BallIndicator } from 'react-native-indicators'
+import { useTranslation } from 'react-i18next';
 interface ModalProps {
     modalVisible: boolean;
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>; // Ensure correct typing
 }
 
 export default function ChangePasswordSuccessModal({ modalVisible, setModalVisible }: ModalProps) {
-
+    const { t } = useTranslation();
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -32,8 +33,8 @@ export default function ChangePasswordSuccessModal({ modalVisible, setModalVisib
                     <View>
                         <Image source={require('@/assets/temp/success.jpg')} resizeMode='contain' style={styles.imageStyle} />
                     </View>
-                    <Text style={styles.titleStyle}>Congratulations!</Text>
-                    <Text style={styles.subStyle}>Your account is ready to use. You will be redirected to the Login page in a few seconds..</Text>
+                    <Text style={styles.titleStyle}>{t('Congratulations!')}</Text>
+                    <Text style={styles.subStyle}>{t('Your account is ready to use. You will be redirected to the Login page in a few seconds..')}</Text>
                     <View style={{ marginTop: hp(8) }} />
                     <View style={styles.indicator}>
                         <BallIndicator color="#93C120" size={hp(4)} />

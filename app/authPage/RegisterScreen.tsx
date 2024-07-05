@@ -12,12 +12,13 @@ import GooleIcon from '@/components/social/GooleIcon';
 import AppleIcon from '@/components/social/AppleIcon';
 import { getEmailChecker } from '@/apis/fetchAuth';
 import EmailExist from '@/components/EmailExist';
+import { useTranslation } from 'react-i18next';
 export default function RegisterScreen() {
     const [emailF, setEmailF] = useState(false);
     const [passwordF, setPasswordF] = useState(false);
     const [check, setCheck] = useState(true);
     const [showP, setShowP] = useState(true);
-
+    const { t } = useTranslation();
     const [loadingBtn, setLoadingBtn] = useState(false);
     const [existModal, setExitModal] = useState(false);
 
@@ -92,7 +93,7 @@ export default function RegisterScreen() {
 
             <ScrollView bounces={false} contentContainerStyle={{ paddingBottom: hp(5) }}>
                 <View style={styles.containerStyle}>
-                    <Text style={styles.textStyle}>Create your Account</Text>
+                    <Text style={styles.textStyle}>{t('Create your Account')}</Text>
 
                     <View style={[styles.textField, { backgroundColor: emailF ? '#0A5CA826' : '#FAFAFA', borderColor: emailF ? '#0A5CA8' : '#FAFAFA' }]} >
                         <View style={styles.innerField}>
@@ -108,7 +109,7 @@ export default function RegisterScreen() {
                                         onFocus={handleFocus}
                                         onChangeText={onChange}
                                         value={value}
-                                        placeholder='Email'
+                                        placeholder={t('Email')}
                                         keyboardType="email-address"
                                         autoCapitalize="none"
                                         autoComplete='email'
@@ -141,7 +142,7 @@ export default function RegisterScreen() {
                                 render={({ field: { onChange, onBlur, value } }) => (
 
                                     <TextInput
-                                        placeholder='Password'
+                                        placeholder={t('Password')}
                                         onBlur={handleBlurP}
                                         onFocus={handleFocusP}
                                         onChangeText={onChange}
@@ -175,7 +176,7 @@ export default function RegisterScreen() {
                     {check ? <Ionicons name='checkbox' size={hp(2.6)} color={'#0A5CA8'} />
                         :
                         <MaterialCommunityIcons name='checkbox-blank-outline' size={hp(2.6)} color={'#0A5CA8'} />}
-                    <Text style={styles.rememberText}>Remember me</Text>
+                    <Text style={styles.rememberText}>{t('Remember me')}</Text>
                 </TouchableOpacity>
 
 
@@ -183,12 +184,12 @@ export default function RegisterScreen() {
                 <View style={{ alignItems: 'center', marginTop: hp(3) }}>
 
                     <TouchableOpacity style={defaultStyles.footerBtn} onPress={handleSubmit(onSubmit)}>
-                        {loadingBtn ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>Sign up</Text>}
+                        {loadingBtn ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>{t('Sign up')}</Text>}
                     </TouchableOpacity>
 
                     <Link href={'/authPage/forgot/ForgotPassScreen'} asChild>
                         <TouchableOpacity>
-                            <Text style={styles.forgot}>Forgot the password?</Text>
+                            <Text style={styles.forgot}>{t('Forgot the password?')}</Text>
                         </TouchableOpacity>
                     </Link>
                 </View>
@@ -196,7 +197,7 @@ export default function RegisterScreen() {
 
                 <View style={styles.orStyle}>
                     <View style={styles.separator} />
-                    <Text style={styles.orText}>or continue with</Text>
+                    <Text style={styles.orText}>{t('or continue with')}</Text>
                     <View style={styles.separator} />
                 </View>
 
@@ -209,10 +210,10 @@ export default function RegisterScreen() {
 
                 <View style={{ alignItems: 'center' }}>
                     <View style={styles.footerInner}>
-                        <Text style={styles.innerText}>Already have an account?</Text>
+                        <Text style={styles.innerText}>{t('Already have an account?')}</Text>
                         <Link href={'/authPage/LoginScreen'} asChild>
                             <TouchableOpacity>
-                                <Text style={styles.signUpText}>Sign in</Text>
+                                <Text style={styles.signUpText}>{t('Sign in')}</Text>
                             </TouchableOpacity>
                         </Link>
 

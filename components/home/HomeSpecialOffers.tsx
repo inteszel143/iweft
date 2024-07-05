@@ -4,8 +4,8 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import Carousel from 'react-native-reanimated-carousel';
 import CarouselIndicator from './CarouselIndicator';
 import { Link, router } from 'expo-router';
-import { useSpecialOffers } from '@/query/homeQuery';
 import { useIsFocused } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 const data = [
     {
         img: require('@/assets/temp/special/carousel1.png')
@@ -19,15 +19,16 @@ const data = [
 ];
 const width = Dimensions.get('window').width;
 export default function HomeSpecialOffers() {
+    const { t } = useTranslation();
     const isFocused = useIsFocused();
     const [activeIndex, setActiveIndex] = useState(0);
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.specialText}>Special Offers</Text>
+                <Text style={styles.specialText}>{t('Special Offers')}</Text>
                 <Link href={'/homePage/SepecialOffers'} asChild>
                     <TouchableOpacity>
-                        <Text style={styles.seeallText}>See all</Text>
+                        <Text style={styles.seeallText}>{t('See all')}</Text>
                     </TouchableOpacity>
                 </Link>
             </View>

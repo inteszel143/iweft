@@ -2,9 +2,9 @@ import { FlatList, StyleSheet, Text, TouchableOpacity, View, Image } from 'react
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 export default function BundleOffers() {
-
-
+    const { t } = useTranslation();
     return (
         <View style={styles.container}>
 
@@ -13,7 +13,7 @@ export default function BundleOffers() {
             <View style={styles.header} >
                 <View style={styles.headerRight}>
                     <View style={styles.indicator} />
-                    <Text style={styles.headerText}>Bundle Offers</Text>
+                    <Text style={styles.headerText}>{t('Bundle Offers')}</Text>
                 </View>
                 <View>
 

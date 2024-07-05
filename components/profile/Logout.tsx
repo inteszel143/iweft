@@ -13,12 +13,13 @@ import { logoutUser } from '@/apis/auth';
 import { router } from 'expo-router';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import errorRes from '@/apis/errorRes';
+import { useTranslation } from 'react-i18next';
 export default function Logout() {
-
+    const { t } = useTranslation();
     const [btnLoading, setBtnLoading] = useState(false);
     // bottomSheet
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-    const snapPoints = useMemo(() => ['25%', '26%'], []);
+    const snapPoints = useMemo(() => ['25%', '25%'], []);
     const renderBackdrop = useCallback(
         (props: any) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1}{...props} />, []
     )
@@ -59,7 +60,7 @@ export default function Logout() {
                 >
                     <View style={styles.leftRow}>
                         <Image source={require('@/assets/temp/profileicons/logout.jpg')} resizeMode='contain' style={{ width: wp(7) }} />
-                        <Text style={styles.labelStyle}>Logout</Text>
+                        <Text style={styles.labelStyle}>{t('Logout')}</Text>
                     </View>
 
                     <View style={styles.rightRow}>
@@ -76,25 +77,30 @@ export default function Logout() {
                 enablePanDownToClose={true}
                 handleIndicatorStyle={{ backgroundColor: '#DADADA' }}
                 onChange={handleSheetChanges}
+                style={{
+                    borderTopLeftRadius: wp(8),
+                    borderTopRightRadius: wp(8),
+                    overflow: 'hidden',
+                }}
 
             >
                 <BottomSheetView style={styles.contentContainer}>
-                    <Text style={styles.bottomSheetIndi}>Logout</Text>
+                    <Text style={styles.bottomSheetIndi}>{t('Logout')}</Text>
                     <View style={styles.BottomSheetSeparator} />
                     <View style={{ marginTop: Platform.OS === 'ios' ? hp(3) : hp(4), paddingHorizontal: wp(10) }}>
-                        <Text style={styles.bottomSheetTitle}>Are you sure you want to log out?</Text>
+                        <Text style={styles.bottomSheetTitle}>{t('Are you sure you want to log out?')}</Text>
                     </View>
 
                     <View style={styles.bottomBtnRow}>
                         <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}
                             onPress={() => bottomSheetModalRef.current?.close()}
                         >
-                            <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Cancel</Text>
+                            <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>{t('Cancel')}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
                             onPress={logout}>
-                            {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={[styles.bottomText, { color: "white" }]}>Yes, Logout</Text>}
+                            {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={[styles.bottomText, { color: "white" }]}>{t('Yes, Logout')}</Text>}
                         </TouchableOpacity>
                     </View>
 

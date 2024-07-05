@@ -4,13 +4,14 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { router } from 'expo-router';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import i18n from '@/services/i18n';
+import i18n, { getCurrentLanguage } from '@/services/i18n';
 import { languageData } from '@/constants/profile/data';
-import { setItem, setLanguage, getItem } from '@/storage/languageStorage';
+import { setItem, getItem } from '@/storage/languageStorage';
 import ChangeLanguage from '@/components/modal/ChangeLanguage';
 export default function Language() {
     const { t } = useTranslation();
-    const [selectedLang, setSelectedLang] = useState<string>('en');
+    const current = getCurrentLanguage();
+    const [selectedLang, setSelectedLang] = useState<string>(current || 'en');
     const [showModal, setShowModal] = useState(false);
     useEffect(() => {
         const fetchLanguage = async () => {
@@ -23,13 +24,12 @@ export default function Language() {
         fetchLanguage();
     }, []);
 
-    const changeLanguage = async (lng: string, name: string) => {
+    const changeLanguage = async (lng: string) => {
         try {
-            setShowModal(true);
             setItem('language', lng);
-            setLanguage('languageName', name);
             i18n.changeLanguage(lng);
             setSelectedLang(lng);
+            setShowModal(true);
         } catch (e) {
             console.error('Failed to save the language to storage', e);
         }
@@ -64,7 +64,7 @@ export default function Language() {
                     keyExtractor={(item) => item?.key}
                     renderItem={({ item }) => (
                         <TouchableOpacity style={styles.containerInner}
-                            onPress={() => changeLanguage(item?.key, item?.name)}
+                            onPress={() => changeLanguage(item?.key)}
                         >
                             <Text style={styles.textStyle}>{item?.name}</Text>
                             {selectedLang === item?.key ? <Ionicons name='radio-button-on' size={hp(3)} color={'#0A5CA8'} /> : <MaterialCommunityIcons name="circle-outline" size={hp(3)} color={'#0A5CA8'} />}

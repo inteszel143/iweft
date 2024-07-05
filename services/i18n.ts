@@ -2,10 +2,24 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import english from "@/locales/english.json";
 import arabic from "@/locales/arabic.json";
+import mandarin from "@/locales/mandarin.json";
+import Hindi from "@/locales/Hindi.json";
+import spanish from "@/locales/spanish.json";
+import french from "@/locales/french.json";
+import bengali from "@/locales/bengali.json";
+import russian from "@/locales/russian.json";
+import indonesia from "@/locales/indo.json";
 import { getItem } from "@/storage/languageStorage";
 export const languageResources = {
   en: { translation: english },
   ar: { translation: arabic },
+  man: { translation: mandarin },
+  hindi: { translation: Hindi },
+  spa: { translation: spanish },
+  fr: { translation: french },
+  ben: { translation: bengali },
+  rus: { translation: russian },
+  indo: { translation: indonesia },
 };
 const getLanguage = async () => {
   try {

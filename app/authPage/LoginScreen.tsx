@@ -15,6 +15,7 @@ import * as SecureStore from 'expo-secure-store';
 import { getVerifyCheck } from '@/apis/fetchAuth';
 import ErrorLoginModal from '@/components/ErrorLoginModal';
 import { useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 
 export default function LoginScreen() {
     const [emailF, setEmailF] = useState(false);
@@ -23,7 +24,7 @@ export default function LoginScreen() {
     const [showP, setShowP] = useState(true);
     const queryClient = useQueryClient();
     const [errorModalVisible, setErrorModalVisible] = useState(false);
-
+    const { t } = useTranslation();
     const [loadingBtn, setLoadingBtn] = useState(false);
 
 
@@ -92,7 +93,7 @@ export default function LoginScreen() {
 
             <ScrollView bounces={false} contentContainerStyle={{ paddingBottom: hp(5) }}>
                 <View style={styles.containerStyle}>
-                    <Text style={styles.textStyle}>Login to your Account</Text>
+                    <Text style={styles.textStyle}>{t('Login to your Account')}</Text>
                     <View style={[styles.textField, { backgroundColor: emailF ? '#0A5CA826' : '#FAFAFA', borderColor: emailF ? '#0A5CA8' : '#FAFAFA' }]} >
                         <View style={styles.innerField}>
                             <Ionicons name='mail' size={hp(2.5)} color={emailF ? '#0A5CA8' : '#9E9E9E'} />
@@ -107,7 +108,7 @@ export default function LoginScreen() {
                                         onFocus={handleFocus}
                                         onChangeText={onChange}
                                         value={value}
-                                        placeholder='Email'
+                                        placeholder={t('Email')}
                                         keyboardType="email-address"
                                         autoCapitalize="none"
                                         autoComplete='email'
@@ -140,7 +141,7 @@ export default function LoginScreen() {
                                 render={({ field: { onChange, onBlur, value } }) => (
 
                                     <TextInput
-                                        placeholder='Password'
+                                        placeholder={t('Password')}
                                         onBlur={handleBlurP}
                                         onFocus={handleFocusP}
                                         onChangeText={onChange}
@@ -173,7 +174,7 @@ export default function LoginScreen() {
                     {check ? <Ionicons name='checkbox' size={hp(2.6)} color={'#0A5CA8'} />
                         :
                         <MaterialCommunityIcons name='checkbox-blank-outline' size={hp(2.6)} color={'#0A5CA8'} />}
-                    <Text style={styles.rememberText}>Remember me</Text>
+                    <Text style={styles.rememberText}>{t('Remember me')}</Text>
                 </TouchableOpacity>
 
 
@@ -181,12 +182,12 @@ export default function LoginScreen() {
                 <View style={{ alignItems: 'center', marginTop: hp(3) }}>
 
                     <TouchableOpacity style={defaultStyles.footerBtn} onPress={handleSubmit(onSubmit)}>
-                        {loadingBtn ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>Sign in</Text>}
+                        {loadingBtn ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>{t('Sign in')}</Text>}
                     </TouchableOpacity>
 
                     <Link href={'/authPage/forgot/ForgotPassScreen'} asChild>
                         <TouchableOpacity>
-                            <Text style={styles.forgot}>Forgot the password?</Text>
+                            <Text style={styles.forgot}>{t('Forgot the password?')}</Text>
                         </TouchableOpacity>
                     </Link>
                 </View>
@@ -195,7 +196,7 @@ export default function LoginScreen() {
 
                 <View style={styles.orStyle}>
                     <View style={styles.separator} />
-                    <Text style={styles.orText}>or continue with</Text>
+                    <Text style={styles.orText}>{t('or continue with')}</Text>
                     <View style={styles.separator} />
                 </View>
 
@@ -209,10 +210,10 @@ export default function LoginScreen() {
 
                 <View style={{ alignItems: 'center' }}>
                     <View style={styles.footerInner}>
-                        <Text style={styles.innerText}>Don’t have an account?</Text>
+                        <Text style={styles.innerText}>{t('Don’t have an account?')}</Text>
                         <Link href={'/authPage/RegisterScreen'} asChild>
                             <TouchableOpacity>
-                                <Text style={styles.signUpText}>Sign up</Text>
+                                <Text style={styles.signUpText}>{t('Sign up')}</Text>
                             </TouchableOpacity>
                         </Link>
                     </View>

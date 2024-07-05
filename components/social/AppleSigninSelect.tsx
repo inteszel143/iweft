@@ -9,8 +9,9 @@ import ErrorPage from '../ErrorPage';
 import useStoreRefresh from '@/store/useStoreRefresh';
 import { getEmailChecker } from '@/apis/fetchAuth';
 import errorRes from '@/apis/errorRes';
+import { useTranslation } from 'react-i18next';
 export default function AppleSigninSelect() {
-
+    const { t } = useTranslation();
     const [errorLoginModal, setErrorLoginModal] = useState(false);
     const [successLogin, setSuccessLogin] = useState(false);
     const [appleAuthAvailable, setAppleAvailable] = useState(false);
@@ -86,7 +87,7 @@ export default function AppleSigninSelect() {
             <TouchableOpacity style={styles.btnStyle} onPress={() => login()}>
                 <View style={styles.btnInner}>
                     <Image source={require('@/assets/temp/authIcons/apple.png')} resizeMode='contain' style={styles.btnImage} />
-                    <Text style={styles.btnText}>Continue with Apple</Text>
+                    <Text style={styles.btnText}>{t('Continue with Apple')}</Text>
                 </View>
             </TouchableOpacity>
         </View>

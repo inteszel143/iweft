@@ -10,8 +10,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { defaultStyles } from '@/constants/Styles';
 import { resetPasswordEmail } from '@/apis/forgot';
+import { useTranslation } from 'react-i18next';
 
 export default function CreateNewPassword() {
+    const { t } = useTranslation();
     const { email, code } = useLocalSearchParams();
     const [passwordF, setPasswordF] = useState(false);
     const [passwordFC, setPasswordFC] = useState(false);
@@ -44,12 +46,12 @@ export default function CreateNewPassword() {
 
     const schema = yup.object().shape({
         new_password: yup.string()
-            .required('Password is required')
-            .min(8, 'Password must be at least 8 characters'),
+            .required(t('Password is required'))
+            .min(8, t('Password must be at least 8 characters')),
         confirm_password: yup.string()
-            .required('Password is required')
-            .min(8, 'Password must be at least 8 characters')
-            .test('passwords-match', 'Passwords must match', function (value) {
+            .required(t('Password is required'))
+            .min(8, t('Password must be at least 8 characters'))
+            .test('passwords-match', t('Passwords must match'), function (value) {
                 return value === this.parent.new_password;
             })
     });
@@ -85,7 +87,7 @@ export default function CreateNewPassword() {
                         <TouchableOpacity onPress={() => router.back()}>
                             <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
                         </TouchableOpacity>
-                        <Text style={styles.bookingText} >Create New Password</Text>
+                        <Text style={styles.bookingText} >{t('Create New Password')}</Text>
                     </View>
 
                     <View style={styles.headerRight}>
@@ -109,7 +111,7 @@ export default function CreateNewPassword() {
                 </View>
 
                 <View style={styles.containerStyle}>
-                    <Text style={[styles.titleStyle, { marginTop: hp(2.5) }]}>Create Your New Password</Text>
+                    <Text style={[styles.titleStyle, { marginTop: hp(2.5) }]}>{t('Create Your New Password')}</Text>
 
 
 
@@ -125,7 +127,7 @@ export default function CreateNewPassword() {
                                 render={({ field: { onChange, onBlur, value } }) => (
 
                                     <TextInput
-                                        placeholder='New Password'
+                                        placeholder={t('New Password')}
                                         onBlur={handleBlurP}
                                         onFocus={handleFocusP}
                                         onChangeText={onChange}
@@ -162,7 +164,7 @@ export default function CreateNewPassword() {
                                 render={({ field: { onChange, onBlur, value } }) => (
 
                                     <TextInput
-                                        placeholder='Confirm Password'
+                                        placeholder={t('Confirm Password')}
                                         onBlur={handleBlurC}
                                         onFocus={handleFocusC}
                                         onChangeText={onChange}
@@ -192,7 +194,7 @@ export default function CreateNewPassword() {
 
                 <View style={{ alignItems: 'center', marginTop: hp(6) }}>
                     <TouchableOpacity style={defaultStyles.footerBtn} onPress={handleSubmit(onSubmit)}>
-                        {btnLoading ? <ActivityIndicator size={'small'} color={'#FFFFFF'} /> : <Text style={styles.btnText}>Continue</Text>}
+                        {btnLoading ? <ActivityIndicator size={'small'} color={'#FFFFFF'} /> : <Text style={styles.btnText}>{t('Continue')}</Text>}
                     </TouchableOpacity>
                 </View>
 

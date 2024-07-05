@@ -11,9 +11,9 @@ import {
 import { Octicons } from '@expo/vector-icons';
 import CreateNewUserSucess from '@/components/CreateNewUserSucess';
 import { manualSignup } from '@/apis/auth';
-import { number, string } from 'yup';
 import errorRes from '@/apis/errorRes';
 import ValidatingData from '@/components/ValidatingData';
+import { useTranslation } from 'react-i18next';
 interface CellProps {
     index: number;
     symbol: string;
@@ -21,6 +21,7 @@ interface CellProps {
 }
 
 export default function CreateNewPIN() {
+    const { t } = useTranslation();
     const { image,
         fullName,
         nickName,
@@ -120,7 +121,7 @@ export default function CreateNewPIN() {
                         <TouchableOpacity onPress={() => router.back()}>
                             <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
                         </TouchableOpacity>
-                        <Text style={styles.bookingText} >Create New PIN</Text>
+                        <Text style={styles.bookingText} >{t('Create New PIN')}</Text>
                     </View>
                 </View>
             </View>
@@ -128,7 +129,7 @@ export default function CreateNewPIN() {
 
             <ScrollView contentContainerStyle={styles.scollviewContainer}>
                 <View style={{ paddingHorizontal: wp(4) }}>
-                    <Text style={styles.conatinertitle}>Add a PIN number to make your account more secure.</Text>
+                    <Text style={styles.conatinertitle}>{t('Add a PIN number to make your account more secure.')}</Text>
                 </View>
                 <CodeField
                     ref={ref}
@@ -146,7 +147,7 @@ export default function CreateNewPIN() {
                     onPress={toggleModal}
                 >
                     {
-                        btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>Continue</Text>
+                        btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>{t('Continue')}</Text>
                     }
                 </TouchableOpacity>
             </ScrollView>

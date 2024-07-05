@@ -4,12 +4,14 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { router } from 'expo-router';
 import LottieView from 'lottie-react-native';
 import { BallIndicator } from 'react-native-indicators'
+import { useTranslation } from 'react-i18next';
 interface ModalProps {
     modalVisible: boolean;
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>; // Ensure correct typing
 }
 
 export default function ApprovedPhone({ modalVisible, setModalVisible }: ModalProps) {
+    const { t } = useTranslation();
     return (
         <Modal
             animationType="fade"
@@ -30,8 +32,8 @@ export default function ApprovedPhone({ modalVisible, setModalVisible }: ModalPr
                     <View>
                         <Image source={require('@/assets/temp/success.jpg')} resizeMode='contain' style={styles.imageStyle} />
                     </View>
-                    <Text style={styles.titleStyle}>Verification Success !</Text>
-                    <Text style={styles.subStyle}>Your phone number has been successfully verified.</Text>
+                    <Text style={styles.titleStyle}>{t('Verification Success!')}</Text>
+                    <Text style={styles.subStyle}>{t('Your phone number has been successfully verified.')}</Text>
                     <View style={{ marginTop: hp(5) }} />
                     <View style={styles.indicator}>
                         <BallIndicator color="#6DCC5B" size={hp(4)} />

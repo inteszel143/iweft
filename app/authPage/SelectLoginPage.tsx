@@ -6,7 +6,9 @@ import { defaultStyles } from '@/constants/Styles';
 import AppleSigninSelect from '@/components/social/AppleSigninSelect';
 import GoogleSigninSelect from '@/components/social/GoogleSigninSelect';
 import FacebookSigninSelect from '@/components/social/FacebookSigninSelect';
+import { useTranslation } from 'react-i18next';
 export default function SelectLoginPage() {
+    const { t } = useTranslation();
     return (
         <View style={styles.container}>
             <View style={styles.topImage}>
@@ -21,7 +23,7 @@ export default function SelectLoginPage() {
 
             <View style={styles.orStyle}>
                 <View style={styles.separator} />
-                <Text style={styles.orText}>or</Text>
+                <Text style={styles.orText}>{t('or')}</Text>
                 <View style={styles.separator} />
             </View>
 
@@ -30,14 +32,14 @@ export default function SelectLoginPage() {
             <View style={styles.footer}>
                 <Link href={'/authPage/LoginScreen'} asChild>
                     <TouchableOpacity style={defaultStyles.footerBtn}>
-                        <Text style={styles.footerText}>Sign in with password</Text>
+                        <Text style={styles.footerText}>{t('Sign in with password')}</Text>
                     </TouchableOpacity>
                 </Link>
                 <View style={styles.footerInner}>
-                    <Text style={styles.innerText}>Don’t have an account?</Text>
+                    <Text style={styles.innerText}>{t('Don’t have an account?')}</Text>
                     <Link href={'/authPage/RegisterScreen'} asChild>
                         <TouchableOpacity>
-                            <Text style={styles.signUpText}>Sign up</Text>
+                            <Text style={styles.signUpText}>{t('Sign up')}</Text>
                         </TouchableOpacity>
                     </Link>
                 </View>

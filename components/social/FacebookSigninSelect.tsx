@@ -9,12 +9,13 @@ import * as SecureStore from 'expo-secure-store';
 import SuccessLogin from '../SuccessLogin';
 import { getEmailChecker } from '@/apis/fetchAuth';
 import useStoreRefresh from '@/store/useStoreRefresh';
+import { useTranslation } from 'react-i18next';
 export default function FacebookSigninSelect() {
     const [exists, setExists] = useState(false);
     const [errorLoginModal, setErrorLoginModal] = useState(false);
     const [successLogin, setSuccessLogin] = useState(false);
     const setRefreshToken = useStoreRefresh(state => state.setRefreshToken);
-
+    const { t } = useTranslation();
 
     useEffect(() => {
         const requestTracking = async () => {
@@ -99,7 +100,7 @@ export default function FacebookSigninSelect() {
             <TouchableOpacity style={styles.btnStyle} onPress={login}>
                 <View style={styles.btnInner}>
                     <Image source={require('@/assets/temp/authIcons/fb.png')} resizeMode='contain' style={styles.btnImage} />
-                    <Text style={styles.btnText}>Continue with Facebook</Text>
+                    <Text style={styles.btnText}>{t('Continue with Facebook')}</Text>
                 </View>
             </TouchableOpacity>
             {/* <LoginButton onLogoutFinished={() => console.log("Loggout")} onLoginFinished={(error, data) => {

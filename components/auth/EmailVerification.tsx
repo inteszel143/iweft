@@ -10,10 +10,11 @@ import {
 } from 'react-native-confirmation-code-field';
 import { postVerifyEmailCode } from '@/apis/auth';
 import ErrorCodeModal from '../ErrorCodeModal';
+import { useTranslation } from 'react-i18next';
 const CELL_COUNT = 6;
 
-
 export default function EmailVerification() {
+    const { t } = useTranslation();
     const { email, refreshToken } = useLocalSearchParams();
     const [value, setValue] = useState('');
     const [btnLoading, setBtnLoading] = useState(false);
@@ -58,7 +59,7 @@ export default function EmailVerification() {
                         <TouchableOpacity onPress={() => router.back()}>
                             <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
                         </TouchableOpacity>
-                        <Text style={styles.bookingText} >Email Verification</Text>
+                        <Text style={styles.bookingText} >{t('Email Verification')}</Text>
                     </View>
 
                     <View style={styles.headerRight}>
@@ -73,7 +74,7 @@ export default function EmailVerification() {
 
             <View style={styles.containerStyle}>
 
-                <Text style={styles.titleStyle}>Code has been send to <Text style={{ color: "#0A5CA8" }} >{email?.slice(0, 4)}******{email?.slice(-9)}</Text> </Text>
+                <Text style={styles.titleStyle}>{t('Code has been send to')} <Text style={{ color: "#0A5CA8" }} >{email?.slice(0, 4)}******{email?.slice(-9)}</Text> </Text>
                 <CodeField
                     ref={ref}
                     {...props}
@@ -105,7 +106,7 @@ export default function EmailVerification() {
                 <TouchableOpacity style={styles.btnBoxStyle}
                     onPress={onSubmit}
                 >
-                    {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.btnText}>Verify</Text>}
+                    {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.btnText}>{t('Verify')}</Text>}
                 </TouchableOpacity>
             </View>
 

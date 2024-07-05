@@ -12,10 +12,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import * as ImagePicker from 'expo-image-picker';
 import DatePicker from 'react-native-date-picker';
+import { useTranslation } from 'react-i18next';
 export default function ProfileData() {
     const { email, password } = useLocalSearchParams(); // email and password
-    const [selected, setSelected] = useState('');
-
+    const { t } = useTranslation();
 
     const phoneInput = useRef<PhoneInput>(null);
     const [value, setValue] = useState("");
@@ -71,7 +71,7 @@ export default function ProfileData() {
     }
 
     const schema = yup.object().shape({
-        full_name: yup.string().required('Full Name is requred'),
+        full_name: yup.string().required(t('Full Name is requred')),
         n_name: yup.string().required('Nickname is requred'),
         email: yup.string().email('Invalid email').required('Email is required').default(email as string),
     });
@@ -105,13 +105,13 @@ export default function ProfileData() {
             >
                 <View style={styles.modalStyle}>
                     <View style={styles.modalBox}>
-                        <Text style={styles.modalTitle}>Add Profile Picture</Text>
+                        <Text style={styles.modalTitle}>{t('Add Profile Picture')}</Text>
 
                         <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#0A5CA8' }]} onPress={openCamera}>
-                            <Text style={[styles.modalText, { color: '#FFFFFF' }]}>Take Photo</Text>
+                            <Text style={[styles.modalText, { color: '#FFFFFF' }]}>{t('Take Photo')}</Text>
                         </TouchableOpacity >
                         <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#0A5CA8' }]} onPress={pickImage} >
-                            <Text style={[styles.modalText, { color: '#FFFFFF' }]}>Choose Photo</Text>
+                            <Text style={[styles.modalText, { color: '#FFFFFF' }]}>{t('Choose Photo')}</Text>
                         </TouchableOpacity>
 
                         {/* <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#F75555' }]}>
@@ -121,7 +121,7 @@ export default function ProfileData() {
                         <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#DAE7F2' }]}
                             onPress={toggleModal}
                         >
-                            <Text style={[styles.modalText, { color: '#0A5CA8' }]}>Cancel</Text>
+                            <Text style={[styles.modalText, { color: '#0A5CA8' }]}>{t('Cancel')}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -139,7 +139,7 @@ export default function ProfileData() {
                         <TouchableOpacity onPress={() => router.back()}>
                             <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
                         </TouchableOpacity>
-                        <Text style={styles.bookingText} >Fill Your Profile</Text>
+                        <Text style={styles.bookingText} >{t('Fill Your Profile')}</Text>
                     </View>
 
                     <View style={styles.headerRight}>
@@ -193,7 +193,7 @@ export default function ProfileData() {
                                         // onFocus={handleFocus}
                                         onChangeText={onChange}
                                         value={value}
-                                        placeholder='Full Name'
+                                        placeholder={t('Full Name')}
                                         autoCapitalize='words'
                                         placeholderTextColor={'#9E9E9E'}
                                         style={defaultStyles.textInputStyle}
@@ -226,7 +226,7 @@ export default function ProfileData() {
                                         // onFocus={handleFocus}
                                         onChangeText={onChange}
                                         value={value}
-                                        placeholder='Nickname'
+                                        placeholder={t('Nickname')}
                                         placeholderTextColor={'#9E9E9E'}
                                         style={defaultStyles.textInputStyle}
                                     />
@@ -286,7 +286,7 @@ export default function ProfileData() {
                                         defaultValue={email as string}
                                         onChangeText={onChange}
                                         value={value}
-                                        placeholder='Email'
+                                        placeholder={t('Email')}
                                         keyboardType="email-address"
                                         autoCapitalize="none"
                                         autoComplete='email'
@@ -315,6 +315,7 @@ export default function ProfileData() {
                         <PhoneInput
                             ref={phoneInput}
                             defaultValue={value}
+                            placeholder='9 1234 5678 9'
                             defaultCode="AE"
                             layout="first"
                             onChangeText={(text) => {
@@ -333,7 +334,7 @@ export default function ProfileData() {
                     {/* Error */}
                     {phoneError && <View style={styles.errorViewStyle}>
                         <Ionicons name='alert-circle-outline' size={hp(2.4)} color={'#ED4337'} />
-                        <Text style={styles.errorStyle} >Phone number is required</Text>
+                        <Text style={styles.errorStyle} >{t('Phone number is required')}</Text>
                     </View>}
 
 
@@ -342,7 +343,7 @@ export default function ProfileData() {
                         <TouchableOpacity style={[defaultStyles.innerField]}
                             disabled={!value || image === null ? true : false}
                             onPress={handleSubmit(onSubmit)}>
-                            <Text style={[defaultStyles.textInputStyle, { color: "#9E9E9E" }]}>Address</Text>
+                            <Text style={[defaultStyles.textInputStyle, { color: "#9E9E9E" }]}>{t('Address')}</Text>
                             <Ionicons name='location-outline' size={hp(2.4)} />
                         </TouchableOpacity>
                     </View>
@@ -357,7 +358,7 @@ export default function ProfileData() {
                         onPress={handleSubmit(onSubmit)}
 
                     >
-                        <Text style={styles.footerText}>Continue</Text>
+                        <Text style={styles.footerText}>{t('Continue')}</Text>
                     </TouchableOpacity>
                 </View>
 

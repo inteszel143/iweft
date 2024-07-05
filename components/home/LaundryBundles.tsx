@@ -6,17 +6,18 @@ import { Link, router } from 'expo-router';
 import { useIsFocused } from '@react-navigation/native';
 import { useLaundryBundles } from '@/query/homeQuery';
 import HomeBundleSkeleton from '../skeleton/HomeBundleSkeleton';
+import { useTranslation } from 'react-i18next';
 export default function LaundryBundles() {
     const isFocused = useIsFocused();
     const { data: laundryData, isPending } = useLaundryBundles(isFocused);
-
+    const { t } = useTranslation();
     return (
         <View style={styles.container}>
 
             <View style={styles.header} >
                 <View style={styles.headerRight}>
                     <View style={styles.indicator} />
-                    <Text style={styles.headerText}>Laundry Bundles</Text>
+                    <Text style={styles.headerText}>{t('Laundry Bundles')}</Text>
                 </View>
                 <View>
                     <Link href={'/homePage/budles/AllLaundryBundles'} asChild>

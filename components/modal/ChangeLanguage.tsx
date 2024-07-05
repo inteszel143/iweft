@@ -2,17 +2,19 @@ import { StyleSheet, Text, View, Modal, Platform, Image, TouchableOpacity, Activ
 import React, { useEffect } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router } from 'expo-router';
+import { getCurrentLanguage } from '@/services/i18n';
 interface ModalProps {
     modalVisible: boolean;
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>; // Ensure correct typing
 }
 
 export default function ChangeLanguage({ modalVisible, setModalVisible }: ModalProps) {
+    const current = getCurrentLanguage();
     useEffect(() => {
         const timer = setTimeout(() => {
             setModalVisible(false);
             router.replace('/(tabs)/');
-        }, 1500);
+        }, 2000);
         return () => clearTimeout(timer);
     }, []);
 
@@ -28,7 +30,7 @@ export default function ChangeLanguage({ modalVisible, setModalVisible }: ModalP
                 <View style={styles.modalBox}>
                     <ActivityIndicator size={'large'} color={'#0A5CA8'} />
                     <Text style={styles.titleStyle}>Please wait...</Text>
-                    <Text style={styles.subStyle}>Language update in progress. please wait patiently. </Text>
+                    <Text style={styles.subStyle}>Updating in <Text style={{ color: "#0A5CA8" }} >{current === "en" ? "English (US)" : current === "ar" ? "Arabic" : current === "man" ? "Mandarin" : current === "hindi" ? "Hindi" : current === "spa" ? "Spanish" : current === "fr" ? "French" : current === "ben" ? "Bengali" : current === "rus" ? "Russian" : "Indonesia"}</Text> Language. please wait patiently. </Text>
                 </View>
             </View>
 
@@ -69,7 +71,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: "#212121",
         marginTop: hp(1),
-        paddingHorizontal: wp(4),
+        paddingHorizontal: wp(3),
         letterSpacing: 0.8,
     },
     btnStyle: {

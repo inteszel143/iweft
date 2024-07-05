@@ -9,12 +9,13 @@ import ErrorFacebookAuthModal from '../ErrorFacebookAuthModal';
 import SuccessLogin from '../SuccessLogin';
 import { getEmailChecker } from '@/apis/fetchAuth';
 import useStoreRefresh from '@/store/useStoreRefresh';
+import { useTranslation } from 'react-i18next';
 export default function GoogleSigninSelect() {
     const [errorLoginModal, setErrorLoginModal] = useState(false);
     const [exists, setExists] = useState(false);
     const [successLogin, setSuccessLogin] = useState(false);
     const setRefreshToken = useStoreRefresh(state => state.setRefreshToken);
-
+    const { t } = useTranslation();
     const configureGoogleSignIn = () => {
         GoogleSignin.configure({
             webClientId:
@@ -40,7 +41,7 @@ export default function GoogleSigninSelect() {
 
             const response = await signInWithGoogle(userInfo?.user?.email, userInfo?.user?.name, userInfo?.user?.id);
             await SecureStore.setItemAsync('accessToken', response?.access?.token);
-            
+
             setRefreshToken(response?.refresh?.token);
             setSuccessLogin(true);
         } catch (e) {
@@ -58,7 +59,7 @@ export default function GoogleSigninSelect() {
             <TouchableOpacity style={styles.btnStyle} onPress={signIn}>
                 <View style={styles.btnInner}>
                     <Image source={require('@/assets/temp/authIcons/google.png')} resizeMode='contain' style={styles.btnImage} />
-                    <Text style={styles.btnText}>Continue with Google</Text>
+                    <Text style={styles.btnText}>{t('Continue with Google')}</Text>
                 </View>
             </TouchableOpacity>
         </View>

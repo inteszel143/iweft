@@ -1,8 +1,10 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { useTranslation } from 'react-i18next';
 
 export default function Header() {
+    const { t } = useTranslation();
     return (
         <View style={styles.container}>
             <View style={styles.innerContainer}>
@@ -12,7 +14,7 @@ export default function Header() {
                         source={require('@/assets/icons/bookingIcon.png')}
                         resizeMode='contain'
                         style={{ width: wp(8) }} />
-                    <Text style={styles.bookingText} >Profile</Text>
+                    <Text style={styles.bookingText} >{t('Profile')}</Text>
                 </View>
                 <View style={styles.headerRight}>
                     <TouchableOpacity>

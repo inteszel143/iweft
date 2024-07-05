@@ -6,14 +6,15 @@ import { Link, router } from 'expo-router';
 import { useHomeServices } from '@/query/homeQuery';
 import { useIsFocused } from '@react-navigation/native';
 import ServiceSkeleton from '../skeleton/ServiceSkeleton';
+import { useTranslation } from 'react-i18next';
 export default function HomeServices() {
     const isFocused = useIsFocused();
     const { data, isPending } = useHomeServices(isFocused)
-  
+    const { t } = useTranslation();
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.specialText}>Services</Text>
+                <Text style={styles.specialText}>{t('Services')}</Text>
             </View>
             {
                 isPending ? <ServiceSkeleton />

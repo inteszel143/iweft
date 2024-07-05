@@ -14,6 +14,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router } from 'expo-router';
+import { t } from 'i18next';
 type Props = {
     currentIndex: Animated.SharedValue<number>;
     length: number;
@@ -69,9 +70,9 @@ const Button = ({ currentIndex, length, flatListRef }: Props) => {
     return (
         <AnimatedPressable style={[styles.btnStyle]} onPress={onPress}>
             <Animated.Text style={[styles.textStyle, rnTextStyle]}>
-                Get Started</Animated.Text>
+                {t('Get Started')}</Animated.Text>
             <Animated.Text style={[styles.textStyle, imageAnimatedStyle]}>
-                Next</Animated.Text>
+                {t('Next')}</Animated.Text>
         </AnimatedPressable>
     );
 };
