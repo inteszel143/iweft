@@ -6,8 +6,10 @@ import { useUserQuery } from '@/query/fetchAuthQuery';
 import { useIsFocused } from '@react-navigation/native';
 import HomeHeaderSkeleton from '../skeleton/HomeHeaderSkeleton';
 import { useTranslation } from 'react-i18next';
+import { getCurrentLanguage } from '@/services/i18n';
 export default function HomeHeader() {
     const { t } = useTranslation();
+    const current = getCurrentLanguage();
     const isFocused = useIsFocused();
     const currentDate = new Date();
     const currentHour = currentDate.getHours();
@@ -27,8 +29,8 @@ export default function HomeHeader() {
 
 
     return (
-        <View style={styles.header}>
-            <View style={styles.headerLeft}>
+        <View style={[styles.header, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
+            <View style={[styles.headerLeft, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
 
                 <TouchableOpacity onPress={() => router.push('/(tabs)/profile')}>
                     {!data ? <Image
@@ -51,7 +53,7 @@ export default function HomeHeader() {
                             ? `${t('Good Morning!')} 👋`
                             : currentHour >= 12 && currentHour < 18
                                 ? `${t('Good Afternoon!')} ☀️`
-                                : 'Good Evening! 🌙'}
+                                : `${t('Good Evening!')} 🌙`}
                     </Text>
                     <Text style={styles.headerName} >{data?.fullname}</Text>
                 </View>
@@ -59,7 +61,7 @@ export default function HomeHeader() {
             </View>
 
 
-            <View style={styles.headerIcon}>
+            <View style={[styles.headerIcon, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
                 <View>
                     <TouchableOpacity
                         onPress={() => router.push('/homePage/Notification')}
@@ -89,14 +91,12 @@ export default function HomeHeader() {
 const styles = StyleSheet.create({
     header: {
         paddingHorizontal: wp(5),
-        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingTop: Platform.OS === 'android' ? hp(4) : 0,
     },
     headerLeft: {
         flex: 1,
-        flexDirection: 'row',
         alignItems: 'center',
         gap: wp(4),
         paddingVertical: hp(1),
@@ -111,7 +111,6 @@ const styles = StyleSheet.create({
         fontSize: hp(2.4),
     },
     headerIcon: {
-        flexDirection: 'row',
         alignItems: 'center',
         gap: wp(3.5)
     },

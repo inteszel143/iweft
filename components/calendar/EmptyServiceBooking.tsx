@@ -2,18 +2,20 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 export default function EmptyServiceBooking() {
+    const { t } = useTranslation();
     return (
         <View style={styles.container}>
 
-            <View style={styles.topRow}>
+            {/* <View style={styles.topRow}>
                 <Text style={styles.textTop}>Service Booking (2)</Text>
                 <Link href={'/(tabs)/booking/'} asChild>
                     <TouchableOpacity>
                         <Text style={styles.textSeeAll}>See all</Text>
                     </TouchableOpacity>
                 </Link>
-            </View>
+            </View> */}
 
 
             <View style={styles.imageStyle}>
@@ -28,8 +30,8 @@ export default function EmptyServiceBooking() {
             </View>
 
             <View style={styles.wordingsStyle} >
-                <Text style={styles.textStyle}>You have no bookings scheduled</Text>
-                <Text style={styles.textSubStyle} >You don't have a service booking on this date</Text>
+                <Text style={styles.textStyle}>{t('You have no bookings scheduled')}</Text>
+                <Text style={styles.textSubStyle} >{t("You don't have a service booking on this date")}</Text>
             </View>
         </View>
     )

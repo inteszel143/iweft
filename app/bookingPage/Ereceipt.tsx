@@ -9,7 +9,11 @@ import { useIsFocused } from '@react-navigation/native';
 import { useGetEReceipt } from '@/query/stripeQuery';
 import Barcode from '@kichiyaki/react-native-barcode-generator';
 import { formatDate, formatNumber, formatTime } from '@/utils/format';
+import { useTranslation } from 'react-i18next';
+import { getCurrentLanguage } from '@/services/i18n';
 export default function Ereceipt() {
+    const { t } = useTranslation();
+    const current = getCurrentLanguage();
     const { orderId } = useLocalSearchParams();
     const isFocused = useIsFocused();
     const { data, isFetching } = useGetEReceipt(isFocused, orderId as string);
@@ -22,13 +26,17 @@ export default function Ereceipt() {
         <View style={styles.container}>
 
             <View style={styles.Headercontainer}>
-                <View style={styles.innerContainer}>
-
-                    <View style={styles.headerLeft}>
+                <View style={[styles.innerContainer, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
+                    <View style={[styles.headerLeft, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
                         <TouchableOpacity onPress={() => router.push('/(tabs)/booking/')}>
-                            <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                            {
+                                current === 'ar' ? <Image source={require('@/assets/icons/arrowright.png')}
+                                    resizeMode='contain' style={{ width: wp(6), height: hp(6.2), marginRight: wp(2) }} />
+                                    :
+                                    <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                            }
                         </TouchableOpacity>
-                        <Text style={styles.bookingText} >E-receipt</Text>
+                        <Text style={styles.bookingText} >{t('E-receipt')}</Text>
                     </View>
 
                     <View style={styles.headerRight}>
@@ -41,7 +49,7 @@ export default function Ereceipt() {
             {
                 isFetching ? <View style={styles.fetchStyle}>
                     <ActivityIndicator size={'small'} color={'gray'} />
-                    <Text style={styles.fetchText}>Generating E-receipt</Text>
+                    <Text style={styles.fetchText}>{t('Generating E-receipt')}</Text>
                 </View>
                     :
                     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(4) }}>
@@ -66,61 +74,61 @@ export default function Ereceipt() {
 
 
                         <View style={[styles.summarCard, { marginTop: hp(2) }]}>
-                            <View style={styles.summarRow}>
-                                <Text style={styles.summaryLabel}>Services</Text>
+                            <View style={[styles.summarRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
+                                <Text style={styles.summaryLabel}>{t('Services')}</Text>
                                 <Text style={styles.summaryValue}>{data?.trm_order?.service?.service?.title}</Text>
                             </View>
-                            <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                                <Text style={styles.summaryLabel}>Category</Text>
+                            <View style={[styles.summarRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', marginTop: hp(3) }]}>
+                                <Text style={styles.summaryLabel}>{t('Category')}</Text>
                                 <Text style={styles.summaryValue}>{data?.trm_order?.service?.service?.sub_title}</Text>
                             </View>
                             {
-                                data?.trm_customer_subscriptions?.subscription && <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                                    <Text style={styles.summaryLabel}>Subscription Plan </Text>
+                                data?.trm_customer_subscriptions?.subscription && <View style={[styles.summarRow, { marginTop: hp(3), flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
+                                    <Text style={styles.summaryLabel}>{t('Subscription Plan')} </Text>
                                     <Text style={styles.summaryValue}>{data?.trm_customer_subscriptions?.subscription}</Text>
                                 </View>
                             }
 
-                            <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                                <Text style={styles.summaryLabel}>Date & Time</Text>
+                            <View style={[styles.summarRow, { marginTop: hp(3), flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
+                                <Text style={styles.summaryLabel}>{t('Date & Time')}</Text>
                                 <Text style={styles.summaryValue}>{formatDate(data?.trm_charge?.date)} | {formatTime(data?.trm_charge?.date)}</Text>
                             </View>
-                            <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                                <Text style={styles.summaryLabel}>Working Hours</Text>
-                                <Text style={styles.summaryValue}>2 hours</Text>
+                            <View style={[styles.summarRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', marginTop: hp(3) }]}>
+                                <Text style={styles.summaryLabel}>{t('Working Hours')}</Text>
+                                <Text style={styles.summaryValue}>{t('2 hours')}</Text>
                             </View>
                         </View>
 
                         <View style={[styles.summarCard, { marginTop: hp(3) }]}>
-                            <TouchableOpacity style={styles.summarRow}
+                            <TouchableOpacity style={[styles.summarRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}
                             >
-                                <Text style={styles.summaryLabel}>Subscription Details</Text>
+                                <Text style={styles.summaryLabel}>{t('Subscription Details')}</Text>
                                 <Entypo name='chevron-thin-down' size={hp(2)} />
                             </TouchableOpacity>
                         </View>
 
                         <View style={[styles.summarCard, { marginTop: hp(2) }]}>
-                            <View style={styles.summarRow}>
-                                <Text style={styles.summaryLabel}>Amount</Text>
-                                <Text style={styles.summaryValue}>AED {formatNumber(data?.trm_charge?.amount / 100)}.00</Text>
+                            <View style={[styles.summarRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
+                                <Text style={styles.summaryLabel}>{t('Amount')}</Text>
+                                <Text style={styles.summaryValue}>{t('AED')} {formatNumber(data?.trm_charge?.amount / 100)}.00</Text>
                             </View>
-                            <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                                <Text style={styles.summaryLabel}>Service Fee</Text>
-                                <Text style={[styles.summaryValue, { color: '#0a5ca8' }]}>AED {formatNumber(data?.trm_order?.service?.service?.base_price)}.00</Text>
+                            <View style={[styles.summarRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', marginTop: hp(3) }]}>
+                                <Text style={styles.summaryLabel}>{t('Service Fee')}</Text>
+                                <Text style={[styles.summaryValue, { color: '#0a5ca8' }]}>{t('AED')} {formatNumber(data?.trm_order?.service?.service?.base_price)}.00</Text>
                             </View>
 
-                            <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                                <Text style={styles.summaryLabel}>Payment Methods</Text>
+                            <View style={[styles.summarRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', marginTop: hp(3) }]}>
+                                <Text style={styles.summaryLabel}>{t('Payment Methods')}</Text>
                                 <Text style={[styles.summaryValue]}>{data?.trm_charge?.payment_method}</Text>
                             </View>
 
-                            <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                                <Text style={styles.summaryLabel}>Date</Text>
+                            <View style={[styles.summarRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', marginTop: hp(3) }]}>
+                                <Text style={styles.summaryLabel}>{t('Date')}</Text>
                                 <Text style={[styles.summaryValue]}>{formatDate(data?.trm_charge?.date)} | {formatTime(data?.trm_charge?.date)}</Text>
                             </View>
 
-                            <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                                <Text style={styles.summaryLabel}>Transaction ID</Text>
+                            <View style={[styles.summarRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', marginTop: hp(3) }]}>
+                                <Text style={styles.summaryLabel}>{t('Transaction ID')}</Text>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2) }}>
                                     <Text style={[styles.summaryValue]}>{data?.trm_charge?.transaction_id}</Text>
                                     <TouchableOpacity>
@@ -129,10 +137,10 @@ export default function Ereceipt() {
                                 </View>
                             </View>
 
-                            <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                                <Text style={styles.summaryLabel}>Status</Text>
+                            <View style={[styles.summarRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', marginTop: hp(3) }]}>
+                                <Text style={styles.summaryLabel}>{t('Status')}</Text>
                                 <View style={styles.status}>
-                                    <Text style={styles.statusText}>Paid</Text>
+                                    <Text style={styles.statusText}>{t('Paid')}</Text>
                                 </View>
                             </View>
                         </View>
@@ -247,7 +255,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     summarRow: {
-        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between'
     },

@@ -2,7 +2,6 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
-import { paymentMethods } from '@/constants/booking/data';
 import { Fontisto } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
 import numeral from 'numeral';
@@ -10,12 +9,15 @@ import { useIsFocused } from '@react-navigation/native';
 import { useDefaultMethod } from '@/query/stripeQuery';
 import PaymentSkeleton from '@/components/skeleton/PaymentSkeleton';
 import MethodSkeleton from '@/components/skeleton/MethodSkeleton';
+import { useTranslation } from 'react-i18next';
+import { getCurrentLanguage } from '@/services/i18n';
 export default function BookingPaymentMethod() {
+    const { t } = useTranslation();
+    const current = getCurrentLanguage();
     const isFocused = useIsFocused();
     const { bookingId, total } = useLocalSearchParams();
     const [isSelected, setIsSelected] = useState(0);
     const { data, isPending } = useDefaultMethod(isFocused);
-
 
     const method = [
         {
@@ -30,7 +32,7 @@ export default function BookingPaymentMethod() {
         },
         {
             id: 3,
-            icon: require("@/assets/temp/bookingIcon/apple.jpg"),   
+            icon: require("@/assets/temp/bookingIcon/apple.jpg"),
             label: "Apple Pay",
         },
         {
@@ -40,23 +42,27 @@ export default function BookingPaymentMethod() {
         },
     ];
 
-
     return (
         <View style={styles.container}>
             <View style={styles.Headercontainer}>
-                <View style={styles.innerContainer}>
-                    <View style={styles.headerLeft}>
+                <View style={[styles.innerContainer, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
+                    <View style={[styles.headerLeft, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
                         <TouchableOpacity onPress={() => router.back()}>
-                            <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                            {
+                                current === 'ar' ? <Image source={require('@/assets/icons/arrowright.png')}
+                                    resizeMode='contain' style={{ width: wp(6), height: hp(6.2), marginRight: wp(2) }} />
+                                    :
+                                    <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                            }
                         </TouchableOpacity>
-                        <Text style={styles.bookingText} >Payment Methods</Text>
+                        <Text style={styles.bookingText} >{t('Payment Methods')}</Text>
                     </View>
                 </View>
             </View>
 
 
             <View style={styles.infoStyle}>
-                <Text style={styles.infoText}>Please select a payment refund method (only 80% will be refunded).</Text>
+                <Text style={styles.infoText}>{t('Please select a payment refund method (only 80% will be refunded).')}</Text>
             </View>
             {
                 isPending ? <MethodSkeleton /> : <View style={styles.selectedStyle}>
@@ -66,10 +72,10 @@ export default function BookingPaymentMethod() {
                                 <TouchableOpacity style={styles.selectedRow} key={index}
                                     onPress={() => setIsSelected(item.id)}
                                 >
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(4) }}>
+                                    <View style={{ flexDirection: current === 'ar' ? 'row-reverse' : 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                        <View style={{ flexDirection: current === 'ar' ? 'row-reverse' : 'row', alignItems: 'center', gap: wp(4) }}>
                                             <Image source={item.icon} resizeMode='contain' style={{ width: wp(8) }} />
-                                            <Text style={styles.selectedText}>{item.label}</Text>
+                                            <Text style={styles.selectedText}>{t(`${item.label}`)}</Text>
                                         </View>
 
                                         <TouchableOpacity>
@@ -87,8 +93,8 @@ export default function BookingPaymentMethod() {
 
             <View style={styles.footer}>
                 <View style={styles.footerTop}>
-                    <Text style={[styles.footerTopText, { fontFamily: 'UrbanistMedium', textDecorationLine: "line-through", color: "#424242" }]}>Paid AED {numeral(total).format('0,0')}.00</Text>
-                    <Text style={[styles.footerTopText, { fontFamily: 'UrbanistBold' }]}>Refund: AED {numeral(total as any * .80).format('0,0')}.00</Text>
+                    <Text style={[styles.footerTopText, { fontFamily: 'UrbanistMedium', textDecorationLine: "line-through", color: "#424242" }]}>{t('Paid')} {t('AED')} {numeral(total).format('0,0')}.00</Text>
+                    <Text style={[styles.footerTopText, { fontFamily: 'UrbanistBold' }]}>{t('Refund')}: {t('AED')} {numeral(total as any * .80).format('0,0')}.00</Text>
                 </View>
 
                 <TouchableOpacity
@@ -99,7 +105,7 @@ export default function BookingPaymentMethod() {
                         params: { bookingId }
                     })}
                 >
-                    <Text style={defaultStyles.footerText}>Continue</Text>
+                    <Text style={defaultStyles.footerText}>{t('Continue')}</Text>
                 </TouchableOpacity>
             </View>
 

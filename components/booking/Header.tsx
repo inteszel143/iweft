@@ -3,33 +3,52 @@ import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Animated, { BounceIn, FadeOut } from 'react-native-reanimated';
 import { eReciept } from '@/constants/booking/data';
+import { useTranslation } from 'react-i18next';
+import { getCurrentLanguage } from '@/services/i18n';
 
 export default function Header() {
-
+    const { t } = useTranslation();
+    const current = getCurrentLanguage();
     const [cardShow, setCardShow] = useState(false);
 
     const toggleShowCard = () => {
         setCardShow(!cardShow);
     }
 
-
     return (
         <View style={styles.container}>
-            <View style={styles.innerContainer}>
+            {
+                current === 'ar' ? <View style={styles.innerContainer}>
+                    <View style={styles.headerRight}>
+                        <TouchableOpacity onPress={toggleShowCard}>
+                            <Image source={require('@/assets/icons/bookingMenu.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Image source={require('@/assets/icons/bookingSearch.png')} resizeMode='contain' style={{ width: wp(7.5) }} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.headerLeft}>
+                        <Text style={styles.bookingText} >{t('My Bookings')}</Text>
+                        <Image source={require('@/assets/icons/bookingIcon.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                    </View>
+                </View>
+                    :
+                    <View style={styles.innerContainer}>
+                        <View style={styles.headerLeft}>
+                            <Image source={require('@/assets/icons/bookingIcon.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                            <Text style={styles.bookingText} >{t('My Bookings')}</Text>
+                        </View>
+                        <View style={styles.headerRight}>
+                            <TouchableOpacity>
+                                <Image source={require('@/assets/icons/bookingSearch.png')} resizeMode='contain' style={{ width: wp(7.5) }} />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={toggleShowCard}>
+                                <Image source={require('@/assets/icons/bookingMenu.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+            }
 
-                <View style={styles.headerLeft}>
-                    <Image source={require('@/assets/icons/bookingIcon.png')} resizeMode='contain' style={{ width: wp(8) }} />
-                    <Text style={styles.bookingText} >My Bookings</Text>
-                </View>
-                <View style={styles.headerRight}>
-                    <TouchableOpacity>
-                        <Image source={require('@/assets/icons/bookingSearch.png')} resizeMode='contain' style={{ width: wp(7.5) }} />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={toggleShowCard}>
-                        <Image source={require('@/assets/icons/bookingMenu.png')} resizeMode='contain' style={{ width: wp(8) }} />
-                    </TouchableOpacity>
-                </View>
-            </View>
 
 
             {

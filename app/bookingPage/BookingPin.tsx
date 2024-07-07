@@ -15,12 +15,16 @@ import { getPinNumber } from '@/apis/fetchAuth';
 import { cancelBooking } from '@/apis/order';
 import errorRes from '@/apis/errorRes';
 import { postRefundPayment } from '@/apis/stripe';
+import { useTranslation } from 'react-i18next';
+import { getCurrentLanguage } from '@/services/i18n';
 interface CellProps {
     index: number;
     symbol: string;
     isFocused: boolean;
 }
 export default function BookingPin() {
+    const { t } = useTranslation();
+    const current = getCurrentLanguage();
     const { bookingId } = useLocalSearchParams();
     const [modalVisible, setModalVisible] = useState(false);
     const [btnLoading, setBtnLoading] = useState(false);
@@ -91,12 +95,18 @@ export default function BookingPin() {
             {modalVisible && <BookingCancelModal modalVisible={modalVisible} setModalVisible={setModalVisible} />}
 
             <View style={styles.Headercontainer}>
-                <View style={styles.innerContainer}>
-                    <View style={styles.headerLeft}>
+                <View style={[styles.innerContainer, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
+                    <View style={[styles.headerLeft, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
                         <TouchableOpacity onPress={() => router.back()}>
-                            <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                            {
+                                current === 'ar' ? <Image source={require('@/assets/icons/arrowright.png')}
+                                    resizeMode='contain' style={{ width: wp(6), height: hp(6.2), marginRight: wp(2) }} />
+                                    :
+                                    <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                            }
+
                         </TouchableOpacity>
-                        <Text style={styles.bookingText} >Enter Your Pin</Text>
+                        <Text style={styles.bookingText} >{t('Enter Your Pin')}</Text>
                     </View>
                 </View>
             </View>
@@ -104,7 +114,7 @@ export default function BookingPin() {
 
             <ScrollView contentContainerStyle={styles.scollviewContainer}>
                 <View>
-                    <Text style={styles.conatinertitle}>Enter your PIN to cancel booking</Text>
+                    <Text style={styles.conatinertitle}>{t('Enter your PIN to cancel booking')}</Text>
                 </View>
                 <CodeField
                     ref={ref}
@@ -122,7 +132,7 @@ export default function BookingPin() {
                     onPress={onSubmit}
                 >
                     {
-                        btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>Continue</Text>
+                        btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>{t('Continue')}</Text>
                     }
                 </TouchableOpacity>
             </ScrollView>
@@ -142,7 +152,6 @@ const styles = StyleSheet.create({
         paddingTop: hp(6),
     },
     innerContainer: {
-        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between'
     },
@@ -152,7 +161,6 @@ const styles = StyleSheet.create({
         gap: wp(6),
     },
     headerLeft: {
-        flexDirection: 'row',
         alignItems: 'center',
         gap: wp(5),
     },

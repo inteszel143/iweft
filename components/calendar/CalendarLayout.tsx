@@ -9,7 +9,11 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 import { useIsFocused } from '@react-navigation/native';
 import { useGetBookingByDate } from '@/query/orderQuery';
 import EmptyServiceBooking from './EmptyServiceBooking';
+import { useTranslation } from 'react-i18next';
+import { getCurrentLanguage } from '@/services/i18n';
 export default function CalendarLayout() {
+    const { t } = useTranslation();
+    const current = getCurrentLanguage();
     const isFocused = useIsFocused();
     const currentDate = new Date();
     const formattedCurrentDate = currentDate.toISOString().split('T')[0];
@@ -51,7 +55,7 @@ export default function CalendarLayout() {
                 // current={'2024-03-26'}
                 // minDate={formattedCurrentDate}
                 pagingEnabled={true}
-                onDayPress={day => {
+                onDayPress={(day: any) => {
                     setSelected(day.dateString);
                 }}
                 markedDates={{
@@ -81,10 +85,10 @@ export default function CalendarLayout() {
                             }}
                         >
                             <View style={styles.topRow}>
-                                <Text style={styles.textTop}>Service Booking (2)</Text>
+                                <Text style={styles.textTop}>{t('Service Booking')} ({data?.length})</Text>
                                 <Link href={'/(tabs)/booking/'} asChild>
                                     <TouchableOpacity>
-                                        <Text style={styles.textSeeAll}>See all</Text>
+                                        <Text style={styles.textSeeAll}>{t('See all')}</Text>
                                     </TouchableOpacity>
                                 </Link>
                             </View>
@@ -95,9 +99,9 @@ export default function CalendarLayout() {
                                     entering={FadeInUp.duration(300).springify()}
                                     key={index}
                                 >
-                                    <Link href={'/bookingPage/BookingSummary'} style={styles.row} asChild>
+                                    <Link href={'/bookingPage/BookingSummary'} style={[styles.row, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]} asChild>
                                         <TouchableOpacity>
-                                            <View style={styles.rowLeft}>
+                                            <View style={[styles.rowLeft, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
                                                 <View>
                                                     <Image
                                                         source={{ uri: item?.order_details?.service?.image }}
@@ -105,13 +109,13 @@ export default function CalendarLayout() {
                                                         style={styles.imageStyle}
                                                     />
                                                 </View>
-                                                <View style={styles.leftInner}>
+                                                <View style={{ marginLeft: current === 'ar' ? 0 : wp(4), marginRight: current === 'ar' ? wp(4) : 0 }}>
                                                     <Text style={styles.titleStyle} >{item?.order_details?.service?.title}</Text>
                                                     <Text style={styles.subTitle}>
                                                         {item?.order_details?.order_items?.length} {item?.order_details?.order_items?.length === 1 ? 'item' : 'items'}
                                                     </Text>
                                                     <View style={styles.indicator}>
-                                                        <Text style={styles.upcoming}>Upcoming</Text>
+                                                        <Text style={styles.upcoming}>{t('Upcoming')}</Text>
                                                     </View>
                                                 </View>
                                             </View>
@@ -167,13 +171,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: wp(4),
     },
     row: {
-        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         marginTop: hp(2)
     },
     rowLeft: {
-        flexDirection: 'row',
         alignItems: 'center'
     },
     btnStyle: {

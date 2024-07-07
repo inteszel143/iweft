@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList, I18nManager } from 'react-native'
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -7,15 +7,17 @@ import { useIsFocused } from '@react-navigation/native';
 import { useLaundryBundles } from '@/query/homeQuery';
 import HomeBundleSkeleton from '../skeleton/HomeBundleSkeleton';
 import { useTranslation } from 'react-i18next';
+import { getCurrentLanguage } from '@/services/i18n';
 export default function LaundryBundles() {
     const isFocused = useIsFocused();
     const { data: laundryData, isPending } = useLaundryBundles(isFocused);
     const { t } = useTranslation();
+    const current = getCurrentLanguage();
     return (
         <View style={styles.container}>
 
-            <View style={styles.header} >
-                <View style={styles.headerRight}>
+            <View style={[styles.header, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]} >
+                <View style={[styles.headerRight, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
                     <View style={styles.indicator} />
                     <Text style={styles.headerText}>{t('Laundry Bundles')}</Text>
                 </View>
@@ -75,7 +77,6 @@ const styles = StyleSheet.create({
         marginTop: hp(4)
     },
     header: {
-        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: wp(5)
@@ -87,7 +88,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#0a5ca8",
     },
     headerRight: {
-        flexDirection: 'row',
         alignItems: 'center',
         gap: wp(4),
     },

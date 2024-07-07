@@ -13,7 +13,7 @@ import { StripeProvider } from '@stripe/stripe-react-native';
 import {
   QueryClient, QueryClientProvider,
 } from '@tanstack/react-query';
-import { LogBox } from "react-native";
+import { I18nManager, LogBox } from "react-native";
 export {
   ErrorBoundary,
 } from 'expo-router';
@@ -21,7 +21,7 @@ const queryClient = new QueryClient();
 export const unstable_settings = {
   initialRouteName: '(tabs)',
 };
-
+I18nManager.forceRTL(false);
 SplashScreen.preventAutoHideAsync();
 LogBox.ignoreLogs(['Sending `onAnimatedValueUpdate` with no listeners registered.']);
 LogBox.ignoreLogs(['Warning: CountryModal: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead..']);

@@ -14,8 +14,10 @@ import { router } from 'expo-router';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import errorRes from '@/apis/errorRes';
 import { useTranslation } from 'react-i18next';
+import { getCurrentLanguage } from '@/services/i18n';
 export default function Logout() {
     const { t } = useTranslation();
+    const current = getCurrentLanguage();
     const [btnLoading, setBtnLoading] = useState(false);
     // bottomSheet
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -55,18 +57,32 @@ export default function Logout() {
     return (
         <BottomSheetModalProvider>
             <View style={styles.container}>
-                <TouchableOpacity style={styles.cardRow}
-                    onPress={handlePresentModalPress}
-                >
-                    <View style={styles.leftRow}>
-                        <Image source={require('@/assets/temp/profileicons/logout.jpg')} resizeMode='contain' style={{ width: wp(7) }} />
-                        <Text style={styles.labelStyle}>{t('Logout')}</Text>
-                    </View>
+                {
+                    current === 'ar' ? <TouchableOpacity style={styles.cardRow}
+                        onPress={handlePresentModalPress}>
 
-                    <View style={styles.rightRow}>
-                        <Feather name='chevron-right' size={hp(2.5)} color={'#212121'} />
-                    </View>
-                </TouchableOpacity>
+                        <View style={styles.rightRow}>
+                            <Feather name='chevron-left' size={hp(2.5)} color={'#212121'} />
+                        </View>
+                        <View style={styles.leftRow}>
+                            <Text style={styles.labelStyle}>{t('Logout')}</Text>
+                            <Image source={require('@/assets/temp/profileicons/logout.jpg')} resizeMode='contain' style={{ width: wp(7) }} />
+                        </View>
+                    </TouchableOpacity>
+                        :
+                        <TouchableOpacity style={styles.cardRow}
+                            onPress={handlePresentModalPress}>
+                            <View style={styles.leftRow}>
+                                <Image source={require('@/assets/temp/profileicons/logout.jpg')} resizeMode='contain' style={{ width: wp(7) }} />
+                                <Text style={styles.labelStyle}>{t('Logout')}</Text>
+                            </View>
+
+                            <View style={styles.rightRow}>
+                                <Feather name='chevron-right' size={hp(2.5)} color={'#212121'} />
+                            </View>
+                        </TouchableOpacity>
+                }
+
             </View>
 
             <BottomSheetModal
@@ -91,7 +107,7 @@ export default function Logout() {
                         <Text style={styles.bottomSheetTitle}>{t('Are you sure you want to log out?')}</Text>
                     </View>
 
-                    <View style={styles.bottomBtnRow}>
+                    <View style={[styles.bottomBtnRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
                         <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}
                             onPress={() => bottomSheetModalRef.current?.close()}
                         >
@@ -167,7 +183,6 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     bottomBtnRow: {
-        flexDirection: 'row',
         alignItems: 'center',
         gap: wp(3),
         marginTop: Platform.OS === 'ios' ? hp(3.5) : hp(4),

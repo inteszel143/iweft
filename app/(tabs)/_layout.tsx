@@ -10,6 +10,8 @@ import { useColorScheme } from "@/components/useColorScheme";
 import { useUserQuery } from "@/query/fetchAuthQuery";
 import { BlurView } from 'expo-blur';
 import { useIsFocused } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
+import { getCurrentLanguage } from "@/services/i18n";
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof Ionicons>["name"];
   color: string;
@@ -24,6 +26,7 @@ function TabBarIcon(props: {
 }
 export default function TabLayout() {
   // const isFocused = useIsFocused();
+  const { t } = useTranslation();
   const colorScheme = useColorScheme();
   // const { data } = useUserQuery(isFocused);
   // console.log(data);
@@ -51,7 +54,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: t('Home'),
           headerShown: false,
           // tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "compass" : "compass-outline"} color={color} />,
           tabBarIcon: ({ color, focused }) =>
@@ -80,7 +83,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="booking"
         options={{
-          title: "Bookings",
+          title: t('Bookings'),
           headerTitle: "",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
@@ -95,7 +98,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="calendar"
         options={{
-          title: "Calendar",
+          title: t('Calendar'),
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name={focused ? "calendar" : "calendar-outline"}
@@ -109,7 +112,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="inbox"
         options={{
-          title: "Inbox",
+          title: t('Inbox'),
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="chatbubble-ellipses-outline" color={color} />
           ),
@@ -120,7 +123,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: "Profile",
+          title: t('Profile'),
           headerShown: false,
           // tabBarBadge: validate ? 1 : null,
           tabBarIcon: ({ color, focused }) => (
@@ -134,4 +137,5 @@ export default function TabLayout() {
       />
     </Tabs>
   );
+
 }

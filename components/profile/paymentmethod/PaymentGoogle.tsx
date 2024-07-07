@@ -1,52 +1,58 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, Alert, Platform } from 'react-native'
-import React, { useEffect } from 'react'
-import { Link, router } from 'expo-router'
+import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { PlatformPayButton, usePlatformPay } from '@stripe/stripe-react-native';
-import { addPaymentMethod } from '@/apis/stripe';
+import { useIsFocused } from '@react-navigation/native';
+import { useGetListPaymentMethod } from '@/query/stripeQuery';
+import { createPlatformPayPaymentMethod } from '@stripe/stripe-react-native';
+import { addPaymentMethod, changeToDefaultMethod } from '@/apis/stripe';
+import errorRes from '@/apis/errorRes';
 export default function PaymentGoogle() {
-
-    const {
-        isPlatformPaySupported,
-        createPlatformPayPaymentMethod,
-    } = usePlatformPay();
-
-
-    useEffect(() => {
-        (async function () {
-            if (!(await isPlatformPaySupported({ googlePay: { testEnv: true } }))) {
-                Alert.alert('Google Pay is not supported.');
-                return;
-            }
-        })();
-    }, []);
-
-
-
-    const createPaymentMethod = async () => {
-        const { error, paymentMethod } = await createPlatformPayPaymentMethod({
-            googlePay: {
-                amount: 0,
-                currencyCode: 'AED',
-                testEnv: true,
-                merchantName: 'Iweft',
-                merchantCountryCode: 'AE',
-            },
-        });
-
-        if (error) {
-            Alert.alert(error.code, error.message);
+    const isFocused = useIsFocused();
+    const { data, isPending } = useGetListPaymentMethod(isFocused);
+    const [loading, setLoading] = useState(false);
+    const toggleGooglePay = async () => {
+        if (Platform.OS === 'ios') {
+            Alert.alert('Google Pay is not supported.');
             return;
-        } else if (paymentMethod) {
-            const response = await addPaymentMethod(paymentMethod.id as string);
-            console.log(response?.message);
-            // Alert.alert(
-            //     'Success',
-            //     `The payment method was created successfully. paymentMethodId: ${paymentMethod.id}`
-            // );
-        }
-    };
+        };
 
+        const walletMethods = data.filter((method: any) => method.card.wallet !== null);
+        const googlePayMethod = walletMethods.find((method: any) => method?.card?.wallet?.type === "google_pay");
+        if (googlePayMethod) {
+            return;
+        } else {
+            const createPaymentMethod = async () => {
+                const { error, paymentMethod } = await createPlatformPayPaymentMethod({
+                    googlePay: {
+                        amount: 0,
+                        currencyCode: 'AED',
+                        testEnv: true,
+                        merchantName: 'Iweft',
+                        merchantCountryCode: 'AE',
+                    },
+                });
+
+                if (error) {
+                    setLoading(false);
+                    Alert.alert(error.code, error.message);
+                    return;
+                } else if (paymentMethod) {
+                    try {
+                        await addPaymentMethod(paymentMethod.id as string);
+                        await changeToDefaultMethod(paymentMethod.id as string);
+                        setLoading(false);
+                        // router.push('homePage/services/PlanType');
+                    } catch (error) {
+                        setLoading(false);
+                        Alert.alert(errorRes(error));
+                    }
+                }
+            };
+
+            await createPaymentMethod();
+
+        }
+    }
 
     return (
         <View style={styles.btnStyle}>
@@ -57,7 +63,7 @@ export default function PaymentGoogle() {
                 />
                 <Text style={styles.textStyle}>Google Pay</Text>
                 <TouchableOpacity
-                    onPress={createPaymentMethod}
+                    onPress={toggleGooglePay}
                 >
                     <Text style={styles.connectStyle} >Connect</Text>
                 </TouchableOpacity>
@@ -70,7 +76,7 @@ const styles = StyleSheet.create({
         marginTop: hp(2.5),
         backgroundColor: 'white',
         width: wp(90),
-        height: Platform.OS === 'android' ? hp(15) : hp(12),
+        height: Platform.OS === 'android' ? hp(15) : hp(13),
         justifyContent: 'center',
         alignSelf: 'center',
         borderRadius: wp(5),

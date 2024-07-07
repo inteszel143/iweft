@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         marginTop: hp(2.5),
         backgroundColor: 'white',
         width: wp(90),
-        height: Platform.OS === 'android' ? hp(15) : hp(12),
+        height: Platform.OS === 'android' ? hp(15) : hp(13),
         justifyContent: 'center',
         alignSelf: 'center',
         borderRadius: wp(5),

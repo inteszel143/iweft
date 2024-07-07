@@ -86,22 +86,40 @@ export default function ProfileMiddle() {
         <View style={styles.container}>
             {
                 profileData.map((item, index) => {
-                    return (
-                        <Link href={item.url} asChild key={index} >
-                            <TouchableOpacity style={styles.cardRow}>
-                                <View style={styles.leftRow}>
-                                    <Image source={item.icon} resizeMode='contain' style={{ width: wp(7) }} />
-                                    <Text style={styles.labelStyle}>{item.label}</Text>
-                                </View>
+                    if (current === 'ar') {
+                        return (
+                            <Link href={item.url} asChild key={index} >
+                                <TouchableOpacity style={styles.cardRow}>
+                                    <View style={styles.rightRow}>
+                                        {item.warning && <AntDesign name="exclamationcircle" size={hp(2)} color={'red'} />}
+                                        {item.switch ? <Feather name='chevron-left' size={hp(2.5)} color={'#212121'} /> : <Feather name='chevron-left' size={hp(2.5)} color={'#212121'} />}
+                                        <Text style={styles.textValue}>{item.value}</Text>
+                                    </View>
+                                    <View style={styles.leftRow}>
+                                        <Text style={styles.labelStyle}>{item.label}</Text>
+                                        <Image source={item.icon} resizeMode='contain' style={{ width: wp(7) }} />
+                                    </View>
+                                </TouchableOpacity>
+                            </Link>
+                        )
+                    } else {
+                        return (
+                            <Link href={item.url} asChild key={index} >
+                                <TouchableOpacity style={styles.cardRow}>
+                                    <View style={styles.leftRow}>
+                                        <Image source={item.icon} resizeMode='contain' style={{ width: wp(7) }} />
+                                        <Text style={styles.labelStyle}>{item.label}</Text>
+                                    </View>
 
-                                <View style={styles.rightRow}>
-                                    {item.warning && <AntDesign name="exclamationcircle" size={hp(2)} color={'red'} />}
-                                    <Text style={styles.textValue}>{item.value}</Text>
-                                    {item.switch ? <Feather name='chevron-right' size={hp(2.5)} color={'#212121'} /> : <Feather name='chevron-right' size={hp(2.5)} color={'#212121'} />}
-                                </View>
-                            </TouchableOpacity>
-                        </Link>
-                    )
+                                    <View style={styles.rightRow}>
+                                        {item.warning && <AntDesign name="exclamationcircle" size={hp(2)} color={'red'} />}
+                                        <Text style={styles.textValue}>{item.value}</Text>
+                                        {item.switch ? <Feather name='chevron-right' size={hp(2.5)} color={'#212121'} /> : <Feather name='chevron-right' size={hp(2.5)} color={'#212121'} />}
+                                    </View>
+                                </TouchableOpacity>
+                            </Link>
+                        )
+                    }
                 })
             }
         </View >

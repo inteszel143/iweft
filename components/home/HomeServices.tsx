@@ -7,19 +7,21 @@ import { useHomeServices } from '@/query/homeQuery';
 import { useIsFocused } from '@react-navigation/native';
 import ServiceSkeleton from '../skeleton/ServiceSkeleton';
 import { useTranslation } from 'react-i18next';
+import { getCurrentLanguage } from '@/services/i18n';
 export default function HomeServices() {
     const isFocused = useIsFocused();
     const { data, isPending } = useHomeServices(isFocused)
     const { t } = useTranslation();
+    const current = getCurrentLanguage();
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
+            <View style={[styles.header, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
                 <Text style={styles.specialText}>{t('Services')}</Text>
             </View>
             {
                 isPending ? <ServiceSkeleton />
                     :
-                    <View style={styles.listStyle}>
+                    <View style={[styles.listStyle, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
                         {
                             data?.map((item: any, index: any) => {
                                 return (
@@ -42,7 +44,7 @@ export default function HomeServices() {
                         <Link href={'/homePage/services/AllServices'} asChild>
                             <TouchableOpacity>
                                 <View style={styles.seeallStyle}>
-                                    <Ionicons name='arrow-forward' size={hp(3)} color={"#6F767E"} />
+                                    {current === 'ar' ? <Ionicons name='arrow-back' size={hp(3)} color={"#6F767E"} /> : <Ionicons name='arrow-forward' size={hp(3)} color={"#6F767E"} />}
                                 </View>
                             </TouchableOpacity>
                         </Link>
@@ -65,7 +67,6 @@ const styles = StyleSheet.create({
         marginTop: hp(2.5),
     },
     header: {
-        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: wp(5),
@@ -77,7 +78,6 @@ const styles = StyleSheet.create({
     listStyle: {
         marginTop: hp(3),
         paddingHorizontal: wp(1),
-        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
     },

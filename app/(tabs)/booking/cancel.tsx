@@ -10,9 +10,13 @@ import BookingSkeleton from '@/components/booking/BookingSkeleton';
 import moment from 'moment';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import NoCancelBooking from '@/components/booking/NoCancelBooking';
+import { useTranslation } from 'react-i18next';
+import { getCurrentLanguage } from '@/services/i18n';
 
 
 export default function Page() {
+    const { t } = useTranslation();
+    const current = getCurrentLanguage();
     const isFocused = useIsFocused();
     const { data: cancelData, isPending } = useBooking(isFocused, "Cancelled");
     const [isHiding, setIsHiding] = useState(0);
@@ -48,40 +52,38 @@ export default function Page() {
                         entering={FadeInUp.duration(300).springify()}
                     >
 
-                        <Link href={'/bookingPage/BookingSummary'} style={styles.row} asChild>
-                            <TouchableOpacity>
-                                <View style={styles.rowLeft}>
-                                    <View>
-                                        <Image
-                                            source={{ uri: item?.order_details?.service?.image }}
-                                            resizeMode='contain'
-                                            style={styles.imageStyle}
-                                        />
-                                    </View>
-                                    <View style={styles.leftInner}>
-                                        <Text style={styles.titleStyle} >{item?.order_details?.service?.title}</Text>
-                                        <Text style={styles.subTitle}>
-                                            {item?.order_details?.order_items?.length} {item?.order_details?.order_items?.length === 1 ? 'item' : 'items'}
-                                        </Text>
+                        <TouchableOpacity
+                            style={[styles.row, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}
+                            onPress={() => router.push('/bookingPage/BookingSummary')}
 
-                                        <View style={styles.indicator}>
-                                            <Text style={styles.upcoming}>Cancelled</Text>
-                                        </View>
-                                    </View>
-                                </View>
+                        >
+                            <View style={[styles.rowLeft, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
                                 <View>
-                                    <Link href={'/BookingChat'} style={styles.btnStyle} asChild>
-                                        <TouchableOpacity>
-                                            <Ionicons name='chatbubble-ellipses' size={hp(2.5)} color={'#0a5ca8'} />
-                                        </TouchableOpacity>
-                                    </Link>
+                                    <Image
+                                        source={{ uri: item?.order_details?.service?.image }}
+                                        resizeMode='contain'
+                                        style={styles.imageStyle}
+                                    />
                                 </View>
-                            </TouchableOpacity>
-                        </Link>
+                                <View style={{ marginLeft: current === 'ar' ? 0 : wp(4), marginRight: current === 'ar' ? wp(4) : 0 }}>
+                                    <Text style={styles.titleStyle} >{item?.order_details?.service?.title}</Text>
+                                    <Text style={styles.subTitle}>
+                                        {item?.order_details?.order_items?.length} {item?.order_details?.order_items?.length === 1 ? 'item' : 'items'}
+                                    </Text>
 
-
-
-
+                                    <View style={styles.indicator}>
+                                        <Text style={styles.upcoming}>{t('Cancelled')}</Text>
+                                    </View>
+                                </View>
+                            </View>
+                            <View>
+                                <Link href={'/BookingChat'} style={styles.btnStyle} asChild>
+                                    <TouchableOpacity>
+                                        <Ionicons name='chatbubble-ellipses' size={hp(2.5)} color={'#0a5ca8'} />
+                                    </TouchableOpacity>
+                                </Link>
+                            </View>
+                        </TouchableOpacity>
 
                         <View style={styles.separator} />
 
@@ -89,12 +91,12 @@ export default function Page() {
                             isHiding === item?._id && <Animated.View
                                 entering={FadeInUp.duration(300).springify()}
                                 style={{ marginTop: hp(2) }}>
-                                <View style={styles.mapRow}>
-                                    <Text style={styles.mapLabel} >Date & Time</Text>
+                                <View style={[styles.mapRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
+                                    <Text style={styles.mapLabel} >{t('Date & Time')}</Text>
                                     <Text style={styles.mapLabelValue}>{moment(addHours(item?.pick_up_date_time, 4)).format('MMMM D YYYY, h:mm a')}</Text>
                                 </View>
-                                <View style={[styles.mapRow, { marginTop: hp(2) }]}>
-                                    <Text style={styles.mapLabel} >Location</Text>
+                                <View style={[styles.mapRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', marginTop: hp(2) }]}>
+                                    <Text style={styles.mapLabel} >{t('Location')}</Text>
                                     <Text style={[styles.mapLabelValue, { width: wp(50) }]}>{item?.address}</Text>
                                 </View>
 
@@ -129,7 +131,7 @@ export default function Page() {
                                         params: { orderId: item?._id }
                                     })}
                                 >
-                                    <Text style={[styles.mapText, { color: 'white' }]}>View E-Receipt</Text>
+                                    <Text style={[styles.mapText, { color: 'white' }]}>{t('View E-Receipt')}</Text>
                                 </TouchableOpacity>
 
 
@@ -176,7 +178,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: wp(4),
     },
     row: {
-        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         marginTop: hp(2)
@@ -210,6 +211,7 @@ const styles = StyleSheet.create({
         fontSize: hp(1.8),
         color: 'gray',
     },
+
     indicator: {
         width: wp(26),
         height: hp(4),
@@ -236,7 +238,7 @@ const styles = StyleSheet.create({
         marginTop: hp(1)
     },
     mapRow: {
-        flexDirection: 'row',
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'space-between'
     },

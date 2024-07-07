@@ -16,7 +16,11 @@ import NoBooking from '@/components/booking/NoBooking';
 import BookingSkeleton from '@/components/booking/BookingSkeleton';
 import moment from 'moment';
 import MapView, { Marker, PROVIDER_GOOGLE, } from 'react-native-maps';
+import { useTranslation } from 'react-i18next';
+import { getCurrentLanguage } from '@/services/i18n';
 export default function Page() {
+    const { t } = useTranslation();
+    const current = getCurrentLanguage();
     const isFocused = useIsFocused();
     const { data, isPending } = useBooking(isFocused, "Upcoming");
     const [bookingId, setGetBookingId] = useState("");
@@ -68,10 +72,10 @@ export default function Page() {
                             entering={FadeInUp.duration(300).springify()}
                         >
                             <TouchableOpacity
-                                style={styles.row}
+                                style={[styles.row, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}
                                 onPress={() => router.push('/bookingPage/BookingSummary')}
                             >
-                                <View style={styles.rowLeft}>
+                                <View style={[styles.rowLeft, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
                                     <View>
                                         <Image
                                             source={{ uri: item?.order_details?.service?.image }}
@@ -79,13 +83,13 @@ export default function Page() {
                                             style={styles.imageStyle}
                                         />
                                     </View>
-                                    <View style={styles.leftInner}>
+                                    <View style={{ marginLeft: current === 'ar' ? 0 : wp(4), marginRight: current === 'ar' ? wp(4) : 0 }}>
                                         <Text style={styles.titleStyle} >{item?.order_details?.service?.title}</Text>
                                         <Text style={styles.subTitle}>
                                             {item?.order_details?.order_items?.length} {item?.order_details?.order_items?.length === 1 ? 'item' : 'items'}
                                         </Text>
                                         <View style={styles.indicator}>
-                                            <Text style={styles.upcoming}>Upcoming</Text>
+                                            <Text style={styles.upcoming}>{t('Upcoming')}</Text>
                                         </View>
                                     </View>
                                 </View>
@@ -106,13 +110,13 @@ export default function Page() {
                                 isHiding === item?._id && <Animated.View
                                     entering={FadeInUp.duration(300).springify()}
                                     style={{ marginTop: hp(2) }}>
-                                    <View style={[styles.mapRow]}>
-                                        <Text style={styles.mapLabel} >Date & Time</Text>
+                                    <View style={[styles.mapRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
+                                        <Text style={styles.mapLabel} >{t('Date & Time')}</Text>
                                         {/* <Text style={styles.mapLabelValue}>Dec 23. 2024 | 10:00 - 12:00 AM</Text> */}
                                         <Text style={styles.mapLabelValue}>{moment(addHours(item?.pick_up_date_time, 4)).format('MMMM D YYYY, h:mm a')}</Text>
                                     </View>
-                                    <View style={[styles.mapRow, { marginTop: hp(2) }]}>
-                                        <Text style={styles.mapLabel} >Location</Text>
+                                    <View style={[styles.mapRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', marginTop: hp(2) }]}>
+                                        <Text style={styles.mapLabel} >{t('Location')}</Text>
                                         <Text style={[styles.mapLabelValue, { width: wp(50) }]}>{item?.address}</Text>
                                     </View>
 
@@ -145,7 +149,7 @@ export default function Page() {
                                         </MapView>
                                     </View>
 
-                                    <View style={styles.mapRows}>
+                                    <View style={[styles.mapRows, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
 
                                         <TouchableOpacity style={[styles.mapBtn, { borderWidth: 1, borderColor: "#0a5ca8" }]}
                                             onPress={() => {
@@ -155,7 +159,7 @@ export default function Page() {
                                                 handlePresentModalPress()
                                             }}
                                         >
-                                            <Text style={[styles.mapText, { color: '#0a5ca8' }]}>Cancel Booking</Text>
+                                            <Text style={[styles.mapText, { color: '#0a5ca8' }]}>{t('Cancel Booking')}</Text>
                                         </TouchableOpacity>
 
 
@@ -165,7 +169,7 @@ export default function Page() {
                                                 params: { orderId: item?._id }
                                             })}
                                         >
-                                            <Text style={[styles.mapText, { color: 'white' }]}>View E-Receipt</Text>
+                                            <Text style={[styles.mapText, { color: 'white' }]}>{t('View E-Receipt')}</Text>
                                         </TouchableOpacity>
 
                                     </View>
@@ -176,7 +180,6 @@ export default function Page() {
 
                                 </Animated.View>
                             }
-
                             {
                                 isHiding != item?._id ? <TouchableOpacity style={styles.footerBtn} onPress={() => toggleHide(item?._id)}>
                                     <Ionicons name='chevron-down-outline' size={hp(2.5)} />
@@ -199,33 +202,33 @@ export default function Page() {
 
                 >
                     <BottomSheetView style={styles.contentContainer}>
-                        <Text style={styles.bottomSheetIndi}>Cancel Booking</Text>
+                        <Text style={styles.bottomSheetIndi}>{t('Cancel Booking')}</Text>
                         <View style={styles.BottomSheetSeparator} />
 
                         <View style={{ marginTop: hp(2), paddingHorizontal: wp(10) }}>
-                            <Text style={styles.bottomSheetTitle}>Are you sure want to cancel your service booking?</Text>
-                            <Text style={styles.bottomSubTitle}>Only 80% of the money you can refund from your payment according to our policy</Text>
+                            <Text style={styles.bottomSheetTitle}>{t('Are you sure want to cancel your service booking?')}</Text>
+                            <Text style={styles.bottomSubTitle}>{t('Only 80% of the money you can refund from your payment according to our policy')}</Text>
                         </View>
                         <View style={styles.BottomSheetSeparator} />
 
-                        <View style={styles.bottomBtnRow}>
+                        <View style={[styles.bottomBtnRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
                             <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}
                                 onPress={() => bottomSheetModalRef.current?.close()}
                             >
-                                <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Cancel</Text>
+                                <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>{t('Cancel')}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
-                                // onPress={() => router.push({
-                                //     pathname: '/bookingPage/BookingPaymentMethod',
-                                //     params: { bookingId, total }
-                                // })}
                                 onPress={() => router.push({
-                                    pathname: '/bookingPage/BookingPin',
-                                    params: { bookingId }
+                                    pathname: '/bookingPage/BookingPaymentMethod',
+                                    params: { bookingId, total }
                                 })}
+                            // onPress={() => router.push({
+                            //     pathname: '/bookingPage/BookingPin',
+                            //     params: { bookingId }
+                            // })}
                             >
-                                <Text style={[styles.bottomText, { color: "white" }]}>Yes, Cancel Booking</Text>
+                                <Text style={[styles.bottomText, { color: "white" }]}>{t('Yes, Cancel Booking')}</Text>
                             </TouchableOpacity>
                         </View>
 
@@ -254,13 +257,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: wp(4),
     },
     row: {
-        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         marginTop: hp(2)
     },
     rowLeft: {
-        flexDirection: 'row',
         alignItems: 'center'
     },
     btnStyle: {
@@ -315,7 +316,6 @@ const styles = StyleSheet.create({
     },
     mapRow: {
         flex: 1,
-        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between'
     },
@@ -336,7 +336,6 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     mapRows: {
-        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between'
     },
@@ -382,7 +381,6 @@ const styles = StyleSheet.create({
         marginTop: hp(2)
     },
     bottomBtnRow: {
-        flexDirection: 'row',
         alignItems: 'center',
         gap: wp(3),
         marginTop: hp(2),

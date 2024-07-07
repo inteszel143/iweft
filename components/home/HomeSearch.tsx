@@ -2,11 +2,13 @@ import { StyleSheet, Text, View, Image, TextInput } from 'react-native'
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useTranslation } from 'react-i18next';
+import { getCurrentLanguage } from '@/services/i18n';
 export default function HomeSearch() {
     const { t } = useTranslation();
+    const current = getCurrentLanguage();
     return (
-        <View style={styles.searchContainer}>
-            <View style={styles.searchLeft}>
+        <View style={[styles.searchContainer, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
+            <View style={[styles.searchLeft, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
                 <Image source={require('@/assets/icons/search.png')} resizeMode='contain' style={{ width: wp(6.5) }} />
                 <TextInput placeholder={t('Seach what you need...')}
                     placeholderTextColor={'#d5d5d5'}
@@ -19,7 +21,6 @@ export default function HomeSearch() {
 
 const styles = StyleSheet.create({
     searchContainer: {
-        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: wp(5),
@@ -31,7 +32,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     searchLeft: {
-        flexDirection: 'row',
         alignItems: 'center',
         gap: wp(4),
         backgroundColor: 'transparent'

@@ -2,21 +2,20 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 export default function NoCompleteBooking() {
+    const { t } = useTranslation();
     return (
         <View style={styles.container}>
-
             <View>
                 <Image source={require('@/assets/icons/under.png')} resizeMode='contain' style={{ width: wp(100), height: hp(22) }} />
             </View>
-
             <View>
-                <Text style={styles.textStyle}>You have no completed booking</Text>
-                <Text style={styles.textSubStyle}>You do not have a upcoming booking. Make a new booking by clicking the button below</Text>
+                <Text style={styles.textStyle}>{t('You have no completed booking')}</Text>
+                <Text style={styles.textSubStyle}>{t('You do not have a complete booking. Make a new booking by clicking the button below')}</Text>
             </View>
-
             <TouchableOpacity style={styles.btnStyle} onPress={() => router.back()}>
-                <Text style={styles.btnText}>Make New Booking</Text>
+                <Text style={styles.btnText}>{t('Make New Booking')}</Text>
             </TouchableOpacity>
 
 
