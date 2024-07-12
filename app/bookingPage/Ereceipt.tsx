@@ -111,10 +111,13 @@ export default function Ereceipt() {
                                 <Text style={styles.summaryLabel}>{t('Amount')}</Text>
                                 <Text style={styles.summaryValue}>{t('AED')} {formatNumber(data?.trm_charge?.amount / 100)}.00</Text>
                             </View>
-                            <View style={[styles.summarRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', marginTop: hp(3) }]}>
-                                <Text style={styles.summaryLabel}>{t('Service Fee')}</Text>
-                                <Text style={[styles.summaryValue, { color: '#0a5ca8' }]}>{t('AED')} {formatNumber(data?.trm_order?.service?.service?.base_price)}.00</Text>
-                            </View>
+                            {
+                                data?.trm_order?.discounted_amount && <View style={[styles.summarRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', marginTop: hp(3) }]}>
+                                    <Text style={styles.summaryLabel}>{t('Promo Discount')}</Text>
+                                    <Text style={[styles.summaryValue, { color: '#0a5ca8' }]}>- {t('AED')} {formatNumber(data?.trm_order?.discounted_amount)}.00</Text>
+                                </View>
+                            }
+
 
                             <View style={[styles.summarRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', marginTop: hp(3) }]}>
                                 <Text style={styles.summaryLabel}>{t('Payment Methods')}</Text>

@@ -211,6 +211,7 @@ export default function BookingDetails() {
 
                 <View style={styles.footer}>
                     <TouchableOpacity style={defaultStyles.footerBtn}
+                        disabled={!collectDate || !topSelect || !deliveryDate || !deliveryTime ? true : false}
                         onPress={onSubmit}
                     >
                         <Text style={defaultStyles.footerText}>Continue AED {total}</Text>

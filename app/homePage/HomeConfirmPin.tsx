@@ -27,7 +27,7 @@ interface CellProps {
 
 export default function HomeConfirmPin() {
     const { subscriptionId } = useStoreSub();
-    const { service, itemData, pick_up_date_time, delivery_date_time, address, latitude, longitude, total_amount, discounted_amount, driver_instruction, promo_code } = useStoreBooking();
+    const { service, itemData, pick_up_date_time, delivery_date_time, address, latitude, longitude, total_amount, discounted_amount, driver_instruction, promo_code, collection_instruction } = useStoreBooking();
     const [modalVisible, setModalVisible] = useState(false);
     const [btnLoading, setBtnLoading] = useState(false);
     const CELL_COUNT = 4;
@@ -41,6 +41,7 @@ export default function HomeConfirmPin() {
         value,
         setValue,
     });
+    const toggleMask = () => setEnableMask((f) => !f);
     useEffect(() => {
         if (ref?.current) {
             ref.current.focus();
@@ -67,18 +68,20 @@ export default function HomeConfirmPin() {
 
 
     const onSubmit = async () => {
+
         setBtnLoading(true);
         const totalPayment = parseFloat(total_amount);
         const orderData = {
             order_details: {
                 service,
                 order_items: JSON.parse(itemData as any),
-                promo_code: promo_code
+                promo_code: "referalDiscount"
             },
             pick_up_date_time: pick_up_date_time,
             delivery_date_time: delivery_date_time,
             address,
             delivery_instruction: driver_instruction,
+            collection_instruction: collection_instruction,
             total_amount: totalPayment,
             discounted_amount: discounted_amount,
             latitude: parseFloat(latitude),

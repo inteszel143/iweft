@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
 import useStoreBooking from '@/store/useStoreBooking';
@@ -9,8 +9,9 @@ import { getDiscountedTotal, getPromoDiscount, getTotal } from '@/utils/format';
 
 export default function DriverInstruction() {
 
-    const { service_name, total, base_price, discount, setTotalAmount, setDiscountedAmount, setDriverInstruction } = useStoreBooking();
+    const { service_name, total, base_price, discount, setTotalAmount, setdiscountAmount, setDriverInstruction, setCollectionInstruction } = useStoreBooking();
     const [driverInstruc, setDriverInstruc] = useState<any>([]);
+    const [collectInstruc, setCollectInstruc] = useState<any>([]);
 
     const topData = [
         {
@@ -32,6 +33,7 @@ export default function DriverInstruction() {
     ];
 
     const [selected, setSelected] = useState<number[]>([]);
+    const [deliverySelect, setDeliverySelect] = useState<number[]>([]);
 
     const botData = [
         {
@@ -41,6 +43,14 @@ export default function DriverInstruction() {
         {
             image: require('@/assets/temp/services/plansa.jpg'),
             label: "Ring the door bell"
+        },
+        {
+            image: require('@/assets/temp/services/plansa.jpg'),
+            label: "Knock on the door"
+        },
+        {
+            image: require('@/assets/temp/services/plansa.jpg'),
+            label: "Do not disturb, bags outside"
         },
     ];
 
@@ -52,26 +62,39 @@ export default function DriverInstruction() {
             } else {
                 newSelected = [...prevSelected, index];
             }
-
-            // Extract selected labels
             const selectedLabels = newSelected.map(i => topData[i].label);
-            // Update the Zustand store
-            setDriverInstruc(selectedLabels);
-
+            setCollectInstruc(selectedLabels);
             return newSelected;
         });
     };
 
+    const handleSelectDelivery = (index: number) => {
+        setDeliverySelect(prevSelected => {
+            let newSelected: number[];
+            if (prevSelected.includes(index)) {
+                newSelected = prevSelected.filter(item => item !== index);
+            } else {
+                newSelected = [...prevSelected, index];
+            }
+            const selectedLabels = newSelected.map(i => botData[i].label);
+            setDriverInstruc(selectedLabels);
+            return newSelected;
+        });
+    }
+
 
     const toggleSubmit = async () => {
+        console.log(getPromoDiscount(base_price, total, discount));
         if (!discount) {
             setTotalAmount(getTotal(base_price, total) as any);
-            setDiscountedAmount(getPromoDiscount(base_price, total, discount));
             setDriverInstruction(driverInstruc);
+            setCollectionInstruction(collectInstruc);
             router.push('homePage/HomePaymentMethods')
         } else {
             setTotalAmount(getDiscountedTotal(base_price, total, discount) as any);
             setDriverInstruction(driverInstruc);
+            setCollectionInstruction(collectInstruc);
+            setdiscountAmount(getPromoDiscount(base_price, total, discount) as string);
             router.push('homePage/HomePaymentMethods')
         }
     }
@@ -123,11 +146,13 @@ export default function DriverInstruction() {
                     {/* card */}
                     {
                         botData?.map((item, index) => (
-                            <TouchableOpacity style={styles.cardStyle} key={index}>
+                            <TouchableOpacity style={styles.cardStyle} key={index}
+                                onPress={() => handleSelectDelivery(index)}
+                            >
                                 <View style={styles.cardRow}>
                                     <Image source={item?.image} resizeMode='contain' style={{ width: wp(10) }} />
                                     <Text style={styles.titleStyle}>{item?.label}</Text>
-                                    <FontAwesome name='check-circle' size={hp(3)} color={'#0A5CA8'} />
+                                    {deliverySelect.includes(index) ? <FontAwesome name='check-circle' size={hp(3)} color={'#0A5CA8'} /> : <FontAwesome name='circle-thin' size={hp(3)} color={'#0A5CA8'} />}
                                 </View>
                             </TouchableOpacity>
                         ))
@@ -140,6 +165,7 @@ export default function DriverInstruction() {
 
             <View style={styles.footer}>
                 <TouchableOpacity style={defaultStyles.footerBtn}
+                    disabled={selected.length == 0 || deliverySelect.length == 0 ? true : false}
                     onPress={toggleSubmit}
                 >
                     <Text style={defaultStyles.footerText}>Apply</Text>

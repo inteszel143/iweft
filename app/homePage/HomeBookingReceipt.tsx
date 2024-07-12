@@ -97,14 +97,18 @@ export default function HomeBookingReceipt() {
 
 
                         <View style={[styles.summarCard, { marginTop: hp(2) }]}>
+
                             <View style={styles.summarRow}>
                                 <Text style={styles.summaryLabel}>Amount</Text>
                                 <Text style={styles.summaryValue}>AED {formatNumber(data?.trm_charge?.amount / 100)}.00</Text>
                             </View>
-                            <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                                <Text style={styles.summaryLabel}>Service Fee</Text>
-                                <Text style={[styles.summaryValue, { color: '#0a5ca8' }]}>AED {formatNumber(data?.trm_order?.service?.service?.base_price)}.00</Text>
-                            </View>
+                            {
+                                data?.trm_order?.discounted_amount && <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                                    <Text style={styles.summaryLabel}>Promo Discount</Text>
+                                    <Text style={[styles.summaryValue, { color: '#0a5ca8' }]}>- AED {formatNumber(data?.trm_order?.discounted_amount)}.00</Text>
+                                </View>
+                            }
+
 
                             <View style={[styles.summarRow, { marginTop: hp(3) }]}>
                                 <Text style={styles.summaryLabel}>Payment Methods</Text>
