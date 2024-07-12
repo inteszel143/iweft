@@ -125,3 +125,71 @@ export const getAllBundles = async () => {
     return Promise.reject(error);
   }
 };
+
+/**
+ * User Activations Offers ---------------------------------------------------------
+ */
+export const getActivationOffer = async () => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  try {
+    const response = await axios.get(
+      `${process.env.EXPO_PUBLIC_API_URL}/special-offers/activations`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          //   "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response?.data?.user_activations || [];
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+/**
+ * Active Special Offers ---------------------------------------------------------
+ */
+
+export const activeSpecialOffer = async (specialId: string) => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  try {
+    const response = await axios.post(
+      `${process.env.EXPO_PUBLIC_API_URL}/special-offers/${specialId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response?.data || [];
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+/**
+ * Apply Code for Special Offers ---------------------------------------------------------
+ */
+
+export const applyCodeSpecialOffer = async (promo_code: string) => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  const data = {
+    promo_code: promo_code,
+  };
+  try {
+    const response = await axios.post(
+      `${process.env.EXPO_PUBLIC_API_URL}/special-offers/apply-code`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response?.data || [];
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

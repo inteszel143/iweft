@@ -21,7 +21,6 @@ export default function Ereceipt() {
     const toggleShowCard = () => {
         setCardShow(!cardShow);
     };
-    // console.log(data?.trm_customer_subscriptions?.subscription);
     return (
         <View style={styles.container}>
 

@@ -1,11 +1,22 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Platform, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link, router } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { paymentMethods } from '@/constants/booking/data';
 import { Entypo } from '@expo/vector-icons';
+import { useIsFocused } from '@react-navigation/native';
+import { useGetEReceipt } from '@/query/stripeQuery';
+import { formatDate, formatNumber, formatTime } from '@/utils/format';
+import { useTranslation } from 'react-i18next';
+import { getCurrentLanguage } from '@/services/i18n';
 
 export default function BookingSummary() {
+    const { t } = useTranslation();
+    const current = getCurrentLanguage();
+    const { orderId } = useLocalSearchParams();
+    const isFocused = useIsFocused();
+    const { data, isFetching } = useGetEReceipt(isFocused, orderId as string);
+
     return (
         <View style={styles.container}>
 
@@ -22,70 +33,83 @@ export default function BookingSummary() {
             </View>
 
 
-
-            <View style={[styles.summarCard, { marginTop: hp(3) }]}>
-                <View style={styles.summarRow}>
-                    <Text style={styles.summaryLabel}>Services</Text>
-                    <Text style={styles.summaryValue}>Clean/Press</Text>
+            {
+                isFetching ? <View style={styles.fetchStyle}>
+                    <ActivityIndicator size={'large'} color={'gray'} />
+                    <Text style={styles.fetchText}>{t('Generating Booking Summary')}</Text>
                 </View>
-                <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                    <Text style={styles.summaryLabel}>Category</Text>
-                    <Text style={styles.summaryValue}>Premium Bundle</Text>
-                </View>
-                <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                    <Text style={styles.summaryLabel}>Date & Time</Text>
-                    <Text style={styles.summaryValue}>Dec 23, 2024 | 10: 00 AM</Text>
-                </View>
-                <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                    <Text style={styles.summaryLabel}>Working Hours</Text>
-                    <Text style={styles.summaryValue}>2 hours</Text>
-                </View>
-            </View>
+                    :
+                    <>
+                        <View style={[styles.summarCard, { marginTop: hp(3) }]}>
+                            <View style={styles.summarRow}>
+                                <Text style={styles.summaryLabel}>Services</Text>
+                                <Text style={styles.summaryValue}>{data?.trm_order?.service?.service?.title}</Text>
+                            </View>
+                            <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                                <Text style={styles.summaryLabel}>Category</Text>
+                                <Text style={styles.summaryValue}>{data?.trm_order?.service?.service?.sub_title}</Text>
+                            </View>
+
+                            {
+                                data?.trm_customer_subscriptions?.subscription && <View style={[styles.summarRow, { marginTop: hp(3), flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
+                                    <Text style={styles.summaryLabel}>{t('Subscription Plan')} </Text>
+                                    <Text style={styles.summaryValue}>{data?.trm_customer_subscriptions?.subscription}</Text>
+                                </View>
+                            }
+
+                            <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                                <Text style={styles.summaryLabel}>Date & Time</Text>
+                                <Text style={styles.summaryValue}>{formatDate(data?.trm_charge?.date)} | {formatTime(data?.trm_charge?.date)}</Text>
+                            </View>
+                            <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                                <Text style={styles.summaryLabel}>Working Hours</Text>
+                                <Text style={styles.summaryValue}>2 hours</Text>
+                            </View>
+                        </View>
 
 
 
-            <View style={[styles.summarCard, { marginTop: hp(2) }]}>
-                <TouchableOpacity style={styles.summarRow}>
-                    <Text style={styles.summaryLabel}>Subscription Details</Text>
-                    <Entypo name='chevron-thin-down' size={hp(2)} />
-                </TouchableOpacity>
-            </View>
+                        <View style={[styles.summarCard, { marginTop: hp(2) }]}>
+                            <TouchableOpacity style={styles.summarRow}>
+                                <Text style={styles.summaryLabel}>Subscription Details</Text>
+                                <Entypo name='chevron-thin-down' size={hp(2)} />
+                            </TouchableOpacity>
+                        </View>
 
 
 
-            <View style={[styles.summarCard, { marginTop: hp(2) }]}>
-                <View style={styles.summarRow}>
-                    <Text style={styles.summaryLabel}>House Cleaning</Text>
-                    <Text style={styles.summaryValue}>AED 277.00</Text>
-                </View>
-                <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                    <Text style={styles.summaryLabel}>Promo</Text>
-                    <Text style={[styles.summaryValue, { color: '#0a5ca8' }]}>- AED 37.50</Text>
-                </View>
+                        <View style={[styles.summarCard, { marginTop: hp(2) }]}>
+                            <View style={[styles.summarRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
+                                <Text style={styles.summaryLabel}>{t('Amount')}</Text>
+                                <Text style={styles.summaryValue}>{t('AED')} {formatNumber(data?.trm_charge?.amount / 100)}.00</Text>
+                            </View>
+                            <View style={[styles.summarRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', marginTop: hp(3) }]}>
+                                <Text style={[styles.summaryLabel, { color: '#0a5ca8' }]}>{t('Promo')}</Text>
+                                <Text style={[styles.summaryValue, { color: '#0a5ca8' }]}>- {t('AED')} {formatNumber(0)}.00</Text>
+                            </View>
 
-                <View style={styles.separator} />
+                            <View style={styles.separator} />
 
-                <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                    <Text style={styles.summaryLabel}>Total</Text>
-                    <Text style={[styles.summaryValue]}>AED 125.00</Text>
-                </View>
-            </View>
-
-
+                            <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                                <Text style={styles.summaryLabel}>Total</Text>
+                                <Text style={styles.summaryValue}>{t('AED')} {formatNumber(data?.trm_charge?.amount / 100)}.00</Text>
+                            </View>
+                        </View>
 
 
-
-            <View style={[styles.summarCard, { marginTop: hp(2) }]}>
-                <TouchableOpacity style={styles.summarRow}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(4) }}>
-                        <Image source={require('@/assets/temp/bookingIcon/mastercard.jpg')} resizeMode='contain' style={{ width: wp(8) }} />
-                        <Text style={styles.cardTextStyle}>**** **** **** **** 4679</Text>
-                    </View>
-                    <TouchableOpacity>
-                        <Text style={styles.btnText}>Change</Text>
-                    </TouchableOpacity>
-                </TouchableOpacity>
-            </View>
+                        <View style={[styles.summarCard, { marginTop: hp(2) }]}>
+                            <TouchableOpacity style={styles.summarRow}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(4) }}>
+                                    <Image source={require('@/assets/temp/bookingIcon/mastercard.jpg')} resizeMode='contain' style={{ width: wp(8) }} />
+                                    <Text style={styles.cardTextStyle}> {data?.trm_charge?.payment_method}</Text>
+                                </View>
+                                <TouchableOpacity>
+                                    <Text style={styles.btnText}>Change</Text>
+                                </TouchableOpacity>
+                            </TouchableOpacity>
+                        </View>
+                    </>
+            }
 
 
 
@@ -176,6 +200,17 @@ const styles = StyleSheet.create({
         fontFamily: 'UrbanistBold',
         fontSize: hp(1.6),
         color: "#0a5ca8"
+    },
+    fetchStyle: {
+        flex: 1,
+        alignItems: 'center',
+        marginTop: hp(35),
+    },
+    fetchText: {
+        fontFamily: "UrbanistSemiBold",
+        fontSize: hp(2),
+        marginTop: hp(1.5),
+        // color: "#616161"
     }
 
 

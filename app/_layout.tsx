@@ -120,6 +120,7 @@ function RootLayoutNav() {
       <Stack.Screen name='homePage/services/PhotosVideos' options={{ headerShown: false }} />
       <Stack.Screen name='homePage/services/BookNow' options={{ headerShown: false }} />
       <Stack.Screen name='homePage/services/AfterItemPage' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/services/Coupons' options={{ headerShown: false }} />
       <Stack.Screen name='homePage/services/ChooseSubscription' options={{ headerShown: false }} />
       <Stack.Screen name='homePage/services/PlansScreen' options={{ headerShown: false }} />
       <Stack.Screen name='homePage/services/PlantSelectMethod' options={{ headerShown: false }} />

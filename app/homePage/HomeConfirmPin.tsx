@@ -17,6 +17,8 @@ import useStoreBooking from '@/store/useStoreBooking';
 import { addPayUsingCard } from '@/apis/stripe';
 import ErrorBookingModal from '@/components/ErrorBookingModal';
 import useStoreSub from '@/store/useStoreSub';
+import { getDiscountedTotal, getTotal } from '@/utils/format';
+import errorRes from '@/apis/errorRes';
 interface CellProps {
     index: number;
     symbol: string;
@@ -25,7 +27,7 @@ interface CellProps {
 
 export default function HomeConfirmPin() {
     const { subscriptionId } = useStoreSub();
-    const { service, base_price, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude } = useStoreBooking();
+    const { service, itemData, pick_up_date_time, delivery_date_time, address, latitude, longitude, total_amount, discounted_amount, driver_instruction, promo_code } = useStoreBooking();
     const [modalVisible, setModalVisible] = useState(false);
     const [btnLoading, setBtnLoading] = useState(false);
     const CELL_COUNT = 4;
@@ -44,7 +46,6 @@ export default function HomeConfirmPin() {
             ref.current.focus();
         }
     }, []);
-    const toggleMask = () => setEnableMask((f) => !f);
     const renderCell = ({ index, symbol, isFocused }: CellProps) => {
         let textChild = null;
 
@@ -67,18 +68,19 @@ export default function HomeConfirmPin() {
 
     const onSubmit = async () => {
         setBtnLoading(true);
-        const totalPayment = parseFloat(base_price as any) + parseFloat(total as any);
+        const totalPayment = parseFloat(total_amount);
         const orderData = {
             order_details: {
                 service,
-                order_items: JSON.parse(itemData),
-                promo_code: "N/A"
+                order_items: JSON.parse(itemData as any),
+                promo_code: promo_code
             },
             pick_up_date_time: pick_up_date_time,
             delivery_date_time: delivery_date_time,
             address,
-            delivery_instruction: "N/A",
+            delivery_instruction: driver_instruction,
             total_amount: totalPayment,
+            discounted_amount: discounted_amount,
             latitude: parseFloat(latitude),
             longitude: parseFloat(longitude),
         };
@@ -88,13 +90,14 @@ export default function HomeConfirmPin() {
             try {
                 const orderResult = await createBooking(orderData);
                 if (orderResult?.message === "Order successfully created") {
-                    await addPayUsingCard(totalPayment, orderResult?.orders?._id, subscriptionId);
+                    await addPayUsingCard(totalPayment, orderResult?.orders?._id, subscriptionId as string);
 
                     setOrderId(orderResult?.orders?._id);
                     setModalVisible(true);
                     setBtnLoading(false);
                 }
             } catch (error) {
+                console.log(errorRes(error));
                 setErrorBooking(true);
                 setBtnLoading(false);
             }

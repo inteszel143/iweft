@@ -4,16 +4,18 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { router, useLocalSearchParams } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
+import useStoreBooking from '@/store/useStoreBooking';
+import { getDiscountedTotal, getPromoDiscount, getTotal } from '@/utils/format';
 
 export default function DriverInstruction() {
+
+    const { service_name, total, base_price, discount, setTotalAmount, setDiscountedAmount, setDriverInstruction } = useStoreBooking();
+    const [driverInstruc, setDriverInstruc] = useState<any>([]);
+
     const topData = [
         {
             image: require('@/assets/temp/services/plansa.jpg'),
             label: "No Preferences"
-        },
-        {
-            image: require('@/assets/temp/services/plansa.jpg'),
-            label: "Ring the door bell"
         },
         {
             image: require('@/assets/temp/services/plansa.jpg'),
@@ -42,16 +44,37 @@ export default function DriverInstruction() {
         },
     ];
 
-
     const handleSelect = (index: number) => {
         setSelected(prevSelected => {
+            let newSelected: number[];
             if (prevSelected.includes(index)) {
-                return prevSelected.filter(item => item !== index);
+                newSelected = prevSelected.filter(item => item !== index);
             } else {
-                return [...prevSelected, index];
+                newSelected = [...prevSelected, index];
             }
+
+            // Extract selected labels
+            const selectedLabels = newSelected.map(i => topData[i].label);
+            // Update the Zustand store
+            setDriverInstruc(selectedLabels);
+
+            return newSelected;
         });
     };
+
+
+    const toggleSubmit = async () => {
+        if (!discount) {
+            setTotalAmount(getTotal(base_price, total) as any);
+            setDiscountedAmount(getPromoDiscount(base_price, total, discount));
+            setDriverInstruction(driverInstruc);
+            router.push('homePage/HomePaymentMethods')
+        } else {
+            setTotalAmount(getDiscountedTotal(base_price, total, discount) as any);
+            setDriverInstruction(driverInstruc);
+            router.push('homePage/HomePaymentMethods')
+        }
+    }
 
 
     return (
@@ -117,7 +140,7 @@ export default function DriverInstruction() {
 
             <View style={styles.footer}>
                 <TouchableOpacity style={defaultStyles.footerBtn}
-                    onPress={() => router.push('homePage/HomePaymentMethods')}
+                    onPress={toggleSubmit}
                 >
                     <Text style={defaultStyles.footerText}>Apply</Text>
                 </TouchableOpacity>

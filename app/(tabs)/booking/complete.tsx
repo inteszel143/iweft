@@ -56,7 +56,10 @@ export default function Page() {
                     >
                         <TouchableOpacity
                             style={[styles.row, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}
-                            onPress={() => router.push('/bookingPage/BookingSummary')}
+                            onPress={() => router.push({
+                                pathname: '/bookingPage/BookingSummary',
+                                params: { orderId: item?._id }
+                            })}
                         >
                             <View style={[styles.rowLeft, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
                                 <View>

@@ -58,10 +58,6 @@ export default function BookingDetails() {
         setPickUpDateTime(pick_up_date_time as string);
         setDeliveryDateTime(delivery_date_time as string);
         router.push('/homePage/BookingAddress');
-        // router.push({
-        //     pathname: '/homePage/BookingAddress',
-        //     params: { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, base_price }
-        // });
     }
 
     useEffect(() => {

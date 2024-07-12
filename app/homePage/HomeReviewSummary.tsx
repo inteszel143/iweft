@@ -9,19 +9,17 @@ import moment from 'moment';
 import Paypal from '@/components/stripe/Paypal';
 import GooglePay from '@/components/stripe/GooglePay';
 import ApplePay from '@/components/stripe/ApplePay';
-import numeral from 'numeral';
-import { formatNumber } from '@/utils/format';
+import { formatNumber, getDiscountedTotal, getPromoDiscount, getTotal } from '@/utils/format';
 import useStoreSub from '@/store/useStoreSub';
 import { Entypo } from '@expo/vector-icons';
 export default function HomeReviewSummary() {
     const { imageUrl, method, isSelected } = useLocalSearchParams();
-    const { service_name, total, base_price } = useStoreBooking();
+    const { service_name, total, base_price, discount } = useStoreBooking();
     const { plan_name, total: totalSub } = useStoreSub();
     const [isHiding, setIsHiding] = useState(false);
     const toggleHide = () => {
         setIsHiding(!isHiding);
     };
-
     return (
         <View style={styles.container}>
 
@@ -101,15 +99,35 @@ export default function HomeReviewSummary() {
 
                     <View style={[styles.summarRow, { marginTop: hp(3) }]}>
                         <Text style={styles.summaryLabel}>Total Items</Text>
-                        <Text style={[styles.summaryValue, { color: '#0a5ca8' }]}>AED {formatNumber(total)}.00</Text>
+                        <Text style={[styles.summaryValue]}>AED {formatNumber(total)}.00</Text>
                     </View>
+
+                    {
+                        !discount ? <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                            <Text style={styles.summaryLabel}>Promo</Text>
+                            <Text style={[styles.summaryValue, { color: '#0a5ca8' }]}> - AED  0.00</Text>
+                        </View>
+                            :
+                            <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                                <Text style={styles.summaryLabel}>Promo</Text>
+                                <Text style={[styles.summaryValue, { color: '#0a5ca8' }]}> - AED  {getPromoDiscount(base_price, total, discount)}.00</Text>
+                            </View>
+                    }
 
                     <View style={styles.separator} />
 
-                    <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                        <Text style={styles.summaryValue}>Total</Text>
-                        <Text style={[styles.summaryValue, { fontFamily: 'UrbanistBold', }]}>AED {parseFloat(base_price as numeral) + parseFloat(total as numeral)}.00</Text>
-                    </View>
+                    {
+                        !discount ? <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                            <Text style={styles.summaryValue}>Total</Text>
+                            <Text style={[styles.summaryValue, { fontFamily: 'UrbanistBold', }]}>AED {getTotal(base_price, total)}.00</Text>
+                        </View>
+                            :
+                            <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                                <Text style={styles.summaryValue}>Total</Text>
+                                <Text style={[styles.summaryValue, { fontFamily: 'UrbanistBold', }]}>AED {getDiscountedTotal(base_price, total, discount)}.00</Text>
+                            </View>
+                    }
+
                 </View>
 
 

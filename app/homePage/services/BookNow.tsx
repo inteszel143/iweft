@@ -9,20 +9,51 @@ import { defaultStyles } from '@/constants/Styles';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ErrorPromoCodeModa from '@/components/ErrorPromoCodeModa';
 import { ServiceItem } from '@/utils/interface';
+import { useActivationPromo } from '@/query/homeQuery';
+import { useIsFocused } from '@react-navigation/native';
+import { applyCodeSpecialOffer } from '@/apis/homeApi';
+import SuccessPromo from '@/components/modal/SuccessPromo';
+import NotFoundCode from '@/components/modal/NotFoundCode';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function BookNow() {
     const { item } = useLocalSearchParams();
     const serviceItem: ServiceItem = JSON.parse(item as string);
+    const queryClient = useQueryClient();
     const [subscription, setSubscription] = useState<string | null>(null); // service subscription data
+
     const [errorModalVisible, setErrorModalVisible] = useState(false);
+    const [succesCode, setSuccesCode] = useState(false);
+    const [notFound, setNotFound] = useState(false);
+
     const [errorItem, setErrorItem] = useState(false);
+    const [code, setCode] = useState("");
+
+    const isFocused = useIsFocused();
+    const { data, isPending } = useActivationPromo(isFocused);
+
     const toggleContinue = () => {
         setErrorItem(true);
+    };
+    const handleSubmit = async () => {
+        if (!code) {
+            setErrorModalVisible(true);
+        } else {
+            try {
+                await applyCodeSpecialOffer(code as string);
+                queryClient.invalidateQueries({ queryKey: ['activations'] });
+                setSuccesCode(true);
+            } catch (error) {
+                setNotFound(true);
+            }
+        }
     }
 
     return (
         <View style={styles.container}>
             {errorModalVisible && <ErrorPromoCodeModa modalVisible={errorModalVisible} setModalVisible={setErrorModalVisible} />}
+            {notFound && <NotFoundCode modalVisible={notFound} setModalVisible={setNotFound} />}
+            {succesCode && <SuccessPromo modalVisible={succesCode} setModalVisible={setSuccesCode} />}
             {/* HEADER */}
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
@@ -44,6 +75,7 @@ export default function BookNow() {
             <KeyboardAwareScrollView
                 showsVerticalScrollIndicator={false}
                 extraScrollHeight={hp(2)}
+                contentContainerStyle={{ paddingBottom: Platform.OS === 'ios' ? hp(14) : 0 }}
             >
                 <View style={[styles.containerStyle]}>
                     <Text style={[styles.topText, { paddingHorizontal: wp(5) }]}>Enter the amount of items or bags you need.</Text>
@@ -101,10 +133,11 @@ export default function BookNow() {
                                 <TextInput
                                     placeholder='Enter Promo Code'
                                     placeholderTextColor={'#9E9E9E'}
+                                    onChangeText={(text) => setCode(text)}
                                     style={{ flex: 1, fontFamily: 'UrbanistMedium', fontSize: hp(1.9) }} />
                             </View>
                             <TouchableOpacity style={styles.promoCircle}
-                                onPress={() => setErrorModalVisible(true)}
+                                onPress={handleSubmit}
                             >
                                 <Feather name='plus' size={hp(2.5)} color={'#0A5CA8'} />
                             </TouchableOpacity>
@@ -112,16 +145,37 @@ export default function BookNow() {
                     </View>
 
                     {/* Applied */}
-                    {/* <View style={{ marginTop: hp(4), }}>
-                        <Text style={[styles.topTitle, { paddingHorizontal: wp(5) }]}>Applied Promotions & Offers</Text>
-                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    {
+                        data && <View style={{ marginTop: hp(4), }}>
+                            <TouchableOpacity
+                                style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: wp(5) }}
+                                onPress={() => router.push('/homePage/services/Coupons')}
+                            >
+                                <Text style={[styles.topTitle]}>Applied Promotions & Offers</Text>
+                                {/* <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(1) }}>
+                                    <Text style={{ fontFamily: "UrbanistBold", fontSize: hp(1.8), color: "#0A5CA8" }} >{data?.length}</Text>
+                                    <Ionicons name='chevron-forward' size={hp(2.5)} />
+                                </View> */}
+                            </TouchableOpacity>
+                            {/* 
                             <View style={[styles.appliedInner, { paddingLeft: wp(5) }]}>
                                 <View style={styles.appliedView} >
-                                    <Text style={styles.appliedText} >Refer a Friend - 30% Off</Text>
+                                    <Text style={styles.appliedText} > {data[0]?.special_offer?.title} - {data[0]?.special_offer?.discount_value}% Off</Text>
                                 </View>
-                            </View>
-                        </ScrollView>
-                    </View> */}
+                            </View> */}
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                                {
+                                    data?.map((item: any, index: any) => (
+                                        <View style={[styles.appliedInner, { paddingLeft: wp(5) }]} key={index}>
+                                            <View style={styles.appliedView} >
+                                                <Text style={styles.appliedText} > {item?.special_offer?.title} - {item?.special_offer?.discount_value}% Off</Text>
+                                            </View>
+                                        </View>
+                                    ))
+                                }
+                            </ScrollView>
+                        </View>
+                    }
 
                     {
                         Platform.OS === 'android' && <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(10), alignSelf: 'center' }]}
@@ -133,7 +187,7 @@ export default function BookNow() {
 
 
                 </View>
-            </KeyboardAwareScrollView>
+            </KeyboardAwareScrollView >
 
 
 
@@ -151,7 +205,7 @@ export default function BookNow() {
             }
 
 
-        </View>
+        </View >
     )
 }
 
@@ -289,8 +343,8 @@ const styles = StyleSheet.create({
     },
     appliedView: {
         backgroundColor: '#0A5CA8',
-        width: wp(60),
-        height: hp(5.5),
+        paddingHorizontal: wp(5),
+        height: hp(5),
         borderRadius: wp(10),
         alignItems: 'center',
         justifyContent: 'center'

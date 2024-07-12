@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import {
+  getActivationOffer,
   getAllBundles,
   getHomeServices,
   getItemCategory,
@@ -69,6 +70,17 @@ export const useLaundryBundles = (isFocused: boolean) => {
     queryKey: ["bundles"],
     enabled: isFocused,
     queryFn: getAllBundles,
+  });
+};
+
+/**
+ * Get Home Laundry User Activations ---------------------------------------------------------
+ */
+export const useActivationPromo = (isFocused: boolean) => {
+  return useQuery({
+    queryKey: ["activations"],
+    enabled: isFocused,
+    queryFn: getActivationOffer,
   });
 };
 

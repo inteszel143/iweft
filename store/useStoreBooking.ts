@@ -1,7 +1,4 @@
-import { string } from "yup";
 import { create } from "zustand";
-// params: { service, service_name, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude }
-// Define the state interface
 interface ItemData {
   item: string;
   quantity: number;
@@ -20,6 +17,16 @@ interface State {
   address: string;
   latitude: string;
   longitude: string;
+  discount: string;
+  total_amount: string;
+  discounted_amount: string | null;
+  promo_code: string | null;
+  driver_instruction: string[];
+  setDriverInstruction: (instructions: string[]) => void;
+  setPromoCode: (promo_code: string) => void;
+  setDiscountedAmount: (discounted_amount: string) => void;
+  setTotalAmount: (total_amount: string) => void;
+  setDiscount: (discount: string) => void;
   setService: (service: string) => void;
   setServiceName: (service_name: string) => void;
   setBasePrice: (base_price: any) => void;
@@ -46,6 +53,18 @@ const useStoreBooking = create<State>((set) => ({
   address: "",
   latitude: "",
   longitude: "",
+  discount: "",
+  total_amount: "",
+  discounted_amount: null,
+  promo_code: null,
+  driver_instruction: [],
+  setDriverInstruction: (instructions: string[]) =>
+    set({ driver_instruction: instructions }),
+  setPromoCode: (promo_code: string) => set({ promo_code }),
+  setDiscountedAmount: (discounted_amount: string) =>
+    set({ discounted_amount }),
+  setTotalAmount: (total_amount: string) => set({ total_amount }),
+  setDiscount: (discount: string) => set({ discount }),
   setService: (service: string) => set({ service }),
   setServiceName: (service_name: string) => set({ service_name }),
   setBasePrice: (base_price: number) => set({ base_price }),

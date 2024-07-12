@@ -28,6 +28,7 @@ export default function TabLayout() {
   // const isFocused = useIsFocused();
   const { t } = useTranslation();
   const colorScheme = useColorScheme();
+  const current = getCurrentLanguage();
   // const { data } = useUserQuery(isFocused);
   // console.log(data);
   // const validate =
@@ -39,103 +40,212 @@ export default function TabLayout() {
   //     (data?.contact_number === null) ||
   //     (data?.nickname === null)) as boolean;
 
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: "#0a5ca8",
-        headerShadowVisible: false,
-        tabBarLabelStyle: {
-          fontFamily: "UrbanistSemiBold",
-          paddingBottom: Platform.OS === "android" ? 2 : 0,
-        },
-        // lazy: false
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: t('Home'),
-          headerShown: false,
-          // tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "compass" : "compass-outline"} color={color} />,
-          tabBarIcon: ({ color, focused }) =>
-            focused ? (
-              <Image
-                source={require("@/assets/icons/boldhome.png")}
-                resizeMode="contain"
-                style={{
-                  width: Platform.OS === "ios" ? 23 : 20,
-                  tintColor: "#0a5ca8",
-                }}
-              />
-            ) : (
-              <Image
-                source={require("@/assets/icons/home.png")}
-                resizeMode="contain"
-                style={{
-                  width: Platform.OS === "ios" ? 23 : 20,
-                  tintColor: "gray",
-                }}
+
+  if (current === 'ar') {
+    return (
+      <Tabs
+        screenOptions={{
+          tabBarActiveTintColor: "#0a5ca8",
+          headerShadowVisible: false,
+          tabBarLabelStyle: {
+            fontFamily: "UrbanistSemiBold",
+            paddingBottom: Platform.OS === "android" ? 2 : 0,
+          },
+          // lazy: false
+        }}
+      >
+
+
+        <Tabs.Screen
+          name="profile"
+          options={{
+            title: t('Profile'),
+            headerShown: false,
+            // tabBarBadge: validate ? 1 : null,
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon
+                name={focused ? "person" : "person-outline"}
+                color={color}
               />
             ),
-        }}
-      />
+            // header: () => <ProfileHeader />,
+          }}
+        />
 
-      <Tabs.Screen
-        name="booking"
-        options={{
-          title: t('Bookings'),
-          headerTitle: "",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "reader" : "reader-outline"}
-              color={color}
-            />
-          ),
-          header: () => <Header />,
-        }}
-      />
 
-      <Tabs.Screen
-        name="calendar"
-        options={{
-          title: t('Calendar'),
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "calendar" : "calendar-outline"}
-              color={color}
-            />
-          ),
-          header: () => <CalendarHeader />,
-        }}
-      />
 
-      <Tabs.Screen
-        name="inbox"
-        options={{
-          title: t('Inbox'),
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="chatbubble-ellipses-outline" color={color} />
-          ),
-          header: () => <InboxHeader />,
-        }}
-      />
+        <Tabs.Screen
+          name="inbox"
+          options={{
+            title: t('Inbox'),
+            tabBarIcon: ({ color }) => (
+              <TabBarIcon name="chatbubble-ellipses-outline" color={color} />
+            ),
+            header: () => <InboxHeader />,
+          }}
+        />
 
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: t('Profile'),
-          headerShown: false,
-          // tabBarBadge: validate ? 1 : null,
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "person" : "person-outline"}
-              color={color}
-            />
-          ),
-          // header: () => <ProfileHeader />,
+
+        <Tabs.Screen
+          name="calendar"
+          options={{
+            title: t('Calendar'),
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon
+                name={focused ? "calendar" : "calendar-outline"}
+                color={color}
+              />
+            ),
+            header: () => <CalendarHeader />,
+          }}
+        />
+
+        <Tabs.Screen
+          name="booking"
+          options={{
+            title: t('Bookings'),
+            headerTitle: "",
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon
+                name={focused ? "reader" : "reader-outline"}
+                color={color}
+              />
+            ),
+            header: () => <Header />,
+          }}
+        />
+
+
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: t('Home'),
+            headerShown: false,
+            // tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "compass" : "compass-outline"} color={color} />,
+            tabBarIcon: ({ color, focused }) =>
+              focused ? (
+                <Image
+                  source={require("@/assets/icons/boldhome.png")}
+                  resizeMode="contain"
+                  style={{
+                    width: Platform.OS === "ios" ? 23 : 20,
+                    tintColor: "#0a5ca8",
+                  }}
+                />
+              ) : (
+                <Image
+                  source={require("@/assets/icons/home.png")}
+                  resizeMode="contain"
+                  style={{
+                    width: Platform.OS === "ios" ? 23 : 20,
+                    tintColor: "gray",
+                  }}
+                />
+              ),
+          }}
+        />
+
+      </Tabs>
+    )
+  } else {
+    return (
+      <Tabs
+        screenOptions={{
+          tabBarActiveTintColor: "#0a5ca8",
+          headerShadowVisible: false,
+          tabBarLabelStyle: {
+            fontFamily: "UrbanistSemiBold",
+            paddingBottom: Platform.OS === "android" ? 2 : 0,
+          },
+          // lazy: false
         }}
-      />
-    </Tabs>
-  );
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: t('Home'),
+            headerShown: false,
+            // tabBarIcon: ({ color, focused }) => <TabBarIcon name={focused ? "compass" : "compass-outline"} color={color} />,
+            tabBarIcon: ({ color, focused }) =>
+              focused ? (
+                <Image
+                  source={require("@/assets/icons/boldhome.png")}
+                  resizeMode="contain"
+                  style={{
+                    width: Platform.OS === "ios" ? 23 : 20,
+                    tintColor: "#0a5ca8",
+                  }}
+                />
+              ) : (
+                <Image
+                  source={require("@/assets/icons/home.png")}
+                  resizeMode="contain"
+                  style={{
+                    width: Platform.OS === "ios" ? 23 : 20,
+                    tintColor: "gray",
+                  }}
+                />
+              ),
+          }}
+        />
+
+        <Tabs.Screen
+          name="booking"
+          options={{
+            title: t('Bookings'),
+            headerTitle: "",
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon
+                name={focused ? "reader" : "reader-outline"}
+                color={color}
+              />
+            ),
+            header: () => <Header />,
+          }}
+        />
+
+        <Tabs.Screen
+          name="calendar"
+          options={{
+            title: t('Calendar'),
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon
+                name={focused ? "calendar" : "calendar-outline"}
+                color={color}
+              />
+            ),
+            header: () => <CalendarHeader />,
+          }}
+        />
+
+        <Tabs.Screen
+          name="inbox"
+          options={{
+            title: t('Inbox'),
+            tabBarIcon: ({ color }) => (
+              <TabBarIcon name="chatbubble-ellipses-outline" color={color} />
+            ),
+            header: () => <InboxHeader />,
+          }}
+        />
+
+        <Tabs.Screen
+          name="profile"
+          options={{
+            title: t('Profile'),
+            headerShown: false,
+            // tabBarBadge: validate ? 1 : null,
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon
+                name={focused ? "person" : "person-outline"}
+                color={color}
+              />
+            ),
+            // header: () => <ProfileHeader />,
+          }}
+        />
+      </Tabs>
+    );
+  }
 
 }

@@ -9,13 +9,38 @@ import { defaultStyles } from '@/constants/Styles';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ErrorPromoCodeModa from '@/components/ErrorPromoCodeModa';
 import useStoreBooking from '@/store/useStoreBooking';
+import { useIsFocused } from '@react-navigation/native';
+import { useActivationPromo } from '@/query/homeQuery';
+import { applyCodeSpecialOffer } from '@/apis/homeApi';
+import { useQueryClient } from '@tanstack/react-query';
+import NotFoundCode from '@/components/modal/NotFoundCode';
+import SuccessPromo from '@/components/modal/SuccessPromo';
 
 export default function AfterItemPage() {
     const { service, service_name, itemData, total, total_data, base_price } = useLocalSearchParams();
     const [subscription, setSubscription] = useState<string | null>(null); // service subscription data
+    const queryClient = useQueryClient();
     const [errorModalVisible, setErrorModalVisible] = useState(false);
-    const { setService, setServiceName, setBasePrice, setItemData, setTotal, setTotalData } = useStoreBooking();
-
+    const [succesCode, setSuccesCode] = useState(false);
+    const [notFound, setNotFound] = useState(false);
+    const [code, setCode] = useState("");
+    const { setService, setServiceName, setBasePrice, setItemData, setTotal, setTotalData, setDiscount, setPromoCode } = useStoreBooking();
+    const [applyPromo, setApplyPromo] = useState(true);
+    const isFocused = useIsFocused();
+    const { data, isPending } = useActivationPromo(isFocused);
+    const handleSubmit = async () => {
+        if (!code) {
+            setErrorModalVisible(true);
+        } else {
+            try {
+                await applyCodeSpecialOffer(code as string);
+                queryClient.invalidateQueries({ queryKey: ['activations'] });
+                setSuccesCode(true);
+            } catch (error) {
+                setNotFound(true);
+            }
+        }
+    };
 
     const toggleSubmit = () => {
         if (subscription === "Yes") {
@@ -24,6 +49,7 @@ export default function AfterItemPage() {
             setBasePrice(base_price);
             setItemData(itemData);
             setTotal(total);
+            setDiscount(data[0]?.special_offer?.discount_value);
             setTotalData(total_data as string);
             router.push('/homePage/services/ChooseSubscription');
         } else {
@@ -32,6 +58,7 @@ export default function AfterItemPage() {
             setBasePrice(base_price);
             setItemData(itemData);
             setTotal(total);
+            setDiscount(data[0]?.special_offer?.discount_value);
             setTotalData(total_data as string);
             router.push('/homePage/BookingDetails');
             // router.push({
@@ -44,6 +71,8 @@ export default function AfterItemPage() {
     return (
         <View style={styles.container}>
             {errorModalVisible && <ErrorPromoCodeModa modalVisible={errorModalVisible} setModalVisible={setErrorModalVisible} />}
+            {notFound && <NotFoundCode modalVisible={notFound} setModalVisible={setNotFound} />}
+            {succesCode && <SuccessPromo modalVisible={succesCode} setModalVisible={setSuccesCode} />}
             {/* HEADER */}
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
@@ -65,7 +94,7 @@ export default function AfterItemPage() {
             <KeyboardAwareScrollView
                 showsVerticalScrollIndicator={false}
                 extraScrollHeight={hp(2)}
-            // contentContainerStyle={{ paddingBottom: hp(14) }}
+                contentContainerStyle={{ paddingBottom: Platform.OS === 'ios' ? hp(14) : 0 }}
             >
                 <View style={[styles.containerStyle]}>
                     <Text style={[styles.topText, { paddingHorizontal: wp(5) }]}>Enter the amount of items or bags you need.</Text>
@@ -114,11 +143,12 @@ export default function AfterItemPage() {
                             <View style={styles.promoTextField}>
                                 <TextInput
                                     placeholder='Enter Promo Code'
+                                    onChangeText={(text) => setCode(text)}
                                     placeholderTextColor={'#9E9E9E'}
                                     style={{ flex: 1, fontFamily: 'UrbanistMedium', fontSize: hp(1.9) }} />
                             </View>
                             <TouchableOpacity style={styles.promoCircle}
-                                onPress={() => setErrorModalVisible(true)}
+                                onPress={handleSubmit}
                             >
                                 <Feather name='plus' size={hp(2.5)} color={'#0A5CA8'} />
                             </TouchableOpacity>
@@ -126,16 +156,24 @@ export default function AfterItemPage() {
                     </View>
 
                     {/* Applied */}
-                    {/* <View style={{ marginTop: hp(4), }}>
-                        <Text style={[styles.topTitle, { paddingHorizontal: wp(5) }]}>Applied Promotions & Offers</Text>
-                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                            <View style={[styles.appliedInner, { paddingLeft: wp(5) }]}>
-                                <View style={styles.appliedView} >
-                                    <Text style={styles.appliedText} >Refer a Friend - 30% Off</Text>
-                                </View>
-                            </View>
-                        </ScrollView>
-                    </View> */}
+                    {
+                        data && <View style={{ marginTop: hp(4), }}>
+                            <Text style={[styles.topTitle, { paddingHorizontal: wp(5) }]}>Applied Promotions & Offers</Text>
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                                {
+                                    data?.map((item: any, index: any) => (
+                                        <View style={[styles.appliedInner, { paddingLeft: wp(5) }]} key={index}>
+                                            <TouchableOpacity style={applyPromo ? styles.appliedView : styles.appliedNotView}
+                                            // onPress={() => setApplyPromo(!applyPromo)}
+                                            >
+                                                <Text style={styles.appliedText} > {item?.special_offer?.title} - {item?.special_offer?.discount_value}% Off</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    ))
+                                }
+                            </ScrollView>
+                        </View>
+                    }
 
                     {
                         Platform.OS === 'android' && <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(10), alignSelf: 'center' }]}
@@ -147,8 +185,6 @@ export default function AfterItemPage() {
 
                 </View>
             </KeyboardAwareScrollView>
-
-
 
             {
                 Platform.OS === 'ios' && <View style={styles.footer}>
@@ -300,8 +336,17 @@ const styles = StyleSheet.create({
     },
     appliedView: {
         backgroundColor: '#0A5CA8',
-        width: wp(60),
+        paddingHorizontal: wp(5),
+        height: hp(5),
+        borderRadius: wp(10),
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    appliedNotView: {
+        paddingHorizontal: wp(5),
         height: hp(5.5),
+        borderWidth: 1,
+        borderColor: "#0A5CA8",
         borderRadius: wp(10),
         alignItems: 'center',
         justifyContent: 'center'
@@ -310,6 +355,10 @@ const styles = StyleSheet.create({
         fontFamily: 'UrbanistSemiBold',
         fontSize: hp(2),
         color: 'white'
+    },
+    notApplyPromoText: {
+        fontFamily: 'UrbanistSemiBold',
+        fontSize: hp(2),
     }
 
 })

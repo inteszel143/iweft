@@ -12,3 +12,46 @@ export const formatTime = (unixTimestamp: number) => {
   const options = { hour: "2-digit", minute: "2-digit", hour12: true }; // Change hour12 to true for 12-hour format
   return date.toLocaleTimeString("en-US", options as any);
 };
+
+export const getTotal = (
+  base: string | number,
+  totalItem: string | number
+): string => {
+  const baseNumber = typeof base === "string" ? parseFloat(base) : base;
+  const totalItemNumber =
+    typeof totalItem === "string" ? parseFloat(totalItem) : totalItem;
+  const total = baseNumber + totalItemNumber;
+
+  // Format the total number with commas
+  return new Intl.NumberFormat().format(total);
+};
+
+export const getPromoDiscount = (
+  base: string | number,
+  totalItem: string | number,
+  discount: string | number
+): string => {
+  const baseNumber = typeof base === "string" ? parseFloat(base) : base;
+  const totalItemNumber =
+    typeof totalItem === "string" ? parseFloat(totalItem) : totalItem;
+  const discountNumber =
+    typeof discount === "string" ? parseFloat(discount) : discount;
+  const total = baseNumber + totalItemNumber;
+  const discountedTotal = total * (discountNumber / 100);
+
+  // Format the discounted total with commas
+  return new Intl.NumberFormat().format(discountedTotal);
+};
+
+export const getDiscountedTotal = (
+  base: string | number,
+  totalItem: string | number,
+  discount: string | number
+): string => {
+  const total: any = getTotal(base, totalItem);
+  const promoDiscount: any = getPromoDiscount(base, totalItem, discount);
+  const newTotal = total - promoDiscount;
+
+  // Format the new total number with commas
+  return new Intl.NumberFormat().format(newTotal);
+};

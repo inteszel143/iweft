@@ -1,75 +1,66 @@
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { StatusBar } from 'expo-status-bar';
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import Animated, { SlideInDown, SlideInUp } from 'react-native-reanimated';
+import { SpecialOffer } from '@/utils/interface';
+import { defaultStyles } from '@/constants/Styles';
+import { activeSpecialOffer } from '@/apis/homeApi';
+import SuccessActivePromo from '@/components/modal/SuccessActivePromo';
+import ErrorActivePromo from '@/components/modal/ErrorActivePromo';
 export default function OfferOtherPage() {
 
-    const item = useLocalSearchParams();
+    const { item } = useLocalSearchParams();
+    const specialOffers: SpecialOffer = JSON.parse(item as string);
+    const [btnLoading, setBtnLoading] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [showError, setShowError] = useState(false);
+
+    const toggleActiveOffer = async () => {
+        setBtnLoading(true);
+        try {
+            await activeSpecialOffer(specialOffers?._id);
+            setBtnLoading(false);
+            setShowSuccess(true);
+        } catch (error) {
+            setShowError(true);
+            setBtnLoading(false);
+        }
+    }
 
     return (
         <View style={styles.container}>
-
             <StatusBar style='light' />
-
-
-
+            {showSuccess && <SuccessActivePromo modalVisible={showSuccess} setModalVisible={setShowSuccess} />}
+            {showError && <ErrorActivePromo modalVisible={showError} setModalVisible={setShowError} />}
             <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
-                <View style={[styles.topStyle, { backgroundColor: item.img === "49" ? '#387AB8' : item.img === "50" ? '#FF93A3' : '#FDA120' }]}>
-                    {
-                        item.img === "49" ? <Image
-                            source={require('@/assets/temp/special/specialoffers1.png')}
-                            resizeMode='contain'
-                            style={{ width: wp(100), height: hp(45), marginLeft: wp(2) }} />
-                            :
-                            item.img === "50" ?
-                                <Image
-                                    source={require('@/assets/temp/special/specialoffers.png')}
-                                    resizeMode='contain'
-                                    style={{ width: wp(100), height: hp(46), marginLeft: wp(2) }} />
-                                :
-                                <Image
-                                    source={require('@/assets/temp/special/specialoffers2.png')}
-                                    resizeMode='contain'
-                                    style={{ width: wp(100), height: hp(47), marginLeft: wp(2) }} />
-                    }
+                <View style={[styles.topStyle, { backgroundColor: '#387AB8' }]}>
+                    <Image
+                        source={require('@/assets/temp/special/specialoffers1.png')}
+                        resizeMode='contain'
+                        style={{ width: wp(100), height: hp(45), marginLeft: wp(2) }} />
                 </View>
-
-
-                <View style={[styles.bottomStyle, { backgroundColor: item.img === "49" ? '#83C0DF' : item.img === "50" ? '#FFB5BF' : '#F4CB93' }]}>
-
-
+                <View style={[styles.bottomStyle, { backgroundColor: '#83C0DF' }]}>
                     <View style={styles.bottomtopStyle}>
-                        {
-                            item.img === "49" ? <Text style={styles.topText}>Today’s Special!</Text> : item.img === "50" ? <Text style={styles.topText}>Referral Discount</Text> : <Text style={styles.topText}>Summer Sale!</Text>
-                        }
-                        <FontAwesome name='bookmark' size={hp(2.9)} color={'#0A5CA8'} />
+                        <Text style={styles.topText}>{specialOffers?.title}</Text>
+                        <FontAwesome name='bookmark-o' size={hp(3.5)} color={'#0A5CA8'} />
                     </View>
-                    {
-                        item.img === "49" ? <Text style={styles.discountText}>30% OFF</Text> : item.img === "50" ? <Text style={styles.discountText}>25% OFF</Text> : <Text style={styles.discountText}>40% OFF</Text>
-                    }
+                    <Text style={styles.discountText}>{specialOffers?.discount_value}% OFF</Text>
                     <View style={styles.separator} />
 
                     <View style={styles.listStyle}>
                         <Text style={styles.listText}>Details</Text>
-                        <Text style={styles.listSubText} >With our iWeft basic plan, you will be set up for 3 collections every month, allowing you to stay on top of your laundry and get on with the better things in life. Read more...</Text>
+                        <Text style={styles.listSubText} >{specialOffers?.description} <Text style={{ fontFamily: 'UrbanistBold', color: "#0A5CA8" }}>Read more...</Text> </Text>
                     </View>
                     <View style={styles.separator} />
-
-
                     <View style={styles.listStyle}>
                         <Text style={styles.listText}>Terms & Conditions</Text>
-                        <Text style={styles.listSubText} >With our iWeft basic plan, you will be set up for 3 collections every month, allowing you to stay on top of your laundry and get on with the better things in life. Read more...</Text>
+                        <Text style={styles.listSubText} >{specialOffers?.terms_and_conditions}</Text>
                     </View>
-
-
                 </View>
             </ScrollView>
-
-
-
             <View style={styles.topBtnStyle}>
                 <TouchableOpacity onPress={() => router.back()}>
                     <AntDesign name='arrowleft' size={hp(3)} color={'white'} />
@@ -77,13 +68,14 @@ export default function OfferOtherPage() {
             </View>
 
 
-
-
             <Animated.View style={styles.footer}
                 entering={SlideInDown.duration(400)}
             >
-                <TouchableOpacity style={styles.footerBtn}>
-                    <Text style={styles.footerText}>Activate Discount</Text>
+                <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(3) }]}
+                    disabled={btnLoading}
+                    onPress={toggleActiveOffer}
+                >
+                    {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={defaultStyles.footerText}>Activate Discount</Text>}
                 </TouchableOpacity>
             </Animated.View>
 
@@ -124,7 +116,7 @@ const styles = StyleSheet.create({
     },
     discountText: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(3),
+        fontSize: hp(4),
         color: '#0A5CA8',
         marginTop: hp(2)
     },
@@ -161,22 +153,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderTopRightRadius: wp(4),
         borderTopLeftRadius: wp(4),
-        alignItems: 'center'
-    },
-
-    footerBtn: {
-        width: wp(90),
-        height: hp(6.5),
-        backgroundColor: "#0A5CA8",
-        borderRadius: wp(10),
         alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: hp(2.5)
     },
-    footerText: {
-        fontFamily: 'UrbanistBold',
-        fontSize: hp(2),
-        color: 'white'
-    }
 
 })

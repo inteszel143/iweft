@@ -1,7 +1,6 @@
 import { ActivityIndicator, Alert, Button, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { defaultStyles } from '@/constants/Styles'
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router } from 'expo-router';
 import { useStripe } from '@stripe/stripe-react-native';
 import { postCollectPayment } from '@/apis/stripe';
