@@ -75,7 +75,7 @@ export default function HomeConfirmPin() {
             order_details: {
                 service,
                 order_items: JSON.parse(itemData as any),
-                promo_code: "referalDiscount"
+                promo_code: promo_code,
             },
             pick_up_date_time: pick_up_date_time,
             delivery_date_time: delivery_date_time,

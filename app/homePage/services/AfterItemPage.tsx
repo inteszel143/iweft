@@ -49,6 +49,7 @@ export default function AfterItemPage() {
             setBasePrice(base_price);
             setItemData(itemData);
             setTotal(total);
+            setPromoCode(data[0]?.special_offer?.promo_code);
             setDiscount(data[0]?.special_offer?.discount_value);
             setTotalData(total_data as string);
             router.push('/homePage/services/ChooseSubscription');
@@ -59,12 +60,13 @@ export default function AfterItemPage() {
             setItemData(itemData);
             setTotal(total);
             setDiscount(data[0]?.special_offer?.discount_value);
+            setPromoCode(data[0]?.special_offer?.promo_code);
             setTotalData(total_data as string);
             router.push('/homePage/BookingDetails');
             // router.push({
             //     pathname: '/homePage/BookingDetails',
             //     params: { service, service_name, itemData, total, total_data, base_price }
-            // });
+            // }); 
         }
     };
 

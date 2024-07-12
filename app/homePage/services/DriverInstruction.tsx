@@ -84,7 +84,6 @@ export default function DriverInstruction() {
 
 
     const toggleSubmit = async () => {
-        console.log(getPromoDiscount(base_price, total, discount));
         if (!discount) {
             setTotalAmount(getTotal(base_price, total) as any);
             setDriverInstruction(driverInstruc);
