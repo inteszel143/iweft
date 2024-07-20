@@ -1,12 +1,20 @@
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { callListing } from '@/constants/chat/data'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Feather } from '@expo/vector-icons';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import FloatButton from './FloatButton';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
+import EmptyCall from './EmptyCall';
 export default function CallList() {
+
+    const [isEmpty, setIsEmpty] = useState(true);
+
+    if (isEmpty) {
+        return <EmptyCall />
+    }
+
     return (
         <Animated.View style={styles.container}
             entering={FadeInUp.duration(300).springify()}
@@ -16,31 +24,30 @@ export default function CallList() {
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-
-                    <Link href={'/chatPage/CallUserHistory'} asChild>
-                        <TouchableOpacity style={styles.cardrow}>
-                            <View style={styles.cardLeftRow}>
-                                <Image source={item.img} resizeMode='contain' style={{ width: wp(14), height: hp(8) }} />
-                                <View>
-                                    <Text style={styles.nameStyle}>{item.name}</Text>
-                                    <View style={styles.statusRow}>
-                                        <Image source={item.statusicon} resizeMode='contain' style={{ width: wp(4.5) }} />
-                                        <Text style={styles.statusStyle}>{item.status}</Text>
-                                        <View style={styles.statusSeparator} />
-                                        <Text style={styles.dateStyle} >{item.date}</Text>
-                                    </View>
+                    <TouchableOpacity style={styles.cardrow}
+                        onPress={() => router.push('/chatPage/CallUserHistory')}
+                    >
+                        <View style={styles.cardLeftRow}>
+                            <Image source={item.img} resizeMode='contain' style={{ width: wp(14), height: hp(8) }} />
+                            <View>
+                                <Text style={styles.nameStyle}>{item.name}</Text>
+                                <View style={styles.statusRow}>
+                                    <Image source={item.statusicon} resizeMode='contain' style={{ width: wp(4.5) }} />
+                                    <Text style={styles.statusStyle}>{item.status}</Text>
+                                    <View style={styles.statusSeparator} />
+                                    <Text style={styles.dateStyle} >{item.date}</Text>
                                 </View>
                             </View>
+                        </View>
 
-                            <View style={styles.cardRightRow}>
-                                <Link href={'/chatPage/CallCustomer'} asChild>
-                                    <TouchableOpacity>
-                                        <Feather name="phone" size={hp(2.5)} color={'#0A5CA8'} />
-                                    </TouchableOpacity>
-                                </Link>
-                            </View>
-                        </TouchableOpacity>
-                    </Link>
+                        <View style={styles.cardRightRow}>
+                            <Link href={'/chatPage/CallCustomer'} asChild>
+                                <TouchableOpacity>
+                                    <Feather name="phone" size={hp(2.5)} color={'#0A5CA8'} />
+                                </TouchableOpacity>
+                            </Link>
+                        </View>
+                    </TouchableOpacity>
                 )}
             />
             {/* <FloatButton /> */}
@@ -50,13 +57,14 @@ export default function CallList() {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         paddingHorizontal: wp(5),
     },
     cardrow: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingVertical: hp(1.5),
+        paddingVertical: hp(2),
     },
     cardLeftRow: {
         flexDirection: 'row',

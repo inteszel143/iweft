@@ -72,7 +72,7 @@ export default function ProfileMiddle() {
             id: 9,
             icon: require('@/assets/temp/profileicons/help.jpg'),
             label: t('Help Center'),
-            url: '/profilePage/EditProfile'
+            url: '/profilePage/help'
         },
         {
             id: 10,

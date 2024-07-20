@@ -1,11 +1,13 @@
 import { StyleSheet, Text, View, Modal, Platform, Image, TouchableOpacity } from 'react-native'
 import React, { useEffect } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import LottieView from 'lottie-react-native';
 interface ModalProps {
     modalVisible: boolean;
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>; // Ensure correct typing
 }
-export default function SuccessActivePromo({ modalVisible, setModalVisible }: ModalProps) {
+
+export default function ErrorPinChange({ modalVisible, setModalVisible }: ModalProps) {
     return (
         <Modal
             animationType="fade"
@@ -17,17 +19,19 @@ export default function SuccessActivePromo({ modalVisible, setModalVisible }: Mo
             <View style={styles.modalStyle}>
                 <View style={styles.modalBox}>
                     <View>
-                        <Image source={require('@/assets/temp/success.jpg')} resizeMode='contain' style={styles.imageStyle} />
+                        <LottieView
+                            autoPlay
+                            style={styles.errorLottieStyle}
+                            source={require('@/assets/animate/invalid.json')}
+                        />
                     </View>
-                    <Text style={styles.titleStyle}>Activation Successful!</Text>
-                    <Text style={styles.subStyle}>Promo activation successful ! Enjoy your discount.</Text>
-
-                    <TouchableOpacity style={[styles.btnStyle, { backgroundColor: '#0A5CA8', }]}
-                        onPress={() => {
-                            setModalVisible(false);
-                        }}
+                    <Text style={styles.titleStyle}>Invalid Old PIN</Text>
+                    <Text style={styles.subStyle}>Incorrect Old PIN entered. Please check and retry.</Text>
+                    <View style={{ marginTop: hp(3) }} />
+                    <TouchableOpacity style={styles.btnStyle}
+                        onPress={() => setModalVisible(false)}
                     >
-                        <Text style={[styles.btnText, { color: '#FFFFFF' }]}>OK</Text>
+                        <Text style={styles.btnText}>Try again</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -44,8 +48,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     modalBox: {
-        width: wp(84),
-        height: Platform.OS === 'ios' ? hp(50) : hp(52),
+        width: wp(86),
+        height: Platform.OS === 'ios' ? hp(48) : hp(50),
         backgroundColor: "white",
         borderRadius: wp(6),
         alignItems: 'center',
@@ -60,7 +64,7 @@ const styles = StyleSheet.create({
         fontFamily: 'UrbanistBold',
         fontSize: hp(2.9),
         textAlign: 'center',
-        color: '#0A5CA8',
+        color: '#DB3747',
         marginTop: hp(1)
     },
     subStyle: {
@@ -71,9 +75,9 @@ const styles = StyleSheet.create({
         marginTop: hp(2),
     },
     btnStyle: {
-        marginTop: hp(2.5),
         height: hp(7),
-        width: wp(65),
+        width: wp(50),
+        backgroundColor: '#DC3545',
         borderRadius: wp(10),
         alignItems: 'center',
         justifyContent: 'center'
@@ -81,5 +85,14 @@ const styles = StyleSheet.create({
     btnText: {
         fontFamily: 'UrbanistBold',
         fontSize: hp(2),
+        color: 'white'
+    },
+    indicator: {
+        position: 'absolute',
+        bottom: hp(4),
+    },
+    errorLottieStyle: {
+        width: wp(34),
+        height: hp(15)
     }
 })

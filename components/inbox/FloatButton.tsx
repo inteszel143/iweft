@@ -2,18 +2,18 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { AntDesign } from '@expo/vector-icons';
-import Animated, { SlideInRight, SlideOutRight } from 'react-native-reanimated';
-import { Link } from 'expo-router';
+import Animated, { SlideInRight } from 'react-native-reanimated';
+import { router } from 'expo-router';
 export default function FloatButton() {
     return (
         <Animated.View style={styles.container}
             entering={SlideInRight.duration(300)}
         >
-            <Link href={'/chatPage/CustomerSupport'} asChild>
-                <TouchableOpacity style={styles.containerInner}>
-                    <AntDesign name='plus' size={hp(2.5)} color={'white'} />
-                </TouchableOpacity>
-            </Link>
+            <TouchableOpacity style={styles.containerInner}
+                onPress={() => router.push('/chatPage/NewMessage')}
+            >
+                <AntDesign name='plus' size={hp(2.5)} color={'white'} />
+            </TouchableOpacity>
         </Animated.View>
     )
 }

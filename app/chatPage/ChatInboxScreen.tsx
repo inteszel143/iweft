@@ -1,38 +1,56 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, Platform } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, Platform, ActivityIndicator } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Bubble, GiftedChat, IMessage, InputToolbar, Send, SystemMessage } from 'react-native-gifted-chat'
+import { Avatar, Bubble, GiftedChat, IMessage, InputToolbar, Send, SystemMessage } from 'react-native-gifted-chat'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { customerSupport } from '@/constants/chat/data';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { postSendMessage, useGetMessage } from '@/query/message';
+import { getMessages, postMessage } from '@/apis/message';
+import ChatImageModal from '@/components/modal/ChatImageModal';
+import { useQueryClient } from '@tanstack/react-query';
+import { useLocalSearchParams } from 'expo-router';
+import useUserId from '@/store/useUserInfo';
 
-export default function CustomerSupport() {
-
+export default function ChatInboxScreen() {
+    const { convoId } = useLocalSearchParams();
+    const queryClient = useQueryClient();
+    const [imageModal, setImageModal] = useState(false);
     const [messages, setMessages] = useState<IMessage[]>([]);
     const insets = useSafeAreaInsets();
-    const [text, setText] = useState('')
+    const [text, setText] = useState('');
+    const { userId } = useUserId();
+    const { mutate: sentMessage } = postSendMessage({});
 
     useEffect(() => {
-        setMessages([...customerSupport])
+        const fetchData = async () => {
+            try {
+                const response = await getMessages(convoId as string);
+                queryClient.invalidateQueries({ queryKey: ["inbox"] });
+                setMessages([...response]);
+            } catch (error) {
+                console.error('Error fetching messages:', error);
+            }
+        };
+        fetchData();
     }, []);
 
-    const onSend = useCallback((messages = []) => {
+    const onSend = useCallback(async (messages = []) => {
+        sentMessage({ text: messages[0]?.text });
         setMessages(previousMessages =>
             GiftedChat.append(previousMessages, messages),
         )
     }, []);
 
-
-
-
-
     return (
         <View style={[styles.container, { paddingBottom: Platform.OS === 'ios' ? hp(6) : 0 }]}>
+
+            {imageModal && <ChatImageModal modalVisible={imageModal} setModalVisible={setImageModal} />}
+
             <GiftedChat
                 messages={messages}
                 onSend={(messages: any) => onSend(messages)}
                 user={{
-                    _id: 1,
+                    _id: userId,
                 }}
                 textInputProps={styles.composer}
                 onInputTextChanged={setText}
@@ -100,8 +118,12 @@ export default function CustomerSupport() {
                         )}
                         {text.length === 0 && (
                             <>
-                                <Ionicons name='image-outline' size={hp(3)} color={'#9E9E9E'} />
-                                <View
+                                <TouchableOpacity
+                                    onPress={() => setImageModal(true)}
+                                >
+                                    <Ionicons name='image-outline' size={hp(3)} color={'#9E9E9E'} />
+                                </TouchableOpacity>
+                                <TouchableOpacity
                                     style={{
                                         width: wp(10),
                                         height: wp(10),
@@ -112,7 +134,7 @@ export default function CustomerSupport() {
                                     }}
                                 >
                                     <Ionicons name='mic-sharp' size={hp(3)} color={'#fff'} />
-                                </View>
+                                </TouchableOpacity>
                             </>
                         )}
                     </View>
@@ -132,7 +154,6 @@ export default function CustomerSupport() {
         </View>
     )
 }
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,

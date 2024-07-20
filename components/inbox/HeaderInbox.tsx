@@ -4,8 +4,8 @@ import Animated, { BounceIn, FadeOut } from 'react-native-reanimated';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
 import { menuChat } from '@/constants/chat/data';
-export default function HeaderCustomerSupport() {
 
+export default function HeaderInbox() {
 
     const [cardShow, setCardShow] = useState(false);
 
@@ -23,7 +23,7 @@ export default function HeaderCustomerSupport() {
                     <TouchableOpacity onPress={() => router.back()}>
                         <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
                     </TouchableOpacity>
-                    <Text style={styles.bookingText} >Customer Support</Text>
+                    <Text style={styles.bookingText} >Iweft Administrator</Text>
                 </View>
 
                 <View style={styles.headerRight}>

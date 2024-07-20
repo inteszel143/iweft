@@ -190,4 +190,50 @@ export const languageData = [
         name: "Indonesia",
     },
 
+];
+
+export const FAQ = [
+    {
+        id: 1,
+        label: "General"
+    },
+    {
+        id: 2,
+        label: "Account"
+    },
+    {
+        id: 3,
+        label: "Service"
+    },
+    {
+        id: 4,
+        label: "Payment"
+    },
+];
+export const ContactUs = [
+    {
+        icon: "headphones",
+        label: "Customer Service"
+    },
+    {
+        icon: "whatsapp",
+        label: "WhatsApp"
+    },
+    {
+        icon: "web",
+        label: "Website"
+    },
+    {
+        icon: "facebook",
+        label: "Facebook"
+    },
+    {
+        icon: "twitter",
+        label: "Twitter"
+    },
+    {
+        icon: "instagram",
+        label: "Instagram"
+    },
+
 ]

@@ -1,10 +1,14 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, Platform } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, Platform, Alert } from 'react-native'
 import React from 'react'
 import { Link, router } from 'expo-router'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 export default function PaymentPaypal() {
     return (
-        <View style={styles.btnStyle}>
+        <TouchableOpacity style={styles.btnStyle}
+            onPress={() => Alert.alert('Paypal is not available', 'Please select other payment method', [
+                { text: 'OK' },
+            ])}
+        >
             <View style={styles.innerStyle}>
                 <Image source={require("@/assets/temp/bookingIcon/paypal.jpg")}
                     resizeMode='contain'
@@ -15,7 +19,7 @@ export default function PaymentPaypal() {
                     <Text style={styles.connectStyle} >Connect</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 

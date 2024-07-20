@@ -18,6 +18,7 @@ import UpdateProfileData from '../UpdateProfileData';
 import { useQueryClient } from '@tanstack/react-query';
 import { userUpdateProfileData } from '@/apis/userupdate';
 import useStoreAddress from '@/store/useStoreAddress';
+import errorRes from '@/apis/errorRes';
 
 export default function EditProflieData() {
     const isFocused = useIsFocused();
@@ -92,7 +93,7 @@ export default function EditProflieData() {
                 }, 2000)
             } catch (error) {
                 setBtnLoading(false);
-                console.log(error);
+                console.log(errorRes(error));
             }
         }
     };

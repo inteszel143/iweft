@@ -1,5 +1,14 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, TextInput, KeyboardAvoidingView, Platform } from 'react-native'
-import React, { useState } from 'react'
+import {
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+    Image,
+    TextInput,
+    Platform,
+    ActivityIndicator,
+} from 'react-native';
+import React, { useState } from 'react';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
 import {
@@ -8,25 +17,52 @@ import {
     useBlurOnFulfill,
     useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
-import { Octicons } from '@expo/vector-icons';
+import { Ionicons, Octicons } from '@expo/vector-icons';
+import { defaultStyles } from '@/constants/Styles';
+import { getPinNumber } from '@/apis/fetchAuth';
+import { socialAddPinCode } from '@/apis/auth';
+import SuccessChangePin from '@/components/modal/SuccessChangePin';
+import ErrorPinChange from '@/components/modal/ErrorPinChange';
+
 interface CellProps {
     index: number;
     symbol: string;
     isFocused: boolean;
 }
-export default function ChangePin() {
 
-
+const ChangePin = () => {
     const CELL_COUNT = 4;
-
     const [enableMask, setEnableMask] = useState(true);
-    const [value, setValue] = useState('');
-    const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
-    const [props, getCellOnLayoutHandler] = useClearByFocusCell({
-        value,
-        setValue,
+    const [oldPin, setOldPin] = useState('');
+    const [newPin, setNewPin] = useState('');
+    const [confirmPin, setConfirmPin] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    //modal
+    const [successModal, setSuccessModal] = useState(false);
+    const [errorModal, setErrorModal] = useState(false);
+
+    const [errorPassword, setErrorPassword] = useState(false);
+    const oldPinRef = useBlurOnFulfill({ value: oldPin, cellCount: CELL_COUNT });
+    const newPinRef = useBlurOnFulfill({ value: newPin, cellCount: CELL_COUNT });
+    const confirmPinRef = useBlurOnFulfill({ value: confirmPin, cellCount: CELL_COUNT });
+
+    const [oldPinProps, getOldPinCellOnLayoutHandler] = useClearByFocusCell({
+        value: oldPin,
+        setValue: setOldPin,
     });
-    const renderCell = ({ index, symbol, isFocused }: CellProps) => {
+
+    const [newPinProps, getNewPinCellOnLayoutHandler] = useClearByFocusCell({
+        value: newPin,
+        setValue: setNewPin,
+    });
+
+    const [confirmPinProps, getConfirmPinCellOnLayoutHandler] = useClearByFocusCell({
+        value: confirmPin,
+        setValue: setConfirmPin,
+    });
+
+    const renderCell = ({ index, symbol, isFocused }: CellProps, getCellOnLayoutHandler: (index: number) => void) => {
         let textChild = null;
 
         if (symbol) {
@@ -45,20 +81,47 @@ export default function ChangePin() {
         );
     };
 
+    const onSubmit = async () => {
+        setLoading(true);
+        if (newPin !== confirmPin) {
+            setErrorPassword(true);
+        } else if (!newPin && !confirmPin) {
+            setErrorPassword(true);
+        } else {
+            setErrorPassword(false);
+            const pin = parseInt(oldPin);
+            const response = await getPinNumber(pin);
+            if (!response?.isMatch) {
+                setLoading(false);
+                setErrorModal(true);
+            }
+            if (response?.isMatch) {
+                const newpin = parseInt(newPin);
+                try {
+                    await socialAddPinCode(newpin);
+                    setLoading(false);
+                    setSuccessModal(true);
+                } catch (error) {
+                    setLoading(false);
+                    return;
+                }
+            }
 
+        }
+    };
 
     return (
         <View style={styles.container}>
-
-            <View style={styles.Headercontainer}>
+            {successModal && <SuccessChangePin modalVisible={successModal} setModalVisible={setSuccessModal} />}
+            {errorModal && <ErrorPinChange modalVisible={errorModal} setModalVisible={setErrorModal} />}
+            <View style={styles.headerContainer}>
                 <View style={styles.innerContainer}>
                     <View style={styles.headerLeft}>
                         <TouchableOpacity onPress={() => router.back()}>
                             <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
                         </TouchableOpacity>
-                        <Text style={styles.bookingText} >Change PIN</Text>
+                        <Text style={styles.bookingText}>Change PIN</Text>
                     </View>
-
                     <View style={styles.headerRight}>
                         <TouchableOpacity>
                             <Image source={require('@/assets/icons/bookingMenu.png')} resizeMode='contain' style={{ width: wp(7.5), tintColor: 'white' }} />
@@ -67,78 +130,92 @@ export default function ChangePin() {
                 </View>
             </View>
 
-
-
             <View style={styles.containerStyle}>
                 <View style={{ marginTop: hp(3) }}>
-                    <Text style={styles.containerText} >Enter Your Old PIN</Text>
+                    <Text style={styles.containerText}>Enter Your Old PIN</Text>
                     <CodeField
-                        ref={ref}
-                        {...props}
-                        value={value}
-                        onChangeText={setValue}
+                        ref={oldPinRef}
+                        {...oldPinProps}
+                        value={oldPin}
+                        onChangeText={setOldPin}
                         cellCount={CELL_COUNT}
                         rootStyle={styles.codeFieldRoot}
                         keyboardType="number-pad"
                         textContentType="oneTimeCode"
-                        renderCell={renderCell}
+                        renderCell={(cellProps) => renderCell(cellProps, getOldPinCellOnLayoutHandler)}
                     />
                 </View>
                 <View style={{ marginTop: hp(3) }}>
-                    <Text style={styles.containerText} >Enter Your New PIN</Text>
+                    <Text style={styles.containerText}>Enter Your New PIN</Text>
                     <CodeField
-                        ref={ref}
-                        {...props}
-                        value={value}
-                        onChangeText={setValue}
+                        ref={newPinRef}
+                        {...newPinProps}
+                        value={newPin}
+                        onChangeText={setNewPin}
                         cellCount={CELL_COUNT}
                         rootStyle={styles.codeFieldRoot}
                         keyboardType="number-pad"
                         textContentType="oneTimeCode"
-                        renderCell={renderCell}
+                        renderCell={(cellProps) => renderCell(cellProps, getNewPinCellOnLayoutHandler)}
                     />
                 </View>
                 <View style={{ marginTop: hp(3) }}>
-                    <Text style={styles.containerText} >Confirm Your PIN</Text>
+                    <Text style={styles.containerText}>Confirm Your PIN</Text>
                     <CodeField
-                        ref={ref}
-                        {...props}
-                        value={value}
-                        onChangeText={setValue}
+                        ref={confirmPinRef}
+                        {...confirmPinProps}
+                        value={confirmPin}
+                        onChangeText={setConfirmPin}
                         cellCount={CELL_COUNT}
                         rootStyle={styles.codeFieldRoot}
                         keyboardType="number-pad"
                         textContentType="oneTimeCode"
-                        renderCell={renderCell}
+                        renderCell={(cellProps) => renderCell(cellProps, getConfirmPinCellOnLayoutHandler)}
                     />
                 </View>
+
+
+                {
+                    errorPassword && <View style={styles.errorViewStyle}>
+                        <Ionicons name='alert-circle-outline' size={hp(2.4)} color={'#ED4337'} />
+                        <Text style={styles.errorStyle}>New PIN and Confirm PIN do not match</Text>
+                    </View>
+                }
             </View>
 
-
-            <View style={styles.footer}>
-                <TouchableOpacity style={styles.footerBtn}>
-                    <Text style={styles.footerText}>Confirm</Text>
+            {
+                Platform.OS === 'android' ? <TouchableOpacity style={[defaultStyles.footerBtn, { alignSelf: 'center', marginTop: hp(20) }]}
+                    onPress={onSubmit}
+                >
+                    {loading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={defaultStyles.footerText}>Confirm</Text>}
                 </TouchableOpacity>
-            </View>
-        </View>
+                    :
+                    <View style={styles.footer}>
+                        <TouchableOpacity style={defaultStyles.footerBtn}
+                            onPress={onSubmit}
+                        >
+                            {loading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={defaultStyles.footerText}>Confirm</Text>}
+                        </TouchableOpacity>
+                    </View>
+            }
 
-    )
-}
+        </View>
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#FFFFFF',
     },
-
-    Headercontainer: {
+    headerContainer: {
         paddingHorizontal: wp(5),
         paddingTop: hp(6),
     },
     innerContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
     },
     headerRight: {
         flexDirection: 'row',
@@ -152,18 +229,16 @@ const styles = StyleSheet.create({
     },
     bookingText: {
         fontFamily: "UrbanistBold",
-        fontSize: hp(2.5)
+        fontSize: hp(2.5),
     },
     containerStyle: {
-        paddingHorizontal: wp(5)
+        paddingHorizontal: wp(5),
     },
     containerText: {
         fontFamily: 'UrbanistMedium',
         fontSize: hp(2.2),
-        color: '#212121'
+        color: '#212121',
     },
-
-
     codeFieldRoot: {
         marginTop: hp(4),
         gap: wp(4),
@@ -194,14 +269,12 @@ const styles = StyleSheet.create({
         fontSize: hp(3),
         alignSelf: 'center',
     },
-
-
     footer: {
         position: 'absolute',
         bottom: 0,
         width: wp(100),
-        height: hp(12),
-        alignItems: 'center'
+        height: hp(14),
+        alignItems: 'center',
     },
     footerBtn: {
         width: wp(90),
@@ -209,13 +282,24 @@ const styles = StyleSheet.create({
         backgroundColor: '#0A5CA8',
         borderRadius: wp(10),
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     footerText: {
         fontFamily: 'UrbanistBold',
         fontSize: hp(2),
         color: 'white',
+    },
+    errorStyle: {
+        fontFamily: 'UrbanistRegular',
+        fontSize: hp(1.8),
+        color: "#ED4337"
+    },
+    errorViewStyle: {
+        marginTop: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
     }
+});
 
-
-})
+export default ChangePin;

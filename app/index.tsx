@@ -10,7 +10,6 @@ import { appOpenRefresh } from '@/apis/auth';
 import { useQueryClient } from '@tanstack/react-query';
 import errorRes from '@/apis/errorRes';
 import ModalUpdate from '@/components/ModalUpdate';
-import BookingSuccessModal from '@/components/booking/BookingSuccessModal';
 export default function index() {
     const queryClient = useQueryClient();
     const [updateApp, setUpdateApp] = useState(false);
@@ -26,13 +25,12 @@ export default function index() {
         try {
             const refreshToken = await SecureStore.getItemAsync('refreshToken');
             const onboarded = await SecureStore.getItemAsync('onboarded');
-            queryClient.invalidateQueries({ queryKey: ['user-data'] });
-            // queryClient.invalidateQueries({ queryKey: ['default-method'] });
             if (refreshToken !== null) {
                 try {
                     const response = await appOpenRefresh(refreshToken);
                     await SecureStore.setItemAsync('accessToken', response?.access?.token);
                     await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+                    queryClient.invalidateQueries({ queryKey: ['user-data'] });
                     router.push('/(tabs)/');
 
                 } catch (error) {

@@ -14,6 +14,8 @@ import {
   QueryClient, QueryClientProvider,
 } from '@tanstack/react-query';
 import { I18nManager, LogBox } from "react-native";
+import HeaderInbox from "@/components/inbox/HeaderInbox";
+import HelpHeader from "@/components/profile/HelpHeader";
 export {
   ErrorBoundary,
 } from 'expo-router';
@@ -24,7 +26,9 @@ export const unstable_settings = {
 I18nManager.forceRTL(false);
 SplashScreen.preventAutoHideAsync();
 LogBox.ignoreLogs(['Sending `onAnimatedValueUpdate` with no listeners registered.']);
-LogBox.ignoreLogs(['Warning: CountryModal: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead..']);
+LogBox.ignoreLogs([
+  'Warning: Avatar: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.',
+]);
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -147,10 +151,13 @@ function RootLayoutNav() {
       {/* booking */}
       {/* chat */}
       <Stack.Screen name='chatPage/CustomerSupport' options={{ header: () => <HeaderCustomerSupport />, headerShadowVisible: false }} />
+      <Stack.Screen name='chatPage/NewMessage' options={{ header: () => <HeaderCustomerSupport />, headerShadowVisible: false }} />
+      <Stack.Screen name='chatPage/ChatInboxScreen' options={{ header: () => <HeaderInbox />, headerShadowVisible: false }} />
       <Stack.Screen name='chatPage/CallCustomer' options={{ headerShown: false }} />
       <Stack.Screen name='chatPage/CallUserHistory' options={{ headerShown: false }} />
 
       {/* profile */}
+      <Stack.Screen name='profilePage/help' options={{ header: () => <HelpHeader />, headerShadowVisible: false }} />
       <Stack.Screen name='profilePage/EditProfile' options={{ headerShown: false }} />
       <Stack.Screen name='profilePage/CurrentAddress' options={{ headerShown: false }} />
       <Stack.Screen name='profilePage/ProfilePayment' options={{ headerShown: false }} />

@@ -9,9 +9,10 @@ import { Image, Platform } from "react-native";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useUserQuery } from "@/query/fetchAuthQuery";
 import { BlurView } from 'expo-blur';
-import { useIsFocused } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import { getCurrentLanguage } from "@/services/i18n";
+import useProfileBadge from "@/store/useProfileBadge";
+import useInboxBadge from "@/store/useInboxBadge";
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof Ionicons>["name"];
   color: string;
@@ -25,22 +26,11 @@ function TabBarIcon(props: {
   );
 }
 export default function TabLayout() {
-  // const isFocused = useIsFocused();
+  const { value } = useProfileBadge();
+  const { inboxValue } = useInboxBadge();
   const { t } = useTranslation();
   const colorScheme = useColorScheme();
   const current = getCurrentLanguage();
-  // const { data } = useUserQuery(isFocused);
-  // console.log(data);
-  // const validate =
-  //   ((data?.profile_picture ===
-  //     "https://res.cloudinary.com/dgepgnzoc/image/upload/v1715604259/uploads_profile_pictures/default_profile_picture.jpg") ||
-  //     (data?.address === null) ||
-  //     (data?.apartment_number === null) ||
-  //     (data?.city === null) ||
-  //     (data?.contact_number === null) ||
-  //     (data?.nickname === null)) as boolean;
-
-
   if (current === 'ar') {
     return (
       <Tabs
@@ -54,8 +44,6 @@ export default function TabLayout() {
           // lazy: false
         }}
       >
-
-
         <Tabs.Screen
           name="profile"
           options={{
@@ -222,6 +210,7 @@ export default function TabLayout() {
           name="inbox"
           options={{
             title: t('Inbox'),
+            tabBarBadge: inboxValue as string,
             tabBarIcon: ({ color }) => (
               <TabBarIcon name="chatbubble-ellipses-outline" color={color} />
             ),
@@ -234,7 +223,7 @@ export default function TabLayout() {
           options={{
             title: t('Profile'),
             headerShown: false,
-            // tabBarBadge: validate ? 1 : null,
+            tabBarBadge: value as string,
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
                 name={focused ? "person" : "person-outline"}

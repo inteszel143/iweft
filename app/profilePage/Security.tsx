@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform, ActivityIndicator, Alert } from 'react-native'
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
@@ -140,10 +140,14 @@ export default function Security() {
                     </View>
                 </View>
 
-                <View style={{ paddingHorizontal: wp(5), flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingBottom: hp(2) }}>
+                <TouchableOpacity style={styles.googleAuth}
+                    onPress={() => Alert.alert('Currently is not available', '', [
+                        { text: 'OK' },
+                    ])}
+                >
                     <Text style={styles.rowText}>Google Authenticator</Text>
                     <Feather name='chevron-right' size={hp(3)} color={'#0A5CA8'} />
-                </View>
+                </TouchableOpacity>
 
 
                 <View style={styles.footer}>
@@ -325,6 +329,13 @@ const styles = StyleSheet.create({
     bottomText: {
         fontFamily: 'UrbanistBold',
         fontSize: hp(2),
+    },
+    googleAuth: {
+        paddingHorizontal: wp(5),
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingBottom: hp(2)
     }
 
 })

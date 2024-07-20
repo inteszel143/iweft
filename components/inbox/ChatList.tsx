@@ -1,29 +1,46 @@
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View, RefreshControl } from 'react-native'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { chatListing } from '@/constants/chat/data'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import FloatButton from './FloatButton';
+import { useIsFocused } from '@react-navigation/native';
+import { useGetMessageInbox } from '@/query/message';
+import EmptyChats from './EmptyChats';
+import InboxSkeleton from '../skeleton/InboxSkeleton';
+import { messageTime } from '@/utils/format';
+import { useQueryClient } from '@tanstack/react-query';
 export default function ChatList() {
+    const queryClient = useQueryClient();
     const [refreshing, setRefreshing] = useState(false);
-
+    const isFocused = useIsFocused();
+    const { data, isPending } = useGetMessageInbox(isFocused);
     const onRefresh = useCallback(() => {
         setRefreshing(true);
+        queryClient.invalidateQueries({ queryKey: ["inbox"] });
         setTimeout(() => {
             setRefreshing(false);
-        }, 2000);
+        }, 1000);
     }, []);
+
+    if (isPending) {
+        return <InboxSkeleton />
+    }
+
+    if (!data || data == 0) {
+        return <EmptyChats />
+    };
 
     return (
         <Animated.View style={styles.container}
             entering={FadeInUp.duration(300).springify()}
         >
             <FlatList
-                data={chatListing}
+                data={data}
                 showsVerticalScrollIndicator={false}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item) => item._id.toString()}
                 refreshControl={
                     <RefreshControl
                         refreshing={refreshing}
@@ -33,27 +50,38 @@ export default function ChatList() {
                 }
 
                 renderItem={({ item }) => (
-                    <Link href={'/BookingChat'} asChild>
-                        <TouchableOpacity style={styles.cardrow}>
-                            <View style={styles.cardLeftRow}>
-                                <Image source={item.img} resizeMode='contain' style={{ width: wp(14), height: hp(8) }} />
-                                <View>
-                                    <Text style={styles.nameStyle} >{item.name}</Text>
-                                    <Text style={styles.messageStyle}>{item.message}</Text>
-                                </View>
+                    <TouchableOpacity style={styles.cardrow}
+                        onPress={() => router.push({
+                            pathname: '/chatPage/ChatInboxScreen',
+                            params: { convoId: item?._id }
+                        })}
+                    >
+                        <View style={styles.cardLeftRow}>
+                            {
+                                item?.sender_model === "Admin" ? <Image source={{ uri: item?.sender?.profile_picture }}
+                                    resizeMode='cover'
+                                    style={{ width: wp(14), height: wp(14), borderRadius: wp(7) }} />
+                                    :
+                                    <Image source={{ uri: item?.receiver?.profile_picture }}
+                                        resizeMode='cover'
+                                        style={{ width: wp(14), height: wp(14), borderRadius: wp(7) }} />
+                            }
+                            <View>
+                                {item?.receiver_model === "Admin" ? <Text style={styles.nameStyle} >{item?.receiver?.fullname}</Text> : <Text style={styles.nameStyle} >{item?.sender?.fullname}</Text>}
+                                <Text style={styles.messageStyle}>{item?.latest_message?.text}</Text>
                             </View>
-                            <View style={{ height: hp(6), alignItems: 'flex-end' }}>
-                                {
-                                    item.unread != 0 && <LinearGradient
-                                        style={styles.unreadcircle}
-                                        colors={['#548DC2', '#0A5CA8']}>
-                                        <Text style={styles.unreadText}>{item.unread}</Text>
-                                    </LinearGradient>
-                                }
-                                <Text style={styles.timeStyle}>{item.time}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </Link>
+                        </View>
+                        <View style={{ height: hp(6), alignItems: 'flex-end' }}>
+                            {
+                                item?.receiver_model === "Admin" || !item?.is_read && <LinearGradient
+                                    style={styles.unreadcircle}
+                                    colors={['#548DC2', '#0A5CA8']}>
+                                    <Text style={styles.unreadText}>1</Text>
+                                </LinearGradient>
+                            }
+                            <Text style={styles.timeStyle}>{messageTime(item?.updatedAt)}</Text>
+                        </View>
+                    </TouchableOpacity>
                 )
                 }
             />
@@ -64,13 +92,14 @@ export default function ChatList() {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         paddingHorizontal: wp(5),
     },
     cardrow: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingVertical: hp(1.5),
+        paddingVertical: hp(2),
     },
     cardLeftRow: {
         flexDirection: 'row',

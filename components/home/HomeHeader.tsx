@@ -1,12 +1,14 @@
 import { StyleSheet, Text, View, Image, Platform, TouchableOpacity, Linking } from 'react-native'
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
 import { useUserQuery } from '@/query/fetchAuthQuery';
-import { useIsFocused } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import HomeHeaderSkeleton from '../skeleton/HomeHeaderSkeleton';
 import { useTranslation } from 'react-i18next';
 import { getCurrentLanguage } from '@/services/i18n';
+import { inboxBadge, profileBadge } from '@/utils/validate';
+import useUserId from '@/store/useUserInfo';
 export default function HomeHeader() {
     const { t } = useTranslation();
     const current = getCurrentLanguage();
@@ -15,9 +17,13 @@ export default function HomeHeader() {
     const currentHour = currentDate.getHours();
     const isMorning = currentHour >= 0 && currentHour < 12;
     const { data, isPending } = useUserQuery(isFocused);
-    if (isPending) {
-        return <HomeHeaderSkeleton />
-    }
+    const { setUserId } = useUserId();
+    useEffect(() => {
+        if (data) {
+            profileBadge(data);
+            setUserId(data?._id);
+        }
+    }, [data]);
 
     const openAppStore = () => {
         const appStoreURL = 'https://apps.apple.com/us/app/facebook/id284882215';
@@ -28,8 +34,13 @@ export default function HomeHeader() {
 
 
 
+    if (isPending) {
+        return <HomeHeaderSkeleton />
+    }
+
     return (
         <View style={[styles.header, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
+
             <View style={[styles.headerLeft, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
 
                 <TouchableOpacity onPress={() => router.push('/(tabs)/profile')}>

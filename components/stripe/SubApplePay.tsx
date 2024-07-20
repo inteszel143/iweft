@@ -54,7 +54,11 @@ export default function SubApplePay() {
                 });
                 if (error) {
                     setLoading(false);
-                    Alert.alert(error.code, error.message);
+                    if (error.message === "The payment has been canceled") {
+                        return;
+                    } else {
+                        Alert.alert(error.code, error.message);
+                    }
                     return;
                 } else if (paymentMethod) {
                     try {

@@ -7,16 +7,19 @@ import { defaultStyles } from '@/constants/Styles';
 import numeral from 'numeral';
 import { useIsFocused } from '@react-navigation/native';
 import { useDefaultMethod } from '@/query/stripeQuery';
-import PaymentSkeleton from '@/components/skeleton/PaymentSkeleton';
 import MethodSkeleton from '@/components/skeleton/MethodSkeleton';
 import { useTranslation } from 'react-i18next';
 import { getCurrentLanguage } from '@/services/i18n';
+import Paypal from '@/components/booking/payment/Paypal';
+import GooglePay from '@/components/booking/payment/GooglePay';
+import ApplePay from '@/components/booking/payment/ApplePay';
+import CreditCard from '@/components/booking/payment/CreditCard';
 export default function BookingPaymentMethod() {
     const { t } = useTranslation();
     const current = getCurrentLanguage();
     const isFocused = useIsFocused();
     const { bookingId, total } = useLocalSearchParams();
-    const [isSelected, setIsSelected] = useState(0);
+    const [isSelected, setIsSelected] = useState(1);
     const { data, isPending } = useDefaultMethod(isFocused);
 
     const method = [
@@ -97,7 +100,7 @@ export default function BookingPaymentMethod() {
                     <Text style={[styles.footerTopText, { fontFamily: 'UrbanistBold' }]}>{t('Refund')}: {t('AED')} {numeral(total as any * .80).format('0,0')}.00</Text>
                 </View>
 
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={[defaultStyles.footerBtn, { backgroundColor: isSelected == 0 ? "#DADADA" : "#0A5CA8", marginTop: hp(2) }]}
                     disabled={isSelected == 0 ? true : false}
                     onPress={() => router.push({
@@ -106,7 +109,10 @@ export default function BookingPaymentMethod() {
                     })}
                 >
                     <Text style={defaultStyles.footerText}>{t('Continue')}</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
+                {
+                    isSelected == 1 ? <Paypal bookingId={bookingId} /> : isSelected == 2 ? <GooglePay bookingId={bookingId} total={total} /> : isSelected == 3 ? <ApplePay bookingId={bookingId} total={total} /> : <CreditCard bookingId={bookingId} />
+                }
             </View>
 
 

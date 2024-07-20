@@ -1,22 +1,24 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, Platform } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, Platform, ActivityIndicator } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Bubble, GiftedChat, IMessage, InputToolbar, Send, SystemMessage } from 'react-native-gifted-chat'
+import { Avatar, Bubble, GiftedChat, IMessage, InputToolbar, Send, SystemMessage } from 'react-native-gifted-chat'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { customerSupport } from '@/constants/chat/data';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
-
-export default function CustomerSupport() {
-
+import { postSendMessage, useGetMessage } from '@/query/message';
+import { getMessages, postMessage } from '@/apis/message';
+import ChatImageModal from '@/components/modal/ChatImageModal';
+import { useQueryClient } from '@tanstack/react-query';
+import LottieView from 'lottie-react-native';
+export default function NewMessage() {
+    const queryClient = useQueryClient();
+    const [imageModal, setImageModal] = useState(false);
     const [messages, setMessages] = useState<IMessage[]>([]);
     const insets = useSafeAreaInsets();
-    const [text, setText] = useState('')
+    const [text, setText] = useState('');
+    const { mutate: sentMessage } = postSendMessage({});
 
-    useEffect(() => {
-        setMessages([...customerSupport])
-    }, []);
-
-    const onSend = useCallback((messages = []) => {
+    const onSend = useCallback(async (messages = []) => {
+        sentMessage({ text: messages[0]?.text });
         setMessages(previousMessages =>
             GiftedChat.append(previousMessages, messages),
         )
@@ -24,22 +26,51 @@ export default function CustomerSupport() {
 
 
 
+    const renderEmptyChat = () => {
+        return (
+            <View style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                paddingHorizontal: wp(6),
+            }}>
+                <Text style={{
+                    fontFamily: "UrbanistMedium",
+                    fontSize: hp(1.8),
+                    color: '#555',
+                    textAlign: 'center',
+                    marginBottom: 10,
+                    transform: [{ rotate: '180deg' }, { scaleX: -1 }],
+                }}>
+                    Send a message to start a conversation.
+                </Text>
+            </View>
+        );
+    };
+
 
 
     return (
         <View style={[styles.container, { paddingBottom: Platform.OS === 'ios' ? hp(6) : 0 }]}>
+
+            {imageModal && <ChatImageModal modalVisible={imageModal} setModalVisible={setImageModal} />}
+
             <GiftedChat
                 messages={messages}
                 onSend={(messages: any) => onSend(messages)}
-                user={{
-                    _id: 1,
-                }}
+                user={{ _id: 1 }}
                 textInputProps={styles.composer}
                 onInputTextChanged={setText}
                 bottomOffset={insets.bottom}
                 renderAvatar={null}
                 maxComposerHeight={100}
+                renderChatEmpty={() => renderEmptyChat()}
                 renderSystemMessage={(props) => <SystemMessage {...props} />}
+                // renderAvatar={(props) => <Avatar {...props} imageStyle={{
+                //     left: {
+                //         width: wp(7)
+                //     }
+                // }} />}
                 renderBubble={(props) => {
                     return (
                         <Bubble {...props}
@@ -100,8 +131,12 @@ export default function CustomerSupport() {
                         )}
                         {text.length === 0 && (
                             <>
-                                <Ionicons name='image-outline' size={hp(3)} color={'#9E9E9E'} />
-                                <View
+                                <TouchableOpacity
+                                    onPress={() => setImageModal(true)}
+                                >
+                                    <Ionicons name='image-outline' size={hp(3)} color={'#9E9E9E'} />
+                                </TouchableOpacity>
+                                <TouchableOpacity
                                     style={{
                                         width: wp(10),
                                         height: wp(10),
@@ -112,7 +147,7 @@ export default function CustomerSupport() {
                                     }}
                                 >
                                     <Ionicons name='mic-sharp' size={hp(3)} color={'#fff'} />
-                                </View>
+                                </TouchableOpacity>
                             </>
                         )}
                     </View>
@@ -129,6 +164,8 @@ export default function CustomerSupport() {
 
                 )}
             />
+
+
         </View>
     )
 }

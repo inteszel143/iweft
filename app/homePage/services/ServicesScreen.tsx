@@ -6,6 +6,10 @@ import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import Animated, { interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, withSpring } from 'react-native-reanimated';
 import { customer, starRating } from '@/constants/home/data';
 import { ServiceItem } from '@/utils/interface';
+import { useIsFocused } from '@react-navigation/native';
+import { useGetReview } from '@/query/reviewQuery';
+import { formatNumber, getAverageRating, ratingTime } from '@/utils/format';
+import moment from 'moment';
 const IMG_HEIGHT = 300;
 const { width } = Dimensions.get('window');
 
@@ -13,14 +17,15 @@ const { width } = Dimensions.get('window');
 export default function ServicesScreen() {
     const { item } = useLocalSearchParams();
     const serviceItem: ServiceItem = JSON.parse(item as string);
+    const isFocused = useIsFocused();
+    // const { data: ratings, isPending, } = useGetReview(serviceItem?._id, isFocused);
     // hook
-    const [topSelect, setTopSelect] = useState(0);
+    const [topSelect, setTopSelect] = useState("All");
     const [addbook, setAddbook] = useState(false);
 
     const toggleAdd = () => {
         setAddbook(!addbook);
     };
-
 
     // scrollview
     const scrollRef = useAnimatedRef<Animated.ScrollView>();
@@ -60,6 +65,15 @@ export default function ServicesScreen() {
         };
     });
 
+    // const getTotalRatings = (dataArray: Data[]): number => {
+    //     return dataArray.reduce((total, item) => total + item.rating, 0);
+    //   };
+
+
+    // const filteredData = topSelect === 'All' ? ratings :
+    //     topSelect === "5" ? ratings?.filter((item: any) => item.rating === 5) : topSelect === "4" ? ratings?.filter((item: any) => item.rating === 4) : topSelect === "3" ? ratings?.filter((item: any) => item.rating === 3) : topSelect === "2" ? ratings?.filter((item: any) => item.rating === 2) : ratings?.filter((item: any) => item.rating === 1);
+
+
     return (
         <View style={styles.container}>
 
@@ -71,7 +85,6 @@ export default function ServicesScreen() {
             >
                 <Animated.View style={[styles.topStyle, imageAnimatedStyle]}>
                     <Image
-                        // source={require('@/assets/temp/services/services1.jpg')}
                         source={{ uri: serviceItem.image }}
                         resizeMode='cover'
                         style={[{ width: wp(50), height: hp(20), marginLeft: wp(4) }]} />
@@ -85,8 +98,8 @@ export default function ServicesScreen() {
 
                 <View style={styles.middleStyle}>
 
-                    <View style={styles.middelTopRow}>
-                        <Text style={styles.middleText}>{serviceItem.title}</Text>
+                    <View style={[styles.middelTopRow]}>
+                        <Text style={styles.middleText}>{serviceItem.title} Services</Text>
                         <TouchableOpacity onPress={toggleAdd}>
                             {
                                 addbook ?
@@ -101,7 +114,7 @@ export default function ServicesScreen() {
                         <Text style={styles.core}>{serviceItem.sub_title}</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, }}>
                             <Image source={require('@/assets/icons/star.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
-                            <Text style={styles.rating}>48 (3,824 reviews)</Text>
+                            <Text style={styles.rating}>4.8 (3,824 reviews)</Text>
                         </View>
                     </View>
 
@@ -150,7 +163,7 @@ export default function ServicesScreen() {
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, }}>
                                 <Image source={require('@/assets/icons/star.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
-                                <Text style={styles.ratingBold}>48 (3,824 reviews)</Text>
+                                <Text style={styles.ratingBold}>4.8 (3,824 reviews)</Text>
                             </View>
                             <TouchableOpacity>
                                 <Text style={styles.seeallText}>See all</Text>
@@ -158,56 +171,55 @@ export default function ServicesScreen() {
                         </View>
                     </View>
 
-
-                    <View>
-                        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ marginTop: hp(2) }}>
-                            {
-                                starRating.map((item, index) => {
-                                    return (
-                                        <TouchableOpacity key={index} style={topSelect == index ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
-                                            onPress={() => setTopSelect(index)}
-                                        >
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2) }}>
-                                                {item.label != "All" && <FontAwesome name='star' size={hp(1.6)} color={topSelect == index ? 'white' : '#0A5CA8'} />}
-                                                <Text style={topSelect == index ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item.label}</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    )
-                                })
-                            }
-                        </ScrollView>
-                    </View>
-
-
-                    <View style={{ paddingBottom: hp(15) }}>
+                </View>
+                <View>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ marginTop: hp(2) }}>
                         {
-                            customer.map((item, index) => (
-                                <View key={index} style={{ marginTop: hp(2) }}>
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(4) }}>
-                                            <Image source={item.img} resizeMode='contain' style={{ width: wp(14), height: hp(8) }} />
-                                            <Text style={styles.customerName}>{item.name}</Text>
+                            starRating.map((item, index) => {
+                                return (
+                                    <TouchableOpacity key={index} style={topSelect === item?.label ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
+                                        onPress={() => setTopSelect(item?.label)}
+                                    >
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2) }}>
+                                            {item.label != "All" && <FontAwesome name='star' size={hp(1.6)} color={topSelect === item?.label ? 'white' : '#0A5CA8'} />}
+                                            <Text style={topSelect === item?.label ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item.label}</Text>
                                         </View>
-                                        <View style={[styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2) }}>
-                                                <FontAwesome name='star' size={hp(1.6)} color={'#0A5CA8'} />
-                                                <Text style={[styles.scrollText, { color: '#0A5CA8' }]}>{item.rate}</Text>
-                                            </View>
-                                        </View>
+                                    </TouchableOpacity>
+                                )
+                            })
+                        }
+                    </ScrollView>
+                </View>
+                <View style={{ paddingBottom: hp(15), paddingHorizontal: wp(5) }}>
+                    {
+                        customer.map((item, index) => (
+                            <View key={index} style={{ marginTop: hp(2) }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(4) }}>
+                                        <Image source={item.img} resizeMode='contain' style={{ width: wp(14), height: hp(8) }} />
+                                        <Text style={styles.customerName}>{item.name}</Text>
                                     </View>
-
-                                    <Text style={styles.message}>{item.message}</Text>
-                                    <View style={styles.customerHeart}>
-                                        {item.status ? <Image source={require('@/assets/icons/heartActive.jpg')} resizeMode='contain' style={{ width: wp(5) }} /> : <Image source={require('@/assets/icons/heartIn.jpg')} resizeMode='contain' style={{ width: wp(6) }} />}
-                                        <Text style={styles.heartText}>{item.heart}</Text>
-                                        <Text style={styles.heartTime}>{item.time}</Text>
+                                    <View style={[styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2) }}>
+                                            <FontAwesome name='star' size={hp(1.6)} color={'#0A5CA8'} />
+                                            <Text style={[styles.scrollText, { color: '#0A5CA8' }]}>{item.rate}</Text>
+                                        </View>
                                     </View>
                                 </View>
-                            ))
-                        }
-                    </View>
 
+                                <Text style={styles.message}>{item.message}</Text>
+                                <View style={styles.customerHeart}>
+                                    {item.status ? <Image source={require('@/assets/icons/heartActive.jpg')} resizeMode='contain' style={{ width: wp(5) }} /> : <Image source={require('@/assets/icons/heartIn.jpg')} resizeMode='contain' style={{ width: wp(6) }} />}
+                                    <Text style={styles.heartText}>{item.heart}</Text>
+                                    <Text style={styles.heartTime}>{item.time}</Text>
+                                </View>
+                            </View>
+                        ))
+                    }
                 </View>
+
+
+
 
             </Animated.ScrollView>
 

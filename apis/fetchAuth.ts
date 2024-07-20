@@ -92,3 +92,33 @@ export const getEmailChecker = async (email: string) => {
     return Promise.reject(error);
   }
 };
+
+/**
+ * UPDATE USER PASSWORD MANUAL ---------------------------------------------------------
+ *
+ */
+
+export const updateUserPassword = async (
+  old_password: string,
+  new_password: string
+) => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  const data = {
+    old_password: old_password,
+    new_password: new_password,
+  };
+  try {
+    const response = await axios.patch(
+      `${process.env.EXPO_PUBLIC_API_URL}/user/update/password`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

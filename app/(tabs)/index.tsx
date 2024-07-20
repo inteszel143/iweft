@@ -9,10 +9,22 @@ import HomeAds from '@/components/home/HomeAds';
 import BundleOffers from '@/components/home/BundleOffers';
 import { StatusBar } from 'expo-status-bar';
 import { useFocusEffect } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Test from '../Test';
+import { useIsFocused } from '@react-navigation/native';
+import { useGetMessageInbox } from '@/query/message';
+import { inboxBadge } from '@/utils/validate';
+import { useQueryClient } from '@tanstack/react-query';
 export default function TabOneScreen() {
+  const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
+  const isFocused = useIsFocused();
+  const { data: inbox } = useGetMessageInbox(isFocused);
+  useEffect(() => {
+    if (inbox) {
+      inboxBadge(inbox);
+    }
+  }, [inbox]);
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
@@ -29,6 +41,7 @@ export default function TabOneScreen() {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
+    queryClient.invalidateQueries({ queryKey: ['inbox'] });
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
