@@ -54,7 +54,8 @@ const styles = StyleSheet.create({
     },
     textSubStyle: {
         fontFamily: 'UrbanistRegular',
-        fontSize: hp(2.2),
+        fontSize: hp(2),
+        color: "#424242",
         textAlign: 'center',
         marginTop: hp(2.2),
     }

@@ -1,5 +1,8 @@
 import useInboxBadge from "@/store/useInboxBadge";
 import useProfileBadge from "@/store/useProfileBadge";
+import { useBookmarkStore } from "@/store/useBookmarkStore";
+import { useBookBundleStore } from "@/store/useBookmarkBundleStore";
+import useBookingBadge from "@/store/useBookingBadge";
 
 export const inboxBadge = (data: any) => {
   const { setInboxValue } = useInboxBadge.getState();
@@ -13,6 +16,16 @@ export const inboxBadge = (data: any) => {
   }
 };
 
+export const bookingBadge = (data: any) => {
+  const { setValue } = useBookingBadge.getState();
+  const validate = data?.filter((item: any) => item?.review === null).length;
+  if (validate) {
+    setValue(validate);
+  } else {
+    setValue(null);
+  }
+};
+
 export const profileBadge = (data: any) => {
   const { setValue } = useProfileBadge.getState();
   const validate = data?.address == null || data?.nickname == null;
@@ -21,4 +34,31 @@ export const profileBadge = (data: any) => {
   } else {
     setValue(null);
   }
+};
+
+export const checkBookmark = (data: any, serviceId: string): boolean => {
+  const { setBookmarked } = useBookmarkStore.getState();
+
+  const isBookmarked = data?.some(
+    (bookmark: any) => bookmark?.service?._id === serviceId
+  );
+  // Update the bookmark state
+  setBookmarked(isBookmarked);
+  return isBookmarked;
+};
+
+export const checkBookmarkBundle = (data: any, serviceId: string): boolean => {
+  const { setBookmarked } = useBookBundleStore.getState();
+
+  const isBookmarked = data?.some(
+    (bookmark: any) => bookmark?.service?._id === serviceId
+  );
+  // Update the bookmark state
+  setBookmarked(isBookmarked);
+  return isBookmarked;
+};
+
+export const haveBookmark = (data: any): boolean => {
+  const isBookmarked = !!data && Array.isArray(data) && data?.length > 0;
+  return isBookmarked;
 };

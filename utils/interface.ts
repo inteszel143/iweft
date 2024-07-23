@@ -112,3 +112,28 @@ export interface SpecialOffer {
   updatedAt: string;
   __v: number;
 }
+
+interface Bookmark {
+  _id: string;
+  title: string;
+  sub_title: string;
+  base_price: number;
+  image: string;
+  other_images: string[];
+  details: string;
+  status: string;
+  created_by: string;
+  updated_by: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+export interface BookmarkData {
+  _id: string;
+  user: string;
+  bookmarks: Bookmark[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}

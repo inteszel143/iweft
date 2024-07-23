@@ -8,6 +8,7 @@ import { useItemCategory, useItems } from '@/query/homeQuery';
 import { useIsFocused } from '@react-navigation/native';
 import ItemCategorySkeleton from '@/components/skeleton/ItemCategorySkeleton';
 import ItemDataSkeleton from '@/components/skeleton/ItemDataSkeleton';
+import useStoreBooking from '@/store/useStoreBooking';
 
 export default function ItemPage() {
     const { service, service_name, base_price } = useLocalSearchParams();
@@ -17,6 +18,7 @@ export default function ItemPage() {
     const [itemData, setItemData] = useState<any>({});
     const { data: categoryData, isPending: categoryPending } = useItemCategory(isFocused);
     const { data: DATA, isPending: dataPending } = useItems(isFocused);
+    const { setServiceModel } = useStoreBooking();
     // hook
     const [topSelect, setTopSelect] = useState(null);
 
@@ -84,7 +86,7 @@ export default function ItemPage() {
     const searchFilter = filteredData?.filter((item: any) => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
     const total = getTotalCost().toFixed(2);
     const onSubmit = async () => {
-        // const itemDataString = encodeURIComponent(JSON.stringify(transformedData));
+        setServiceModel("Service");
         const itemDataString = JSON.stringify(transformedData);
         router.push({
             pathname: 'homePage/services/AfterItemPage',

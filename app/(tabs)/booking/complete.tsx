@@ -1,5 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList, RefreshControl } from 'react-native'
+import React, { useCallback, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInUp, FadeOut, FadeOutUp, FadingTransition, JumpingTransition, Layout, withSpring } from 'react-native-reanimated';
@@ -12,15 +12,17 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import NoCompleteBooking from '@/components/booking/NoCompleteBooking';
 import { useTranslation } from 'react-i18next';
 import { getCurrentLanguage } from '@/services/i18n';
+import { useQueryClient } from '@tanstack/react-query';
 
 
 export default function Page() {
+    const queryClient = useQueryClient();
+    const [refreshing, setRefreshing] = useState(false);
     const { t } = useTranslation();
     const current = getCurrentLanguage();
     const isFocused = useIsFocused();
     const { data: completeData, isPending } = useBooking(isFocused, "Completed");
     const [isHiding, setIsHiding] = useState(0);
-
     const toggleHide = (index: any) => {
         setIsHiding(index);
     };
@@ -35,6 +37,14 @@ export default function Page() {
         return date.toISOString();
     };
 
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        queryClient.invalidateQueries({ queryKey: ["booking-status", "Completed"] });
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 1000);
+    }, []);
+
 
     if (isPending) {
         return <BookingSkeleton />
@@ -43,6 +53,7 @@ export default function Page() {
         return <NoCompleteBooking />
     };
 
+
     return (
         <View style={styles.container}>
 
@@ -50,6 +61,13 @@ export default function Page() {
                 data={completeData}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item) => item?._id.toString()}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        tintColor="#DADADA"
+                    />
+                }
                 renderItem={({ item }) => (
                     <Animated.View style={styles.card}
                         entering={FadeInUp.duration(300).springify()}
@@ -78,6 +96,7 @@ export default function Page() {
                                         <Text style={styles.upcoming}>{t('Completed')}</Text>
                                     </View>
                                 </View>
+
                             </View>
                             <View>
                                 <Link href={'/BookingChat'} style={styles.btnStyle} asChild>
@@ -85,7 +104,10 @@ export default function Page() {
                                         <Ionicons name='chatbubble-ellipses' size={hp(2.5)} color={'#0a5ca8'} />
                                     </TouchableOpacity>
                                 </Link>
+
                             </View>
+
+
                         </TouchableOpacity>
 
 
@@ -129,17 +151,48 @@ export default function Page() {
                                     </MapView>
                                 </View>
 
-                                <TouchableOpacity
-                                    style={[styles.mapBtn, { backgroundColor: "#0a5ca8" }]}
-                                    onPress={() => router.push({
-                                        pathname: '/bookingPage/Ereceipt',
-                                        params: { orderId: item?._id }
-                                    })}
-                                >
-                                    <Text style={[styles.mapText, { color: 'white' }]}>{t('View E-Receipt')}</Text>
-                                </TouchableOpacity>
+
+                                {
+                                    item?.review === null ? <TouchableOpacity
+                                        style={[styles.receiptStyle, { backgroundColor: "#0a5ca8" }]}
+                                        onPress={() => router.push({
+                                            pathname: '/bookingPage/Ereceipt',
+                                            params: { orderId: item?._id }
+                                        })}
+                                    >
+                                        <Text style={[styles.mapText, { color: 'white' }]}>{t('View E-Receipt')}</Text>
+                                    </TouchableOpacity>
+
+                                        :
+                                        <View style={[styles.mapRows, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
+
+                                            <TouchableOpacity
+                                                style={[styles.mapBtn, { flexDirection: 'row', alignItems: 'center', gap: wp(1), borderWidth: 1, borderColor: "#0a5ca8" }]}>
+                                                <Ionicons name="alert-circle" size={hp(2.2)} color="red" />
+                                                <Text style={[styles.mapText, { color: '#0a5ca8' }]}>{t('Rate')}</Text>
+                                            </TouchableOpacity>
+
+
+                                            <TouchableOpacity style={[styles.mapBtn, { backgroundColor: "#0a5ca8" }]}
+                                                onPress={() => router.push({
+                                                    pathname: '/bookingPage/Ereceipt',
+                                                    params: { orderId: item?._id }
+                                                })}
+                                            >
+                                                <Text style={[styles.mapText, { color: 'white' }]}>{t('View E-Receipt')}</Text>
+                                            </TouchableOpacity>
+
+                                        </View>
+                                }
+
+
+
+
+
+
 
                                 <TouchableOpacity style={styles.footerBtn} onPress={() => toggleClose()}>
+
                                     <Ionicons name='chevron-up-outline' size={hp(2.5)} />
                                 </TouchableOpacity>
 
@@ -148,7 +201,7 @@ export default function Page() {
 
 
                         {
-                            isHiding != item?._id ? <TouchableOpacity style={styles.footerBtn} onPress={() => toggleHide(item?._id)}>
+                            isHiding != item?._id ? <TouchableOpacity style={[styles.footerBtn]} onPress={() => toggleHide(item?._id)}>
                                 <Ionicons name='chevron-down-outline' size={hp(2.5)} />
                             </TouchableOpacity>
                                 :
@@ -236,7 +289,7 @@ const styles = StyleSheet.create({
         marginTop: hp(3)
     },
     footerBtn: {
-        height: hp(4),
+        height: hp(5),
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: hp(1)
@@ -263,15 +316,26 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     mapBtn: {
+        width: wp(40),
+        height: hp(4.5),
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: wp(4)
+    },
+    mapText: {
+        fontFamily: 'UrbanistSemiBold',
+        fontSize: hp(1.8)
+    },
+    mapRows: {
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    receiptStyle: {
         width: wp(80),
         height: hp(4.5),
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: wp(4),
         alignSelf: 'center'
-    },
-    mapText: {
-        fontFamily: 'UrbanistSemiBold',
-        fontSize: hp(1.8)
     }
 })

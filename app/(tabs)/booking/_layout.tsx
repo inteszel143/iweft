@@ -4,6 +4,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { withLayoutContext } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { getCurrentLanguage } from "@/services/i18n";
+import useBookingBadge from "@/store/useBookingBadge";
 const { Navigator } = createMaterialTopTabNavigator();
 export const MaterialTopTabs = withLayoutContext<
     MaterialTopTabNavigationOptions, typeof Navigator, TabNavigationState<ParamListBase>, MaterialTopTabNavigationEventMap
@@ -12,6 +13,7 @@ export const MaterialTopTabs = withLayoutContext<
 export default function Layout() {
     const { t } = useTranslation();
     const current = getCurrentLanguage();
+    const { bookingValue } = useBookingBadge();
     if (current === 'ar') {
         return (
             <MaterialTopTabs screenOptions={{
@@ -36,7 +38,7 @@ export default function Layout() {
                 tabBarIndicatorStyle: { backgroundColor: '#0a5ca8', height: 3, width: wp(27), marginLeft: wp(4), borderRadius: wp(4), },
             }} >
                 <MaterialTopTabs.Screen name="index" options={{ title: t('Upcoming') }} />
-                <MaterialTopTabs.Screen name="complete" options={{ title: t('Completed') }} />
+                <MaterialTopTabs.Screen name="complete" options={{ title: t('Completed' + ` (${bookingValue})`) }} />
                 <MaterialTopTabs.Screen name="cancel" options={{ title: t('Cancelled') }} />
             </MaterialTopTabs>
         )

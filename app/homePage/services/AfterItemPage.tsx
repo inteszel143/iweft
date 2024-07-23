@@ -63,10 +63,6 @@ export default function AfterItemPage() {
             setPromoCode(data[0]?.special_offer?.promo_code);
             setTotalData(total_data as string);
             router.push('/homePage/BookingDetails');
-            // router.push({
-            //     pathname: '/homePage/BookingDetails',
-            //     params: { service, service_name, itemData, total, total_data, base_price }
-            // }); 
         }
     };
 

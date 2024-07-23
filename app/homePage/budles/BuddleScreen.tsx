@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Platform } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, router, useLocalSearchParams } from 'expo-router'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Animated, { interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, withSpring } from 'react-native-reanimated';
@@ -7,18 +7,33 @@ import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 import { bundle } from '@/constants/home/data';
 import { useIsFocused } from '@react-navigation/native';
 import { LaundryBundle } from '@/utils/interface';
+import useStoreBooking from '@/store/useStoreBooking';
+import { postBookmarks, removeBookmarks } from '@/apis/bookmark';
+import { useBookBundleStore } from '@/store/useBookmarkBundleStore';
+import { usetGetBookmarks } from '@/query/bookmarkQuery';
+import { checkBookmarkBundle } from '@/utils/validate';
+import AddBookmarks from '@/components/modal/AddBookmarks';
+
 const IMG_HEIGHT = 300;
 
 export default function BuddleScreen() {
     const { item } = useLocalSearchParams();
     const bundleData: LaundryBundle = JSON.parse(item as string);
-
-    const [topSelect, setTopSelect] = useState(0);
     const [addbook, setAddbook] = useState(false);
+
+    const isFocused = useIsFocused();
+    const [showBookmark, setShowBookmark] = useState(false);
+    const { isBookmarked, setBookmarked } = useBookBundleStore();
+    const { data: bookdata } = usetGetBookmarks(isFocused);
+    useEffect(() => {
+        if (bookdata) {
+            checkBookmarkBundle(bookdata, bundleData?._id);
+        }
+    }, [bookdata]);
     const toggleAdd = () => {
         setAddbook(!addbook);
     }
-
+    const { setServiceModel } = useStoreBooking();
     // scrollview
     const scrollRef = useAnimatedRef<Animated.ScrollView>();
     const scrollOffset = useScrollViewOffset(scrollRef);
@@ -45,8 +60,44 @@ export default function BuddleScreen() {
         };
     });
 
+
+    const covertData = (data: any) => {
+        return data?.map((item: any) => ({
+            item: item._id,
+            quantity: 1,
+            item_total_amount: item.price * 1
+        }));
+    };
+
+
+    const addingBookmark = async () => {
+        try {
+            await postBookmarks(bundleData?._id, "LaundryBundle");
+            setBookmarked(true);
+            setShowBookmark(true);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const removeBookmark = async () => {
+        try {
+            await removeBookmarks(bundleData?._id);
+            setBookmarked(false);
+        } catch (error) {
+            console.log(error)
+        }
+    };
+
+
+
+
+
     return (
         <View style={styles.container}>
+
+            {showBookmark && <AddBookmarks modalVisible={showBookmark} setModalVisible={setShowBookmark} />}
+
             <Animated.ScrollView
                 bounces={false}
                 ref={scrollRef}
@@ -69,9 +120,12 @@ export default function BuddleScreen() {
 
                     <View style={styles.middelTopRow}>
                         <Text style={styles.middleText}>{bundleData?.title}</Text>
-                        <TouchableOpacity onPress={toggleAdd}>
+                        <TouchableOpacity onPress={isBookmarked ? removeBookmark : addingBookmark}>
                             {
-                                addbook ? <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5.5), marginTop: hp(1) }} /> : <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5.5) }} />
+                                isBookmarked ?
+                                    <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5.4), height: hp(4) }} />
+                                    :
+                                    <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5.4), height: hp(4), }} />
                             }
                         </TouchableOpacity>
                     </View>
@@ -80,7 +134,7 @@ export default function BuddleScreen() {
                         <Text style={styles.core}>{bundleData?.sub_title}</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, }}>
                             <Image source={require('@/assets/icons/star.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
-                            <Text style={styles.rating}>48 (3,824 reviews)</Text>
+                            <Text style={styles.rating}>4.8 (3,824 reviews)</Text>
                         </View>
                     </View>
 
@@ -143,17 +197,23 @@ export default function BuddleScreen() {
 
             <View style={styles.footer}>
                 <View style={styles.bottomBtnRow}>
-                    <Link href={'/BookingChat'} asChild style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}>
-                        <TouchableOpacity>
-                            <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
-                        </TouchableOpacity>
-                    </Link>
-                    {/* <Link href={'/homePage/services/BookNow'} style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]} asChild>
-                        <TouchableOpacity >
-                            <Text style={[styles.bottomText, { color: "white" }]}>Book Now </Text>
-                        </TouchableOpacity>
-                    </Link> */}
-                    <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}>
+                    <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}
+                        onPress={() => router.push('chatPage/NewMessage')}
+                    >
+                        <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
+                        onPress={() => {
+                            setServiceModel("LaundryBundle");
+                            const itemData = covertData(bundleData?.includes);
+                            const itemDataString = JSON.stringify(itemData);
+                            router.push({
+                                pathname: 'homePage/services/AfterItemPage',
+                                params: { service: bundleData?._id, service_name: bundleData?.title, base_price: bundleData?.base_price, total: bundleData?.base_price, itemData: itemDataString, total_data: itemData?.length }
+                            })
+                        }
+                        }
+                    >
                         <Text style={[styles.bottomText, { color: "white" }]}>Book Now </Text>
                     </TouchableOpacity>
                 </View>
@@ -177,7 +237,7 @@ export default function BuddleScreen() {
                         <Text style={styles.headerText}>{bundleData?.title}</Text>
                     </View>
                     <TouchableOpacity>
-                        {addbook ? <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5) }} /> : <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5) }} />}
+                        {isBookmarked ? <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5) }} /> : <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5) }} />}
                     </TouchableOpacity>
                 </View>
             </Animated.View>
@@ -186,7 +246,7 @@ export default function BuddleScreen() {
 
 
 
-        </View>
+        </View >
     )
 }
 

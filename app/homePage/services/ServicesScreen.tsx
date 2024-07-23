@@ -1,5 +1,5 @@
 import { Dimensions, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
 import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
@@ -10,6 +10,12 @@ import { useIsFocused } from '@react-navigation/native';
 import { useGetReview } from '@/query/reviewQuery';
 import { formatNumber, getAverageRating, ratingTime } from '@/utils/format';
 import moment from 'moment';
+import AddBookmarks from '@/components/modal/AddBookmarks';
+import { postBookmarks, removeBookmarks } from '@/apis/bookmark';
+import { usetGetBookmarks } from '@/query/bookmarkQuery';
+import { useBookmarkStore } from '@/store/useBookmarkStore';
+import { checkBookmark } from '@/utils/validate';
+import errorRes from '@/apis/errorRes';
 const IMG_HEIGHT = 300;
 const { width } = Dimensions.get('window');
 
@@ -18,14 +24,16 @@ export default function ServicesScreen() {
     const { item } = useLocalSearchParams();
     const serviceItem: ServiceItem = JSON.parse(item as string);
     const isFocused = useIsFocused();
-    // const { data: ratings, isPending, } = useGetReview(serviceItem?._id, isFocused);
-    // hook
+    const [showBookmark, setShowBookmark] = useState(false);
     const [topSelect, setTopSelect] = useState("All");
     const [addbook, setAddbook] = useState(false);
-
-    const toggleAdd = () => {
-        setAddbook(!addbook);
-    };
+    const { isBookmarked, setBookmarked } = useBookmarkStore();
+    const { data: bookdata } = usetGetBookmarks(isFocused);
+    useEffect(() => {
+        if (bookdata) {
+            checkBookmark(bookdata, serviceItem?._id);
+        }
+    }, [bookdata]);
 
     // scrollview
     const scrollRef = useAnimatedRef<Animated.ScrollView>();
@@ -48,34 +56,36 @@ export default function ServicesScreen() {
         };
     });
 
-    const headerAnimatedStyle = useAnimatedStyle(() => {
-        return {
-            opacity: interpolate(scrollOffset.value, [0, IMG_HEIGHT / 1.5], [0, 1]),
-        };
-    }, []);
-    const headerAnimatedHide = useAnimatedStyle(() => {
-        return {
-            opacity: interpolate(scrollOffset.value, [0, IMG_HEIGHT / 1.5], [1, 0]),
-        };
-    });
-
     const headerStyle = useAnimatedStyle(() => {
         return {
             opacity: scrollHandler.value > 200 ? withSpring(1) : withSpring(0),
         };
     });
 
-    // const getTotalRatings = (dataArray: Data[]): number => {
-    //     return dataArray.reduce((total, item) => total + item.rating, 0);
-    //   };
 
+    const addingBookmark = async () => {
+        try {
+            await postBookmarks(serviceItem?._id, "Service");
+            setBookmarked(true);
+            setShowBookmark(true);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
-    // const filteredData = topSelect === 'All' ? ratings :
-    //     topSelect === "5" ? ratings?.filter((item: any) => item.rating === 5) : topSelect === "4" ? ratings?.filter((item: any) => item.rating === 4) : topSelect === "3" ? ratings?.filter((item: any) => item.rating === 3) : topSelect === "2" ? ratings?.filter((item: any) => item.rating === 2) : ratings?.filter((item: any) => item.rating === 1);
-
+    const removeBookmark = async () => {
+        try {
+            await removeBookmarks(serviceItem?._id);
+            setBookmarked(false);
+        } catch (error) {
+            console.log(errorRes(error));
+        }
+    }
 
     return (
         <View style={styles.container}>
+
+            {showBookmark && <AddBookmarks modalVisible={showBookmark} setModalVisible={setShowBookmark} />}
 
             <Animated.ScrollView
                 bounces={false}
@@ -100,12 +110,13 @@ export default function ServicesScreen() {
 
                     <View style={[styles.middelTopRow]}>
                         <Text style={styles.middleText}>{serviceItem.title} Services</Text>
-                        <TouchableOpacity onPress={toggleAdd}>
+
+                        <TouchableOpacity onPress={isBookmarked ? removeBookmark : addingBookmark}>
                             {
-                                addbook ?
-                                    <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5.4), marginTop: hp(1) }} />
+                                isBookmarked ?
+                                    <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5.4), height: hp(4) }} />
                                     :
-                                    <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5.5) }} />
+                                    <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5.4), height: hp(4), }} />
                             }
                         </TouchableOpacity>
                     </View>
@@ -218,16 +229,12 @@ export default function ServicesScreen() {
                     }
                 </View>
 
-
-
-
             </Animated.ScrollView>
-
 
             <View style={styles.footer}>
                 <View style={styles.bottomBtnRow}>
                     <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}
-                        onPress={() => router.push('/BookingChat')}
+                        onPress={() => router.push('chatPage/NewMessage')}
                     >
                         <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
                     </TouchableOpacity>
@@ -260,8 +267,8 @@ export default function ServicesScreen() {
                         </TouchableOpacity>
                         <Text style={styles.headerText}>{serviceItem.title} Services</Text>
                     </View>
-                    <TouchableOpacity>
-                        {addbook ? <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
+                    <TouchableOpacity onPress={isBookmarked ? removeBookmark : addingBookmark}>
+                        {isBookmarked ? <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
                             : <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5) }} />}
                     </TouchableOpacity>
                 </View>

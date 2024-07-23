@@ -1,14 +1,16 @@
 import { StyleSheet, Text, View, Image, Platform, TouchableOpacity, Linking } from 'react-native'
-import React, { useCallback, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link, router } from 'expo-router';
+import { router } from 'expo-router';
 import { useUserQuery } from '@/query/fetchAuthQuery';
-import { useFocusEffect, useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import HomeHeaderSkeleton from '../skeleton/HomeHeaderSkeleton';
 import { useTranslation } from 'react-i18next';
 import { getCurrentLanguage } from '@/services/i18n';
-import { inboxBadge, profileBadge } from '@/utils/validate';
+import { bookingBadge, profileBadge } from '@/utils/validate';
 import useUserId from '@/store/useUserInfo';
+import { useBooking } from '@/query/orderQuery';
+import HomeBookmark from './HomeBookmark';
 export default function HomeHeader() {
     const { t } = useTranslation();
     const current = getCurrentLanguage();
@@ -17,13 +19,15 @@ export default function HomeHeader() {
     const currentHour = currentDate.getHours();
     const isMorning = currentHour >= 0 && currentHour < 12;
     const { data, isPending } = useUserQuery(isFocused);
+    const { data: completeData } = useBooking(isFocused, "Completed");
     const { setUserId } = useUserId();
     useEffect(() => {
-        if (data) {
+        if (data && completeData) {
             profileBadge(data);
+            bookingBadge(completeData);
             setUserId(data?._id);
         }
-    }, [data]);
+    }, [data, completeData]);
 
     const openAppStore = () => {
         const appStoreURL = 'https://apps.apple.com/us/app/facebook/id284882215';
@@ -32,11 +36,9 @@ export default function HomeHeader() {
         Linking.openURL(url).catch(err => console.error("Couldn't load page", err));
     };
 
-
-
     if (isPending) {
         return <HomeHeaderSkeleton />
-    }
+    };
 
     return (
         <View style={[styles.header, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
@@ -87,15 +89,9 @@ export default function HomeHeader() {
                 </View>
 
                 {/* bookmark */}
-                <View>
-                    <TouchableOpacity
-                        onPress={() => router.push('/homePage/Bookmarks')}
-                    >
-                        <Image source={require('@/assets/icons/bookmark.png')} resizeMode='contain' style={{ width: wp(8) }} />
-                    </TouchableOpacity>
-                </View>
+                <HomeBookmark />
             </View>
-        </View>
+        </View >
     )
 }
 
@@ -127,10 +123,10 @@ const styles = StyleSheet.create({
     },
     notifRed: {
         position: 'absolute',
-        top: Platform.OS === 'ios' ? hp(1.2) : hp(2),
-        right: 1,
-        width: wp(3),
-        height: wp(3),
+        top: Platform.OS === 'ios' ? hp(1.1) : hp(2),
+        right: -1,
+        width: wp(3.5),
+        height: wp(3.5),
         backgroundColor: '#F61705',
         borderRadius: wp(2),
     },

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList, RefreshControl } from 'react-native'
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,7 +18,10 @@ import moment from 'moment';
 import MapView, { Marker, PROVIDER_GOOGLE, } from 'react-native-maps';
 import { useTranslation } from 'react-i18next';
 import { getCurrentLanguage } from '@/services/i18n';
+import { useQueryClient } from '@tanstack/react-query';
 export default function Page() {
+    const queryClient = useQueryClient();
+    const [refreshing, setRefreshing] = useState(false);
     const { t } = useTranslation();
     const current = getCurrentLanguage();
     const isFocused = useIsFocused();
@@ -51,7 +54,17 @@ export default function Page() {
     const handleSheetChanges = useCallback((index: number) => {
         // console.log('handleSheetChanges', index);
     }, []);
-    // end bottomSheet
+
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        queryClient.invalidateQueries({ queryKey: ["booking-status", "Upcoming"] });
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 1000);
+    }, []);
+
+
 
     if (isPending) {
         return <BookingSkeleton />
@@ -67,6 +80,13 @@ export default function Page() {
                     data={data}
                     showsVerticalScrollIndicator={false}
                     keyExtractor={(item) => item?._id.toString()}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                            tintColor="#DADADA"
+                        />
+                    }
                     renderItem={({ item }) => (
                         <Animated.View style={styles.card}
                             entering={FadeInUp.duration(300).springify()}

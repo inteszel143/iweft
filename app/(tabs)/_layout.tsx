@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { getCurrentLanguage } from "@/services/i18n";
 import useProfileBadge from "@/store/useProfileBadge";
 import useInboxBadge from "@/store/useInboxBadge";
+import useBookingBadge from "@/store/useBookingBadge";
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof Ionicons>["name"];
   color: string;
@@ -27,6 +28,7 @@ function TabBarIcon(props: {
 }
 export default function TabLayout() {
   const { value } = useProfileBadge();
+  const { bookingValue } = useBookingBadge();
   const { inboxValue } = useInboxBadge();
   const { t } = useTranslation();
   const colorScheme = useColorScheme();
@@ -182,6 +184,7 @@ export default function TabLayout() {
           options={{
             title: t('Bookings'),
             headerTitle: "",
+            tabBarBadge: bookingValue as string,
             tabBarIcon: ({ color, focused }) => (
               <TabBarIcon
                 name={focused ? "reader" : "reader-outline"}

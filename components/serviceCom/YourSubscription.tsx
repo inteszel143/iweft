@@ -1,24 +1,24 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList } from 'react-native'
-import React, { useState } from 'react'
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link, router } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
-import { SubscriptionData } from '@/constants/profile/data';
-import { useGetAllSubscription } from '@/query/stripeQuery';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from 'react-native'
+import React from 'react'
 import { useIsFocused } from '@react-navigation/native';
-import SubSkeleton from '@/components/skeleton/SubSkeleton';
-import NoSubscription from '@/components/empty/NoSubscription';
+import { useGetAllSubscription } from '@/query/stripeQuery';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { router } from 'expo-router';
+import { Feather } from '@expo/vector-icons';
+import SubSkeleton from '../skeleton/SubSkeleton';
+import NoSubscription from '../empty/NoSubscription';
 import {
     convertDay, covertMonth, formatDate, formatTime
-} from '@/utils/subs';
-export default function Subscription() {
+} from '@/utils/subs'
+import { defaultStyles } from '@/constants/Styles';
+import useStoreSub from '@/store/useStoreSub';
+export default function YourSubscription() {
+
     const isFocused = useIsFocused();
     const { data, isPending } = useGetAllSubscription(isFocused);
-
-
+    const { setPlanName, setTotal } = useStoreSub();
     return (
         <View style={styles.container}>
-
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
 
@@ -26,7 +26,7 @@ export default function Subscription() {
                         <TouchableOpacity onPress={() => router.back()}>
                             <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
                         </TouchableOpacity>
-                        <Text style={styles.bookingText} >Subscriptions</Text>
+                        <Text style={styles.bookingText} >Your Subscriptions</Text>
                     </View>
 
                     <View style={styles.headerRight}>
@@ -36,6 +36,8 @@ export default function Subscription() {
                     </View>
                 </View>
             </View>
+
+
 
             {
                 isPending ? <SubSkeleton />
@@ -55,10 +57,11 @@ export default function Subscription() {
                                                 return (
                                                     <TouchableOpacity style={styles.cardRow}
                                                         key={index}
-                                                        onPress={() => router.push({
-                                                            pathname: '/profilePage/SubscriptionSummary',
-                                                            params: { subId: item?.id }
-                                                        })}
+                                                        onPress={() => {
+                                                            router.push('/homePage/BookingDetails');
+                                                            setPlanName(item?.plan?.product?.name);
+                                                            setTotal(item?.plan?.amount_decimal / 100);
+                                                        }}
                                                     >
                                                         <View style={styles.cardRowStyle}>
                                                             <View style={styles.leftInner}>
@@ -83,50 +86,21 @@ export default function Subscription() {
                                         })
                                     }
 
-                                    {
-                                        data?.map((item: any, index: any) => {
-                                            if (item?.cancel_at_period_end) {
-                                                return (
-                                                    <TouchableOpacity style={styles.cardRow}
-                                                        key={index}
-                                                        onPress={() => router.push({
-                                                            pathname: '/profilePage/SubscriptionCancelSummary',
-                                                            params: { subId: item?.id }
-                                                        })}
-                                                    >
-                                                        <View style={styles.cardRowStyle}>
-                                                            <View style={styles.leftInner}>
-                                                                <Image
-                                                                    source={{ uri: item?.plan?.product?.images[0] }}
-                                                                    resizeMode='contain'
-                                                                    style={styles.imageStyle}
-                                                                />
-                                                                <View style={{ width: wp(50) }}>
-                                                                    <Text style={styles.titleStyle} >{item?.plan?.product?.name}</Text>
-                                                                    <Text style={styles.subStyle}>{item?.plan?.product?.description}</Text>
-                                                                    <Text style={[styles.subStyle]}>Cancelled date:</Text>
-                                                                    <Text style={[styles.subStyle, { color: '#F75555' }]}>{formatDate(item?.canceled_at)} | {formatTime(item?.canceled_at)}</Text>
-                                                                </View>
-                                                            </View>
-                                                            {/* <View>
-                                                <Feather name='chevron-right' size={hp(2.5)} />
-                                            </View> */}
-                                                        </View>
-                                                    </TouchableOpacity>
-                                                )
-                                            }
-                                        })
-                                    }
-
                                 </ScrollView>
                         }
                     </>
             }
-            {/* <View style={styles.containerStyle}>
-                                <Text style={styles.titleText}>Cancelled Plan</Text>
-                            </View> */}
 
-        </View>
+
+            {/* <View style={styles.footer}>
+                <TouchableOpacity style={defaultStyles.footerBtn}>
+                    <Text style={defaultStyles.footerText} >Continue</Text>
+                </TouchableOpacity>
+            </View> */}
+
+
+
+        </View >
     )
 }
 
@@ -159,6 +133,7 @@ const styles = StyleSheet.create({
         fontFamily: "UrbanistBold",
         fontSize: hp(2.5)
     },
+
 
 
     containerStyle: {
@@ -209,5 +184,13 @@ const styles = StyleSheet.create({
         fontSize: hp(1.8),
         color: "#616161",
         marginTop: hp(1),
+    },
+    footer: {
+        position: 'absolute',
+        bottom: 0,
+        width: wp(100),
+        height: hp(12),
+        alignItems: 'center'
     }
+
 })

@@ -6,6 +6,7 @@ interface ItemData {
 }
 
 interface State {
+  service_model: string;
   service: string;
   service_name: string;
   base_price: number;
@@ -23,6 +24,7 @@ interface State {
   promo_code: string | null;
   driver_instruction: string[];
   collection_instruction: string[];
+  setServiceModel: (service_model: string) => void;
   setCollectionInstruction: (cinstructions: string[]) => void;
   setDriverInstruction: (instructions: string[]) => void;
   setPromoCode: (promo_code: string) => void;
@@ -44,6 +46,7 @@ interface State {
 
 // Create the Zustand store
 const useStoreBooking = create<State>((set) => ({
+  service_model: "",
   service: "",
   service_name: "",
   itemData: [],
@@ -61,6 +64,7 @@ const useStoreBooking = create<State>((set) => ({
   promo_code: null,
   driver_instruction: [],
   collection_instruction: [],
+  setServiceModel: (service_model: string) => set({ service_model }),
   setCollectionInstruction: (cinstructions: string[]) =>
     set({ collection_instruction: cinstructions }),
   setDriverInstruction: (instructions: string[]) =>

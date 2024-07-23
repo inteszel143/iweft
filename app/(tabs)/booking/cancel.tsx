@@ -1,5 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList, RefreshControl } from 'react-native'
+import React, { useCallback, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInUp, FadeOut, FadeOutUp, FadingTransition, JumpingTransition, Layout, withSpring } from 'react-native-reanimated';
@@ -12,9 +12,11 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import NoCancelBooking from '@/components/booking/NoCancelBooking';
 import { useTranslation } from 'react-i18next';
 import { getCurrentLanguage } from '@/services/i18n';
-
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function Page() {
+    const queryClient = useQueryClient();
+    const [refreshing, setRefreshing] = useState(false);
     const { t } = useTranslation();
     const current = getCurrentLanguage();
     const isFocused = useIsFocused();
@@ -33,12 +35,24 @@ export default function Page() {
         return date.toISOString();
     };
 
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        queryClient.invalidateQueries({ queryKey: ["booking-status", "Cancelled"] });
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 1000);
+    }, []);
+
+
     if (isPending) {
         return <BookingSkeleton />
     };
     if (!cancelData || cancelData.length === 0) {
         return <NoCancelBooking />
     };
+
+
 
     return (
         <View style={styles.container}>
@@ -47,6 +61,13 @@ export default function Page() {
                 data={cancelData}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item) => item?._id.toString()}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        tintColor="#DADADA"
+                    />
+                }
                 renderItem={({ item }) => (
                     <Animated.View style={styles.card}
                         entering={FadeInUp.duration(300).springify()}
