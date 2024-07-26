@@ -80,7 +80,7 @@ export default function Page() {
                             })}
                         >
                             <View style={[styles.rowLeft, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
-                                <View>
+                                <View style={styles.imaging}>
                                     <Image
                                         source={{ uri: item?.order_details?.service?.image }}
                                         resizeMode='contain'
@@ -88,15 +88,20 @@ export default function Page() {
                                     />
                                 </View>
                                 <View style={{ marginLeft: current === 'ar' ? 0 : wp(4), marginRight: current === 'ar' ? wp(4) : 0 }}>
-                                    <Text style={styles.titleStyle} >{item?.order_details?.service?.title}</Text>
-                                    <Text style={styles.subTitle}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(1) }}>
+                                        <Text style={styles.titleStyle} >{item?.order_details?.service?.title}</Text>
+                                        {
+                                            item?.review === null && <Ionicons name="alert-circle" size={hp(1.6)} color="red" />
+                                        }
+                                    </View>
+                                    <Text style={styles.subTitle}>{item?.order_details?.service?.sub_title}</Text>
+                                    {/* <Text style={styles.subTitle}>
                                         {item?.order_details?.order_items?.length} {item?.order_details?.order_items?.length === 1 ? 'item' : 'items'}
-                                    </Text>
+                                    </Text> */}
                                     <View style={styles.indicator}>
                                         <Text style={styles.upcoming}>{t('Completed')}</Text>
                                     </View>
                                 </View>
-
                             </View>
                             <View>
                                 <Link href={'/BookingChat'} style={styles.btnStyle} asChild>
@@ -104,7 +109,6 @@ export default function Page() {
                                         <Ionicons name='chatbubble-ellipses' size={hp(2.5)} color={'#0a5ca8'} />
                                     </TouchableOpacity>
                                 </Link>
-
                             </View>
 
 
@@ -151,38 +155,42 @@ export default function Page() {
                                     </MapView>
                                 </View>
 
-
                                 {
-                                    item?.review === null ? <TouchableOpacity
-                                        style={[styles.receiptStyle, { backgroundColor: "#0a5ca8" }]}
-                                        onPress={() => router.push({
-                                            pathname: '/bookingPage/Ereceipt',
-                                            params: { orderId: item?._id }
-                                        })}
-                                    >
-                                        <Text style={[styles.mapText, { color: 'white' }]}>{t('View E-Receipt')}</Text>
-                                    </TouchableOpacity>
+                                    item?.review === null ? <View style={[styles.mapRows, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
+
+                                        <TouchableOpacity
+                                            style={[styles.mapBtn, { flexDirection: 'row', alignItems: 'center', gap: wp(1), borderWidth: 1, borderColor: "#0a5ca8" }]}
+                                            onPress={() => router.push({
+                                                pathname: 'bookingPage/WriteReview',
+                                                params: { orderId: item?._id, serviceId: item?.order_details?.service?._id, imageUrl: item?.order_details?.service?.image, title: item?.order_details?.service?.title, subTitle: item?.order_details?.service?.sub_title, basePrice: item?.order_details?.service?.base_price }
+                                            })}
+                                        >
+                                            <Text style={[styles.mapText, { color: '#0a5ca8' }]}>{t('Write Review')}</Text>
+                                            <Ionicons name="alert-circle" size={hp(1.6)} color="red" />
+                                        </TouchableOpacity>
+
+
+                                        <TouchableOpacity style={[styles.mapBtn, { backgroundColor: "#0a5ca8" }]}
+                                            onPress={() => router.push({
+                                                pathname: '/bookingPage/Ereceipt',
+                                                params: { orderId: item?._id }
+                                            })}
+                                        >
+                                            <Text style={[styles.mapText, { color: 'white' }]}>{t('View E-Receipt')}</Text>
+                                        </TouchableOpacity>
+
+                                    </View>
 
                                         :
-                                        <View style={[styles.mapRows, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
-
-                                            <TouchableOpacity
-                                                style={[styles.mapBtn, { flexDirection: 'row', alignItems: 'center', gap: wp(1), borderWidth: 1, borderColor: "#0a5ca8" }]}>
-                                                <Ionicons name="alert-circle" size={hp(2.2)} color="red" />
-                                                <Text style={[styles.mapText, { color: '#0a5ca8' }]}>{t('Rate')}</Text>
-                                            </TouchableOpacity>
-
-
-                                            <TouchableOpacity style={[styles.mapBtn, { backgroundColor: "#0a5ca8" }]}
-                                                onPress={() => router.push({
-                                                    pathname: '/bookingPage/Ereceipt',
-                                                    params: { orderId: item?._id }
-                                                })}
-                                            >
-                                                <Text style={[styles.mapText, { color: 'white' }]}>{t('View E-Receipt')}</Text>
-                                            </TouchableOpacity>
-
-                                        </View>
+                                        <TouchableOpacity
+                                            style={[styles.receiptStyle, { backgroundColor: "#0a5ca8" }]}
+                                            onPress={() => router.push({
+                                                pathname: '/bookingPage/Ereceipt',
+                                                params: { orderId: item?._id }
+                                            })}
+                                        >
+                                            <Text style={[styles.mapText, { color: 'white' }]}>{t('View E-Receipt')}</Text>
+                                        </TouchableOpacity>
                                 }
 
 
@@ -287,6 +295,14 @@ const styles = StyleSheet.create({
         backgroundColor: "#EEEEEE",
         marginHorizontal: wp(2),
         marginTop: hp(3)
+    },
+    imaging: {
+        width: wp(24),
+        height: hp(11),
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+        borderRadius: wp(2)
     },
     footerBtn: {
         height: hp(5),

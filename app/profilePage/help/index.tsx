@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View, TextInput, Image, ScrollView, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TextInput, Image, ScrollView, TouchableOpacity, Platform } from 'react-native'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import { getCurrentLanguage } from '@/services/i18n';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { FAQ } from '@/constants/profile/data';
+import { FontAwesome } from '@expo/vector-icons';
 export default function index() {
 
     const { t } = useTranslation();
@@ -51,11 +52,21 @@ export default function index() {
                     </View>
                     <Image source={require('@/assets/icons/filter.png')} resizeMode='contain' style={{ width: wp(6.5) }} />
                 </View>
+
+
+
+                <View style={{ marginTop: hp(6) }}>
+                    <View>
+                        <Image source={require('@/assets/icons/under.png')} resizeMode='contain' style={{ width: wp(100), height: hp(20) }} />
+                    </View>
+                    <View>
+                        <Text style={styles.textStyle}>Sorry, this page is currently under construction.</Text>
+                    </View>
+                </View>
+
+
             </ScrollView>
 
-            <View>
-                
-            </View>
 
 
 
@@ -67,6 +78,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'white'
+    },
+    textStyle: {
+        fontFamily: 'UrbanistBold',
+        fontSize: hp(2.2),
+        textAlign: 'center',
+        marginTop: hp(4),
+        paddingHorizontal: wp(5)
     },
     searchContainer: {
         alignItems: 'center',
@@ -85,6 +103,31 @@ const styles = StyleSheet.create({
         gap: wp(4),
         backgroundColor: 'transparent',
         width: wp(60)
+    },
+
+
+    cardStyle: {
+        marginTop: hp(2.5),
+        backgroundColor: 'white',
+        width: wp(90),
+        height: Platform.OS === 'android' ? hp(15) : hp(13),
+        justifyContent: 'center',
+        alignSelf: 'center',
+        borderRadius: wp(5),
+        paddingHorizontal: wp(7),
+        shadowColor: "#DADADA",
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.30,
+        shadowRadius: 4.65,
+        elevation: 8,
+    },
+    toprow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
     },
 
 

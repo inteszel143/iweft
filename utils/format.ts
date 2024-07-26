@@ -119,6 +119,10 @@ export const ratingTime = (timestamp: string): string => {
   return "Just now";
 };
 
+export const totalNumberReviews = (dataArray: any[]): number => {
+  return dataArray?.length;
+};
+
 export const getAverageRating = (dataArray: any): number => {
   if (!Array.isArray(dataArray) || dataArray.length === 0) {
     return 0;

@@ -1,15 +1,21 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
 import { bookmakeTop } from '@/constants/home/data';
 import { FontAwesome } from '@expo/vector-icons';
-
+import { useIsFocused } from '@react-navigation/native';
+import { useHomeServices } from '@/query/homeQuery';
+import AllServiceSkeleton from '@/components/skeleton/AllServiceSkeleton';
+import SingleStarRating from '@/components/SingleStarRating';
+import { usetGetBookmarks } from '@/query/bookmarkQuery';
+import { validateServiceInTheBookmark } from '@/utils/validate';
 export default function AllServices() {
-
+    const isFocused = useIsFocused();
+    const { data, isPending } = useHomeServices(isFocused);
+    const { data: bookdata } = usetGetBookmarks(isFocused);
     // hook
     const [topSelect, setTopSelect] = useState(0);
-
 
     return (
         <View style={styles.container}>
@@ -33,76 +39,67 @@ export default function AllServices() {
             </View>
 
 
+            {
+                isPending ? <AllServiceSkeleton />
+                    :
+                    <>
 
+                        <View style={{ backgroundColor: 'white', paddingVertical: hp(2) }}>
+                            <FlatList
+                                showsHorizontalScrollIndicator={false}
+                                horizontal
+                                data={bookmakeTop}
+                                keyExtractor={(item) => item?.label}
+                                renderItem={({ item, index }) => (
+                                    <TouchableOpacity key={index} style={topSelect == index ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
+                                        onPress={() => setTopSelect(index)}
+                                    >
+                                        <Text style={topSelect == index ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item.label}</Text>
+                                    </TouchableOpacity>
+                                )}
 
-            <View>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ marginTop: hp(2) }}>
-                    {
-                        bookmakeTop.map((item, index) => {
-                            return (
-                                <TouchableOpacity key={index} style={topSelect == index ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
-                                    onPress={() => setTopSelect(index)}
-                                >
-                                    <Text style={topSelect == index ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item.label}</Text>
-                                </TouchableOpacity>
-                            )
-                        })
-                    }
-                </ScrollView>
-            </View>
-
-
-
-
-
-            <TouchableOpacity style={styles.CardStyle}>
-                <View style={styles.cardRow}>
-                    <View style={styles.cardLeft}>
-                        <Image source={require('@/assets/temp/bookmark.jpg')} resizeMode='contain' style={{ width: wp(28), height: hp(15), }} />
-                        <View style={{ width: wp(45) }}>
-                            < Text style={styles.topText} > Cleaning / Pressing</Text>
-                            <Text style={styles.middleText}>Weekly Work Refresh</Text>
-                            <Text style={styles.priceText}>AED 25</Text>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2), marginTop: hp(1.5), }}>
-                                <FontAwesome name='star' size={hp(2)} color={'#FB9400'} />
-                                <Text style={styles.rateText}>4.8</Text>
-                                <View style={styles.cardSeperator} />
-                                <Text style={styles.rateText}>8,289 reviews</Text>
-                            </View>
+                            />
                         </View>
-                    </View>
-                    <View>
-                        <FontAwesome name='bookmark' size={hp(2.9)} color={'#0A5CA8'} />
-                    </View>
-                </View>
-            </TouchableOpacity >
 
+                        <FlatList
+                            data={data}
+                            showsVerticalScrollIndicator={false}
+                            keyExtractor={(item) => item?._id}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity style={styles.CardStyle}>
+                                    <View style={styles.cardRow}>
+                                        <View style={styles.cardLeft}>
+                                            <View style={styles.imaging}>
+                                                <Image source={{ uri: item?.image }}
+                                                    resizeMode='contain'
+                                                    style={{ width: wp(26), height: hp(14), }} />
+                                            </View>
+                                            <View style={{ width: wp(45) }}>
+                                                < Text style={styles.topText} >{item?.title}</Text>
+                                                <Text style={styles.middleText}>{item?.sub_title}</Text>
+                                                <Text style={styles.priceText}>AED {item?.base_price}</Text>
+                                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2), marginTop: hp(1.5), }}>
+                                                    {/* <FontAwesome name='star' size={hp(2)} color={'#FB9400'} /> */}
+                                                    <SingleStarRating rating={item?.review?.average_rating} />
+                                                    <Text style={styles.rateText}>{item?.review?.average_rating}</Text>
+                                                    <View style={styles.cardSeperator} />
+                                                    <Text style={styles.rateText}>
+                                                        {item?.review?.review_count} {item?.review?.review_count <= 1 ? 'review' : 'reviews'}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                        </View>
+                                        <View>
+                                            <FontAwesome name={validateServiceInTheBookmark(bookdata, item?._id) ? 'bookmark' : 'bookmark-o'} size={hp(2.9)} color={'#0A5CA8'} />
+                                        </View>
 
-            <TouchableOpacity style={styles.CardStyle}>
-                <View style={styles.cardRow}>
-                    <View style={styles.cardLeft}>
-                        <Image source={require('@/assets/temp/bookmark.jpg')} resizeMode='contain' style={{ width: wp(28), height: hp(15), }} />
-                        <View style={{ width: wp(45) }}>
-                            < Text style={styles.topText} > Cleaning / Pressing</Text>
-                            <Text style={styles.middleText}>Weekly Work Refresh</Text>
-                            <Text style={styles.priceText}>AED 25</Text>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2), marginTop: hp(1.5), }}>
-                                <FontAwesome name='star' size={hp(2)} color={'#FB9400'} />
-                                <Text style={styles.rateText}>4.8</Text>
-                                <View style={styles.cardSeperator} />
-                                <Text style={styles.rateText}>8,289 reviews</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View>
-                        <FontAwesome name='bookmark' size={hp(2.9)} color={'#0A5CA8'} />
-                    </View>
-                </View>
-            </TouchableOpacity >
+                                    </View>
+                                </TouchableOpacity >
+                            )}
+                        />
 
-
-
-
+                    </>
+            }
         </View>
     )
 }
@@ -205,7 +202,14 @@ const styles = StyleSheet.create({
         fontSize: hp(1.7),
         color: "#616161"
     },
-
+    imaging: {
+        width: wp(28),
+        height: hp(13),
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: wp(2),
+        overflow: 'hidden'
+    }
 
 
 })

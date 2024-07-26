@@ -21,9 +21,11 @@ interface State {
   discount: string;
   total_amount: string;
   discounted_amount: string | null;
+  bundleId: string | null;
   promo_code: string | null;
   driver_instruction: string[];
   collection_instruction: string[];
+  setBundleId: (bundleId: string | null) => void;
   setServiceModel: (service_model: string) => void;
   setCollectionInstruction: (cinstructions: string[]) => void;
   setDriverInstruction: (instructions: string[]) => void;
@@ -62,8 +64,10 @@ const useStoreBooking = create<State>((set) => ({
   total_amount: "",
   discounted_amount: null,
   promo_code: null,
+  bundleId: null,
   driver_instruction: [],
   collection_instruction: [],
+  setBundleId: (bundleId: string | null) => set({ bundleId }),
   setServiceModel: (service_model: string) => set({ service_model }),
   setCollectionInstruction: (cinstructions: string[]) =>
     set({ collection_instruction: cinstructions }),

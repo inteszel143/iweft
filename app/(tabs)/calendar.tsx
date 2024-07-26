@@ -28,7 +28,6 @@ export default function Page() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white'
-        // backgroundColor: '#F9F9F9',
+        backgroundColor: '#F9F9F9',
     },
 });

@@ -46,7 +46,7 @@ export const getBookmarks = async () => {
         },
       }
     );
-    return response?.data?.bookmarks[0]?.bookmarks || [];
+    return response?.data?.bookmarks_with_reviews[0]?.bookmarks || [];
   } catch (error) {
     return Promise.reject(error);
   }

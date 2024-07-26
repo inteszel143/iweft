@@ -3,6 +3,7 @@ import {
   getActivationOffer,
   getAllBundles,
   getHomeServices,
+  getHomeServicesById,
   getItemCategory,
   getItems,
   getSpecialOffers,
@@ -19,6 +20,18 @@ export const useHomeServices = (isFocused: any) => {
     queryFn: getHomeServices,
   });
 };
+
+/**
+ * Get Home Services by Id ---------------------------------------------------------
+ */
+export const useHomeServicesId = (serviceId: string, isFocused: any) => {
+  return useQuery({
+    queryKey: ["services-id"],
+    enabled: isFocused,
+    queryFn: () => getHomeServicesById(serviceId),
+  });
+};
+
 /**
  * Get Home Special Offers ---------------------------------------------------------
  */

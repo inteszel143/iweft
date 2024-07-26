@@ -50,13 +50,6 @@ export default function HomeServices() {
                         </Link>
                     </View>
             }
-            {/* <Link href={'/homePage/services/ServicesScreen'} asChild>
-                <TouchableOpacity>
-                    <Image source={require('@/assets/temp/services/list1.png')} resizeMode='contain' style={styles.imageStyle} />
-                </TouchableOpacity>
-            </Link> */}
-
-
             <View style={{ height: 0.7, backgroundColor: "#DADADA", marginTop: hp(4), marginHorizontal: wp(4) }} />
         </View >
     )
@@ -98,5 +91,6 @@ const styles = StyleSheet.create({
     titleStyle: {
         fontFamily: "UrbanistMedium",
         fontSize: hp(1.8),
+        marginTop: hp(1)
     }
 })

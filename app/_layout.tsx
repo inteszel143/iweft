@@ -147,6 +147,7 @@ function RootLayoutNav() {
       <Stack.Screen name='bookingPage/BookingPaymentMethod' options={{ headerShown: false }} />
       <Stack.Screen name='bookingPage/BookingPin' options={{ headerShown: false }} />
       <Stack.Screen name='bookingPage/BookingSummary' options={{ headerShown: false }} />
+      <Stack.Screen name='bookingPage/WriteReview' options={{ headerShown: false }} />
 
       {/* booking */}
       {/* chat */}

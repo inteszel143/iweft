@@ -27,7 +27,7 @@ interface CellProps {
 
 export default function HomeConfirmPin() {
     const { subscriptionId } = useStoreSub();
-    const { service, itemData, pick_up_date_time, delivery_date_time, address, latitude, longitude, total_amount, discounted_amount, driver_instruction, promo_code, collection_instruction, service_model } = useStoreBooking();
+    const { service, itemData, pick_up_date_time, delivery_date_time, address, latitude, longitude, total_amount, discounted_amount, driver_instruction, promo_code, collection_instruction, service_model, bundleId } = useStoreBooking();
     const [modalVisible, setModalVisible] = useState(false);
     const [btnLoading, setBtnLoading] = useState(false);
     const CELL_COUNT = 4;
@@ -85,6 +85,7 @@ export default function HomeConfirmPin() {
             collection_instruction: collection_instruction,
             total_amount: totalPayment,
             discounted_amount: discounted_amount,
+            bundle_offer: bundleId,
             latitude: parseFloat(latitude),
             longitude: parseFloat(longitude),
         };

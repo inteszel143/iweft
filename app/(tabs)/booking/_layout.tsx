@@ -38,7 +38,11 @@ export default function Layout() {
                 tabBarIndicatorStyle: { backgroundColor: '#0a5ca8', height: 3, width: wp(27), marginLeft: wp(4), borderRadius: wp(4), },
             }} >
                 <MaterialTopTabs.Screen name="index" options={{ title: t('Upcoming') }} />
-                <MaterialTopTabs.Screen name="complete" options={{ title: t('Completed' + ` (${bookingValue})`) }} />
+                <MaterialTopTabs.Screen name="complete"
+                    options={{
+                        title: `${t('Completed')}${bookingValue === null ? '' : `(${bookingValue})`}`
+                    }}
+                />
                 <MaterialTopTabs.Screen name="cancel" options={{ title: t('Cancelled') }} />
             </MaterialTopTabs>
         )

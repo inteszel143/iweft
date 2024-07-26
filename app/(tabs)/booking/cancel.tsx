@@ -82,7 +82,7 @@ export default function Page() {
 
                         >
                             <View style={[styles.rowLeft, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
-                                <View>
+                                <View style={styles.imaging}>
                                     <Image
                                         source={{ uri: item?.order_details?.service?.image }}
                                         resizeMode='contain'
@@ -91,9 +91,10 @@ export default function Page() {
                                 </View>
                                 <View style={{ marginLeft: current === 'ar' ? 0 : wp(4), marginRight: current === 'ar' ? wp(4) : 0 }}>
                                     <Text style={styles.titleStyle} >{item?.order_details?.service?.title}</Text>
-                                    <Text style={styles.subTitle}>
+                                    <Text style={styles.subTitle}>{item?.order_details?.service?.sub_title}</Text>
+                                    {/* <Text style={styles.subTitle}>
                                         {item?.order_details?.order_items?.length} {item?.order_details?.order_items?.length === 1 ? 'item' : 'items'}
-                                    </Text>
+                                    </Text> */}
 
                                     <View style={styles.indicator}>
                                         <Text style={styles.upcoming}>{t('Cancelled')}</Text>
@@ -235,13 +236,20 @@ const styles = StyleSheet.create({
         fontSize: hp(1.8),
         color: 'gray',
     },
-
     indicator: {
         width: wp(26),
         height: hp(4),
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#F75555',
+        borderRadius: wp(2)
+    },
+    imaging: {
+        width: wp(24),
+        height: hp(11),
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
         borderRadius: wp(2)
     },
     upcoming: {

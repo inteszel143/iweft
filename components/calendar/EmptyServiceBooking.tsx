@@ -40,7 +40,7 @@ export default function EmptyServiceBooking() {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: "white",
-        paddingBottom: hp(6)
+        paddingBottom: hp(20)
     },
     textTop: {
         fontFamily: 'UrbanistBold',

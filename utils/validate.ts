@@ -62,3 +62,18 @@ export const haveBookmark = (data: any): boolean => {
   const isBookmarked = !!data && Array.isArray(data) && data?.length > 0;
   return isBookmarked;
 };
+
+export const validateServiceInTheBookmark = (
+  data: any,
+  serviceId: string
+): boolean => {
+  const isBookmarked = data?.some(
+    (bookmark: any) => bookmark?.service?._id === serviceId
+  );
+  return isBookmarked;
+};
+
+export const checkUserLike = (data: string[], userId: string): boolean => {
+  const isLike = data?.includes(userId);
+  return isLike;
+};

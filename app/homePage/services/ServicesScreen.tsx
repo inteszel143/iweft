@@ -7,15 +7,19 @@ import Animated, { interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewO
 import { customer, starRating } from '@/constants/home/data';
 import { ServiceItem } from '@/utils/interface';
 import { useIsFocused } from '@react-navigation/native';
-import { useGetReview } from '@/query/reviewQuery';
-import { formatNumber, getAverageRating, ratingTime } from '@/utils/format';
+import { useGetRatingByService, useGetReview } from '@/query/reviewQuery';
+import { formatNumber, getAverageRating, ratingTime, totalNumberReviews } from '@/utils/format';
 import moment from 'moment';
 import AddBookmarks from '@/components/modal/AddBookmarks';
 import { postBookmarks, removeBookmarks } from '@/apis/bookmark';
 import { usetGetBookmarks } from '@/query/bookmarkQuery';
 import { useBookmarkStore } from '@/store/useBookmarkStore';
-import { checkBookmark } from '@/utils/validate';
+import { checkBookmark, checkUserLike } from '@/utils/validate';
 import errorRes from '@/apis/errorRes';
+import SingleStarRating from '@/components/SingleStarRating';
+import useUserInfo from '@/store/useUserInfo';
+import { patchReactComment } from '@/apis/review';
+import { useQueryClient } from '@tanstack/react-query';
 const IMG_HEIGHT = 300;
 const { width } = Dimensions.get('window');
 
@@ -23,12 +27,14 @@ const { width } = Dimensions.get('window');
 export default function ServicesScreen() {
     const { item } = useLocalSearchParams();
     const serviceItem: ServiceItem = JSON.parse(item as string);
+    const queryClient = useQueryClient();
     const isFocused = useIsFocused();
     const [showBookmark, setShowBookmark] = useState(false);
     const [topSelect, setTopSelect] = useState("All");
-    const [addbook, setAddbook] = useState(false);
     const { isBookmarked, setBookmarked } = useBookmarkStore();
     const { data: bookdata } = usetGetBookmarks(isFocused);
+    const { data: reviews } = useGetReview(serviceItem?._id, isFocused);
+    const { userId } = useUserInfo();
     useEffect(() => {
         if (bookdata) {
             checkBookmark(bookdata, serviceItem?._id);
@@ -80,8 +86,25 @@ export default function ServicesScreen() {
         } catch (error) {
             console.log(errorRes(error));
         }
-    }
+    };
 
+
+    const likeComment = async (reviewId: string) => {
+        try {
+            await patchReactComment(reviewId, "like");
+            queryClient.invalidateQueries({ queryKey: ['reviews', serviceItem?._id] });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const unlikeComment = async (reviewId: string) => {
+        try {
+            await patchReactComment(reviewId, "unlike");
+            queryClient.invalidateQueries({ queryKey: ['reviews', serviceItem?._id] });
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return (
         <View style={styles.container}>
 
@@ -123,10 +146,14 @@ export default function ServicesScreen() {
 
                     <View style={styles.rateStyle}>
                         <Text style={styles.core}>{serviceItem.sub_title}</Text>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, }}>
-                            <Image source={require('@/assets/icons/star.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
-                            <Text style={styles.rating}>4.8 (3,824 reviews)</Text>
-                        </View>
+                        {
+                            serviceItem?.review?.average_rating != 0 && <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: hp(2) }}>
+                                {/* <Image source={require('@/assets/icons/star.jpg')} resizeMode='contain' style={{ width: wp(5), height: hp(4) }} /> */}
+                                <SingleStarRating rating={serviceItem?.review?.average_rating} />
+                                <Text style={styles.rating}>{serviceItem?.review?.average_rating} ( {serviceItem?.review?.review_count} {serviceItem?.review?.review_count <= 1 ? 'review' : 'reviews'} )</Text>
+                            </View>
+                        }
+
                     </View>
 
 
@@ -171,10 +198,11 @@ export default function ServicesScreen() {
 
                     <View style={styles.detailsStyle}>
                         <Text style={styles.detailText}>Reviews</Text>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, }}>
-                                <Image source={require('@/assets/icons/star.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
-                                <Text style={styles.ratingBold}>4.8 (3,824 reviews)</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: hp(1.5) }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                                {/* <Image source={require('@/assets/icons/star.jpg')} resizeMode='contain' style={{ width: wp(5) }} /> */}
+                                <SingleStarRating rating={serviceItem?.review?.average_rating} />
+                                <Text style={styles.ratingBold}>{serviceItem?.review?.average_rating} ( {serviceItem?.review?.review_count} {serviceItem?.review?.review_count <= 1 ? 'review' : 'reviews'} )</Text>
                             </View>
                             <TouchableOpacity>
                                 <Text style={styles.seeallText}>See all</Text>
@@ -183,47 +211,62 @@ export default function ServicesScreen() {
                     </View>
 
                 </View>
-                <View>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ marginTop: hp(2) }}>
-                        {
-                            starRating.map((item, index) => {
-                                return (
-                                    <TouchableOpacity key={index} style={topSelect === item?.label ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
-                                        onPress={() => setTopSelect(item?.label)}
-                                    >
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2) }}>
-                                            {item.label != "All" && <FontAwesome name='star' size={hp(1.6)} color={topSelect === item?.label ? 'white' : '#0A5CA8'} />}
-                                            <Text style={topSelect === item?.label ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item.label}</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                )
-                            })
-                        }
-                    </ScrollView>
-                </View>
+
+
+                {
+                    !reviews || reviews != 0 && <View>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ marginTop: hp(2) }}>
+                            {
+                                starRating.map((item, index) => {
+                                    return (
+                                        <TouchableOpacity key={index} style={topSelect === item?.label ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
+                                            onPress={() => setTopSelect(item?.label)}
+                                        >
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2) }}>
+                                                {item.label != "All" && <FontAwesome name='star' size={hp(1.6)} color={topSelect === item?.label ? 'white' : '#0A5CA8'} />}
+                                                <Text style={topSelect === item?.label ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item.label}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    )
+                                })
+                            }
+                        </ScrollView>
+                    </View>
+                }
+
                 <View style={{ paddingBottom: hp(15), paddingHorizontal: wp(5) }}>
                     {
-                        customer.map((item, index) => (
+                        reviews?.map((item: any, index: any) => (
                             <View key={index} style={{ marginTop: hp(2) }}>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(4) }}>
-                                        <Image source={item.img} resizeMode='contain' style={{ width: wp(14), height: hp(8) }} />
-                                        <Text style={styles.customerName}>{item.name}</Text>
+                                        <Image source={{ uri: item?.user?.profile_picture }} resizeMode='cover' style={{ width: wp(14), height: wp(14), borderRadius: wp(8) }} />
+                                        <Text style={styles.customerName}>{item?.user?.fullname}</Text>
                                     </View>
                                     <View style={[styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2) }}>
                                             <FontAwesome name='star' size={hp(1.6)} color={'#0A5CA8'} />
-                                            <Text style={[styles.scrollText, { color: '#0A5CA8' }]}>{item.rate}</Text>
+                                            <Text style={[styles.scrollText, { color: '#0A5CA8' }]}>{item?.rating}</Text>
                                         </View>
                                     </View>
                                 </View>
 
-                                <Text style={styles.message}>{item.message}</Text>
+                                <Text style={styles.message}>{item?.review?.comment}</Text>
                                 <View style={styles.customerHeart}>
-                                    {item.status ? <Image source={require('@/assets/icons/heartActive.jpg')} resizeMode='contain' style={{ width: wp(5) }} /> : <Image source={require('@/assets/icons/heartIn.jpg')} resizeMode='contain' style={{ width: wp(6) }} />}
-                                    <Text style={styles.heartText}>{item.heart}</Text>
-                                    <Text style={styles.heartTime}>{item.time}</Text>
+                                    <TouchableOpacity
+                                        style={styles.heartBtn}
+                                        onPress={() => checkUserLike(item?.review?.liked_by, userId) ? unlikeComment(item?._id) : likeComment(item?._id)}
+                                    >
+                                        {
+                                            checkUserLike(item?.review?.liked_by, userId) ? <Image source={require('@/assets/icons/heartActive.jpg')} resizeMode='contain' style={{ width: wp(5.7), height: hp(5) }} />
+                                                :
+                                                <Image source={require('@/assets/icons/heartIn.jpg')} resizeMode='contain' style={{ width: wp(6), height: hp(5) }} />
+                                        }
+                                    </TouchableOpacity>
+                                    <Text style={styles.heartText}>{item?.review?.likes}</Text>
+                                    <Text style={styles.heartTime}>{ratingTime(item?.createdAt)}</Text>
                                 </View>
+                                <View style={styles.ratingSeperator} />
                             </View>
                         ))
                     }
@@ -329,7 +372,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: wp(2)
     },
+    heartBtn: {
+        width: wp(7),
+    },
 
+    ratingSeperator: {
+        height: 0.5,
+        backgroundColor: '#EEEEEE',
+        marginTop: hp(1)
+    },
 
     separator: {
         height: 1,
@@ -377,7 +428,8 @@ const styles = StyleSheet.create({
     core: {
         fontFamily: 'UrbanistBold',
         fontSize: hp(2.5),
-        color: '#0A5CA8'
+        color: '#0A5CA8',
+        marginTop: hp(2)
     },
     rating: {
         fontFamily: 'UrbanistRegular',

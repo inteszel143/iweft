@@ -12,6 +12,8 @@ import { usetGetBookmarks } from '@/query/bookmarkQuery';
 import BookmarkSheet from '@/components/bottomsheet/BookmarkSheet';
 import BookmarkSkeleton from '@/components/skeleton/BookmarkSkeleton';
 import NoBookmark from '@/components/empty/NoBookmark';
+import SingleStarRating from '@/components/SingleStarRating';
+import { useGetRatingByService } from '@/query/reviewQuery';
 export default function Bookmarks() {
     const isFocused = useIsFocused();
     const { data, isPending } = usetGetBookmarks(isFocused);
@@ -23,6 +25,7 @@ export default function Bookmarks() {
         setItemData(item);
         modalARef.current?.present();
     };
+
 
     return (
         <View style={styles.container}>
@@ -67,19 +70,6 @@ export default function Bookmarks() {
                                         )}
                                     />
                                 </View>
-                                {/* <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ marginTop: hp(2) }}>
-                                    {
-                                        bookmakeTop.map((item, index) => {
-                                            return (
-                                                <TouchableOpacity key={index} style={topSelect == index ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
-                                                    onPress={() => setTopSelect(index)}
-                                                >
-                                                    <Text style={topSelect == index ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item.label}</Text>
-                                                </TouchableOpacity>
-                                            )
-                                        })
-                                    }
-                                </ScrollView> */}
                                 <FlatList
                                     data={data}
                                     showsVerticalScrollIndicator={false}
@@ -90,16 +80,25 @@ export default function Bookmarks() {
                                         >
                                             <View style={styles.cardRow}>
                                                 <View style={styles.cardLeft}>
-                                                    <Image source={{ uri: item?.service?.image }} resizeMode='contain' style={{ width: wp(28), height: hp(15), }} />
+                                                    <View style={styles.imaging}>
+                                                        <Image source={{ uri: item?.service?.image }}
+                                                            resizeMode='contain'
+                                                            style={styles.imageStyle}
+                                                        />
+                                                    </View>
                                                     <View style={{ width: wp(45) }}>
-                                                        < Text style={styles.topText} >{item?.service?.sub_title}</Text>
+                                                        {
+                                                            item?.service_model === "LaundryBundle" ? < Text style={styles.topText} >{item?.service?.service?.title}</Text>
+                                                                :
+                                                                < Text style={styles.topText} >{item?.service?.sub_title}</Text>
+                                                        }
                                                         <Text style={styles.middleText}>{item?.service?.title}</Text>
                                                         <Text style={styles.priceText}>AED {item?.service?.base_price}</Text>
                                                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2), marginTop: hp(1.5), }}>
-                                                            <FontAwesome name='star' size={hp(2)} color={'#FB9400'} />
-                                                            <Text style={styles.rateText}>4.8</Text>
+                                                            <SingleStarRating rating={item?.review?.average_rating} />
+                                                            <Text style={styles.rateText}>{item?.review?.average_rating}</Text>
                                                             <View style={styles.cardSeperator} />
-                                                            <Text style={styles.rateText}>8,289 reviews</Text>
+                                                            <Text style={styles.rateText}>{item?.review?.review_count} {item?.review?.review_count == 1 ? 'review' : 'reviews'}</Text>
                                                         </View>
                                                     </View>
                                                 </View>
@@ -110,41 +109,6 @@ export default function Bookmarks() {
                                         </TouchableOpacity >
                                     )}
                                 />
-
-                                {/* 
-                                <ScrollView showsVerticalScrollIndicator={false}>
-                                    {
-                                        data?.map((item: any, index: any) => (
-                                            <TouchableOpacity style={styles.CardStyle}
-                                                onPress={() => openModalA(item)}
-                                                key={index}
-                                            >
-                                                <View style={styles.cardRow}>
-                                                    <View style={styles.cardLeft}>
-                                                        <Image source={{ uri: item?.service?.image }} resizeMode='contain' style={{ width: wp(28), height: hp(15), }} />
-                                                        <View style={{ width: wp(45) }}>
-                                                            < Text style={styles.topText} >{item?.service?.sub_title}</Text>
-                                                            <Text style={styles.middleText}>{item?.service?.title}</Text>
-                                                            <Text style={styles.priceText}>AED {item?.service?.base_price}</Text>
-                                                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2), marginTop: hp(1.5), }}>
-                                                                <FontAwesome name='star' size={hp(2)} color={'#FB9400'} />
-                                                                <Text style={styles.rateText}>4.8</Text>
-                                                                <View style={styles.cardSeperator} />
-                                                                <Text style={styles.rateText}>8,289 reviews</Text>
-                                                            </View>
-                                                        </View>
-                                                    </View>
-                                                    <View>
-                                                        <FontAwesome name='bookmark' size={hp(2.9)} color={'#0A5CA8'} />
-                                                    </View>
-                                                </View>
-                                            </TouchableOpacity >
-                                        ))
-                                    }
-                                </ScrollView> */}
-
-
-
                             </View>
                     }
                 </>
@@ -209,7 +173,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#FFFFFF',
         borderRadius: wp(4),
-        marginTop: hp(3),
+        marginTop: hp(2),
         paddingHorizontal: wp(5),
 
     },
@@ -279,5 +243,17 @@ const styles = StyleSheet.create({
     bottomText: {
         fontFamily: 'UrbanistBold',
         fontSize: hp(2),
-    }
+    },
+    imaging: {
+        width: wp(24),
+        height: hp(11),
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+        borderRadius: wp(2),
+    },
+    imageStyle: {
+        width: wp(20),
+        height: hp(10)
+    },
 })

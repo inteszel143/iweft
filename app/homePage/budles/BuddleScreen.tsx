@@ -33,7 +33,7 @@ export default function BuddleScreen() {
     const toggleAdd = () => {
         setAddbook(!addbook);
     }
-    const { setServiceModel } = useStoreBooking();
+    const { setServiceModel, setBundleId } = useStoreBooking();
     // scrollview
     const scrollRef = useAnimatedRef<Animated.ScrollView>();
     const scrollOffset = useScrollViewOffset(scrollRef);
@@ -131,7 +131,7 @@ export default function BuddleScreen() {
                     </View>
 
                     <View style={styles.rateStyle}>
-                        <Text style={styles.core}>{bundleData?.sub_title}</Text>
+                        <Text style={styles.core}>{bundleData?.service?.title}</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, }}>
                             <Image source={require('@/assets/icons/star.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
                             <Text style={styles.rating}>4.8 (3,824 reviews)</Text>
@@ -204,12 +204,13 @@ export default function BuddleScreen() {
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
                         onPress={() => {
-                            setServiceModel("LaundryBundle");
+                            setServiceModel("Service");
+                            setBundleId(bundleData?._id);
                             const itemData = covertData(bundleData?.includes);
                             const itemDataString = JSON.stringify(itemData);
                             router.push({
                                 pathname: 'homePage/services/AfterItemPage',
-                                params: { service: bundleData?._id, service_name: bundleData?.title, base_price: bundleData?.base_price, total: bundleData?.base_price, itemData: itemDataString, total_data: itemData?.length }
+                                params: { service: bundleData?.service?._id, service_name: bundleData?.service?.title, base_price: bundleData?.base_price, total: bundleData?.base_price, itemData: itemDataString, total_data: itemData?.length }
                             })
                         }
                         }

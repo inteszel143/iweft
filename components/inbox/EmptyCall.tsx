@@ -6,7 +6,7 @@ export default function EmptyCall() {
     return (
         <View style={styles.container}>
             <View>
-                <Image source={require('@/assets/icons/under.png')} resizeMode='contain' style={{ width: wp(100), height: hp(18) }} />
+                <Image source={require('@/assets/icons/under.png')} resizeMode='contain' style={{ width: wp(100), height: hp(20) }} />
             </View>
             <Text style={styles.textStyle}>No Call History Yet</Text>
             <Text style={styles.subText}>Your call history will appear here once you start making calls.</Text>

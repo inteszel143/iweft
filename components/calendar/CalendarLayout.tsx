@@ -75,7 +75,7 @@ export default function CalendarLayout() {
             {
                 !data || data.length === 0 ? <EmptyServiceBooking />
                     :
-                    <View style={{ backgroundColor: "#F9F9F9", }}>
+                    <View style={{ backgroundColor: "#F9F9F9" }}>
                         <LinearGradient
                             colors={["#FFFFFF", "#F9F9F9"]}
                             style={{

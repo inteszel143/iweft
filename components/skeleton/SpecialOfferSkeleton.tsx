@@ -36,6 +36,8 @@ export default function SpecialOfferSkeleton() {
                     </View>
                 </View>
             </View>
+
+
         </View>
     )
 }
@@ -67,7 +69,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         width: wp(90),
         height: hp(21),
-        borderWidth: 0.5,
+        borderWidth: 0.4,
         borderColor: "#CACACA",
         marginVertical: hp(3),
         borderRadius: wp(10),

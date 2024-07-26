@@ -16,7 +16,28 @@ export const getHomeServices = async () => {
         },
       }
     );
-    return response?.data?.services || [];
+    return response?.data?.services_with_reviews || [];
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+/**
+ * Get Home Service ID ---------------------------------------------------------
+ */
+
+export const getHomeServicesById = async (serviceId: string) => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  try {
+    const response = await axios.get(
+      `${process.env.EXPO_PUBLIC_API_URL}/service/${serviceId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response?.data || [];
   } catch (error) {
     return Promise.reject(error);
   }

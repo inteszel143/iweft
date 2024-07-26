@@ -7,6 +7,7 @@ import { router } from 'expo-router';
 import { removeBookmarks } from '@/apis/bookmark';
 import errorRes from '@/apis/errorRes';
 import { useQueryClient } from '@tanstack/react-query';
+import SingleStarRating from '../SingleStarRating';
 interface ModalAProps {
     modalRef: React.RefObject<BottomSheetModal>;
     item: any
@@ -48,9 +49,6 @@ export default function BookmarkSheet({ modalRef, item }: ModalAProps) {
                 <BottomSheetView style={styles.contentContainer}>
                     <Text style={styles.bottomSheetIndi}>Offer information</Text>
                     <View style={styles.BottomSheetSeparator} />
-
-
-
                     <View>
                         <TouchableOpacity style={styles.CardStyle}>
                             <View style={styles.cardRow}>
@@ -61,10 +59,10 @@ export default function BookmarkSheet({ modalRef, item }: ModalAProps) {
                                         <Text style={styles.middleText}>{item?.service?.title}</Text>
                                         <Text style={styles.priceText}>AED {item?.base_price}</Text>
                                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2), marginTop: hp(1.5), }}>
-                                            <FontAwesome name='star' size={hp(2)} color={'#FB9400'} />
-                                            <Text style={styles.rateText}>4.8</Text>
+                                            <SingleStarRating rating={item?.review?.average_rating} />
+                                            <Text style={styles.rateText}>{item?.review?.average_rating}</Text>
                                             <View style={styles.cardSeperator} />
-                                            <Text style={styles.rateText}>8,289 reviews</Text>
+                                            <Text style={styles.rateText}>{item?.review?.review_count} {item?.review?.review_count == 1 ? 'review' : 'reviews'}</Text>
                                         </View>
                                     </View>
                                 </View>

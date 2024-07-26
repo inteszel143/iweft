@@ -12,9 +12,9 @@ export default function CustomerSupport() {
     const insets = useSafeAreaInsets();
     const [text, setText] = useState('')
 
-    useEffect(() => {
-        setMessages([...customerSupport])
-    }, []);
+    // useEffect(() => {
+    //     setMessages([...customerSupport])
+    // }, []);
 
     const onSend = useCallback((messages = []) => {
         setMessages(previousMessages =>
@@ -23,7 +23,27 @@ export default function CustomerSupport() {
     }, []);
 
 
-
+    const renderEmptyChat = () => {
+        return (
+            <View style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                paddingHorizontal: wp(6),
+            }}>
+                <Text style={{
+                    fontFamily: "UrbanistMedium",
+                    fontSize: hp(1.8),
+                    color: '#555',
+                    textAlign: 'center',
+                    marginBottom: 10,
+                    transform: [{ rotate: '180deg' }, { scaleX: -1 }],
+                }}>
+                    Send a message to start a conversation.
+                </Text>
+            </View>
+        );
+    };
 
 
     return (
@@ -39,6 +59,7 @@ export default function CustomerSupport() {
                 bottomOffset={insets.bottom}
                 renderAvatar={null}
                 maxComposerHeight={100}
+                renderChatEmpty={() => renderEmptyChat()}
                 renderSystemMessage={(props) => <SystemMessage {...props} />}
                 renderBubble={(props) => {
                     return (

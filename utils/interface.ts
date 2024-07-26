@@ -15,6 +15,10 @@ export interface ServiceItem {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  review: {
+    average_rating: number;
+    review_count: number;
+  };
 }
 
 export interface LaundryBundle {
@@ -48,6 +52,11 @@ export interface LaundryBundle {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  service: {
+    _id: string;
+    title: string;
+    base_price: number;
+  };
 }
 
 export interface SubscriptionItem {

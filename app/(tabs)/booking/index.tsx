@@ -99,7 +99,7 @@ export default function Page() {
                                 })}
                             >
                                 <View style={[styles.rowLeft, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
-                                    <View>
+                                    <View style={styles.imaging}>
                                         <Image
                                             source={{ uri: item?.order_details?.service?.image }}
                                             resizeMode='contain'
@@ -108,9 +108,10 @@ export default function Page() {
                                     </View>
                                     <View style={{ marginLeft: current === 'ar' ? 0 : wp(4), marginRight: current === 'ar' ? wp(4) : 0 }}>
                                         <Text style={styles.titleStyle} >{item?.order_details?.service?.title}</Text>
-                                        <Text style={styles.subTitle}>
+                                        <Text style={styles.subTitle}>{item?.order_details?.service?.sub_title}</Text>
+                                        {/* <Text style={styles.subTitle}>
                                             {item?.order_details?.order_items?.length} {item?.order_details?.order_items?.length === 1 ? 'item' : 'items'}
-                                        </Text>
+                                        </Text> */}
                                         <View style={styles.indicator}>
                                             <Text style={styles.upcoming}>{t('Upcoming')}</Text>
                                         </View>
@@ -135,7 +136,6 @@ export default function Page() {
                                     style={{ marginTop: hp(2) }}>
                                     <View style={[styles.mapRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
                                         <Text style={styles.mapLabel} >{t('Date & Time')}</Text>
-                                        {/* <Text style={styles.mapLabelValue}>Dec 23. 2024 | 10:00 - 12:00 AM</Text> */}
                                         <Text style={styles.mapLabelValue}>{moment(addHours(item?.pick_up_date_time, 4)).format('MMMM D YYYY, h:mm a')}</Text>
                                     </View>
                                     <View style={[styles.mapRow, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', marginTop: hp(2) }]}>
@@ -176,7 +176,6 @@ export default function Page() {
 
                                         <TouchableOpacity style={[styles.mapBtn, { borderWidth: 1, borderColor: "#0a5ca8" }]}
                                             onPress={() => {
-
                                                 setGetBookingId(item?._id);
                                                 setTotal(item?.total_amount);
                                                 handlePresentModalPress()
@@ -263,7 +262,7 @@ export default function Page() {
         </BottomSheetModalProvider >
     )
 
-}
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -299,6 +298,14 @@ const styles = StyleSheet.create({
         width: wp(20),
         height: hp(10)
     },
+    imaging: {
+        width: wp(24),
+        height: hp(11),
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+        borderRadius: wp(2)
+    },
     leftInner: {
         marginLeft: wp(4)
     },
@@ -307,7 +314,7 @@ const styles = StyleSheet.create({
         fontSize: hp(2)
     },
     subTitle: {
-        paddingVertical: hp(2),
+        marginTop: hp(2),
         fontFamily: 'UrbanistMedium',
         fontSize: hp(1.8),
         color: 'gray',
@@ -318,7 +325,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#0a5ca8',
-        borderRadius: wp(2)
+        borderRadius: wp(2),
+        marginTop: hp(2),
     },
     upcoming: {
         fontFamily: 'UrbanistSemiBold',
