@@ -49,8 +49,13 @@ export default function AfterItemPage() {
             setBasePrice(base_price);
             setItemData(itemData);
             setTotal(total);
-            setPromoCode(data[0]?.special_offer?.promo_code);
-            setDiscount(data[0]?.special_offer?.discount_value);
+            if (data && Array.isArray(data) && data[0] && data[0].special_offer) {
+                setPromoCode(data[0]?.special_offer?.promo_code);
+                setDiscount(data[0]?.special_offer?.discount_value);
+            } else {
+                setPromoCode(null)
+                setDiscount("")
+            }
             setTotalData(total_data as string);
             router.push('/homePage/services/ChooseSubscription');
         } else {

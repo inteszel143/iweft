@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "iWeft",
+    "name": "Iweft",
     "slug": "iweft",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "iweft",
@@ -15,7 +15,8 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "usesAppleSignIn": true,
-      "supportsTablet": true,
+      "supportsTablet": false,
+      "buildNumber": "2",
       "privacyManifests": {
         "NSPrivacyAccessedAPITypes": [
           {
@@ -42,6 +43,7 @@
       }
     },
     "android": {
+      "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"

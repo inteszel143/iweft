@@ -13,6 +13,12 @@
     "production": {}
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "imotorapp37@gmail.com",
+        "ascAppId": "6578443052",
+        "appleTeamId": "B8G2838KDP"
+      }
+    }
   }
 }

@@ -26,7 +26,7 @@ export default function ChooseSubscription() {
     if (subscription) {
         return <YourSubscription />
     } else {
-        <SubscriptionPlans />
+        return <SubscriptionPlans />
     };
 
 }

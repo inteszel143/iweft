@@ -14,7 +14,6 @@ export default function SepecialOffers() {
     const isFocused = useIsFocused();
     const { data, isPending } = useSpecialOffers(isFocused);
 
-
     return (
         <View style={styles.container}>
 

@@ -14,8 +14,7 @@ export default function PaymentApple() {
     const { data, isPending } = useGetListPaymentMethod(isFocused);
     const [loading, setLoading] = useState(false);
 
-
-
+    
     const toggleApplePay = async () => {
         if (Platform.OS === 'android') {
             Alert.alert('Apple Pay is not supported.');

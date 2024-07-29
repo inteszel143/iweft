@@ -29,7 +29,7 @@ interface State {
   setServiceModel: (service_model: string) => void;
   setCollectionInstruction: (cinstructions: string[]) => void;
   setDriverInstruction: (instructions: string[]) => void;
-  setPromoCode: (promo_code: string) => void;
+  setPromoCode: (promo_code: string | null) => void;
   setdiscountAmount: (discounted_amount: string | null) => void;
   setTotalAmount: (total_amount: string) => void;
   setDiscount: (discount: string) => void;
@@ -73,7 +73,7 @@ const useStoreBooking = create<State>((set) => ({
     set({ collection_instruction: cinstructions }),
   setDriverInstruction: (instructions: string[]) =>
     set({ driver_instruction: instructions }),
-  setPromoCode: (promo_code: string) => set({ promo_code }),
+  setPromoCode: (promo_code: string | null) => set({ promo_code }),
   setdiscountAmount: (discounted_amount: string | null) =>
     set({ discounted_amount }),
   setTotalAmount: (total_amount: string) => set({ total_amount }),
