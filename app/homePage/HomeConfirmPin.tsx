@@ -26,8 +26,8 @@ interface CellProps {
 }
 
 export default function HomeConfirmPin() {
-    const { subscriptionId } = useStoreSub();
-    const { service, itemData, pick_up_date_time, delivery_date_time, address, latitude, longitude, total_amount, discounted_amount, driver_instruction, promo_code, collection_instruction, service_model, bundleId } = useStoreBooking();
+    const { subscriptionId, setPlanName } = useStoreSub();
+    const { service, itemData, pick_up_date_time, delivery_date_time, address, latitude, longitude, total_amount, discounted_amount, driver_instruction, promo_code, collection_instruction, service_model, bundleId, setBundleId } = useStoreBooking();
     const [modalVisible, setModalVisible] = useState(false);
     const [btnLoading, setBtnLoading] = useState(false);
     const CELL_COUNT = 4;
@@ -68,7 +68,6 @@ export default function HomeConfirmPin() {
 
 
     const onSubmit = async () => {
-
         setBtnLoading(true);
         const totalPayment = parseFloat(total_amount);
         const orderData = {
@@ -96,10 +95,11 @@ export default function HomeConfirmPin() {
                 const orderResult = await createBooking(orderData);
                 if (orderResult?.message === "Order successfully created") {
                     await addPayUsingCard(totalPayment, orderResult?.orders?._id, subscriptionId as string);
-
                     setOrderId(orderResult?.orders?._id);
                     setModalVisible(true);
                     setBtnLoading(false);
+                    setPlanName("");
+                    setBundleId(null);
                 }
             } catch (error) {
                 console.log(errorRes(error));

@@ -64,8 +64,13 @@ export default function AfterItemPage() {
             setBasePrice(base_price);
             setItemData(itemData);
             setTotal(total);
-            setDiscount(data[0]?.special_offer?.discount_value);
-            setPromoCode(data[0]?.special_offer?.promo_code);
+            if (data && Array.isArray(data) && data[0] && data[0].special_offer) {
+                setPromoCode(data[0]?.special_offer?.promo_code);
+                setDiscount(data[0]?.special_offer?.discount_value);
+            } else {
+                setPromoCode(null)
+                setDiscount("")
+            }
             setTotalData(total_data as string);
             router.push('/homePage/BookingDetails');
         }

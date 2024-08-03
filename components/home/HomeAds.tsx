@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity, ScrollView }
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 
 export default function HomeAds() {
 
@@ -62,7 +62,9 @@ export default function HomeAds() {
                             </View>
 
 
-                            <TouchableOpacity style={styles.btnOffer}>
+                            <TouchableOpacity style={styles.btnOffer}
+                                onPress={() => router.push('/homePage/SubscriptionOffer')}
+                            >
                                 <Text style={{ fontFamily: 'UrbanistBold', fontSize: hp(1.8), color: "#0a5ca8" }} >Grab Offer</Text>
                                 <MaterialIcons name='keyboard-arrow-right' size={hp(2.5)} color={"#6F767E"} />
                             </TouchableOpacity>

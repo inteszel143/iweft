@@ -37,46 +37,39 @@ export default function AppleIcon() {
                     AppleAuthentication.AppleAuthenticationScope.EMAIL
                 ]
             });
-
             const appleEmail = await SecureStore.getItemAsync('appleEmail');
-
-            if (appleEmail === null) {
+            if (appleEmail == null) {
                 try {
-                    const check = await getEmailChecker(credential?.email as string);
-                    setExists(check?.exists);
-
-                    const response = await signInWithApple(credential?.email, credential?.fullName?.givenName + ' ' + credential?.fullName?.familyName, credential?.identityToken);
+                    // const check = await getEmailChecker(credential?.email as string);
+                    const response = await signInWithApple(credential?.email, credential?.fullName?.givenName + ' ' + credential?.fullName?.familyName, credential?.identityToken as string);
                     await SecureStore.setItemAsync('accessToken', response?.access?.token);
                     await SecureStore.setItemAsync('appleEmail', credential?.email as string);
-                    // await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
-
                     setRefreshToken(response?.refresh?.token);
+                    setExists(false);
                     setSuccessLogin(true);
                 } catch (error) {
+                    console.log(errorRes(error))
                     setErrorLoginModal(true);
                 }
             } else {
                 try {
-
                     const check = await getEmailChecker(appleEmail as string);
                     setExists(check?.exists);
-
-                    const response = await signInWithApple(credential?.email, credential?.fullName?.givenName + ' ' + credential?.fullName?.familyName, credential?.identityToken);
+                    const response = await signInWithApple(appleEmail, credential?.fullName?.givenName + ' ' + credential?.fullName?.familyName, credential?.identityToken as string);
                     await SecureStore.setItemAsync('accessToken', response?.access?.token);
-
-                    // await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
-
                     setRefreshToken(response?.refresh?.token);
                     setSuccessLogin(true);
                 } catch (error) {
+                    console.log(errorRes(error))
                     setErrorLoginModal(true);
 
                 }
             }
         } catch (e) {
             if (errorRes(e) === "The user canceled the authorization attempt") {
-                return;
+                return
             } else {
+                console.log(errorRes(e))
                 setErrorLoginModal(true);
             }
         }

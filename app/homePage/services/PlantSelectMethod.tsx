@@ -2,9 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View, Image, Platform } from 'react
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router } from 'expo-router';
-import { paymentMethods } from '@/constants/booking/data';
 import { Fontisto } from '@expo/vector-icons';
-import { defaultStyles } from '@/constants/Styles';
 import { useDefaultMethod } from '@/query/stripeQuery';
 import { useIsFocused } from '@react-navigation/native';
 import MethodSkeleton from '@/components/skeleton/MethodSkeleton';

@@ -13,7 +13,6 @@ export default function ChooseSubscription() {
 
     const isFocused = useIsFocused();
     const { data: subscription, isPending } = useGetAllSubscription(isFocused);
-
     if (isPending) {
         return (
             <View style={styles.container}>
@@ -23,7 +22,7 @@ export default function ChooseSubscription() {
         )
     }
 
-    if (subscription) {
+    if (!subscription) {
         return <YourSubscription />
     } else {
         return <SubscriptionPlans />

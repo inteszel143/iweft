@@ -295,11 +295,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: hp(5)
+        marginBottom: hp(4.5)
     },
     rowText: {
         fontFamily: 'UrbanistSemiBold',
-        fontSize: hp(2.3),
+        fontSize: hp(2.2),
         color: "#424242"
     }
 })

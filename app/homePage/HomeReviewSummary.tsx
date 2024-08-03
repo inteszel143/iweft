@@ -22,8 +22,6 @@ export default function HomeReviewSummary() {
     };
     return (
         <View style={styles.container}>
-
-
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
                     <View style={styles.headerLeft}>

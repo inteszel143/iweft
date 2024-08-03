@@ -64,8 +64,8 @@ export const signInWithGoogle = async (
 
 export const signInWithApple = async (
   email: any,
-  fullname: any,
-  identityToken: any
+  fullname: string,
+  identityToken: string
 ) => {
   const data = {
     email: email,

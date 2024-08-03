@@ -13,6 +13,32 @@ interface ModalProps {
 export default function ForgotCodeModal({ modalVisible, setModalVisible }: ModalProps) {
 
     return (
+        // <Modal
+        //     animationType="fade"
+        //     transparent={true}
+        //     visible={modalVisible}
+        //     presentationStyle='overFullScreen'
+        //     statusBarTranslucent={true}
+        // >
+        //     <View style={styles.modalStyle}>
+        //         <View style={styles.modalBox}>
+        //             <View>
+        //                 <LottieView
+        //                     autoPlay
+        //                     style={styles.errorLottieStyle}
+        //                     source={require('@/assets/animate/check.json')}
+        //                 />
+        //             </View>
+        //             <Text style={styles.titleStyle}>Success !</Text>
+        //             <Text style={styles.subStyle}>We already have sent your verification code please check it.</Text>
+        //             <View style={{ marginTop: hp(8) }} />
+        //             <View style={styles.indicator}>
+        //                 <BallIndicator color="#6DCC5B" size={hp(4)} />
+        //             </View>
+        //         </View>
+        //     </View>
+
+        // </Modal>
         <Modal
             animationType="fade"
             transparent={true}
@@ -23,11 +49,7 @@ export default function ForgotCodeModal({ modalVisible, setModalVisible }: Modal
             <View style={styles.modalStyle}>
                 <View style={styles.modalBox}>
                     <View>
-                        <LottieView
-                            autoPlay
-                            style={styles.errorLottieStyle}
-                            source={require('@/assets/animate/check.json')}
-                        />
+                        <Image source={require('@/assets/temp/success.jpg')} resizeMode='contain' style={styles.imageStyle} />
                     </View>
                     <Text style={styles.titleStyle}>Success !</Text>
                     <Text style={styles.subStyle}>We already have sent your verification code please check it.</Text>
@@ -51,7 +73,7 @@ const styles = StyleSheet.create({
     },
     modalBox: {
         width: wp(86),
-        height: Platform.OS === 'ios' ? hp(48) : hp(50),
+        height: Platform.OS === 'ios' ? hp(52) : hp(54),
         backgroundColor: "white",
         borderRadius: wp(6),
         alignItems: 'center',
@@ -67,7 +89,7 @@ const styles = StyleSheet.create({
         fontSize: hp(2.9),
         textAlign: 'center',
         color: '#6DCC5B',
-        marginTop: hp(1)
+        marginTop: hp(2)
     },
     subStyle: {
         fontFamily: 'UrbanistMedium',

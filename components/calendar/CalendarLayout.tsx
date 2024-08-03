@@ -7,7 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { upcoming } from '@/constants/booking/data';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { useIsFocused } from '@react-navigation/native';
-import { useGetBookingByDate } from '@/query/orderQuery';
+import { useBooking, useGetBookingByDate } from '@/query/orderQuery';
 import EmptyServiceBooking from './EmptyServiceBooking';
 import { useTranslation } from 'react-i18next';
 import { getCurrentLanguage } from '@/services/i18n';
@@ -19,16 +19,43 @@ export default function CalendarLayout() {
     const formattedCurrentDate = currentDate.toISOString().split('T')[0];
     const [selected, setSelected] = useState(formattedCurrentDate);
     const { data, isFetching } = useGetBookingByDate(isFocused, selected);
+    const { data: updatedata } = useBooking(isFocused, "Upcoming");
+
+    const currentDates = new Date().toISOString().split('T')[0];
     const yesterday = new Date(currentDate);
     yesterday.setDate(currentDate.getDate() - 1);
     const formattedYesterday = currentDate.toISOString().split('T')[0];
+
+    const markedDates = updatedata?.reduce((acc: any, current: any) => {
+        const date = current.pick_up_date_time.split('T')[0];
+        acc[date] = {
+            selected: true,
+            marked: true,
+            selectedColor: '#93C120'
+        };
+        return acc;
+    }, {});
+
     return (
         <View style={styles.container}>
+
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(5), position: 'absolute', right: wp(8), }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                    <View style={[styles.circle, { backgroundColor: "#0A5CA8" }]} />
+                    <Text style={styles.textStyle}>Select</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                    <View style={[styles.circle, { backgroundColor: "#93C120" }]} />
+                    <Text style={styles.textStyle}>Upcoming</Text>
+                </View>
+            </View>
+
             <Calendar
                 style={{
                     marginHorizontal: wp(4),
                     borderRadius: wp(4),
-                    marginBottom: hp(1),
+                    marginTop: hp(2),
+                    marginBotton: hp(1),
                     overflow: 'hidden',
                     backgroundColor: "#E7EFF6",
                 }}
@@ -58,7 +85,9 @@ export default function CalendarLayout() {
                 onDayPress={(day: any) => {
                     setSelected(day.dateString);
                 }}
+                // markedDates={markedDates}
                 markedDates={{
+                    ...markedDates,
                     [selected]: {
                         selected: true,
                         // marked: true,
@@ -68,7 +97,17 @@ export default function CalendarLayout() {
                             fontFamily: 'UrbanistBold',
                             fontSize: hp(2),
                         },
-                    },
+                    }
+                    // [markedDates]: {
+                    //     selected: true,
+                    //     // marked: true,
+                    //     disableTouchEvent: true,
+                    //     selectedColor: '#93C120',
+                    //     customTextStyle: {
+                    //         fontFamily: 'UrbanistBold',
+                    //         fontSize: hp(2),
+                    //     },
+                    // }
                 }}
             />
 
@@ -223,7 +262,15 @@ const styles = StyleSheet.create({
         marginHorizontal: wp(2),
         marginTop: hp(3)
     },
-
+    circle: {
+        width: wp(4),
+        height: wp(4),
+        borderRadius: wp(50),
+    },
+    textStyle: {
+        fontFamily: 'UrbanistMedium',
+        fontSize: hp(1.8)
+    }
 
 
 })

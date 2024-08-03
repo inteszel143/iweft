@@ -26,8 +26,8 @@ export default function EditProflieData() {
     const { data, isFetching } = useUserQuery(isFocused);
     const { address, street, citys, latitude, longitude } = useStoreAddress();
     const phoneInput = useRef<PhoneInput>(null);
-    const [gender, setGender] = useState(""); // Gender Value
-    const [contry, setCountry] = useState(""); // Country Value
+    const [gender, setGender] = useState(""); 
+    const [contry, setCountry] = useState(""); 
 
     const [addressError, setAddressError] = useState(false);
     const [date, setDate] = useState(new Date(data?.dob));
@@ -67,6 +67,7 @@ export default function EditProflieData() {
             latitude: latitude,
             longitude: longitude,
         }
+        console.log(formdataglobal);
         if (address === "") {
             try {
                 await userUpdateProfileData(formdata);

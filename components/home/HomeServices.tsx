@@ -30,22 +30,30 @@ export default function HomeServices() {
                                             pathname: 'homePage/services/ServicesScreen',
                                             params: { item: JSON.stringify(item) },
                                         })}
+                                        style={{ alignItems: 'center' }}
                                     >
-                                        <Image
-                                            source={{ uri: item?.image }}
-                                            resizeMode='contain'
-                                            style={styles.imageStyle}
-                                        />
+                                        <View style={styles.circleImage}>
+                                            <Image
+                                                source={{ uri: item?.image }}
+                                                resizeMode='contain'
+                                                style={styles.imageStyle}
+                                            />
+                                        </View>
                                         <Text style={styles.titleStyle} >{item?.title.replace(" Services", "")}</Text>
                                     </TouchableOpacity>
                                 )
                             })
                         }
                         <Link href={'/homePage/services/AllServices'} asChild>
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                                style={{ alignItems: 'center' }}
+                            >
                                 <View style={styles.seeallStyle}>
-                                    {current === 'ar' ? <Ionicons name='arrow-back' size={hp(3)} color={"#6F767E"} /> : <Ionicons name='arrow-forward' size={hp(3)} color={"#6F767E"} />}
+                                    {current === 'ar' ? <Ionicons name='arrow-back' size={hp(3)} color={"#6F767E"} />
+                                        :
+                                        <Ionicons name='arrow-forward' size={hp(3)} color={"#6F767E"} />}
                                 </View>
+                                <Text style={styles.titleStyle} >See All</Text>
                             </TouchableOpacity>
                         </Link>
                     </View>
@@ -75,22 +83,29 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
     },
     imageStyle: {
-        width: wp(20),
-        height: hp(10)
+        width: wp(13),
+        height: hp(6),
+        // backgroundColor: 'gray',
     },
     seeallStyle: {
-        width: wp(18),
-        height: wp(18),
+        width: wp(20),
+        height: wp(20),
         borderRadius: wp(10),
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 0.5,
-        borderColor: "#DADADA",
-        backgroundColor: "#FAFAFA"
+        backgroundColor: "#F8F8F8",
     },
     titleStyle: {
-        fontFamily: "UrbanistMedium",
-        fontSize: hp(1.8),
-        marginTop: hp(1)
+        fontFamily: "UrbanistSemiBold",
+        fontSize: hp(1.7),
+        marginTop: hp(1.5)
+    },
+    circleImage: {
+        width: wp(22),
+        height: wp(22),
+        borderRadius: wp(12),
+        backgroundColor: "#F8F8F8",
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 })

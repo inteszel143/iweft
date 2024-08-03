@@ -1,10 +1,17 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
+import { useIsFocused } from '@react-navigation/native';
+import { useSubscriptionPlan } from '@/query/homeQuery';
+import SubscriptionSkeleton from '@/components/skeleton/SubscriptionSkeleton';
 
 export default function SubscriptionPlan() {
+
+    const isFocused = useIsFocused();
+    const { data, isPending } = useSubscriptionPlan(isFocused);
+
     return (
 
         <View style={styles.container}>
@@ -27,61 +34,61 @@ export default function SubscriptionPlan() {
                 </View>
             </View>
 
+            {
+                isPending ? <SubscriptionSkeleton />
+                    :
 
-            <TouchableOpacity style={styles.CardStyle}>
-                <View style={styles.cardRow}>
-                    <View style={styles.cardLeft}>
-                        <Image source={require('@/assets/temp/bookmark.jpg')} resizeMode='contain' style={{ width: wp(28), height: hp(15), }} />
-                        <View style={{ width: wp(45) }}>
-                            < Text style={styles.topText} >3 collections a month</Text>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2), marginTop: hp(1.5) }}>
-                                <Image source={require('@/assets/temp/subs/basic.jpg')} resizeMode='contain' style={{ width: wp(6), height: hp(4) }} />
-                                <Text style={styles.middleText}>Basic plan</Text>
-                            </View>
-                            <Text style={styles.priceText}>AED 899</Text>
-                        </View>
-                    </View>
-                    <View>
-                        {/* <FontAwesome name='bookmark' size={hp(2.9)} color={'#0A5CA8'} /> */}
-                    </View>
-                </View>
-            </TouchableOpacity >
-            <TouchableOpacity style={styles.CardStyle}>
-                <View style={styles.cardRow}>
-                    <View style={styles.cardLeft}>
-                        <Image source={require('@/assets/temp/bookmark.jpg')} resizeMode='contain' style={{ width: wp(28), height: hp(15), }} />
-                        <View style={{ width: wp(45) }}>
-                            < Text style={styles.topText} >3 collections a month</Text>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2), marginTop: hp(1.5) }}>
-                                <Image source={require('@/assets/temp/subs/premium.jpg')} resizeMode='contain' style={{ width: wp(6), height: hp(4) }} />
-                                <Text style={styles.middleText}>Basic plan</Text>
-                            </View>
-                            <Text style={styles.priceText}>AED 899</Text>
-                        </View>
-                    </View>
-                    <View>
-                        {/* <FontAwesome name='bookmark' size={hp(2.9)} color={'#0A5CA8'} /> */}
-                    </View>
-                </View>
-            </TouchableOpacity >
-            <TouchableOpacity style={styles.CardStyle}>
-                <View style={styles.cardRow}>
-                    <View style={styles.cardLeft}>
-                        <Image source={require('@/assets/temp/bookmark.jpg')} resizeMode='contain' style={{ width: wp(28), height: hp(15), }} />
-                        <View style={{ width: wp(45) }}>
-                            < Text style={styles.topText} >3 collections a month</Text>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2), marginTop: hp(1.5) }}>
-                                <Image source={require('@/assets/temp/subs/platinum.jpg')} resizeMode='contain' style={{ width: wp(6), height: hp(4) }} />
-                                <Text style={styles.middleText}>Basic plan</Text>
-                            </View>
-                            <Text style={styles.priceText}>AED 899</Text>
-                        </View>
-                    </View>
-                    <View>
-                        {/* <FontAwesome name='bookmark' size={hp(2.9)} color={'#0A5CA8'} /> */}
-                    </View>
-                </View>
-            </TouchableOpacity >
+                    <FlatList
+                        data={data}
+                        keyExtractor={item => item.product_id}
+                        renderItem={({ item }) => (
+                            // <TouchableOpacity style={styles.CardStyle}
+                            //     onPress={() => router.push({
+                            //         pathname: 'homePage/services/PlansScreen',
+                            //         params: { item: JSON.stringify(item) },
+                            //     })}
+                            // >
+                            //     <View style={styles.cardRow}>
+                            //         <View style={styles.cardLeft}>
+                            //             <Image source={{ uri: item?.image }} resizeMode='contain' style={{ width: wp(32), height: hp(15), }} />
+                            //             <View style={{ width: wp(45) }}>
+                            //                 < Text style={styles.topText} >{item?.description}</Text>
+                            //                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2), marginTop: hp(1.5) }}>
+                            //                     {/* <Image source={item?.icon} resizeMode='contain' style={{ width: wp(6), height: hp(4) }} /> */}
+                            //                     <Text style={styles.middleText}>{item.name}</Text>
+                            //                 </View>
+                            //                 <Text style={styles.priceText}>AED {item.unit_amount / 100}</Text>
+                            //             </View>
+                            //         </View>
+                            //         <View>
+                            //             {/* <FontAwesome name='bookmark' size={hp(2.9)} color={'#0A5CA8'} /> */}
+                            //         </View>
+                            //     </View>
+                            // </TouchableOpacity >
+
+                            <TouchableOpacity style={styles.CardStyle}>
+                                <View style={styles.cardRow}>
+                                    <View style={styles.cardLeft}>
+                                        <Image source={{ uri: item?.image }} resizeMode='contain' style={{ width: wp(28), height: hp(15), }} />
+                                        <View style={{ width: wp(45) }}>
+                                            < Text style={styles.topText} >{item?.description}</Text>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2), marginTop: hp(1.5) }}>
+                                                <Image source={require('@/assets/temp/subs/basic.jpg')} resizeMode='contain' style={{ width: wp(6), height: hp(4) }} />
+                                                <Text style={styles.middleText}>{item?.name}</Text>
+                                            </View>
+                                            <Text style={styles.priceText}>AED {item?.unit_amount / 100}</Text>
+                                        </View>
+                                    </View>
+                                    <View>
+                                        {/* <FontAwesome name='bookmark' size={hp(2.9)} color={'#0A5CA8'} /> */}
+                                    </View>
+                                </View>
+                            </TouchableOpacity >
+                        )}
+                    />
+            }
+
+
 
 
 

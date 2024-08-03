@@ -32,11 +32,11 @@ export default function index() {
                     await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
                     queryClient.invalidateQueries({ queryKey: ['user-data'] });
                     router.push('/(tabs)/');
-
                 } catch (error) {
                     console.log('Error during token refresh:', errorRes(error));
+                    await SecureStore.deleteItemAsync('accessToken');
+                    await SecureStore.deleteItemAsync('refreshToken');
                     router.push('/authPage/LoginScreen');
-
                 }
             } else {
                 if (onboarded === null) {

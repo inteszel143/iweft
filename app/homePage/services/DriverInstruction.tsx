@@ -121,7 +121,7 @@ export default function DriverInstruction() {
 
             <ScrollView contentContainerStyle={{ paddingBottom: hp(16) }} >
                 <View style={styles.containerStyle}>
-                    <Text style={[styles.topText,]}>Choose the service you want to subscribe to:</Text>
+                    <Text style={[styles.topText,]}>Do you have any collection instructions?</Text>
 
 
                     {/* card */}
@@ -141,7 +141,7 @@ export default function DriverInstruction() {
 
 
 
-                    <Text style={[styles.topText, { marginTop: hp(3) }]}>Do you have any delivery instructions?</Text>
+                    <Text style={[styles.topText, { marginTop: hp(4) }]}>Do you have any delivery instructions?</Text>
                     {/* card */}
                     {
                         botData?.map((item, index) => (

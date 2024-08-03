@@ -6,7 +6,7 @@ export default function EmptyChats() {
     return (
         <View style={styles.container}>
             <View>
-                <Image source={require('@/assets/icons/under.png')} resizeMode='contain' style={{ width: wp(100), height: hp(18) }} />
+                <Image source={require('@/assets/icons/under.png')} resizeMode='contain' style={{ width: wp(100), height: hp(20) }} />
             </View>
             <Text style={styles.textStyle}>You have no messages.</Text>
             <Text style={styles.subText}>Your inbox is empty. Start a conversation to see messages here.</Text>

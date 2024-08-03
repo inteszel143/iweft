@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     },
     modalBox: {
         width: wp(82),
-        height: Platform.OS === 'ios' ? hp(28) : hp(30),
+        height: Platform.OS === 'ios' ? hp(30) : hp(32),
         backgroundColor: "white",
         borderRadius: wp(6),
         alignItems: 'center',

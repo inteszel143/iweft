@@ -44,6 +44,7 @@ export default function Security() {
                 await SecureStore.deleteItemAsync('accessToken');
                 await SecureStore.deleteItemAsync('refreshToken');
                 await SecureStore.deleteItemAsync('onboarded');
+                await SecureStore.deleteItemAsync('appleEmail');
                 router.push('/authPage/OnboardingScreen');
                 bottomSheetModalRef.current?.close();
                 setDeleteBtnLoading(false);

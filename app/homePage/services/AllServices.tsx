@@ -38,7 +38,6 @@ export default function AllServices() {
                 </View>
             </View>
 
-
             {
                 isPending ? <AllServiceSkeleton />
                     :
@@ -66,17 +65,22 @@ export default function AllServices() {
                             showsVerticalScrollIndicator={false}
                             keyExtractor={(item) => item?._id}
                             renderItem={({ item }) => (
-                                <TouchableOpacity style={styles.CardStyle}>
+                                <TouchableOpacity style={styles.CardStyle}
+                                    onPress={() => router.push({
+                                        pathname: 'homePage/services/ServicesScreen',
+                                        params: { item: JSON.stringify(item) },
+                                    })}
+                                >
                                     <View style={styles.cardRow}>
                                         <View style={styles.cardLeft}>
                                             <View style={styles.imaging}>
                                                 <Image source={{ uri: item?.image }}
                                                     resizeMode='contain'
-                                                    style={{ width: wp(26), height: hp(14), }} />
+                                                    style={{ width: wp(24), height: hp(14), }} />
                                             </View>
                                             <View style={{ width: wp(45) }}>
-                                                < Text style={styles.topText} >{item?.title}</Text>
-                                                <Text style={styles.middleText}>{item?.sub_title}</Text>
+                                                < Text style={styles.topText} >{item?.sub_title}</Text>
+                                                <Text style={styles.middleText}>{item?.title}</Text>
                                                 <Text style={styles.priceText}>AED {item?.base_price}</Text>
                                                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2), marginTop: hp(1.5), }}>
                                                     {/* <FontAwesome name='star' size={hp(2)} color={'#FB9400'} /> */}
@@ -90,7 +94,7 @@ export default function AllServices() {
                                             </View>
                                         </View>
                                         <View>
-                                            <FontAwesome name={validateServiceInTheBookmark(bookdata, item?._id) ? 'bookmark' : 'bookmark-o'} size={hp(2.9)} color={'#0A5CA8'} />
+                                            <FontAwesome name={validateServiceInTheBookmark(bookdata, item?._id) ? 'bookmark' : 'bookmark-o'} size={hp(3)} color={'#0A5CA8'} />
                                         </View>
 
                                     </View>

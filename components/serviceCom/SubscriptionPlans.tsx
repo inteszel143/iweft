@@ -12,7 +12,6 @@ export default function SubscriptionPlans() {
     const isFocused = useIsFocused();
     const { data, isPending } = useSubscriptionPlan(isFocused);
 
-
     return (
         <View style={styles.container}>
 
