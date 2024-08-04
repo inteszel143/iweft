@@ -2,7 +2,7 @@
   "expo": {
     "name": "Iweft",
     "slug": "iweft",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "iweft",
@@ -16,7 +16,7 @@
     "ios": {
       "usesAppleSignIn": true,
       "supportsTablet": false,
-      "buildNumber": "3",
+      "buildNumber": "4",
       "privacyManifests": {
         "NSPrivacyAccessedAPITypes": [
           {
@@ -43,7 +43,7 @@
       }
     },
     "android": {
-      "versionCode": 3,
+      "versionCode": 4,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"

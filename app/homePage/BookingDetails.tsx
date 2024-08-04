@@ -89,7 +89,20 @@ export default function BookingDetails() {
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(15) }}>
 
                     <View style={styles.calendarStyle}>
-                        <Text style={styles.select}>Select Date</Text>
+                        <Text style={styles.select}>Select Date:</Text>
+
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(5), position: 'absolute', right: wp(8), top: hp(4) }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                                <View style={[styles.circle, { backgroundColor: "#0A5CA8" }]} />
+                                <Text style={styles.textStyle}>Collect Date</Text>
+                            </View>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                                <View style={[styles.circle, { backgroundColor: "#93C120" }]} />
+                                <Text style={styles.textStyle}>Delivery Date</Text>
+                            </View>
+                        </View>
+
+
                         <Calendar
                             style={{
                                 marginHorizontal: wp(4),
@@ -120,10 +133,9 @@ export default function BookingDetails() {
                             current={formattedCurrentDate}
                             minDate={formattedYesterday}
                             pagingEnabled={true}
-                            onDayPress={day => {
+                            onDayPress={(day: any) => {
                                 handleDayPress(day.dateString);
                             }}
-
                             markedDates={{
                                 [selected[0]]: {
                                     selected: true,
@@ -137,7 +149,7 @@ export default function BookingDetails() {
                                 [selected[1]]: {
                                     selected: true,
                                     disableTouchEvent: true,
-                                    selectedColor: '#0A5CA8',
+                                    selectedColor: '#93C120',
                                     customTextStyle: {
                                         fontFamily: 'UrbanistBold',
                                         fontSize: hp(2),
@@ -256,13 +268,13 @@ const styles = StyleSheet.create({
     },
 
     calendarStyle: {
-        marginTop: hp(3),
+        marginTop: hp(1.5),
     },
     select: {
         fontFamily: "UrbanistBold",
         fontSize: hp(2.2),
         paddingLeft: wp(5),
-        paddingBottom: hp(3)
+        paddingBottom: hp(5)
     },
     chooseTime: {
         fontFamily: "UrbanistBold",
@@ -351,6 +363,15 @@ const styles = StyleSheet.create({
         fontSize: hp(2),
         color: 'white'
     },
+    circle: {
+        width: wp(4),
+        height: wp(4),
+        borderRadius: wp(50),
+    },
+    textStyle: {
+        fontFamily: 'UrbanistMedium',
+        fontSize: hp(1.8)
+    }
 
 
 })

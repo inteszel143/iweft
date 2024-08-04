@@ -103,7 +103,8 @@ export default function Bookmarks() {
                                                     </View>
                                                 </View>
                                                 <View>
-                                                    <FontAwesome name='bookmark' size={hp(2.9)} color={'#0A5CA8'} />
+                                                    <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5), height: hp(4) }} />
+                                                    {/* <FontAwesome name='bookmark' size={hp(2.9)} color={'#0A5CA8'} /> */}
                                                 </View>
                                             </View>
                                         </TouchableOpacity >

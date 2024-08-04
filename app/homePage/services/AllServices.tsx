@@ -10,12 +10,15 @@ import AllServiceSkeleton from '@/components/skeleton/AllServiceSkeleton';
 import SingleStarRating from '@/components/SingleStarRating';
 import { usetGetBookmarks } from '@/query/bookmarkQuery';
 import { validateServiceInTheBookmark } from '@/utils/validate';
+
 export default function AllServices() {
     const isFocused = useIsFocused();
     const { data, isPending } = useHomeServices(isFocused);
     const { data: bookdata } = usetGetBookmarks(isFocused);
     // hook
     const [topSelect, setTopSelect] = useState(0);
+    const activeBook = require('@/assets/icons/bookmarkActive.jpg');
+    const inActiveBook = require('@/assets/icons/bookmarkInactive.jpg');
 
     return (
         <View style={styles.container}>
@@ -76,7 +79,7 @@ export default function AllServices() {
                                             <View style={styles.imaging}>
                                                 <Image source={{ uri: item?.image }}
                                                     resizeMode='contain'
-                                                    style={{ width: wp(24), height: hp(14), }} />
+                                                    style={{ width: wp(20), height: hp(10), }} />
                                             </View>
                                             <View style={{ width: wp(45) }}>
                                                 < Text style={styles.topText} >{item?.sub_title}</Text>
@@ -94,7 +97,11 @@ export default function AllServices() {
                                             </View>
                                         </View>
                                         <View>
-                                            <FontAwesome name={validateServiceInTheBookmark(bookdata, item?._id) ? 'bookmark' : 'bookmark-o'} size={hp(3)} color={'#0A5CA8'} />
+                                            {
+                                                validateServiceInTheBookmark(bookdata, item?._id) ? <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5), height: hp(4) }} />
+                                                    :
+                                                    <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5), height: hp(4) }} />
+                                            }
                                         </View>
 
                                     </View>

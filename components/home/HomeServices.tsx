@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
     imageStyle: {
         width: wp(13),
         height: hp(6),
-        // backgroundColor: 'gray',
     },
     seeallStyle: {
         width: wp(20),

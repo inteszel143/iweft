@@ -1,20 +1,23 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform, ActivityIndicator, TextInput } from 'react-native'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import MapView, { Marker, PROVIDER_GOOGLE, } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Fontisto } from '@expo/vector-icons';
 import { defaultStyles } from '@/constants/Styles';
 import useStoreBooking from '@/store/useStoreBooking';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 export default function BookingAddress() {
     const { setAddress, setLatitude,
         setLongitude } = useStoreBooking();
     const [errorMsg, setErrorMsg] = useState("");
     const [nameAddress, setNameAddress] = useState<any>();
+    const [contry, setContry] = useState<any>();
     const [city, setCity] = useState<any>();
     const [street, setStreet] = useState<any>();
+    const [commu, setCommu] = useState<any>();
     const [lat, setLat] = useState<any>("");
     const [long, setLong] = useState<any>("");
     const [btnLoading, setBtnLoading] = useState(false);
@@ -34,7 +37,7 @@ export default function BookingAddress() {
 
     // bottomsheet
     const bottomSheetRef = useRef<BottomSheet>(null);
-    const snapPoints = useMemo(() => ['35%', '64%'], []);
+    const snapPoints = useMemo(() => ['35%', '80%'], []);
     // callbacks
     const handleSheetChanges = useCallback((index: number) => {
         // console.log('handleSheetChanges', index);
@@ -55,11 +58,13 @@ export default function BookingAddress() {
         });
         setNameAddress(userAddress[0].district + ', ' + userAddress[0].street + ', ' + userAddress[0].city + ', ' + userAddress[0].country);
         setStreet(userAddress[0].street);
-        setCity(userAddress[0].district);
+        setCity(userAddress[0].city);
+        setCommu(userAddress[0].district);
+        setContry(userAddress[0].country);
     };
 
     const onSubmit = async () => {
-        const address = nameAddress;
+        const address = commu + ', ' + street + ', ' + city + ', ' + contry;
         const latitude = lat;
         const longitude = long;
         setAddress(address as string);
@@ -117,29 +122,58 @@ export default function BookingAddress() {
                 snapPoints={snapPoints}
                 handleIndicatorStyle={{ backgroundColor: '#DADADA' }}
                 onChange={handleSheetChanges}
+                style={{
+                    borderTopLeftRadius: wp(8),
+                    borderTopRightRadius: wp(8),
+                    overflow: 'hidden',
+                }}
             >
                 <BottomSheetView style={styles.contentContainer}>
                     <Text style={styles.bottomSheetTitle}>Location Details</Text>
                     <View style={styles.BottomSheetSeparator} />
-                    <View>
-                        <Text style={styles.adddressTitle}>Address</Text>
-                        <View style={styles.textField}>
-                            <Text style={styles.address}>{nameAddress}</Text>
-                            <Fontisto name='map-marker-alt' size={hp(2)} />
+                    <KeyboardAwareScrollView extraScrollHeight={hp(3)}>
+                        <View>
+                            <Text style={styles.adddressTitle}>Address</Text>
+                            <View style={styles.textField}>
+                                <TextInput
+                                    defaultValue={nameAddress}
+                                    onChangeText={(text) => setAddress(text)}
+                                    style={[styles.address]}
+                                />
+                                <Fontisto name='map-marker-alt' size={hp(2)} />
+                            </View>
                         </View>
-                    </View>
-                    <View>
-                        <Text style={styles.adddressTitle}>House/ Apartment number</Text>
-                        <View style={styles.textField}>
-                            <Text style={styles.address}>{street}</Text>
+                        <View>
+                            <Text style={styles.adddressTitle}>House/ Apartment number</Text>
+                            <View style={styles.textField}>
+                                <TextInput
+                                    defaultValue={street}
+                                    onChangeText={(text) => setStreet(text)}
+                                    style={styles.address}
+                                />
+                            </View>
                         </View>
-                    </View>
-                    <View>
-                        <Text style={styles.adddressTitle}>City</Text>
-                        <View style={styles.textField}>
-                            <Text style={styles.address}>{city}</Text>
+                        <View>
+                            <Text style={styles.adddressTitle}>City</Text>
+                            <View style={styles.textField}>
+                                <TextInput
+                                    defaultValue={city}
+                                    onChangeText={(text) => setCity(text)}
+                                    style={styles.address}
+                                />
+                            </View>
                         </View>
-                    </View>
+                        <View>
+                            <Text style={styles.adddressTitle}>Community</Text>
+                            <View style={styles.textField}>
+                                <TextInput
+                                    defaultValue={commu}
+                                    onChangeText={(text) => setCommu(text)}
+                                    style={styles.address}
+                                />
+                            </View>
+                        </View>
+                    </KeyboardAwareScrollView>
                 </BottomSheetView>
             </BottomSheet>
             <View style={styles.footer}>
@@ -194,7 +228,6 @@ const styles = StyleSheet.create({
         fontSize: hp(2.2),
         marginTop: hp(3)
     },
-
     textField: {
         width: wp(90),
         minHeight: hp(7),
