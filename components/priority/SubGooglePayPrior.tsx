@@ -7,7 +7,8 @@ import { addPaymentMethod, changeToDefaultMethod } from '@/apis/stripe';
 import { router } from 'expo-router';
 import errorRes from '@/apis/errorRes';
 import { createPlatformPayPaymentMethod } from '@stripe/stripe-react-native';
-export default function SubGooglePay() {
+
+export default function SubGooglePayPrior() {
     const isFocused = useIsFocused();
     const { data, isPending } = useGetListPaymentMethod(isFocused);
     const [loading, setLoading] = useState(false);

@@ -8,6 +8,7 @@ import SubscriptionSkeleton from '@/components/skeleton/SubscriptionSkeleton';
 import { useGetAllSubscription } from '@/query/stripeQuery';
 import YourSubscription from '@/components/serviceCom/YourSubscription';
 import SubscriptionPlans from '@/components/serviceCom/SubscriptionPlans';
+import { oppositeCancelAt } from '@/utils/validate';
 
 export default function ChooseSubscription() {
 
@@ -20,12 +21,12 @@ export default function ChooseSubscription() {
                 <Text style={styles.textStyle}>Please wait</Text>
             </View>
         )
-    }
+    };
 
-    if (!subscription) {
-        return <YourSubscription />
-    } else {
+    if (!subscription || subscription == 0 || !oppositeCancelAt(subscription)) {
         return <SubscriptionPlans />
+    } else {
+        return <YourSubscription />
     };
 
 }

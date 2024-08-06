@@ -1,49 +1,65 @@
-import { ActivityIndicator, Alert, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Alert, Platform, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { defaultStyles } from '@/constants/Styles'
+import { PlatformPay, PlatformPayButton, createPlatformPayPaymentMethod } from '@stripe/stripe-react-native';
+import useStoreSub from '@/store/useStoreSub';
 import { useIsFocused } from '@react-navigation/native';
 import { useGetListPaymentMethod } from '@/query/stripeQuery';
 import { addPaymentMethod, changeToDefaultMethod } from '@/apis/stripe';
 import { router } from 'expo-router';
 import errorRes from '@/apis/errorRes';
-import { createPlatformPayPaymentMethod } from '@stripe/stripe-react-native';
-export default function SubGooglePay() {
+
+export default function SubApplePayPrior() {
+    const { total } = useStoreSub();
     const isFocused = useIsFocused();
     const { data, isPending } = useGetListPaymentMethod(isFocused);
     const [loading, setLoading] = useState(false);
-    const toggleGooglePay = async () => {
-        if (Platform.OS === 'ios') {
-            Alert.alert('Google Pay is not supported.');
+
+    const toggleApplePay = async () => {
+        if (Platform.OS === 'android') {
+            Alert.alert('Apple Pay is not supported.');
             return;
         }
         setLoading(true);
         const walletMethods = data.filter((method: any) => method.card.wallet !== null);
-        const googlePayMethod = walletMethods.find((method: any) => method?.card?.wallet?.type === "google_pay");
+        const applePayMethod = walletMethods.find((method: any) => method?.card?.wallet?.type === "apple_pay");
 
-        if (googlePayMethod) {
+        if (applePayMethod) {
             try {
-                await changeToDefaultMethod(googlePayMethod.id as string);
+                await changeToDefaultMethod(applePayMethod.id as string);
                 setLoading(false);
                 router.push('homePage/services/PlanType');
             } catch (error) {
                 setLoading(false);
                 Alert.alert(errorRes(error));
-            };
+            }
         } else {
             const createPaymentMethod = async () => {
                 const { error, paymentMethod } = await createPlatformPayPaymentMethod({
-                    googlePay: {
-                        amount: 0,
-                        currencyCode: 'AED',
-                        testEnv: true,
-                        merchantName: 'Iweft',
+                    applePay: {
+                        cartItems: [
+                            {
+                                label: 'Subscription Plan',
+                                amount: `${total}`,
+                                paymentType: PlatformPay.PaymentType.Immediate,
+                            },
+                            {
+                                label: 'Total',
+                                amount: `${total}`,
+                                paymentType: PlatformPay.PaymentType.Immediate,
+                            },
+                        ],
                         merchantCountryCode: 'AE',
+                        currencyCode: 'AED',
                     },
                 });
-
                 if (error) {
                     setLoading(false);
-                    Alert.alert(error.code, error.message);
+                    if (error.message === "The payment has been canceled") {
+                        return;
+                    } else {
+                        Alert.alert(error.code, error.message);
+                    }
                     return;
                 } else if (paymentMethod) {
                     try {
@@ -57,11 +73,10 @@ export default function SubGooglePay() {
                     }
                 }
             };
-
             await createPaymentMethod();
         }
-    };
 
+    }
     if (isPending) {
         return (
             <TouchableOpacity style={defaultStyles.footerBtn}
@@ -73,7 +88,7 @@ export default function SubGooglePay() {
     };
     return (
         <TouchableOpacity style={defaultStyles.footerBtn}
-            onPress={toggleGooglePay}
+            onPress={toggleApplePay}
         >
             {loading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={defaultStyles.footerText}>Continue</Text>}
         </TouchableOpacity>

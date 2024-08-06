@@ -25,6 +25,8 @@ interface State {
   promo_code: string | null;
   driver_instruction: string[];
   collection_instruction: string[];
+  prior: boolean;
+  setPrior: (prior: boolean) => void;
   setBundleId: (bundleId: string | null) => void;
   setServiceModel: (service_model: string) => void;
   setCollectionInstruction: (cinstructions: string[]) => void;
@@ -67,6 +69,8 @@ const useStoreBooking = create<State>((set) => ({
   bundleId: null,
   driver_instruction: [],
   collection_instruction: [],
+  prior: false,
+  setPrior: (prior: boolean) => set({ prior }),
   setBundleId: (bundleId: string | null) => set({ bundleId }),
   setServiceModel: (service_model: string) => set({ service_model }),
   setCollectionInstruction: (cinstructions: string[]) =>

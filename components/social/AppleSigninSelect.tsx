@@ -28,6 +28,7 @@ export default function AppleSigninSelect() {
     }, []);
 
     const login = async () => {
+        const appleEmail = await SecureStore.getItemAsync('appleEmail');
         try {
             const credential = await AppleAuthentication.signInAsync({
                 requestedScopes: [
@@ -35,7 +36,6 @@ export default function AppleSigninSelect() {
                     AppleAuthentication.AppleAuthenticationScope.EMAIL
                 ]
             });
-            const appleEmail = await SecureStore.getItemAsync('appleEmail');
             if (appleEmail == null) {
                 try {
                     // const check = await getEmailChecker(credential?.email as string);

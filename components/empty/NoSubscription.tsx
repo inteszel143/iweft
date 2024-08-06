@@ -13,13 +13,13 @@ export default function NoSubscription() {
                 {/* <Text style={styles.subText}>To make a purchase, please add a payment method.</Text> */}
 
 
-                <TouchableOpacity style={styles.btnStyle} onPress={() => router.back()}>
+                <TouchableOpacity style={styles.btnStyle} onPress={() => router.push('/homePage/SubscriptionPlan')}>
                     <Text style={styles.btnText}>Check Subscription plans</Text>
                 </TouchableOpacity>
 
 
             </View>
-        </View>
+        </View >
     )
 }
 

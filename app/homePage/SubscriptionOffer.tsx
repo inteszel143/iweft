@@ -6,13 +6,18 @@ import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import Animated, { SlideInDown, SlideInUp } from 'react-native-reanimated';
 import SubscriptionModal from '@/components/home/SubscriptionModal';
+import useStoreBooking from '@/store/useStoreBooking';
+import { useIsFocused } from '@react-navigation/native';
+import { useGetAllSubscription } from '@/query/stripeQuery';
+import { oppositeCancelAt } from '@/utils/validate';
 export default function SubscriptionOffer() {
-
+    const isFocused = useIsFocused();
+    const { data: subscription, isPending } = useGetAllSubscription(isFocused);
     const [modalVisible, setModalVisible] = useState(true);
-
+    const { setPrior } = useStoreBooking();
     return (
         <View style={styles.container}>
-            {modalVisible && <SubscriptionModal modalVisible={modalVisible} setModalVisible={setModalVisible} />}
+            {!subscription || subscription.lenght == 0 || !oppositeCancelAt(subscription) && <SubscriptionModal modalVisible={modalVisible} setModalVisible={setModalVisible} />}
 
             <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
                 <View style={[styles.topStyle, { backgroundColor: '#FFFFFF' }]}>
@@ -23,7 +28,7 @@ export default function SubscriptionOffer() {
                 </View>
 
 
-                <View style={[styles.bottomStyle, { backgroundColor: '#FFFFFF' }]}>
+                <View style={[styles.bottomStyle, { backgroundColor: '#F5FAEB' }]}>
 
 
                     <View style={styles.bottomtopStyle}>
@@ -63,7 +68,12 @@ export default function SubscriptionOffer() {
             <Animated.View style={styles.footer}
                 entering={SlideInDown.duration(400)}
             >
-                <TouchableOpacity style={styles.footerBtn}>
+                <TouchableOpacity style={styles.footerBtn}
+                    onPress={() => {
+                        router.push('homePage/item/PriorityItemPage');
+                        setPrior(true);
+                    }}
+                >
                     <Text style={styles.footerText}>Book Now</Text>
                 </TouchableOpacity>
             </Animated.View>
@@ -137,13 +147,13 @@ const styles = StyleSheet.create({
         width: wp(100),
         height: hp(14),
         backgroundColor: 'white',
-        borderTopRightRadius: wp(4),
-        borderTopLeftRadius: wp(4),
+        borderTopRightRadius: wp(6),
+        borderTopLeftRadius: wp(6),
         alignItems: 'center'
     },
 
     footerBtn: {
-        width: wp(90),
+        width: wp(86),
         height: hp(6.5),
         backgroundColor: "#0A5CA8",
         borderRadius: wp(10),

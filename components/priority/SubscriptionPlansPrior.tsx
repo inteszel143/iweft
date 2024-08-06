@@ -1,22 +1,21 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { router } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { useIsFocused } from '@react-navigation/native';
 import { useSubscriptionPlan } from '@/query/homeQuery';
 import SubscriptionSkeleton from '@/components/skeleton/SubscriptionSkeleton';
-import { useGetAllSubscription } from '@/query/stripeQuery';
 
-export default function SubscriptionPlans() {
+export default function SubscriptionPlansPrior() {
 
     const isFocused = useIsFocused();
     const { data, isPending } = useSubscriptionPlan(isFocused);
 
     return (
         <View style={styles.container}>
-
             <View style={styles.Headercontainer}>
                 <View style={styles.innerContainer}>
+
                     <View style={styles.headerLeft}>
                         <TouchableOpacity onPress={() => router.back()}>
                             <Image source={require('@/assets/icons/back.png')} resizeMode='contain' style={{ width: wp(8) }} />
@@ -31,22 +30,24 @@ export default function SubscriptionPlans() {
                     </View>
                 </View>
             </View>
+
             {
                 isPending ? <SubscriptionSkeleton />
                     :
+
                     <FlatList
                         data={data}
                         keyExtractor={item => item.product_id}
                         renderItem={({ item }) => (
                             <TouchableOpacity style={styles.CardStyle}
                                 onPress={() => router.push({
-                                    pathname: 'homePage/services/PlansScreen',
+                                    pathname: 'homePage/item/PriorPlanScreen',
                                     params: { item: JSON.stringify(item) },
                                 })}
                             >
                                 <View style={styles.cardRow}>
                                     <View style={styles.cardLeft}>
-                                        <Image source={{ uri: item?.image }} resizeMode='contain' style={{ width: wp(32), height: hp(15), }} />
+                                        <Image source={{ uri: item?.image }} resizeMode='contain' style={{ width: wp(28), height: hp(15), }} />
                                         <View style={{ width: wp(45) }}>
                                             < Text style={styles.topText} >{item?.description}</Text>
                                             <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2), marginTop: hp(1.5) }}>
@@ -63,8 +64,13 @@ export default function SubscriptionPlans() {
                             </TouchableOpacity >
                         )}
                     />
-
             }
+
+
+
+
+
+
 
 
 
@@ -77,6 +83,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FFFFFF',
     },
+
     Headercontainer: {
         paddingHorizontal: wp(5),
         paddingTop: hp(6),
@@ -130,7 +137,7 @@ const styles = StyleSheet.create({
         gap: wp(4)
     },
     topText: {
-        fontFamily: 'UrbanistMedium',
+        fontFamily: 'UrbanistRegular',
         fontSize: hp(1.8),
         color: '#616161',
         marginTop: hp(1)
@@ -144,6 +151,16 @@ const styles = StyleSheet.create({
         fontSize: hp(2.4),
         marginTop: hp(1.5),
         color: '#0A5CA8'
+    },
+    cardSeperator: {
+        height: hp(1.5),
+        width: 1.5,
+        backgroundColor: "#616161",
+    },
+    rateText: {
+        fontFamily: 'UrbanistMedium',
+        fontSize: hp(1.7),
+        color: "#616161"
     },
 
 

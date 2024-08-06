@@ -57,8 +57,8 @@ export default function HomeAds() {
                             </View>
 
                             <View style={{ marginTop: hp(1) }}>
-                                <Text style={{ fontFamily: "UrbanistBold", fontSize: hp(4) }}>Bundle</Text>
-                                <Text style={{ fontFamily: "UrbanistBold", fontSize: hp(4) }}>Discount</Text>
+                                <Text style={{ fontFamily: "UrbanistBold", fontSize: hp(4) }}>Refer a</Text>
+                                <Text style={{ fontFamily: "UrbanistBold", fontSize: hp(4) }}>friend</Text>
                             </View>
 
 

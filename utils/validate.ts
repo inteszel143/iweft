@@ -77,3 +77,11 @@ export const checkUserLike = (data: string[], userId: string): boolean => {
   const isLike = data?.includes(userId);
   return isLike;
 };
+
+export const hasNonNullCancelAt = (data: any[]): boolean => {
+  return data?.some((subscription) => subscription?.cancel_at !== null);
+};
+
+export const oppositeCancelAt = (data: any[]): boolean => {
+  return data?.some((subscription) => subscription.cancel_at === null);
+};

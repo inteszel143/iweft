@@ -8,10 +8,12 @@ import { Feather } from '@expo/vector-icons';
 import SubSkeleton from '../skeleton/SubSkeleton';
 import NoSubscription from '../empty/NoSubscription';
 import {
-    convertDay, covertMonth, formatDate, formatTime
+    convertDay, covertMonth,
+    formatDate,
+    formatTime
 } from '@/utils/subs'
-import { defaultStyles } from '@/constants/Styles';
 import useStoreSub from '@/store/useStoreSub';
+import { hasNonNullCancelAt } from '@/utils/validate';
 export default function YourSubscription() {
 
     const isFocused = useIsFocused();
@@ -79,6 +81,46 @@ export default function YourSubscription() {
                                                             <View>
                                                                 <Feather name='chevron-right' size={hp(2.5)} />
                                                             </View>
+                                                        </View>
+                                                    </TouchableOpacity>
+                                                )
+                                            }
+                                        })
+                                    }
+
+                                    {
+                                        hasNonNullCancelAt(data) && <View style={styles.containerStyle}>
+                                            <Text style={styles.titleText}>Inactive</Text>
+                                        </View>
+                                    }
+                                    {
+                                        data?.map((item: any, index: any) => {
+                                            if (item?.cancel_at_period_end) {
+                                                return (
+                                                    <TouchableOpacity style={styles.cardRow}
+                                                        key={index}
+                                                        onPress={() => router.push({
+                                                            pathname: '/profilePage/SubscriptionCancelSummary',
+                                                            params: { subId: item?.id }
+                                                        })}
+                                                    >
+                                                        <View style={styles.cardRowStyle}>
+                                                            <View style={styles.leftInner}>
+                                                                <Image
+                                                                    source={{ uri: item?.plan?.product?.images[0] }}
+                                                                    resizeMode='contain'
+                                                                    style={styles.imageStyle}
+                                                                />
+                                                                <View style={{ width: wp(50) }}>
+                                                                    <Text style={styles.titleStyle} >{item?.plan?.product?.name}</Text>
+                                                                    <Text style={styles.subStyle}>{item?.plan?.product?.description}</Text>
+                                                                    <Text style={[styles.subStyle]}>Cancelled date:</Text>
+                                                                    <Text style={[styles.subStyle, { color: '#F75555' }]}>{formatDate(item?.canceled_at)} | {formatTime(item?.canceled_at)}</Text>
+                                                                </View>
+                                                            </View>
+                                                            {/* <View>
+                                                <Feather name='chevron-right' size={hp(2.5)} />
+                                            </View> */}
                                                         </View>
                                                     </TouchableOpacity>
                                                 )

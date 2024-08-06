@@ -134,7 +134,13 @@ function RootLayoutNav() {
 
       {/* items */}
       <Stack.Screen name='homePage/item/ItemPage' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/item/PriorityItemPage' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/item/PriorityAfterItemPage' options={{ headerShown: false }} />
       <Stack.Screen name='homePage/item/FilterPage' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/item/PriorPlanScreen' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/item/PriorPlanMethod' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/item/PriorPlanType' options={{ headerShown: false }} />
+
 
 
       {/* bundles */}

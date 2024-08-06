@@ -83,12 +83,14 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
     },
     imageStyle: {
-        width: wp(13),
+        width: wp(12.5),
         height: hp(6),
     },
     seeallStyle: {
-        width: wp(20),
-        height: wp(20),
+        width: wp(19),
+        height: wp(19),
+        borderWidth: 0.5,
+        borderColor: "#DADADA",
         borderRadius: wp(10),
         justifyContent: 'center',
         alignItems: 'center',
@@ -100,8 +102,8 @@ const styles = StyleSheet.create({
         marginTop: hp(1.5)
     },
     circleImage: {
-        width: wp(22),
-        height: wp(22),
+        width: wp(21),
+        height: wp(21),
         borderRadius: wp(12),
         backgroundColor: "#F8F8F8",
         justifyContent: 'center',
