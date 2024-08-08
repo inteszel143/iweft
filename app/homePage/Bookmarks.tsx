@@ -1,9 +1,8 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList } from 'react-native'
-import React, { useCallback, useMemo, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
 import { bookmakeTop } from '@/constants/home/data';
-import { FontAwesome } from '@expo/vector-icons';
 import {
     BottomSheetModal,
 } from '@gorhom/bottom-sheet';
@@ -13,7 +12,6 @@ import BookmarkSheet from '@/components/bottomsheet/BookmarkSheet';
 import BookmarkSkeleton from '@/components/skeleton/BookmarkSkeleton';
 import NoBookmark from '@/components/empty/NoBookmark';
 import SingleStarRating from '@/components/SingleStarRating';
-import { useGetRatingByService } from '@/query/reviewQuery';
 export default function Bookmarks() {
     const isFocused = useIsFocused();
     const { data, isPending } = usetGetBookmarks(isFocused);

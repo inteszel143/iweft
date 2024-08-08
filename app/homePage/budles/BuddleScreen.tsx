@@ -13,15 +13,18 @@ import { useBookBundleStore } from '@/store/useBookmarkBundleStore';
 import { usetGetBookmarks } from '@/query/bookmarkQuery';
 import { checkBookmarkBundle } from '@/utils/validate';
 import AddBookmarks from '@/components/modal/AddBookmarks';
-
+import { useLaundryBundlesUsingId } from '@/query/homeQuery';
+import { LinearGradient } from 'expo-linear-gradient';
+import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
 const IMG_HEIGHT = 300;
 
 export default function BuddleScreen() {
-    const { item } = useLocalSearchParams();
-    const bundleData: LaundryBundle = JSON.parse(item as string);
+    const { bundleId } = useLocalSearchParams();
+    // const bundleData: LaundryBundle = JSON.parse(item as string);
     const [addbook, setAddbook] = useState(false);
-
+    const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
     const isFocused = useIsFocused();
+    const { data: bundleData, isPending } = useLaundryBundlesUsingId(bundleId as string, isFocused);
     const [showBookmark, setShowBookmark] = useState(false);
     const { isBookmarked, setBookmarked } = useBookBundleStore();
     const { data: bookdata } = usetGetBookmarks(isFocused);
@@ -90,7 +93,9 @@ export default function BuddleScreen() {
     };
 
 
-
+    // if (isPending) {
+    //     return <ViewServicesSkeleton />
+    // };
 
 
     return (
@@ -105,15 +110,18 @@ export default function BuddleScreen() {
                 scrollEventThrottle={16}
             >
 
-                <Animated.View style={[styles.topStyle, imageAnimatedStyle]}>
-                    {/* <Image source={require('@/assets/temp/laundryBundle/laundry1.png')} resizeMode='contain' style={[{ width: wp(60), height: hp(25), }]} /> */}
-                    <Image source={{ uri: bundleData?.image }} resizeMode='contain' style={[{ width: wp(60), height: hp(25), }]} />
-                    <View style={styles.topFooter}>
-                        <View style={{ width: wp(8), height: 10, borderRadius: 8, backgroundColor: '#0A5CA8' }} />
-                        <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
-                        <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
-                    </View>
-                </Animated.View>
+                {
+                    isPending ? <ShimmerPlaceholder style={styles.imageTop} />
+                        :
+                        <Animated.View style={[styles.topStyle, imageAnimatedStyle]}>
+                            <Image source={{ uri: bundleData?.image }} resizeMode='contain' style={[{ width: wp(60), height: hp(25), }]} />
+                            <View style={styles.topFooter}>
+                                <View style={{ width: wp(8), height: 10, borderRadius: 8, backgroundColor: '#0A5CA8' }} />
+                                <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
+                                <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
+                            </View>
+                        </Animated.View>
+                }
 
 
                 <View style={styles.middleStyle}>
@@ -157,7 +165,7 @@ export default function BuddleScreen() {
                     <View style={styles.detailsStyle}>
                         <Text style={styles.detailText}>Bundle Includes:</Text>
                         {
-                            bundleData?.includes?.map((item, index) => (
+                            bundleData?.includes?.map((item: any, index: any) => (
                                 <View key={index} style={styles.cardStyle}>
                                     <View style={{
                                         flexDirection: 'row',
@@ -223,6 +231,7 @@ export default function BuddleScreen() {
             {/* back */}
             <View style={styles.topBtnStyle}>
                 <TouchableOpacity
+                    style={styles.backbutton}
                     onPress={() => router.back()}>
                     {/* <AntDesign name='arrowleft' size={hp(3)} /> */}
                     <Ionicons name='chevron-back' size={hp(3)} />
@@ -416,5 +425,16 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.50,
         shadowRadius: 12.35,
         elevation: 19,
+    },
+    imageTop: {
+        height: hp(50),
+        width: wp(100),
+        backgroundColor: "#DADADA",
+        opacity: 0.3,
+        alignSelf: 'center'
+    },
+    backbutton: {
+        width: wp(10),
+        height: wp(10)
     }
 })

@@ -85,3 +85,7 @@ export const hasNonNullCancelAt = (data: any[]): boolean => {
 export const oppositeCancelAt = (data: any[]): boolean => {
   return data?.some((subscription) => subscription.cancel_at === null);
 };
+
+export const checkActivePromo = (data: any[], activeId: string): boolean => {
+  return data?.some((promo) => promo?.special_offer?._id === activeId);
+};

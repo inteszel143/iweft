@@ -2,10 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import {
   getActivationOffer,
   getAllBundles,
+  getAllBundlesUsingId,
   getHomeServices,
   getHomeServicesById,
   getItemCategory,
   getItems,
+  getServiceCategory,
   getSpecialOffers,
   getSupscriptionPlan,
 } from "@/apis/homeApi";
@@ -22,11 +24,22 @@ export const useHomeServices = (isFocused: any) => {
 };
 
 /**
+ * Get Home Services Category ---------------------------------------------------------
+ */
+export const useHomeServiceCategory = (isFocused: boolean) => {
+  return useQuery({
+    queryKey: ["services-category"],
+    enabled: isFocused,
+    queryFn: getServiceCategory,
+  });
+};
+
+/**
  * Get Home Services by Id ---------------------------------------------------------
  */
-export const useHomeServicesId = (serviceId: string, isFocused: any) => {
+export const useHomeServicesId = (serviceId: string, isFocused: boolean) => {
   return useQuery({
-    queryKey: ["services-id"],
+    queryKey: ["services-id", serviceId],
     enabled: isFocused,
     queryFn: () => getHomeServicesById(serviceId),
   });
@@ -83,6 +96,17 @@ export const useLaundryBundles = (isFocused: boolean) => {
     queryKey: ["bundles"],
     enabled: isFocused,
     queryFn: getAllBundles,
+  });
+};
+
+export const useLaundryBundlesUsingId = (
+  bundleId: string,
+  isFocused: boolean
+) => {
+  return useQuery({
+    queryKey: ["bundles-ids", bundleId],
+    enabled: isFocused,
+    queryFn: () => getAllBundlesUsingId(bundleId),
   });
 };
 

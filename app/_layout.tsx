@@ -117,7 +117,7 @@ function RootLayoutNav() {
       <Stack.Screen name='homePage/HomePaymentMethods' options={{ headerShown: false }} />
       <Stack.Screen name='homePage/HomeReviewSummary' options={{ headerShown: false }} />
       <Stack.Screen name='homePage/HomeConfirmPin' options={{ headerShown: false }} />
-      <Stack.Screen name='homePage/HomeBookingReceipt' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/HomeBookingReceipt' options={{ headerShown: false, gestureEnabled: false }} />
 
       {/* servcies */}
       <Stack.Screen name='homePage/services/ServicesScreen' options={{ headerShown: false }} />

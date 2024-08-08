@@ -33,7 +33,8 @@ export default function SubscriptionOffer() {
 
                     <View style={styles.bottomtopStyle}>
                         <Text style={styles.topText}>Priority Orders</Text>
-                        <FontAwesome name='bookmark' size={hp(2.9)} color={'#0A5CA8'} />
+                        {/* <FontAwesome name='bookmark' size={hp(2.9)} color={'#0A5CA8'} /> */}
+                        <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5.4), height: hp(4) }} />
                     </View>
 
                     <View style={styles.separator} />

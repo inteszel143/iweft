@@ -23,6 +23,26 @@ export const getHomeServices = async () => {
 };
 
 /**
+ * Get Home Service Category---------------------------------------------------------
+ */
+export const getServiceCategory = async () => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  try {
+    const response = await axios.get(
+      `${process.env.EXPO_PUBLIC_API_URL}/service/category`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return response?.data?.service_categories || [];
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+/**
  * Get Home Service ID ---------------------------------------------------------
  */
 
@@ -142,6 +162,24 @@ export const getAllBundles = async () => {
       }
     );
     return response?.data?.laundryBundles || [];
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const getAllBundlesUsingId = async (bundleId: string) => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  try {
+    const response = await axios.get(
+      `${process.env.EXPO_PUBLIC_API_URL}/laundry-bundles/${bundleId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          //   "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response?.data?.laundryBundle || [];
   } catch (error) {
     return Promise.reject(error);
   }

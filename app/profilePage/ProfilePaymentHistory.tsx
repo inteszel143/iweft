@@ -73,7 +73,7 @@ export default function ProfilePaymentHistory() {
                                                             <Text style={styles.dateStyle} >{formatDate(item?.created)} | {formatTime(item?.created)}</Text>
                                                         </View>
                                                 }
-                                                <Ionicons name="ellipsis-horizontal" size={hp(2)} />
+                                                {/* <Ionicons name="ellipsis-horizontal" size={hp(2)} /> */}
                                             </View>
                                         </TouchableOpacity>
                                     )}

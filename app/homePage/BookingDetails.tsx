@@ -51,7 +51,6 @@ export default function BookingDetails() {
     const collectDate = formatDate(selected[0]);
     const deliveryDate = formatDate(selected[1]);
 
-
     const onSubmit = () => {
         const pick_up_date_time = collectDate + ' ' + topSelect;
         const delivery_date_time = deliveryDate + ' ' + deliveryTime;
@@ -127,16 +126,23 @@ export default function BookingDetails() {
                                 textMonthFontFamily: 'UrbanistBold',
                                 textDayHeaderFontFamily: 'UrbanistBold',
                                 textDayFontSize: hp(1.9),
-                                textMonthFontSize: 20,
+                                textMonthFontSize: hp(1.9),
                                 textDayHeaderFontSize: 15,
                             }}
                             current={formattedCurrentDate}
-                            minDate={formattedYesterday}
+                            minDate={selected[0] ? selected[0] : formattedYesterday}
                             pagingEnabled={true}
                             onDayPress={(day: any) => {
                                 handleDayPress(day.dateString);
                             }}
                             markedDates={{
+                                // [formattedCurrentDate]: {
+                                //     selected: true, marked: true, dotColor: '#93C120', selectedColor: '#0A5CA8',
+                                // },
+                                [formattedCurrentDate]: {
+                                    marked: true,
+                                    dotColor: '#93C120',
+                                },
                                 [selected[0]]: {
                                     selected: true,
                                     disableTouchEvent: true,

@@ -5,7 +5,7 @@ import { Link, router } from 'expo-router';
 import { bookmakeTop } from '@/constants/home/data';
 import { FontAwesome } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
-import { useHomeServices } from '@/query/homeQuery';
+import { useHomeServiceCategory, useHomeServices } from '@/query/homeQuery';
 import AllServiceSkeleton from '@/components/skeleton/AllServiceSkeleton';
 import SingleStarRating from '@/components/SingleStarRating';
 import { usetGetBookmarks } from '@/query/bookmarkQuery';
@@ -15,11 +15,18 @@ export default function AllServices() {
     const isFocused = useIsFocused();
     const { data, isPending } = useHomeServices(isFocused);
     const { data: bookdata } = usetGetBookmarks(isFocused);
+    const { data: servciesCategory } = useHomeServiceCategory(isFocused);
     // hook
-    const [topSelect, setTopSelect] = useState(0);
+    const [topSelect, setTopSelect] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState('');
     const activeBook = require('@/assets/icons/bookmarkActive.jpg');
     const inActiveBook = require('@/assets/icons/bookmarkInactive.jpg');
 
+    const handleCategoryPress = (caterogydata: string) => {
+        setSelectedCategory(caterogydata);
+    }
+
+    const filteredData = selectedCategory === 'All' ? data : data?.filter((item: any) => item?.service_category?._id.toLowerCase().includes(selectedCategory.toLowerCase()));
     return (
         <View style={styles.container}>
 
@@ -47,31 +54,54 @@ export default function AllServices() {
                     <>
 
                         <View style={{ backgroundColor: 'white', paddingVertical: hp(2) }}>
-                            <FlatList
+                            {/* <FlatList
                                 showsHorizontalScrollIndicator={false}
                                 horizontal
-                                data={bookmakeTop}
-                                keyExtractor={(item) => item?.label}
+                                data={servciesCategory}
+                                keyExtractor={(item) => item?._id}
                                 renderItem={({ item, index }) => (
                                     <TouchableOpacity key={index} style={topSelect == index ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
                                         onPress={() => setTopSelect(index)}
                                     >
-                                        <Text style={topSelect == index ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item.label}</Text>
+                                        <Text style={topSelect == index ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item.name}</Text>
                                     </TouchableOpacity>
                                 )}
 
-                            />
+                            /> */}
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                                <TouchableOpacity
+                                    style={topSelect === null ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
+                                    onPress={() => {
+                                        setTopSelect(null);
+                                        handleCategoryPress("All");
+                                    }}
+                                >
+                                    <Text style={topSelect === null ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>All</Text>
+                                </TouchableOpacity>
+                                {
+                                    servciesCategory?.map((item: any, index: any) => (
+                                        <TouchableOpacity key={index} style={topSelect == index ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
+                                            onPress={() => {
+                                                setTopSelect(index);
+                                                handleCategoryPress(item._id);
+                                            }}
+                                        >
+                                            <Text style={topSelect == index ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item?.name}</Text>
+                                        </TouchableOpacity>
+                                    ))
+                                }
+                            </ScrollView>
                         </View>
 
                         <FlatList
-                            data={data}
+                            data={filteredData}
                             showsVerticalScrollIndicator={false}
                             keyExtractor={(item) => item?._id}
                             renderItem={({ item }) => (
                                 <TouchableOpacity style={styles.CardStyle}
                                     onPress={() => router.push({
                                         pathname: 'homePage/services/ServicesScreen',
-                                        params: { item: JSON.stringify(item) },
+                                        params: { serviceId: item?._id },
                                     })}
                                 >
                                     <View style={styles.cardRow}>

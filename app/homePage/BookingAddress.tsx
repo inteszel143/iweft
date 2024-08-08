@@ -13,7 +13,6 @@ export default function BookingAddress() {
     const { setAddress, setLatitude,
         setLongitude } = useStoreBooking();
     const [errorMsg, setErrorMsg] = useState("");
-    const [nameAddress, setNameAddress] = useState<any>();
     const [contry, setContry] = useState<any>();
     const [city, setCity] = useState<any>();
     const [street, setStreet] = useState<any>();
@@ -21,7 +20,7 @@ export default function BookingAddress() {
     const [lat, setLat] = useState<any>("");
     const [long, setLong] = useState<any>("");
     const [btnLoading, setBtnLoading] = useState(false);
-
+    const [nameAddress, setNameAddress] = useState<any>();
     useEffect(() => {
         (async () => {
 
@@ -136,6 +135,7 @@ export default function BookingAddress() {
                             <Text style={styles.adddressTitle}>Address</Text>
                             <View style={styles.textField}>
                                 <TextInput
+                                    placeholder='Enter here . . .'
                                     defaultValue={nameAddress}
                                     onChangeText={(text) => setAddress(text)}
                                     style={[styles.address]}
@@ -147,6 +147,7 @@ export default function BookingAddress() {
                             <Text style={styles.adddressTitle}>House/ Apartment number</Text>
                             <View style={styles.textField}>
                                 <TextInput
+                                    placeholder='Enter here . . .'
                                     defaultValue={street}
                                     onChangeText={(text) => setStreet(text)}
                                     style={styles.address}
@@ -157,6 +158,7 @@ export default function BookingAddress() {
                             <Text style={styles.adddressTitle}>City</Text>
                             <View style={styles.textField}>
                                 <TextInput
+                                    placeholder='Enter here . . .'
                                     defaultValue={city}
                                     onChangeText={(text) => setCity(text)}
                                     style={styles.address}
@@ -167,6 +169,7 @@ export default function BookingAddress() {
                             <Text style={styles.adddressTitle}>Community</Text>
                             <View style={styles.textField}>
                                 <TextInput
+                                    placeholder='Enter here . . .'
                                     defaultValue={commu}
                                     onChangeText={(text) => setCommu(text)}
                                     style={styles.address}
@@ -178,6 +181,7 @@ export default function BookingAddress() {
             </BottomSheet>
             <View style={styles.footer}>
                 <TouchableOpacity style={defaultStyles.footerBtn}
+                    disabled={!commu || !street || !city || !contry ? true : false}
                     onPress={onSubmit}
                 >
                     {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.sheetText}>Continue</Text>}

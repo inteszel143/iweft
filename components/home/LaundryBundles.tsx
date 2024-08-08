@@ -46,7 +46,7 @@ export default function LaundryBundles() {
                                     <TouchableOpacity style={{ paddingLeft: wp(2), alignItems: 'center' }}
                                         onPress={() => router.push({
                                             pathname: '/homePage/budles/BuddleScreen',
-                                            params: { item: JSON.stringify(item) },
+                                            params: { bundleId: item?._id },
                                         })}
                                     >
                                         <Image

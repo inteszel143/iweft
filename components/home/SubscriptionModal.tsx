@@ -11,6 +11,7 @@ interface ModalProps {
 export default function SubscriptionModal({ modalVisible, setModalVisible }: ModalProps) {
     const closeModal = () => {
         setModalVisible(false);
+        router.back();
     };
     const gotoPlan = () => {
         setModalVisible(false);

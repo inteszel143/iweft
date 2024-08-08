@@ -6,8 +6,6 @@ import { notification } from '@/constants/home/data';
 
 export default function Notification() {
 
-
-
     return (
         <View style={styles.container}>
 
@@ -29,29 +27,25 @@ export default function Notification() {
                 </View>
             </View>
 
-
-
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.containerStyle} >
                     <Text style={styles.titleText}>Today</Text>
                     {
                         notification.map((item, index) => {
                             return (
-                                <Link href={'/bookingPage/Ereceipt'} asChild key={index}>
-                                    <TouchableOpacity style={styles.cardRow}>
-                                        <View style={styles.cardInner}>
-                                            <Image
-                                                source={item.img}
-                                                resizeMode='contain'
-                                                style={styles.imageStyle}
-                                            />
-                                            <View style={{ flex: 1 }}>
-                                                <Text style={styles.titleStyle}>{item.title}</Text>
-                                                <Text style={styles.subStyle}>{item.sub}</Text>
-                                            </View>
+                                <TouchableOpacity style={styles.cardRow} key={index}>
+                                    <View style={styles.cardInner}>
+                                        <Image
+                                            source={item.img}
+                                            resizeMode='contain'
+                                            style={styles.imageStyle}
+                                        />
+                                        <View style={{ flex: 1 }}>
+                                            <Text style={styles.titleStyle}>{item.title}</Text>
+                                            <Text style={styles.subStyle}>{item.sub}</Text>
                                         </View>
-                                    </TouchableOpacity>
-                                </Link>
+                                    </View>
+                                </TouchableOpacity>
                             )
                         })
                     }

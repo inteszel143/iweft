@@ -1,5 +1,5 @@
 import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { StatusBar } from 'expo-status-bar';
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
@@ -10,15 +10,17 @@ import { defaultStyles } from '@/constants/Styles';
 import { activeSpecialOffer } from '@/apis/homeApi';
 import SuccessActivePromo from '@/components/modal/SuccessActivePromo';
 import ErrorActivePromo from '@/components/modal/ErrorActivePromo';
+import { useActivationPromo } from '@/query/homeQuery';
+import { useIsFocused } from '@react-navigation/native';
+import { checkActivePromo } from '@/utils/validate';
 export default function OfferOtherPage() {
-
+    const isFocused = useIsFocused();
     const { item } = useLocalSearchParams();
     const specialOffers: SpecialOffer = JSON.parse(item as string);
     const [btnLoading, setBtnLoading] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [showError, setShowError] = useState(false);
-
-
+    const { data, isPending } = useActivationPromo(isFocused);
     const special1 = require('@/assets/temp/special/specialoffers1.png');
     const special2 = require('@/assets/temp/special/specialoffers2.png');
     const special3 = require('@/assets/temp/special/specialoffers.png');
@@ -78,12 +80,21 @@ export default function OfferOtherPage() {
             <Animated.View style={styles.footer}
                 entering={SlideInDown.duration(400)}
             >
-                <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(3) }]}
-                    disabled={btnLoading}
-                    onPress={toggleActiveOffer}
-                >
-                    {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={defaultStyles.footerText}>Activate Discount</Text>}
-                </TouchableOpacity>
+                {
+                    checkActivePromo(data, specialOffers?._id) ?
+                        <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(3), backgroundColor: "#ADD8E6" }]}
+                            disabled={true}
+                        >
+                            {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={defaultStyles.footerText}>Activated</Text>}
+                        </TouchableOpacity>
+                        :
+                        <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(3) }]}
+                            disabled={btnLoading}
+                            onPress={toggleActiveOffer}
+                        >
+                            {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={defaultStyles.footerText}>Activate Discount</Text>}
+                        </TouchableOpacity>
+                }
             </Animated.View>
 
         </View>

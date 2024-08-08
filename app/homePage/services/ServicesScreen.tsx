@@ -20,24 +20,31 @@ import SingleStarRating from '@/components/SingleStarRating';
 import useUserInfo from '@/store/useUserInfo';
 import { patchReactComment } from '@/apis/review';
 import { useQueryClient } from '@tanstack/react-query';
+import { useHomeServicesId } from '@/query/homeQuery';
+import { LinearGradient } from 'expo-linear-gradient';
+import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
+
+
 const IMG_HEIGHT = 300;
 const { width } = Dimensions.get('window');
 
 
 export default function ServicesScreen() {
-    const { item } = useLocalSearchParams();
-    const serviceItem: ServiceItem = JSON.parse(item as string);
+    const { serviceId } = useLocalSearchParams();
+    // const serviceItem: ServiceItem = JSON.parse(item as string);
+    const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
     const queryClient = useQueryClient();
     const isFocused = useIsFocused();
+    const { data: serviceItem, isPending } = useHomeServicesId(serviceId as string, isFocused);
     const [showBookmark, setShowBookmark] = useState(false);
     const [topSelect, setTopSelect] = useState("All");
     const { isBookmarked, setBookmarked } = useBookmarkStore();
     const { data: bookdata } = usetGetBookmarks(isFocused);
-    const { data: reviews } = useGetReview(serviceItem?._id, isFocused);
+    const { data: reviews } = useGetReview(serviceItem?.service?._id, isFocused);
     const { userId } = useUserInfo();
     useEffect(() => {
         if (bookdata) {
-            checkBookmark(bookdata, serviceItem?._id);
+            checkBookmark(bookdata, serviceItem?.service?._id);
         }
     }, [bookdata]);
 
@@ -71,7 +78,7 @@ export default function ServicesScreen() {
 
     const addingBookmark = async () => {
         try {
-            await postBookmarks(serviceItem?._id, "Service");
+            await postBookmarks(serviceItem?.service?._id, "Service");
             setBookmarked(true);
             setShowBookmark(true);
         } catch (error) {
@@ -81,7 +88,7 @@ export default function ServicesScreen() {
 
     const removeBookmark = async () => {
         try {
-            await removeBookmarks(serviceItem?._id);
+            await removeBookmarks(serviceItem?.service?._id);
             setBookmarked(false);
         } catch (error) {
             console.log(errorRes(error));
@@ -92,7 +99,7 @@ export default function ServicesScreen() {
     const likeComment = async (reviewId: string) => {
         try {
             await patchReactComment(reviewId, "like");
-            queryClient.invalidateQueries({ queryKey: ['reviews', serviceItem?._id] });
+            queryClient.invalidateQueries({ queryKey: ['reviews', serviceItem?.service?._id] });
         } catch (error) {
             console.log(error);
         }
@@ -100,11 +107,16 @@ export default function ServicesScreen() {
     const unlikeComment = async (reviewId: string) => {
         try {
             await patchReactComment(reviewId, "unlike");
-            queryClient.invalidateQueries({ queryKey: ['reviews', serviceItem?._id] });
+            queryClient.invalidateQueries({ queryKey: ['reviews', serviceItem?.service?._id] });
         } catch (error) {
             console.log(error);
         }
     };
+
+    // if (isPending) {
+    //     return <ViewServicesSkeleton />
+    // }
+
     return (
         <View style={styles.container}>
 
@@ -116,23 +128,27 @@ export default function ServicesScreen() {
                 showsVerticalScrollIndicator={false}
                 scrollEventThrottle={16}
             >
-                <Animated.View style={[styles.topStyle, imageAnimatedStyle]}>
-                    <Image
-                        source={{ uri: serviceItem.image }}
-                        resizeMode='cover'
-                        style={[{ width: wp(50), height: hp(20), marginLeft: wp(4) }]} />
-                    <View style={styles.topFooter}>
-                        <View style={{ width: wp(8), height: 10, borderRadius: 8, backgroundColor: '#0A5CA8' }} />
-                        <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
-                        <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
-                    </View>
-                </Animated.View>
+                {
+                    isPending ? <ShimmerPlaceholder style={styles.imageTop} />
+                        :
+                        <Animated.View style={[styles.topStyle, imageAnimatedStyle]}>
+                            <Image
+                                source={{ uri: serviceItem?.service?.image }}
+                                resizeMode='cover'
+                                style={[{ width: wp(50), height: hp(20), marginLeft: wp(4) }]} />
+                            <View style={styles.topFooter}>
+                                <View style={{ width: wp(8), height: 10, borderRadius: 8, backgroundColor: '#0A5CA8' }} />
+                                <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
+                                <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
+                            </View>
+                        </Animated.View>
+                }
 
 
                 <View style={styles.middleStyle}>
 
                     <View style={[styles.middelTopRow]}>
-                        <Text style={styles.middleText}>{serviceItem.title} Services</Text>
+                        <Text style={styles.middleText}>{serviceItem?.service?.title} Services</Text>
 
                         <TouchableOpacity onPress={isBookmarked ? removeBookmark : addingBookmark}>
                             {
@@ -145,7 +161,7 @@ export default function ServicesScreen() {
                     </View>
 
                     <View style={styles.rateStyle}>
-                        <Text style={styles.core}>{serviceItem.sub_title}</Text>
+                        <Text style={styles.core}>{serviceItem?.service?.sub_title}</Text>
                         {
                             serviceItem?.review?.average_rating != 0 && <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: hp(2) }}>
                                 {/* <Image source={require('@/assets/icons/star.jpg')} resizeMode='contain' style={{ width: wp(5), height: hp(4) }} /> */}
@@ -163,7 +179,7 @@ export default function ServicesScreen() {
 
 
                     <View style={styles.priceStyle}>
-                        <Text style={styles.priceText}>AED {serviceItem.base_price}</Text>
+                        <Text style={styles.priceText}>AED {serviceItem?.service?.base_price}</Text>
                         <Text style={styles.subText}>(base price)</Text>
                     </View>
 
@@ -174,7 +190,7 @@ export default function ServicesScreen() {
 
                     <View style={styles.detailsStyle}>
                         <Text style={styles.detailText}>Details</Text>
-                        <Text style={styles.subDetailText}>{serviceItem.details}</Text>
+                        <Text style={styles.subDetailText}>{serviceItem?.service?.details}</Text>
                     </View>
 
 
@@ -284,7 +300,7 @@ export default function ServicesScreen() {
                     <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
                         onPress={() => router.push({
                             pathname: 'homePage/services/BookNow',
-                            params: { item: item },
+                            params: { item: JSON.stringify(serviceItem?.service) },
                         })}
                     >
                         <Text style={[styles.bottomText, { color: "white" }]}>Book Now </Text>
@@ -297,6 +313,7 @@ export default function ServicesScreen() {
             {/* back */}
             <View style={styles.topBtnStyle}>
                 <TouchableOpacity
+                    style={styles.backbutton}
                     onPress={() => router.back()}>
                     {/* <AntDesign name='arrowleft' size={hp(3)} color={'#212121'} /> */}
                     <Ionicons name='chevron-back' size={hp(3)} />
@@ -305,10 +322,12 @@ export default function ServicesScreen() {
             <Animated.View style={[styles.header, headerStyle]}>
                 <View style={styles.headerHide}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(4) }}>
-                        <TouchableOpacity onPress={() => router.back()}>
+                        <TouchableOpacity
+                            onPress={() => router.back()}
+                        >
                             <Ionicons name='chevron-back' size={hp(3)} />
                         </TouchableOpacity>
-                        <Text style={styles.headerText}>{serviceItem.title} Services</Text>
+                        <Text style={styles.headerText}>{serviceItem?.service?.title} Services</Text>
                     </View>
                     <TouchableOpacity onPress={isBookmarked ? removeBookmark : addingBookmark}>
                         {isBookmarked ? <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
@@ -541,5 +560,18 @@ const styles = StyleSheet.create({
     bottomText: {
         fontFamily: 'UrbanistBold',
         fontSize: hp(2),
+    },
+
+
+    imageTop: {
+        height: hp(50),
+        width: wp(100),
+        backgroundColor: "#DADADA",
+        opacity: 0.3,
+        alignSelf: 'center'
+    },
+    backbutton: {
+        width: wp(10),
+        height: wp(10)
     }
 })

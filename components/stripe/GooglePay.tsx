@@ -7,11 +7,13 @@ import { addPaymentMethod, changeToDefaultMethod } from '@/apis/stripe';
 import { router } from 'expo-router';
 import errorRes from '@/apis/errorRes';
 import { createPlatformPayPaymentMethod } from '@stripe/stripe-react-native';
+import useStoreBooking from '@/store/useStoreBooking';
+import { getDiscountedTotal } from '@/utils/format';
 export default function GooglePay() {
     const isFocused = useIsFocused();
     const { data, isPending } = useGetListPaymentMethod(isFocused);
     const [btnLoading, setBtnLoading] = useState(false);
-
+    const { base_price, total, discount } = useStoreBooking();
 
     const toggleGooglePay = async () => {
         if (Platform.OS === 'ios') {
@@ -19,6 +21,8 @@ export default function GooglePay() {
             return;
         };
         setBtnLoading(true);
+        const totalPayment = parseFloat(base_price as any) + parseFloat(total as any);
+        const discountPayment = getDiscountedTotal(base_price, total, discount);
         const walletMethods = data.filter((method: any) => method.card.wallet !== null);
         const googlePayMethod = walletMethods.find((method: any) => method?.card?.wallet?.type === "google_pay");
 
@@ -36,7 +40,7 @@ export default function GooglePay() {
             const createPaymentMethod = async () => {
                 const { error, paymentMethod } = await createPlatformPayPaymentMethod({
                     googlePay: {
-                        amount: 0,
+                        amount: discount ? `${discountPayment}` : `${totalPayment}`,
                         currencyCode: 'AED',
                         testEnv: true,
                         merchantName: 'Iweft',

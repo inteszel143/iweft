@@ -17,7 +17,7 @@ export default function NoCancelBooking() {
                 <Text style={styles.textSubStyle}>{t('You do not have a cancel booking. Make a new booking by clicking the button below')}</Text>
             </View>
 
-            <TouchableOpacity style={styles.btnStyle} onPress={() => router.back()}>
+            <TouchableOpacity style={styles.btnStyle} onPress={() => router.push('homePage/item/PriorityItemPage')}>
                 <Text style={styles.btnText}>{t('Make New Booking')}</Text>
             </TouchableOpacity>
 
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     },
     btnText: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(2),
+        fontSize: hp(1.9),
         color: '#0A5CA8'
     },
     textSubStyle: {

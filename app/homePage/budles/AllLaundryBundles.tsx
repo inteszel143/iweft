@@ -3,8 +3,19 @@ import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
 import { allbundle } from '@/constants/home/data';
-
+import { useIsFocused } from '@react-navigation/native';
+import { useLaundryBundles } from '@/query/homeQuery';
+const colors = [
+    { code: "#486FFB" },
+    { code: "#FF6A80" },
+    { code: "#FEA223" },
+    { code: "#2DD0AF" }
+];
 export default function AllLaundryBundles() {
+
+    const isFocused = useIsFocused();
+    const { data: laundryData, isPending } = useLaundryBundles(isFocused);
+
     return (
         <View style={styles.container}>
 
@@ -29,20 +40,24 @@ export default function AllLaundryBundles() {
 
             <View style={styles.containerStyle}>
                 <FlatList
-                    data={allbundle}
+                    data={laundryData}
                     showsVerticalScrollIndicator={false}
-                    keyExtractor={(item) => item.img}
+                    keyExtractor={(item) => item._id}
                     renderItem={({ item }) => (
-                        <Link href={{ pathname: '/homePage/budles/BuddleScreen', params: item }} asChild style={[styles.cardStyle, { backgroundColor: `${item.color}` }]}>
-                            <TouchableOpacity>
-                                <View style={styles.cardInner}>
-                                    <View style={{ width: wp(50) }}>
-                                        <Text style={styles.cardLabel}>{item.name}</Text>
-                                    </View>
-                                    <Image source={item.img} resizeMode='contain' style={{ width: wp(30), tintColor: 'white' }} />
+                        <TouchableOpacity
+                            style={[styles.cardStyle, { backgroundColor: item?.title === "Bedding Set Bundle" ? "#486FFB" : "#FF6A80" }]}
+                            onPress={() => router.push({
+                                pathname: '/homePage/budles/BuddleScreen',
+                                params: { bundleId: item?._id },
+                            })}
+                        >
+                            <View style={styles.cardInner}>
+                                <View style={{ width: wp(50) }}>
+                                    <Text style={styles.cardLabel}>{item?.title}</Text>
                                 </View>
-                            </TouchableOpacity>
-                        </Link>
+                                <Image source={{ uri: item?.image }} resizeMode='contain' style={{ width: wp(30), height: hp(12), tintColor: 'white' }} />
+                            </View>
+                        </TouchableOpacity>
                     )}
                 />
             </View>

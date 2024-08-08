@@ -20,7 +20,6 @@ export default function BookmarkSheet({ modalRef, item }: ModalAProps) {
         (props: any) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1}{...props} />, []
     );
 
-
     const removeBookmark = async () => {
         try {
             await removeBookmarks(item?.service?._id);
@@ -84,15 +83,27 @@ export default function BookmarkSheet({ modalRef, item }: ModalAProps) {
                         >
                             <Text style={[styles.bottomText, { color: "white" }]}>Remove</Text>
                         </TouchableOpacity>
-                        {/* <Link href={'/(tabs)/'} style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]} asChild> */}
-                        <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
-                            onPress={() => router.push({
-                                pathname: 'homePage/services/ServicesScreen',
-                                params: { item: JSON.stringify(item?.service) },
-                            })}
-                        >
-                            <Text style={[styles.bottomText, { color: "white" }]}>Activate </Text>
-                        </TouchableOpacity>
+                        {
+                            item?.service_model === "LaundryBundle" ?
+                                <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
+                                    onPress={() => router.push({
+                                        pathname: 'homePage/budles/BuddleScreen',
+                                        params: { bundleId: item?.service?._id },
+                                    })}
+                                >
+                                    <Text style={[styles.bottomText, { color: "white" }]}>Activate </Text>
+                                </TouchableOpacity>
+                                :
+                                <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
+                                    onPress={() => router.push({
+                                        pathname: 'homePage/services/ServicesScreen',
+                                        params: { serviceId: item?.service?._id },
+                                    })}
+                                >
+                                    <Text style={[styles.bottomText, { color: "white" }]}>Activate </Text>
+                                </TouchableOpacity>
+                        }
+
                         {/* </Link> */}
                     </View>
 

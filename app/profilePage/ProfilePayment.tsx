@@ -30,9 +30,9 @@ export default function ProfilePayment() {
             </View>
 
             <View>
-                <PaymentPaypal />
+                {/* <PaymentPaypal />
                 <PaymentGoogle />
-                <PaymentApple />
+                <PaymentApple /> */}
                 <PaymentCreditCard />
             </View>
 

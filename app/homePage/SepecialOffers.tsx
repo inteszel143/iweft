@@ -13,7 +13,6 @@ export default function SepecialOffers() {
     const special4 = require('@/assets/temp/special/special4.png');
     const isFocused = useIsFocused();
     const { data, isPending } = useSpecialOffers(isFocused);
-
     return (
         <View style={styles.container}>
 

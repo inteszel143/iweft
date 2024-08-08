@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     },
     rowText: {
         fontFamily: 'UrbanistSemiBold',
-        fontSize: hp(2.2),
+        fontSize: hp(2.1),
         color: "#424242"
     }
 })

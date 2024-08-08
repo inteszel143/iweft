@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { getCurrentLanguage } from '@/services/i18n';
 export default function HomeServices() {
     const isFocused = useIsFocused();
-    const { data, isPending } = useHomeServices(isFocused)
+    const { data, isPending } = useHomeServices(isFocused);
     const { t } = useTranslation();
     const current = getCurrentLanguage();
     return (
@@ -28,7 +28,7 @@ export default function HomeServices() {
                                     <TouchableOpacity key={index}
                                         onPress={() => router.push({
                                             pathname: 'homePage/services/ServicesScreen',
-                                            params: { item: JSON.stringify(item) },
+                                            params: { serviceId: item?._id },
                                         })}
                                         style={{ alignItems: 'center' }}
                                     >

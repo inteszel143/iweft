@@ -8,13 +8,12 @@ import { router } from 'expo-router';
 import errorRes from '@/apis/errorRes';
 import { PlatformPay, createPlatformPayPaymentMethod } from '@stripe/stripe-react-native';
 import useStoreBooking from '@/store/useStoreBooking';
+import { getDiscountedTotal } from '@/utils/format';
 export default function ApplePay() {
-
-    const { base_price, total } = useStoreBooking();
+    const { base_price, total, discount } = useStoreBooking();
     const isFocused = useIsFocused();
     const { data, isPending } = useGetListPaymentMethod(isFocused);
     const [loading, setLoading] = useState(false);
-
 
     const toggleApplePay = async () => {
         if (Platform.OS === 'android') {
@@ -23,6 +22,7 @@ export default function ApplePay() {
         };
         setLoading(true);
         const totalPayment = parseFloat(base_price as any) + parseFloat(total as any);
+        const discountPayment = getDiscountedTotal(base_price, total, discount);
         const walletMethods = data.filter((method: any) => method.card.wallet !== null);
         const applePayMethod = walletMethods.find((method: any) => method?.card?.wallet?.type === "apple_pay");
 
@@ -41,13 +41,8 @@ export default function ApplePay() {
                     applePay: {
                         cartItems: [
                             {
-                                label: 'Services Fee',
-                                amount: `${totalPayment}`,
-                                paymentType: PlatformPay.PaymentType.Immediate,
-                            },
-                            {
                                 label: 'Total',
-                                amount: `${totalPayment}`,
+                                amount: discount ? `${discountPayment}` : `${totalPayment}`,
                                 paymentType: PlatformPay.PaymentType.Immediate,
                             },
                         ],
