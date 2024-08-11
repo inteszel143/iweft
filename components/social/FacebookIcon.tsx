@@ -9,7 +9,9 @@ import * as SecureStore from 'expo-secure-store';
 import { getEmailChecker } from '@/apis/fetchAuth';
 import useStoreRefresh from '@/store/useStoreRefresh';
 import SuccessLogin from '../SuccessLogin';
+import { useTranslation } from 'react-i18next';
 export default function FacebookIcon() {
+    const { t } = useTranslation();
     const [errorLoginModal, setErrorLoginModal] = useState(false);
     const [successLogin, setSuccessLogin] = useState(false);
     const [exists, setExists] = useState(false);
@@ -96,7 +98,10 @@ export default function FacebookIcon() {
             {errorLoginModal && <ErrorFacebookAuthModal modalVisible={errorLoginModal} setModalVisible={setErrorLoginModal} />}
             {successLogin && <SuccessLogin modalVisible={successLogin} setModalVisible={setSuccessLogin} exist={exists} />}
             <TouchableOpacity style={styles.box} onPress={login}>
-                <Image source={require('@/assets/temp/authIcons/fb.png')} resizeMode='contain' style={styles.btnImage} />
+                <View style={styles.logoContinue}>
+                    <Image source={require('@/assets/temp/authIcons/fb.png')} resizeMode='contain' style={styles.btnImage} />
+                </View>
+                <Text style={styles.btnText}>{t('Continue with Facebook')}</Text>
             </TouchableOpacity>
         </View>
     )
@@ -104,16 +109,35 @@ export default function FacebookIcon() {
 
 const styles = StyleSheet.create({
     box: {
-        width: wp(22),
+        width: wp(88),
         height: hp(7),
-        borderWidth: 1,
+        borderWidth: 0.5,
         borderColor: "#EEEEEE",
-        borderRadius: wp(4),
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        borderRadius: wp(3),
+        backgroundColor: "white",
+        marginTop: hp(1),
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.20,
+        shadowRadius: 1.41,
+        elevation: 2,
     },
     btnImage: {
         width: wp(5),
         height: hp(5),
+    },
+    logoContinue: {
+        position: 'absolute',
+        left: wp(12),
+    },
+    btnText: {
+        fontFamily: 'UrbanistSemiBold',
+        fontSize: hp(1.8),
+        // color: 'white'
     },
 })

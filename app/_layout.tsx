@@ -2,8 +2,9 @@ import "react-native-gesture-handler";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -13,9 +14,10 @@ import { StripeProvider } from '@stripe/stripe-react-native';
 import {
   QueryClient, QueryClientProvider,
 } from '@tanstack/react-query';
-import { I18nManager, LogBox } from "react-native";
+import { I18nManager, LogBox, TouchableOpacity } from "react-native";
 import HeaderInbox from "@/components/inbox/HeaderInbox";
 import HelpHeader from "@/components/profile/HelpHeader";
+import { Ionicons } from "@expo/vector-icons";
 export {
   ErrorBoundary,
 } from 'expo-router';
@@ -30,6 +32,7 @@ LogBox.ignoreLogs([
   'Warning: Avatar: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.',
 ]);
 export default function RootLayout() {
+
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     UrbanistBlack: require('../assets/fonts/Urbanist-Black.ttf'),
@@ -85,6 +88,27 @@ function RootLayoutNav() {
       <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
       <Stack.Screen name="BookingChat" options={{ header: () => <HeaderChat />, headerShadowVisible: false }} />
       <Stack.Screen name="Undercontruct" options={{ headerShown: false }} />
+
+
+
+      {/* modal */}
+      <Stack.Screen name="(modal)/login"
+        options={{
+          presentation: 'formSheet',
+          title: "Login to your account",
+          headerTitleAlign: 'center',
+          headerTitleStyle: { fontFamily: "UrbanistBold", fontSize: hp(2) },
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name='close' size={hp(2.8)} color={'#616161'} />
+            </TouchableOpacity>
+          )
+        }}
+
+      />
+
+
+
 
       {/* auth */}
       <Stack.Screen name="authPage/OnboardingScreen" options={{ headerShown: false, gestureEnabled: false }} />

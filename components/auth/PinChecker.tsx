@@ -13,6 +13,7 @@ import { getPinNumber } from '@/apis/fetchAuth';
 import PinCodeModal from '../PinCodeModal';
 import * as SecureStore from 'expo-secure-store';
 import { useTranslation } from 'react-i18next';
+import useValidateRefresh from '@/store/useValidateRefresh';
 interface CellProps {
     index: number;
     symbol: string;
@@ -20,6 +21,7 @@ interface CellProps {
 }
 
 export default function PinChecker() {
+    const { setRefreshToken } = useValidateRefresh();
     const { t } = useTranslation();
     const { refreshToken } = useLocalSearchParams();
     const [btnLoading, setBtnLoading] = useState(false);
@@ -64,6 +66,7 @@ export default function PinChecker() {
         await SecureStore.setItemAsync('refreshToken', refreshToken as string);
         if (response?.isMatch) {
             router.push('/(tabs)/');
+            setRefreshToken(refreshToken as string)
             setBtnLoading(false);
         } else {
             setErrorModalVisible(true);

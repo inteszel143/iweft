@@ -5,7 +5,7 @@ import { getCurrentLanguage } from '@/services/i18n';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { FAQ } from '@/constants/profile/data';
 import { FontAwesome } from '@expo/vector-icons';
-export default function index() {
+export default function Page() {
 
     const { t } = useTranslation();
     const current = getCurrentLanguage();
@@ -60,7 +60,7 @@ export default function index() {
                         <Image source={require('@/assets/icons/under.png')} resizeMode='contain' style={{ width: wp(100), height: hp(20) }} />
                     </View>
                     <View>
-                        <Text style={styles.textStyle}>Sorry, this page is currently under construction.</Text>
+                        <Text style={styles.textStyle}>Sorry, this page is currently under construction</Text>
                     </View>
                 </View>
 

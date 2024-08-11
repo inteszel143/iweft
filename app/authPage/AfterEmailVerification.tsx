@@ -12,6 +12,7 @@ import { Octicons } from '@expo/vector-icons';
 import { getPinNumber } from '@/apis/fetchAuth';
 import PinCodeModal from '@/components/PinCodeModal';
 import * as SecureStore from 'expo-secure-store';
+import useValidateRefresh from '@/store/useValidateRefresh';
 interface CellProps {
     index: number;
     symbol: string;
@@ -19,6 +20,7 @@ interface CellProps {
 }
 
 export default function AfterEmailVerification() {
+    const { setRefreshToken } = useValidateRefresh();
     const { refreshToken } = useLocalSearchParams();
     const [btnLoading, setBtnLoading] = useState(false);
     const CELL_COUNT = 4;
@@ -61,6 +63,7 @@ export default function AfterEmailVerification() {
         await SecureStore.setItemAsync('refreshToken', refreshToken as string);
         if (response?.isMatch) {
             router.push('/(tabs)/');
+            setRefreshToken(refreshToken as string);
             setBtnLoading(false);
         } else {
             setErrorModalVisible(true);

@@ -16,6 +16,7 @@ export default function ChangePasswordSuccessModal({ modalVisible, setModalVisib
         const timer = setTimeout(() => {
             setModalVisible(false);
             router.push('/authPage/LoginScreen');
+            // router.push('/(tabs)/');
         }, 3000);
         return () => clearTimeout(timer);
     }, []);

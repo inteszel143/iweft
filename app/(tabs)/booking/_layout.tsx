@@ -5,46 +5,56 @@ import { withLayoutContext } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { getCurrentLanguage } from "@/services/i18n";
 import useBookingBadge from "@/store/useBookingBadge";
+import useValidateRefresh from "@/store/useValidateRefresh";
+import NoTokenBooking from "@/components/notoken/NoTokenBooking";
 const { Navigator } = createMaterialTopTabNavigator();
 export const MaterialTopTabs = withLayoutContext<
     MaterialTopTabNavigationOptions, typeof Navigator, TabNavigationState<ParamListBase>, MaterialTopTabNavigationEventMap
 >(Navigator);
 
 export default function Layout() {
+    const { refreshToken } = useValidateRefresh();
     const { t } = useTranslation();
     const current = getCurrentLanguage();
     const { bookingValue } = useBookingBadge();
-    if (current === 'ar') {
-        return (
-            <MaterialTopTabs screenOptions={{
-                tabBarActiveTintColor: '#0a5ca8',
-                tabBarInactiveTintColor: 'gray',
-                tabBarLabelStyle: { fontSize: hp(1.9), fontFamily: 'UrbanistSemiBold', textTransform: 'capitalize' },
-                tabBarPressColor: 'white',
-                tabBarIndicatorStyle: { backgroundColor: '#0a5ca8', height: 3, width: wp(27), marginLeft: wp(4), borderRadius: wp(4), },
-            }} >
-                <MaterialTopTabs.Screen name="cancel" options={{ title: t('Cancelled') }} />
-                <MaterialTopTabs.Screen name="complete" options={{ title: t('Completed') }} />
-                <MaterialTopTabs.Screen name="index" options={{ title: t('Upcoming') }} />
-            </MaterialTopTabs>
-        )
+
+    if (refreshToken === null) {
+        return <NoTokenBooking />
+
     } else {
-        return (
-            <MaterialTopTabs screenOptions={{
-                tabBarActiveTintColor: '#0a5ca8',
-                tabBarInactiveTintColor: 'gray',
-                tabBarLabelStyle: { fontSize: hp(1.9), fontFamily: 'UrbanistSemiBold', textTransform: 'capitalize' },
-                tabBarPressColor: 'white',
-                tabBarIndicatorStyle: { backgroundColor: '#0a5ca8', height: 3, width: wp(27), marginLeft: wp(4), borderRadius: wp(4), },
-            }} >
-                <MaterialTopTabs.Screen name="index" options={{ title: t('Upcoming') }} />
-                <MaterialTopTabs.Screen name="complete"
-                    options={{
-                        title: `${t('Completed')}${bookingValue === null ? '' : `(${bookingValue})`}`
-                    }}
-                />
-                <MaterialTopTabs.Screen name="cancel" options={{ title: t('Cancelled') }} />
-            </MaterialTopTabs>
-        )
+        if (current === 'ar') {
+            return (
+                <MaterialTopTabs screenOptions={{
+                    tabBarActiveTintColor: '#0a5ca8',
+                    tabBarInactiveTintColor: 'gray',
+                    tabBarLabelStyle: { fontSize: hp(1.9), fontFamily: 'UrbanistSemiBold', textTransform: 'capitalize' },
+                    tabBarPressColor: 'white',
+                    tabBarIndicatorStyle: { backgroundColor: '#0a5ca8', height: 3, width: wp(27), marginLeft: wp(4), borderRadius: wp(4), },
+                }} >
+                    <MaterialTopTabs.Screen name="cancel" options={{ title: t('Cancelled') }} />
+                    <MaterialTopTabs.Screen name="complete" options={{ title: t('Completed') }} />
+                    <MaterialTopTabs.Screen name="index" options={{ title: t('Upcoming') }} />
+                </MaterialTopTabs>
+            )
+        } else {
+            return (
+                <MaterialTopTabs screenOptions={{
+                    tabBarActiveTintColor: '#0a5ca8',
+                    tabBarInactiveTintColor: 'gray',
+                    tabBarLabelStyle: { fontSize: hp(1.9), fontFamily: 'UrbanistSemiBold', textTransform: 'capitalize' },
+                    tabBarPressColor: 'white',
+                    tabBarIndicatorStyle: { backgroundColor: '#0a5ca8', height: 3, width: wp(27), marginLeft: wp(4), borderRadius: wp(4), },
+                }} >
+                    <MaterialTopTabs.Screen name="index" options={{ title: t('Upcoming') }} />
+                    <MaterialTopTabs.Screen name="complete"
+                        options={{
+                            title: `${t('Completed')}${bookingValue === null ? '' : `(${bookingValue})`}`
+                        }}
+                    />
+                    <MaterialTopTabs.Screen name="cancel" options={{ title: t('Cancelled') }} />
+                </MaterialTopTabs>
+            )
+        }
     }
+
 }

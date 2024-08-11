@@ -10,7 +10,9 @@ import useStoreRefresh from '@/store/useStoreRefresh';
 import { getEmailChecker } from '@/apis/fetchAuth';
 import errorRes from '@/apis/errorRes';
 import { useTranslation } from 'react-i18next';
-export default function AppleIcon() {
+
+export default function IconApple() {
+
     const { t } = useTranslation();
     const [errorLoginModal, setErrorLoginModal] = useState(false);
     const [successLogin, setSuccessLogin] = useState(false);
@@ -78,11 +80,7 @@ export default function AppleIcon() {
             {errorLoginModal && <ErrorPage modalVisible={errorLoginModal} setModalVisible={setErrorLoginModal} />}
             {successLogin && <SuccessLogin modalVisible={successLogin} setModalVisible={setSuccessLogin} exist={exists} />}
             <TouchableOpacity style={styles.box} onPress={() => login()}>
-                <View style={styles.logoContinue}>
-                    <Image source={require('@/assets/temp/authIcons/apple.png')} resizeMode='contain' style={styles.btnImage} />
-                    {/* <FontAwesome name="apple" size={hp(2.5)} color="white" /> */}
-                </View>
-                <Text style={styles.btnText}>{t('Continue with Apple')}</Text>
+                <Image source={require('@/assets/temp/authIcons/apple.png')} resizeMode='contain' style={styles.btnImage} />
             </TouchableOpacity>
         </View>
     )
@@ -90,35 +88,16 @@ export default function AppleIcon() {
 
 const styles = StyleSheet.create({
     box: {
-        width: wp(88),
+        width: wp(22),
         height: hp(7),
-        borderWidth: 0.5,
+        borderWidth: 1,
         borderColor: "#EEEEEE",
+        borderRadius: wp(4),
         alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: wp(3),
-        backgroundColor: "white",
-        marginTop: hp(2),
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 1,
-        },
-        shadowOpacity: 0.20,
-        shadowRadius: 1.41,
-        elevation: 2,
+        justifyContent: 'center'
     },
     btnImage: {
         width: wp(5),
         height: hp(5),
-    },
-    logoContinue: {
-        position: 'absolute',
-        left: wp(12),
-    },
-    btnText: {
-        fontFamily: 'UrbanistSemiBold',
-        fontSize: hp(1.8),
-        // color: 'white'
     },
 })

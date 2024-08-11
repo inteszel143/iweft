@@ -4,8 +4,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { ContactUs } from '@/constants/profile/data';
 import { router } from 'expo-router';
-export default function contact() {
-
+export default function Page() {
 
     return (
         <View style={styles.container}>

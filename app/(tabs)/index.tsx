@@ -8,16 +8,16 @@ import LaundryBundles from '@/components/home/LaundryBundles';
 import HomeAds from '@/components/home/HomeAds';
 import BundleOffers from '@/components/home/BundleOffers';
 import { StatusBar } from 'expo-status-bar';
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useNavigation, useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import Test from '../Test';
 import { useIsFocused } from '@react-navigation/native';
 import { useGetMessageInbox } from '@/query/message';
 import { inboxBadge } from '@/utils/validate';
 import { useQueryClient } from '@tanstack/react-query';
-export default function TabOneScreen() {
+export default function Page() {
   const queryClient = useQueryClient();
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
   const isFocused = useIsFocused();
   const { data: inbox } = useGetMessageInbox(isFocused);
   useEffect(() => {
@@ -25,6 +25,7 @@ export default function TabOneScreen() {
       inboxBadge(inbox);
     }
   }, [inbox]);
+
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {

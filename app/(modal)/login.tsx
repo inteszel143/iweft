@@ -7,32 +7,30 @@ import { defaultStyles } from '@/constants/Styles';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import FacebookIcon from '@/components/social/FacebookIcon';
-import GooleIcon from '@/components/social/GooleIcon';
 import AppleIcon from '@/components/social/AppleIcon';
-import { getEmailChecker } from '@/apis/fetchAuth';
-import EmailExist from '@/components/EmailExist';
+import GooleIcon from '@/components/social/GooleIcon';
+import FacebookIcon from '@/components/social/FacebookIcon';
+import { manualLogin } from '@/apis/auth';
+import * as SecureStore from 'expo-secure-store';
+import { getVerifyCheck } from '@/apis/fetchAuth';
+import ErrorLoginModal from '@/components/ErrorLoginModal';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import IconFacebook from '@/components/social/IconFacebook';
-import IconGoogle from '@/components/social/IconGoogle';
-import IconApple from '@/components/social/IconApple';
-export default function RegisterScreen() {
-    const [emailF, setEmailF] = useState(false);
-    const [passwordF, setPasswordF] = useState(false);
-    const [check, setCheck] = useState(true);
-    const [showP, setShowP] = useState(true);
+export default function Page() {
     const { t } = useTranslation();
-    const [loadingBtn, setLoadingBtn] = useState(false);
-    const [existModal, setExitModal] = useState(false);
-
-
+    const queryClient = useQueryClient();
+    const [emailF, setEmailF] = useState<boolean>(false);
+    const [passwordF, setPasswordF] = useState<boolean>(false);
+    const [check, setCheck] = useState<boolean>(true);
+    const [showP, setShowP] = useState<boolean>(true);
+    const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
+    const [errorModalVisible, setErrorModalVisible] = useState<boolean>(false);
     const toggleCheck = () => {
         setCheck(!check);
     };
     const toggleCheckPassword = () => {
         setShowP(!showP);
     };
-
     const handleFocus = () => {
         setEmailF(true);
     };
@@ -46,13 +44,11 @@ export default function RegisterScreen() {
         setPasswordF(false);
     };
 
-
     const schema = yup.object().shape({
         email: yup.string().email('Invalid email').required('Email is required'),
         password: yup.string()
             .required('Password is required')
-            .min(8, 'Password must be at least 8 characters')
-        // .matches(/^(?=.*\d)(?=.*[!@#$%^&*])/, 'Password must contain at least one number and one special character')
+        ,
     });
 
     const { control, handleSubmit, formState: { errors } } = useForm({
@@ -62,43 +58,31 @@ export default function RegisterScreen() {
     const onSubmit = async (data: any) => {
         setLoadingBtn(true);
         try {
-            const reponse = await getEmailChecker(data?.email);
-            if (reponse?.exists) {
-                setExitModal(true);
+            const response = await manualLogin(data.email, data.password);
+            const refreshToken = response?.refresh?.token;
+            await SecureStore.setItemAsync('accessToken', response?.access?.token);
+            const isVerify = await getVerifyCheck(data?.email as string);
+            setTimeout(() => {
                 setLoadingBtn(false);
-            } else {
-                setTimeout(() => {
-                    setLoadingBtn(false);
-                    router.push({
-                        pathname: '/authPage/create/ProfileData',
-                        params: {
-                            email: data.email,
-                            password: data.password
-                        }
-                    });
-                }, 2000);
-            }
+                queryClient.invalidateQueries({ queryKey: ['user-data'] });
+                router.replace({
+                    pathname: '/authPage/AfterLogin',
+                    params: { email: data?.email, verified: isVerify?.verified, refreshToken: refreshToken }
+                });
+            }, 3000);
         } catch (error) {
+            setErrorModalVisible(true);
             setLoadingBtn(false);
         }
     };
 
     return (
         <View style={styles.container}>
-            {existModal && <EmailExist modalVisible={existModal} setModalVisible={setExitModal} />}
-
-            <View style={styles.headerBack}>
-                <TouchableOpacity onPress={() => router.back()}>
-                    <AntDesign name='arrowleft' size={hp(3)} />
-                </TouchableOpacity>
-            </View>
-
-
-            <ScrollView bounces={false} contentContainerStyle={{ paddingBottom: hp(5) }}>
+            {errorModalVisible && <ErrorLoginModal modalVisible={errorModalVisible} setModalVisible={setErrorModalVisible} />}
+            <ScrollView bounces={false} contentContainerStyle={{ paddingBottom: hp(5) }} showsVerticalScrollIndicator={false}>
                 <View style={styles.containerStyle}>
-                    <Text style={styles.textStyle}>{t('Create your Account')}</Text>
-
-                    <View style={[styles.textField, { backgroundColor: emailF ? '#0A5CA826' : '#FAFAFA', borderColor: emailF ? '#0A5CA8' : '#FAFAFA' }]} >
+                    {/* <Text style={styles.textStyle}>{t('Login to your Account')}</Text> */}
+                    <View style={[styles.textField, { backgroundColor: emailF ? '#0A5CA826' : '#F8F8F8', borderColor: errors.email?.message ? "#ED4337" : emailF ? '#0A5CA8' : '#FAFAFA' }]} >
                         <View style={styles.innerField}>
                             <Ionicons name='mail' size={hp(2.5)} color={emailF ? '#0A5CA8' : '#9E9E9E'} />
                             <Controller
@@ -127,13 +111,12 @@ export default function RegisterScreen() {
                     </View>
 
                     {/* Error */}
-                    {errors.email?.message && <View style={styles.errorViewStyle}>
-                        <Ionicons name='alert-circle-outline' size={hp(2.4)} color={'#ED4337'} />
+                    {/* {errors.email?.message && <View style={styles.errorViewStyle}>
+                        <Ionicons name='alert-circle-outline' size={hp(2)} color={'#ED4337'} />
                         <Text style={styles.errorStyle} >{errors.email?.message}</Text>
-                    </View>}
+                    </View>} */}
 
-
-                    <View style={[styles.textField, { backgroundColor: passwordF ? '#0A5CA826' : '#FAFAFA', borderColor: passwordF ? '#0A5CA8' : '#FAFAFA' }]}  >
+                    <View style={[styles.textField, { backgroundColor: passwordF ? '#0A5CA826' : '#F8F8F8', borderColor: errors.password?.message ? "#ED4337" : passwordF ? '#0A5CA8' : '#FAFAFA' }]}  >
                         <View style={styles.innerField}>
                             <Ionicons name='lock-closed' size={hp(2.5)} color={passwordF ? '#0A5CA8' : '#9E9E9E'} />
 
@@ -162,41 +145,24 @@ export default function RegisterScreen() {
                             </TouchableOpacity>
                         </View>
                     </View>
-
-
+                    <Text style={styles.terms}>By logging in, you agree to our <Text style={styles.termsBlue}>Terms of Service</Text> and <Text style={styles.termsBlue}>Privacy Policy</Text>.</Text>
                     {/* Error */}
-                    {errors.password?.message && <View style={styles.errorViewStyle}>
-                        <Ionicons name='alert-circle-outline' size={hp(2.4)} color={'#ED4337'} />
+                    {/* {errors.password?.message && <View style={styles.errorViewStyle}>
+                        <Ionicons name='alert-circle-outline' size={hp(2)} color={'#ED4337'} />
                         <Text style={styles.errorStyle} >{errors.password?.message}</Text>
-                    </View>}
-
-
-
+                    </View>} */}
                 </View>
-
-                {/* Remember */}
-                <TouchableOpacity style={styles.rememberStyle} onPress={toggleCheck}>
-                    {check ? <Ionicons name='checkbox' size={hp(2.6)} color={'#0A5CA8'} />
-                        :
-                        <MaterialCommunityIcons name='checkbox-blank-outline' size={hp(2.6)} color={'#0A5CA8'} />}
-                    <Text style={styles.rememberText}>{t('Remember me')}</Text>
-                </TouchableOpacity>
-
-
 
                 <View style={{ alignItems: 'center', marginTop: hp(3) }}>
 
                     <TouchableOpacity style={defaultStyles.footerBtn} onPress={handleSubmit(onSubmit)}>
-                        {loadingBtn ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>{t('Sign up')}</Text>}
+                        {loadingBtn ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>{t('Sign in')}</Text>}
                     </TouchableOpacity>
 
-                    <Link href={'/authPage/forgot/ForgotPassScreen'} asChild>
-                        <TouchableOpacity>
-                            <Text style={styles.forgot}>{t('Forgot the password?')}</Text>
-                        </TouchableOpacity>
-                    </Link>
+                    <TouchableOpacity onPress={() => router.replace('/authPage/forgot/ForgotPassScreen')}>
+                        <Text style={styles.forgot}>{t('Forgot the password?')}</Text>
+                    </TouchableOpacity>
                 </View>
-
 
                 <View style={styles.orStyle}>
                     <View style={styles.separator} />
@@ -206,24 +172,25 @@ export default function RegisterScreen() {
 
 
                 <View style={styles.socialStyle}>
-                    <IconFacebook />
-                    <IconGoogle />
-                    <IconApple />
+                    <FacebookIcon />
+                    <GooleIcon />
+                    <AppleIcon />
                 </View>
+
 
                 <View style={{ alignItems: 'center' }}>
                     <View style={styles.footerInner}>
-                        <Text style={styles.innerText}>{t('Already have an account?')}</Text>
+                        <Text style={styles.innerText}>{t('Don’t have an account?')}</Text>
                         <TouchableOpacity
-                            onPress={() => router.push('(modal)/login')}
+                            onPress={() => router.replace('/authPage/RegisterScreen')}
                         >
-                            <Text style={styles.signUpText}>{t('Sign in')}</Text>
+                            <Text style={styles.signUpText}>{t('Sign up')}</Text>
                         </TouchableOpacity>
-
                     </View>
                 </View>
+
             </ScrollView>
-        </View >
+        </View>
     )
 }
 
@@ -235,11 +202,11 @@ const styles = StyleSheet.create({
 
     containerStyle: {
         paddingHorizontal: wp(5),
-        marginTop: hp(3),
+        marginTop: hp(1),
     },
     textStyle: {
         fontFamily: 'UrbanistBold',
-        fontSize: Platform.OS === 'ios' ? hp(4.5) : hp(5),
+        fontSize: Platform.OS === 'ios' ? hp(3) : hp(3),
     },
     headerBack: {
         width: wp(100),
@@ -253,13 +220,14 @@ const styles = StyleSheet.create({
         borderRadius: wp(4),
         justifyContent: 'center',
         paddingHorizontal: wp(5),
-        marginTop: hp(2.5),
-        borderWidth: 1.5,
+        marginTop: hp(2),
+        borderWidth: 1,
     },
     textInputStyle: {
-        fontFamily: 'UrbanistMedium',
-        fontSize: hp(2),
         flex: 1,
+        fontFamily: 'UrbanistMedium',
+        paddingVertical: hp(1),
+        fontSize: hp(2),
     },
     innerField: {
         flexDirection: 'row',
@@ -275,7 +243,7 @@ const styles = StyleSheet.create({
     },
     rememberText: {
         fontFamily: 'UrbanistSemiBold',
-        fontSize: hp(1.8),
+        fontSize: hp(1.9),
     },
     forgot: {
         fontFamily: 'UrbanistSemiBold',
@@ -284,9 +252,9 @@ const styles = StyleSheet.create({
         marginTop: hp(3)
     },
     socialStyle: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: wp(6),
+        // flexDirection: 'row',
+        // alignItems: 'center',
+        // gap: wp(6),
         alignSelf: 'center',
         marginTop: hp(3),
     },
@@ -304,11 +272,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
 
-
-
-
-
-
     orStyle: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -317,8 +280,8 @@ const styles = StyleSheet.create({
         marginTop: hp(5)
     },
     orText: {
-        fontFamily: 'UrbanistSemiBold',
-        fontSize: hp(2),
+        fontFamily: 'UrbanistMedium',
+        fontSize: hp(1.8),
         color: '#616161'
     },
     separator: {
@@ -336,7 +299,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     footerBtn: {
-        width: wp(90),
+        width: wp(88),
         height: hp(7),
         borderRadius: wp(10),
         backgroundColor: '#0A5CA8',
@@ -365,15 +328,25 @@ const styles = StyleSheet.create({
         color: '#0A5CA8'
     },
     errorStyle: {
-        flex: 1,
         fontFamily: 'UrbanistRegular',
-        fontSize: hp(1.8),
+        fontSize: hp(1.6),
         color: "#ED4337"
     },
     errorViewStyle: {
         marginTop: 10,
         flexDirection: 'row',
-        // alignItems: 'center',
+        alignItems: 'center',
         gap: 10
+    },
+    terms: {
+        fontFamily: 'UrbanistRegular',
+        fontSize: hp(1.5),
+        paddingHorizontal: wp(2),
+        marginTop: hp(1.5),
+        color: "#616161"
+    },
+    termsBlue: {
+        color: '#0A5CA8',
+        fontFamily: 'UrbanistMedium',
     }
 })

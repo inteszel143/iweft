@@ -100,8 +100,8 @@ const styles = StyleSheet.create({
         marginTop: hp(2)
     },
     btnText: {
-        fontFamily: 'UrbanistBold',
-        fontSize: hp(2),
+        fontFamily: 'UrbanistSemiBold',
+        fontSize: hp(1.9),
         color: '#212121'
     },
     btnInner: {

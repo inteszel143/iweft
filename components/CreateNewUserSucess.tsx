@@ -15,6 +15,8 @@ export default function CreateNewUserSucess({ modalVisible, setModalVisible }: M
             setModalVisible(false);
             // router.replace('/authPage/LoginScreen');
             router.replace('/authPage/LoginScreen');
+            // router.push('/(tabs)/');
+            // router.replace('(modal)/login');
         }, 3000);
         return () => clearTimeout(timer);
     }, []);

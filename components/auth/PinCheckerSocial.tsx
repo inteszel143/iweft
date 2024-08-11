@@ -19,9 +19,10 @@ interface CellProps {
 
 import { useEffect, useState } from 'react';
 import useStoreRefresh from '@/store/useStoreRefresh';
+import useValidateRefresh from '@/store/useValidateRefresh';
 
 export default function PinCheckerSocial() {
-
+    const { setRefreshToken } = useValidateRefresh();
     const token = useStoreRefresh(state => state.token);
 
     const [btnLoading, setBtnLoading] = useState(false);
@@ -67,6 +68,7 @@ export default function PinCheckerSocial() {
         await SecureStore.setItemAsync('refreshToken', token as string);
         if (response?.isMatch) {
             router.push('/(tabs)/');
+            setRefreshToken(token);
             setBtnLoading(false);
         } else {
             setErrorModalVisible(true);

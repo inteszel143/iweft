@@ -7,6 +7,7 @@ import AppleSigninSelect from '@/components/social/AppleSigninSelect';
 import GoogleSigninSelect from '@/components/social/GoogleSigninSelect';
 import FacebookSigninSelect from '@/components/social/FacebookSigninSelect';
 import { useTranslation } from 'react-i18next';
+import LoginAsGuest from '@/components/social/LoginAsGuest';
 export default function SelectLoginPage() {
     const { t } = useTranslation();
     return (
@@ -19,6 +20,7 @@ export default function SelectLoginPage() {
                 <FacebookSigninSelect />
                 <GoogleSigninSelect />
                 <AppleSigninSelect />
+                {/* <LoginAsGuest /> */}
             </View>
 
             <View style={styles.orStyle}>

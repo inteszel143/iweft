@@ -3,9 +3,10 @@ import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
+import useValidateRefresh from '@/store/useValidateRefresh';
 
 export default function HomeAds() {
-
+    const { refreshToken } = useValidateRefresh();
     return (
         <View style={styles.container}>
 
@@ -30,12 +31,21 @@ export default function HomeAds() {
                             </View>
 
 
-                            <Link href={'/homePage/SubscriptionOffer'} asChild>
-                                <TouchableOpacity style={styles.btnOffer}>
+                            {
+                                refreshToken === null ? <TouchableOpacity style={styles.btnOffer}
+                                    onPress={() => router.push('(modal)/login')}
+                                >
                                     <Text style={{ fontFamily: 'UrbanistBold', fontSize: hp(1.8), color: "#93c120" }} >Grab Offer</Text>
                                     <MaterialIcons name='keyboard-arrow-right' size={hp(2.5)} color={"#6F767E"} />
                                 </TouchableOpacity>
-                            </Link>
+                                    :
+                                    <TouchableOpacity style={styles.btnOffer}
+                                        onPress={() => router.push('/homePage/SubscriptionOffer')}
+                                    >
+                                        <Text style={{ fontFamily: 'UrbanistBold', fontSize: hp(1.8), color: "#93c120" }} >Grab Offer</Text>
+                                        <MaterialIcons name='keyboard-arrow-right' size={hp(2.5)} color={"#6F767E"} />
+                                    </TouchableOpacity>
+                            }
 
                         </View>
 

@@ -9,6 +9,7 @@ import { useGetEReceipt } from '@/query/stripeQuery';
 import { formatDate, formatNumber, formatTime } from '@/utils/format';
 import { useTranslation } from 'react-i18next';
 import { getCurrentLanguage } from '@/services/i18n';
+import Animated, { FadeInUp } from 'react-native-reanimated';
 
 export default function BookingSummary() {
     const { t } = useTranslation();
@@ -16,6 +17,10 @@ export default function BookingSummary() {
     const { orderId } = useLocalSearchParams();
     const isFocused = useIsFocused();
     const { data, isFetching } = useGetEReceipt(isFocused, orderId as string);
+    const [hidden, setHidden] = useState<boolean>(false);
+    const toggleHidden = () => {
+        setHidden(!hidden);
+    }
 
     return (
         <View style={styles.container}>
@@ -39,7 +44,7 @@ export default function BookingSummary() {
                     <Text style={styles.fetchText}>{t('Generating Booking Summary')}</Text>
                 </View>
                     :
-                    <>
+                    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(1) }}>
                         <View style={[styles.summarCard, { marginTop: hp(3) }]}>
                             <View style={styles.summarRow}>
                                 <Text style={styles.summaryLabel}>Services</Text>
@@ -49,13 +54,6 @@ export default function BookingSummary() {
                                 <Text style={styles.summaryLabel}>Category</Text>
                                 <Text style={styles.summaryValue}>{data?.trm_order?.service?.service?.sub_title}</Text>
                             </View>
-
-                            {
-                                data?.trm_customer_subscriptions?.subscription && <View style={[styles.summarRow, { marginTop: hp(3), flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
-                                    <Text style={styles.summaryLabel}>{t('Subscription Plan')} </Text>
-                                    <Text style={styles.summaryValue}>{data?.trm_customer_subscriptions?.subscription}</Text>
-                                </View>
-                            }
 
                             <View style={[styles.summarRow, { marginTop: hp(3) }]}>
                                 <Text style={styles.summaryLabel}>Date & Time</Text>
@@ -68,13 +66,28 @@ export default function BookingSummary() {
                         </View>
 
 
+                        {
+                            data?.trm_customer_subscriptions?.subscription && <View style={[styles.summarCard, { marginTop: hp(2) }]}>
+                                <TouchableOpacity style={styles.summarRow}
+                                    onPress={toggleHidden}
+                                >
+                                    <Text style={styles.summaryLabel}>Subscription Details</Text>
+                                    <Entypo name='chevron-thin-down' size={hp(2)} />
+                                </TouchableOpacity>
+                                {
+                                    hidden && <Animated.View
+                                        entering={FadeInUp.duration(200).damping(2)}
+                                        style={styles.hiddenBox}>
+                                        <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                                            <Text style={styles.summaryLabel}>{t('Subscription Plan')} </Text>
+                                            <Text style={styles.summaryValue}>{data?.trm_customer_subscriptions?.subscription}</Text>
+                                        </View>
+                                    </Animated.View>
+                                }
 
-                        <View style={[styles.summarCard, { marginTop: hp(2) }]}>
-                            <TouchableOpacity style={styles.summarRow}>
-                                <Text style={styles.summaryLabel}>Subscription Details</Text>
-                                <Entypo name='chevron-thin-down' size={hp(2)} />
-                            </TouchableOpacity>
-                        </View>
+                            </View>
+                        }
+
 
 
 
@@ -103,12 +116,12 @@ export default function BookingSummary() {
                                     <Image source={require('@/assets/temp/bookingIcon/mastercard.jpg')} resizeMode='contain' style={{ width: wp(8) }} />
                                     <Text style={styles.cardTextStyle}> {data?.trm_charge?.payment_method}</Text>
                                 </View>
-                                <TouchableOpacity>
+                                {/* <TouchableOpacity>
                                     <Text style={styles.btnText}>Change</Text>
-                                </TouchableOpacity>
+                                </TouchableOpacity> */}
                             </TouchableOpacity>
                         </View>
-                    </>
+                    </ScrollView>
             }
 
 
@@ -211,6 +224,10 @@ const styles = StyleSheet.create({
         fontSize: hp(2),
         marginTop: hp(1.5),
         // color: "#616161"
+    },
+    hiddenBox: {
+        backgroundColor: 'white',
+        marginTop: hp(1)
     }
 
 

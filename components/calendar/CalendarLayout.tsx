@@ -2,7 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React, { useState } from 'react'
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { upcoming } from '@/constants/booking/data';
 import Animated, { FadeInUp } from 'react-native-reanimated';
@@ -138,29 +138,33 @@ export default function CalendarLayout() {
                                     entering={FadeInUp.duration(300).springify()}
                                     key={index}
                                 >
-                                    <Link href={'/bookingPage/BookingSummary'} style={[styles.row, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]} asChild>
-                                        <TouchableOpacity>
-                                            <View style={[styles.rowLeft, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
-                                                <View>
-                                                    <Image
-                                                        source={{ uri: item?.order_details?.service?.image }}
-                                                        resizeMode='contain'
-                                                        style={styles.imageStyle}
-                                                    />
-                                                </View>
-                                                <View style={{ marginLeft: current === 'ar' ? 0 : wp(4), marginRight: current === 'ar' ? wp(4) : 0 }}>
-                                                    <Text style={styles.titleStyle} >{item?.order_details?.service?.title}</Text>
-                                                    <Text style={styles.subTitle}>
-                                                        {item?.order_details?.order_items?.length} {item?.order_details?.order_items?.length === 1 ? 'item' : 'items'}
-                                                    </Text>
-                                                    <View style={styles.indicator}>
-                                                        <Text style={styles.upcoming}>{t('Upcoming')}</Text>
-                                                    </View>
+                                    <TouchableOpacity
+                                        style={[styles.row, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}
+                                        onPress={() => router.push({
+                                            pathname: '/bookingPage/BookingSummary',
+                                            params: { orderId: item?._id }
+                                        })}
+                                    >
+                                        <View style={[styles.rowLeft, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
+                                            <View>
+                                                <Image
+                                                    source={{ uri: item?.order_details?.service?.image }}
+                                                    resizeMode='contain'
+                                                    style={styles.imageStyle}
+                                                />
+                                            </View>
+                                            <View style={{ marginLeft: current === 'ar' ? 0 : wp(4), marginRight: current === 'ar' ? wp(4) : 0 }}>
+                                                <Text style={styles.titleStyle} >{item?.order_details?.service?.title}</Text>
+                                                <Text style={styles.subTitle}>
+                                                    {item?.order_details?.order_items?.length} {item?.order_details?.order_items?.length === 1 ? 'item' : 'items'}
+                                                </Text>
+                                                <View style={styles.indicator}>
+                                                    <Text style={styles.upcoming}>{t('Upcoming')}</Text>
                                                 </View>
                                             </View>
+                                        </View>
 
-                                        </TouchableOpacity>
-                                    </Link>
+                                    </TouchableOpacity>
                                 </Animated.View>
                             ))
                         }

@@ -38,4 +38,14 @@ export const defaultStyles = StyleSheet.create({
     fontSize: hp(2),
     color: "#FFFFFF",
   },
+
+
+
+
+  
+
+
+
+
+
 });

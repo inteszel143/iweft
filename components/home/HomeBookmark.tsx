@@ -15,7 +15,7 @@ export default function HomeBookmark() {
                 <TouchableOpacity
                     onPress={() => router.push('/homePage/Bookmarks')}
                 >
-                    <Image source={require('@/assets/icons/bookmark.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                    <Image source={require('@/assets/icons/bookmark.png')} resizeMode='contain' style={{ width: wp(7.5) }} />
                 </TouchableOpacity>
             </View>
         )
@@ -25,7 +25,7 @@ export default function HomeBookmark() {
                 <TouchableOpacity
                     onPress={() => router.push('/homePage/Bookmarks')}
                 >
-                    <Image source={require('@/assets/icons/bookmark.png')} resizeMode='contain' style={{ width: wp(8) }} />
+                    <Image source={require('@/assets/icons/bookmark.png')} resizeMode='contain' style={{ width: wp(7.5) }} />
                 </TouchableOpacity>
                 <View style={styles.notifRed} />
             </View>

@@ -16,11 +16,13 @@ import AddBookmarks from '@/components/modal/AddBookmarks';
 import { useLaundryBundlesUsingId } from '@/query/homeQuery';
 import { LinearGradient } from 'expo-linear-gradient';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
+import useValidateRefresh from '@/store/useValidateRefresh';
 const IMG_HEIGHT = 300;
 
 export default function BuddleScreen() {
     const { bundleId } = useLocalSearchParams();
     // const bundleData: LaundryBundle = JSON.parse(item as string);
+    const { refreshToken } = useValidateRefresh();
     const [addbook, setAddbook] = useState(false);
     const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
     const isFocused = useIsFocused();
@@ -128,14 +130,20 @@ export default function BuddleScreen() {
 
                     <View style={styles.middelTopRow}>
                         <Text style={styles.middleText}>{bundleData?.title}</Text>
-                        <TouchableOpacity onPress={isBookmarked ? removeBookmark : addingBookmark}>
-                            {
-                                isBookmarked ?
-                                    <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5.4), height: hp(4) }} />
-                                    :
-                                    <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5.4), height: hp(4), }} />
-                            }
-                        </TouchableOpacity>
+                        {
+                            refreshToken === null ? <TouchableOpacity onPress={() => router.push('(modal)/login')}>
+                                <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5.4), height: hp(4), }} />
+                            </TouchableOpacity>
+                                :
+                                <TouchableOpacity onPress={isBookmarked ? removeBookmark : addingBookmark}>
+                                    {
+                                        isBookmarked ?
+                                            <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5.4), height: hp(4) }} />
+                                            :
+                                            <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5.4), height: hp(4), }} />
+                                    }
+                                </TouchableOpacity>
+                        }
                     </View>
 
                     <View style={styles.rateStyle}>
@@ -204,28 +212,45 @@ export default function BuddleScreen() {
 
 
             <View style={styles.footer}>
-                <View style={styles.bottomBtnRow}>
-                    <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}
-                        onPress={() => router.push('chatPage/NewMessage')}
-                    >
-                        <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
-                        onPress={() => {
-                            setServiceModel("Service");
-                            setBundleId(bundleData?._id);
-                            const itemData = covertData(bundleData?.includes);
-                            const itemDataString = JSON.stringify(itemData);
-                            router.push({
-                                pathname: 'homePage/services/AfterItemPage',
-                                params: { service: bundleData?.service?._id, service_name: bundleData?.service?.title, base_price: bundleData?.base_price, total: bundleData?.base_price, itemData: itemDataString, total_data: itemData?.length }
-                            })
-                        }
-                        }
-                    >
-                        <Text style={[styles.bottomText, { color: "white" }]}>Book Now </Text>
-                    </TouchableOpacity>
-                </View>
+                {
+                    refreshToken === null ?
+                        <View style={styles.bottomBtnRow}>
+                            <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}
+                                onPress={() => router.push('(modal)/login')}
+                            >
+                                <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
+                                onPress={() => router.push('(modal)/login')}
+                            >
+                                <Text style={[styles.bottomText, { color: "white" }]}>Book Now </Text>
+                            </TouchableOpacity>
+                        </View>
+                        :
+                        <View style={styles.bottomBtnRow}>
+                            <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}
+                                onPress={() => router.push('chatPage/NewMessage')}
+                            >
+                                <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
+                                onPress={() => {
+                                    setServiceModel("Service");
+                                    setBundleId(bundleData?._id);
+                                    const itemData = covertData(bundleData?.includes);
+                                    const itemDataString = JSON.stringify(itemData);
+                                    router.push({
+                                        pathname: 'homePage/services/AfterItemPage',
+                                        params: { service: bundleData?.service?._id, service_name: bundleData?.service?.title, base_price: bundleData?.base_price, total: bundleData?.base_price, itemData: itemDataString, total_data: itemData?.length }
+                                    })
+                                }
+                                }
+                            >
+                                <Text style={[styles.bottomText, { color: "white" }]}>Book Now </Text>
+                            </TouchableOpacity>
+                        </View>
+                }
+
             </View>
 
             {/* back */}

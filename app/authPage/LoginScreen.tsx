@@ -16,6 +16,9 @@ import { getVerifyCheck } from '@/apis/fetchAuth';
 import ErrorLoginModal from '@/components/ErrorLoginModal';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import IconFacebook from '@/components/social/IconFacebook';
+import IconGoogle from '@/components/social/IconGoogle';
+import IconApple from '@/components/social/IconApple';
 
 export default function LoginScreen() {
     const [emailF, setEmailF] = useState(false);
@@ -51,8 +54,6 @@ export default function LoginScreen() {
         email: yup.string().email('Invalid email').required('Email is required'),
         password: yup.string()
             .required('Password is required')
-        // .min(8, 'Password must be at least 8 characters')
-        // .matches(/^(?=.*\d)(?=.*[!@#$%^&*])/, 'Password must contain at least one number and one special character')
         ,
     });
 
@@ -203,9 +204,9 @@ export default function LoginScreen() {
 
 
                 <View style={styles.socialStyle}>
-                    <FacebookIcon />
-                    <GooleIcon />
-                    <AppleIcon />
+                    <IconFacebook />
+                    <IconGoogle />
+                    <IconApple />
                 </View>
 
                 <View style={{ alignItems: 'center' }}>

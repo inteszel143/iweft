@@ -1,18 +1,15 @@
 import { StyleSheet, Text, View, Modal, Platform, Image, TouchableOpacity } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { router } from 'expo-router';
-import LottieView from 'lottie-react-native';
 interface ModalProps {
     modalVisible: boolean;
     setModalVisible: React.Dispatch<React.SetStateAction<boolean>>; // Ensure correct typing
 }
+export default function BookingDetailsModal({ modalVisible, setModalVisible }: ModalProps) {
 
-export default function ErrorFacebookAuthModal({ modalVisible, setModalVisible }: ModalProps) {
     const toggleModal = () => {
         setModalVisible(!modalVisible);
-    };
-
+    }
 
     return (
         <Modal
@@ -24,23 +21,17 @@ export default function ErrorFacebookAuthModal({ modalVisible, setModalVisible }
         >
             <View style={styles.modalStyle}>
                 <View style={styles.modalBox}>
-                    <View>
-                        <LottieView
-                            autoPlay
-                            style={styles.errorLottieStyle}
-                            source={require('@/assets/animate/invalid.json')}
-                        />
-                    </View>
-                    <Text style={styles.titleStyle}>Oops, Sorry!</Text>
-                    <Text style={styles.subStyle}>The email address you provided is already in use. Please try another email.</Text>
-                    <View style={{ marginTop: hp(2.5) }} />
-                    <TouchableOpacity style={styles.btnStyle} onPress={toggleModal}>
-                        <Text style={styles.btnText}>Try again</Text>
+                    <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#F75555' }]}>
+                        <Text style={[styles.modalText, { color: '#FFFFFF' }]}>Reset Schedule</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.btnStyle, { backgroundColor: '#DAE7F2', }]}
+                        onPress={toggleModal}
+                    >
+                        <Text style={[styles.btnText, { color: '#0A5CA8' }]}>Done</Text>
                     </TouchableOpacity>
                 </View>
             </View>
-
-        </Modal>
+        </Modal >
     )
 }
 
@@ -53,7 +44,7 @@ const styles = StyleSheet.create({
     },
     modalBox: {
         width: wp(86),
-        height: Platform.OS === 'ios' ? hp(48) : hp(50),
+        height: Platform.OS === 'ios' ? hp(40) : hp(62),
         backgroundColor: "white",
         borderRadius: wp(6),
         alignItems: 'center',
@@ -66,38 +57,40 @@ const styles = StyleSheet.create({
     },
     titleStyle: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(2.5),
+        fontSize: hp(2.9),
         textAlign: 'center',
-        color: '#DB3747',
+        color: '#0A5CA8',
         marginTop: hp(1)
     },
     subStyle: {
-        fontFamily: 'UrbanistMedium',
-        fontSize: hp(2),
+        fontFamily: 'UrbanistRegular',
+        fontSize: hp(2.1),
         textAlign: 'center',
-        color: "gray",
+        color: "#212121",
         marginTop: hp(2),
-        paddingHorizontal: wp(4)
     },
     btnStyle: {
+        marginTop: hp(2),
         height: hp(7),
-        width: wp(50),
-        backgroundColor: '#DC3545',
+        width: wp(72),
         borderRadius: wp(10),
         alignItems: 'center',
         justifyContent: 'center'
     },
     btnText: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(1.8),
-        color: 'white'
+        fontSize: hp(2),
     },
-    indicator: {
-        position: 'absolute',
-        bottom: hp(4),
+    modalBtn: {
+        width: wp(70),
+        height: hp(7),
+        borderRadius: wp(10),
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: hp(2)
     },
-    errorLottieStyle: {
-        width: wp(34),
-        height: hp(16)
-    }
+    modalText: {
+        fontFamily: "UrbanistBold",
+        fontSize: hp(1.9)
+    },
 })

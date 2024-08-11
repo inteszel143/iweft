@@ -2,7 +2,7 @@
   "expo": {
     "name": "Iweft",
     "slug": "iweft",
-    "version": "1.0.7",
+    "version": "1.0.9",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "iweft",
@@ -16,7 +16,7 @@
     "ios": {
       "usesAppleSignIn": true,
       "supportsTablet": false,
-      "buildNumber": "6",
+      "buildNumber": "8",
       "privacyManifests": {
         "NSPrivacyAccessedAPITypes": [
           {
@@ -77,13 +77,19 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "You location is used to show your position on the map, get directions, estimate travel times for delivery purposes."
+          "locationAlwaysAndWhenInUsePermission": "You location is used to show your position on the map, get directions, estimate travel times for delivery purposes.",
+          "locationWhenInUsePermission": "You location is used to show your position on the map, get directions, estimate travel times for delivery purposes.",
+          "locationAlwaysPermission": "You location is used to show your position on the map, get directions, estimate travel times for delivery purposes.",
+          "isIosBackgroundLocationEnabled": true,
+          "isAndroidBackgroundLocationEnabled": true
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "The app accesses your photos to let you share them with your friends."
+          "photosPermission": "Allow access to your photos to upload photos from your library.",
+          "microphonePermission": "The microphone is used to record audio for use within the app.",
+          "cameraPermission": "Camera usage to take pictures for your profile. Please allow camera access to continue."
         }
       ],
       [

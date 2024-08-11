@@ -10,15 +10,39 @@ import { appOpenRefresh } from '@/apis/auth';
 import { useQueryClient } from '@tanstack/react-query';
 import errorRes from '@/apis/errorRes';
 import ModalUpdate from '@/components/ModalUpdate';
+import useValidateRefresh from '@/store/useValidateRefresh';
 export default function index() {
     const queryClient = useQueryClient();
     const [updateApp, setUpdateApp] = useState(false);
-
+    const { setRefreshToken } = useValidateRefresh();
     useEffect(() => {
-        // setTimeout(() => {
-        //     validate();
-        // }, 1000);
-        validate();
+        const validateFunction = async () => {
+            const refreshToken = await SecureStore.getItemAsync('refreshToken');
+            const onboarded = await SecureStore.getItemAsync('onboarded');
+            if (refreshToken === null) {
+                if (onboarded === null) {
+                    router.push('/authPage/OnboardingScreen');
+                } else {
+                    router.push('/(tabs)/');
+                    setRefreshToken(refreshToken);
+                }
+            } else {
+                try {
+                    const response = await appOpenRefresh(refreshToken);
+                    await SecureStore.setItemAsync('accessToken', response?.access?.token);
+                    await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+                    queryClient.invalidateQueries({ queryKey: ['user-data'] });
+                    setRefreshToken(response?.refresh?.token);
+                    router.push('/(tabs)/');
+                } catch (error) {
+                    router.push('/(tabs)/');
+                }
+            }
+        }
+        setTimeout(() => {
+            validateFunction();
+        }, 1000);
+        // validate();
     }, []);
 
     const validate = async () => {
@@ -37,7 +61,7 @@ export default function index() {
                     console.log('Error during token refresh:', errorRes(error));
                     await SecureStore.deleteItemAsync('accessToken');
                     await SecureStore.deleteItemAsync('refreshToken');
-                    router.push('/authPage/LoginScreen');
+                    router.push('/authPage/SelectLoginPage');
                 }
             } else {
                 if (onboarded === null) {
@@ -50,7 +74,7 @@ export default function index() {
             await SecureStore.deleteItemAsync('accessToken');
             await SecureStore.deleteItemAsync('refreshToken');
             await SecureStore.deleteItemAsync('onboarded');
-            router.push('/authPage/LoginScreen');
+            router.push('/authPage/SelectLoginPage');
 
         }
     };

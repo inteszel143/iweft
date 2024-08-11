@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router } from 'expo-router';
@@ -164,8 +164,17 @@ export default function DriverInstruction() {
 
             <View style={styles.footer}>
                 <TouchableOpacity style={defaultStyles.footerBtn}
-                    disabled={selected.length == 0 || deliverySelect.length == 0 ? true : false}
-                    onPress={toggleSubmit}
+                    // disabled={selected.length == 0 || deliverySelect.length == 0 ? true : false}
+                    onPress={() => {
+                        if (selected.length == 0 || deliverySelect.length == 0 ? true : false) {
+                            Alert.alert('Selection Needed', 'Please make sure to select at least one option for both the collection and delivery instruction', [
+                                { text: 'OK' },
+                            ]);
+                        } else {
+                            toggleSubmit();
+                        }
+                    }}
+                // onPress={toggleSubmit}
                 >
                     <Text style={defaultStyles.footerText}>Apply</Text>
                 </TouchableOpacity>

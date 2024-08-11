@@ -23,6 +23,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useHomeServicesId } from '@/query/homeQuery';
 import { LinearGradient } from 'expo-linear-gradient';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
+import useValidateRefresh from '@/store/useValidateRefresh';
 
 
 const IMG_HEIGHT = 300;
@@ -32,6 +33,7 @@ const { width } = Dimensions.get('window');
 export default function ServicesScreen() {
     const { serviceId } = useLocalSearchParams();
     // const serviceItem: ServiceItem = JSON.parse(item as string);
+    const { refreshToken } = useValidateRefresh();
     const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
     const queryClient = useQueryClient();
     const isFocused = useIsFocused();
@@ -149,15 +151,20 @@ export default function ServicesScreen() {
 
                     <View style={[styles.middelTopRow]}>
                         <Text style={styles.middleText}>{serviceItem?.service?.title} Services</Text>
-
-                        <TouchableOpacity onPress={isBookmarked ? removeBookmark : addingBookmark}>
-                            {
-                                isBookmarked ?
-                                    <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5.4), height: hp(4) }} />
-                                    :
-                                    <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5.4), height: hp(4), }} />
-                            }
-                        </TouchableOpacity>
+                        {
+                            refreshToken === null ? <TouchableOpacity onPress={() => router.push('(modal)/login')}>
+                                <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5.4), height: hp(4), }} />
+                            </TouchableOpacity>
+                                :
+                                <TouchableOpacity onPress={isBookmarked ? removeBookmark : addingBookmark}>
+                                    {
+                                        isBookmarked ?
+                                            <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5.4), height: hp(4) }} />
+                                            :
+                                            <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5.4), height: hp(4), }} />
+                                    }
+                                </TouchableOpacity>
+                        }
                     </View>
 
                     <View style={styles.rateStyle}>
@@ -292,19 +299,36 @@ export default function ServicesScreen() {
 
             <View style={styles.footer}>
                 <View style={styles.bottomBtnRow}>
-                    <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}
-                        onPress={() => router.push('chatPage/NewMessage')}
-                    >
-                        <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
-                        onPress={() => router.push({
-                            pathname: 'homePage/services/BookNow',
-                            params: { item: JSON.stringify(serviceItem?.service) },
-                        })}
-                    >
-                        <Text style={[styles.bottomText, { color: "white" }]}>Book Now </Text>
-                    </TouchableOpacity>
+
+                    {
+                        refreshToken === null ? <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}
+                            onPress={() => router.push('(modal)/login')}
+                        >
+                            <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
+                        </TouchableOpacity>
+                            :
+                            <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}
+                                onPress={() => router.push('chatPage/NewMessage')}
+                            >
+                                <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
+                            </TouchableOpacity>
+                    }
+                    {
+                        refreshToken === null ? <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
+                            onPress={() => router.push('(modal)/login')}
+                        >
+                            <Text style={[styles.bottomText, { color: "white" }]}>Book Now </Text>
+                        </TouchableOpacity>
+                            :
+                            <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
+                                onPress={() => router.push({
+                                    pathname: 'homePage/services/BookNow',
+                                    params: { item: JSON.stringify(serviceItem?.service) },
+                                })}
+                            >
+                                <Text style={[styles.bottomText, { color: "white" }]}>Book Now </Text>
+                            </TouchableOpacity>
+                    }
                 </View>
             </View>
 
@@ -329,9 +353,8 @@ export default function ServicesScreen() {
                         </TouchableOpacity>
                         <Text style={styles.headerText}>{serviceItem?.service?.title} Services</Text>
                     </View>
-                    <TouchableOpacity onPress={isBookmarked ? removeBookmark : addingBookmark}>
-                        {isBookmarked ? <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
-                            : <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5) }} />}
+                    <TouchableOpacity>
+                        {isBookmarked ? <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5) }} /> : <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5) }} />}
                     </TouchableOpacity>
                 </View>
             </Animated.View>

@@ -65,17 +65,18 @@ const styles = StyleSheet.create({
     },
     titleStyle: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(2.9),
+        fontSize: hp(2.5),
         textAlign: 'center',
         color: '#DB3747',
         marginTop: hp(1)
     },
     subStyle: {
         fontFamily: 'UrbanistMedium',
-        fontSize: hp(2.3),
+        fontSize: hp(2),
         textAlign: 'center',
         color: "gray",
         marginTop: hp(2),
+        paddingHorizontal: wp(4)
     },
     btnStyle: {
         height: hp(7),
@@ -87,7 +88,7 @@ const styles = StyleSheet.create({
     },
     btnText: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(2),
+        fontSize: hp(1.8),
         color: 'white'
     },
     indicator: {

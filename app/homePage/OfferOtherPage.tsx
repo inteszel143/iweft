@@ -13,6 +13,7 @@ import ErrorActivePromo from '@/components/modal/ErrorActivePromo';
 import { useActivationPromo } from '@/query/homeQuery';
 import { useIsFocused } from '@react-navigation/native';
 import { checkActivePromo } from '@/utils/validate';
+import useValidateRefresh from '@/store/useValidateRefresh';
 export default function OfferOtherPage() {
     const isFocused = useIsFocused();
     const { item } = useLocalSearchParams();
@@ -25,7 +26,7 @@ export default function OfferOtherPage() {
     const special2 = require('@/assets/temp/special/specialoffers2.png');
     const special3 = require('@/assets/temp/special/specialoffers.png');
     const special4 = require('@/assets/temp/special/special4.png');
-
+    const { refreshToken } = useValidateRefresh();
 
     const toggleActiveOffer = async () => {
         setBtnLoading(true);
@@ -76,26 +77,38 @@ export default function OfferOtherPage() {
                 </TouchableOpacity>
             </View>
 
-
-            <Animated.View style={styles.footer}
-                entering={SlideInDown.duration(400)}
-            >
-                {
-                    checkActivePromo(data, specialOffers?._id) ?
-                        <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(3), backgroundColor: "#ADD8E6" }]}
-                            disabled={true}
-                        >
-                            {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={defaultStyles.footerText}>Activated</Text>}
-                        </TouchableOpacity>
-                        :
-                        <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(3) }]}
-                            disabled={btnLoading}
-                            onPress={toggleActiveOffer}
-                        >
-                            {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={defaultStyles.footerText}>Activate Discount</Text>}
-                        </TouchableOpacity>
-                }
-            </Animated.View>
+            {
+                refreshToken === null ? <Animated.View style={styles.footer}
+                    entering={SlideInDown.duration(400)}
+                >
+                    <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(3) }]}
+                        disabled={btnLoading}
+                        onPress={() => router.push('(modal)/login')}
+                    >
+                        {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={defaultStyles.footerText}>Activate Discount</Text>}
+                    </TouchableOpacity>
+                </Animated.View>
+                    :
+                    <Animated.View style={styles.footer}
+                        entering={SlideInDown.duration(400)}
+                    >
+                        {
+                            checkActivePromo(data, specialOffers?._id) ?
+                                <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(3), backgroundColor: "#ADD8E6" }]}
+                                    disabled={true}
+                                >
+                                    {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={defaultStyles.footerText}>Activated</Text>}
+                                </TouchableOpacity>
+                                :
+                                <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(3) }]}
+                                    disabled={btnLoading}
+                                    onPress={toggleActiveOffer}
+                                >
+                                    {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={defaultStyles.footerText}>Activate Discount</Text>}
+                                </TouchableOpacity>
+                        }
+                    </Animated.View>
+            }
 
         </View>
     )

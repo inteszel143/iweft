@@ -15,7 +15,7 @@ export default function SuccessLogin({ modalVisible, setModalVisible, exist }: M
         const timer = setTimeout(() => {
             setModalVisible(false);
             // router.push('/(tabs)/');
-            router.push({
+            router.replace({
                 pathname: '/authPage/AfterSocialLogin',
                 params: { exist: exist.toString() }
             });

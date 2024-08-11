@@ -15,6 +15,7 @@ import Animated, {
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router } from 'expo-router';
 import { t } from 'i18next';
+import useValidateRefresh from '@/store/useValidateRefresh';
 type Props = {
     currentIndex: Animated.SharedValue<number>;
     length: number;
@@ -23,6 +24,9 @@ type Props = {
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const Button = ({ currentIndex, length, flatListRef }: Props) => {
+
+    const { setRefreshToken } = useValidateRefresh();
+
     const rnBtnStyle = useAnimatedStyle(() => {
         return {
             width:
@@ -58,7 +62,9 @@ const Button = ({ currentIndex, length, flatListRef }: Props) => {
 
     const onPress = useCallback(async () => {
         if (currentIndex.value === length - 1) {
-            router.push('/authPage/SelectLoginPage');
+            // router.push('/authPage/SelectLoginPage');
+            setRefreshToken(null);
+            router.push('/(tabs)/');
             await SecureStore.setItemAsync("onboarded", "1");
             return;
         } else {

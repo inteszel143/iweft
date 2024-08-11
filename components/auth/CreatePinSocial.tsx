@@ -14,12 +14,14 @@ import errorRes from '@/apis/errorRes';
 import CreateNewUserSocialSuccess from '../social/CreateNewUserSocialSuccess';
 import * as SecureStore from 'expo-secure-store';
 import useStoreRefresh from '@/store/useStoreRefresh';
+import useValidateRefresh from '@/store/useValidateRefresh';
 interface CellProps {
     index: number;
     symbol: string;
     isFocused: boolean;
 }
 export default function CreatePinSocial() {
+    const { setRefreshToken } = useValidateRefresh();
     const token = useStoreRefresh(state => state.token);
     const [modalVisible, setModalVisible] = useState(false);
     const CELL_COUNT = 4;
@@ -63,6 +65,7 @@ export default function CreatePinSocial() {
         try {
             await socialAddPinCode(pin);
             await SecureStore.setItemAsync('refreshToken', token as string);
+            setRefreshToken(token);
             setTimeout(() => {
                 setBtnLoading(false);
                 setModalVisible(true);
