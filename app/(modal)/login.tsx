@@ -16,7 +16,9 @@ import { getVerifyCheck } from '@/apis/fetchAuth';
 import ErrorLoginModal from '@/components/ErrorLoginModal';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { useWarmUpBrowser } from '@/hooks/useWarmUpBrowser';
 export default function Page() {
+    useWarmUpBrowser();
     const { t } = useTranslation();
     const queryClient = useQueryClient();
     const [emailF, setEmailF] = useState<boolean>(false);

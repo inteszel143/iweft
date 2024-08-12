@@ -38,10 +38,11 @@ export default function index() {
                     router.push('/(tabs)/');
                 }
             }
-        }
-        setTimeout(() => {
-            validateFunction();
-        }, 1000);
+        };
+        validateFunction();
+        // setTimeout(() => {
+        //     validateFunction();
+        // }, 1000);
         // validate();
     }, []);
 

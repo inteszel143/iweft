@@ -37,19 +37,23 @@ export default function SubApplePay() {
                 const { error, paymentMethod } = await createPlatformPayPaymentMethod({
                     applePay: {
                         cartItems: [
+                            // {
+                            //     label: 'Subscription Plan',
+                            //     amount: `${total}`,
+                            //     paymentType: PlatformPay.PaymentType.Immediate,
+                            // },
                             {
-                                label: 'Subscription Plan',
-                                amount: `${total}`,
-                                paymentType: PlatformPay.PaymentType.Immediate,
-                            },
-                            {
-                                label: 'Total',
+                                label: 'Iweft',
                                 amount: `${total}`,
                                 paymentType: PlatformPay.PaymentType.Immediate,
                             },
                         ],
                         merchantCountryCode: 'AE',
                         currencyCode: 'AED',
+                        // requiredShippingAddressFields: [
+                        //     PlatformPay.ContactField.PostalAddress,
+                        // ],
+                        // requiredBillingContactFields: [PlatformPay.ContactField.PhoneNumber],
                     },
                 });
                 if (error) {

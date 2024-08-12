@@ -11,12 +11,19 @@ export default function NoTokenProfile() {
     const profileData = [
         {
             id: 1,
+            icon: require('@/assets/temp/profileicons/language.jpg'),
+            label: t('Language'),
+            value: current === "en" ? "English (US)" : current === "ar" ? "Arabic" : current === "man" ? "Mandarin" : current === "hindi" ? "Hindi" : current === "spa" ? "Spanish" : current === "fr" ? "French" : current === "ben" ? "Bengali" : current === "rus" ? "Russian" : "Indonesia",
+            url: '/profilePage/Language'
+        },
+        {
+            id: 2,
             icon: require('@/assets/temp/profileicons/privacy.jpg'),
             label: t('Privacy Policy'),
             url: '/profilePage/PrivacyPolicy'
         },
         {
-            id: 2,
+            id: 3,
             icon: require('@/assets/temp/profileicons/help.jpg'),
             label: t('Help Center'),
             url: '/profilePage/help'
@@ -56,7 +63,7 @@ export default function NoTokenProfile() {
                 </View>
             </View>
 
-            <View style={{ paddingHorizontal: wp(6), marginTop: hp(5) }}>
+            <View style={{ paddingHorizontal: wp(6), marginTop: hp(4) }}>
                 {
                     profileData.map((item, index) => (
                         <Link href={item.url} asChild key={index} >
@@ -67,6 +74,7 @@ export default function NoTokenProfile() {
                                 </View>
 
                                 <View style={styles.rightRow}>
+                                    <Text style={styles.textValue}>{item.value}</Text>
                                     <Feather name='chevron-right' size={hp(2.5)} color={'#212121'} />
                                 </View>
                             </TouchableOpacity>

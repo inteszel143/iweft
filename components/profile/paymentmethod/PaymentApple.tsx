@@ -32,12 +32,7 @@ export default function PaymentApple() {
                     applePay: {
                         cartItems: [
                             {
-                                label: 'Subscription Plan',
-                                amount: `0.00`,
-                                paymentType: PlatformPay.PaymentType.Immediate,
-                            },
-                            {
-                                label: 'Total',
+                                label: 'Iweft',
                                 amount: `0.00`,
                                 paymentType: PlatformPay.PaymentType.Immediate,
                             },

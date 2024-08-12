@@ -3,10 +3,14 @@ import React, { useEffect, useState } from 'react'
 import { defaultStyles } from '@/constants/Styles'
 import { useIsFocused } from '@react-navigation/native';
 import { useGetListPaymentMethod } from '@/query/stripeQuery';
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 import { addPaymentMethod, changeToDefaultMethod } from '@/apis/stripe';
 import { router } from 'expo-router';
 import errorRes from '@/apis/errorRes';
-import { PlatformPay, createPlatformPayPaymentMethod } from '@stripe/stripe-react-native';
+import { PlatformPay, PlatformPayButton, createPlatformPayPaymentMethod } from '@stripe/stripe-react-native';
 import useStoreBooking from '@/store/useStoreBooking';
 import { getDiscountedTotal } from '@/utils/format';
 export default function ApplePay() {
@@ -41,18 +45,22 @@ export default function ApplePay() {
                     applePay: {
                         cartItems: [
                             {
-                                label: 'Total',
+                                label: 'Iweft',
                                 amount: discount ? `${discountPayment}` : `${totalPayment}`,
                                 paymentType: PlatformPay.PaymentType.Immediate,
                             },
                         ],
                         merchantCountryCode: 'AE',
                         currencyCode: 'AED',
+                        // requiredShippingAddressFields: [
+                        //     PlatformPay.ContactField.PostalAddress,
+                        // ],
+                        // requiredBillingContactFields: [PlatformPay.ContactField.PhoneNumber],
                     }
                 });
                 if (error) {
                     setLoading(false);
-                    Alert.alert(error.code, error.message);
+                    // Alert.alert(error.code, error.message);
                     return;
                 } else if (paymentMethod) {
                     try {
