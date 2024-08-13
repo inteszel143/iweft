@@ -31,6 +31,7 @@
       },
       "bundleIdentifier": "com.paras23.iweft",
       "infoPlist": {
+        "UIBackgroundModes": ["fetch", "remote-notification"],
         "NSCalendarsUsageDescription": "This app needs access to your calendar to schedule events and reminders.",
         "CFBundleURLTypes": [
           {
