@@ -2,7 +2,7 @@
   "expo": {
     "name": "Iweft",
     "slug": "iweft",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "iweft",
@@ -16,7 +16,7 @@
     "ios": {
       "usesAppleSignIn": true,
       "supportsTablet": false,
-      "buildNumber": "9",
+      "buildNumber": "10",
       "privacyManifests": {
         "NSPrivacyAccessedAPITypes": [
           {
@@ -79,9 +79,7 @@
         {
           "locationAlwaysAndWhenInUsePermission": "You location is used to show your position on the map, get directions, estimate travel times for delivery purposes.",
           "locationWhenInUsePermission": "You location is used to show your position on the map, get directions, estimate travel times for delivery purposes.",
-          "locationAlwaysPermission": "You location is used to show your position on the map, get directions, estimate travel times for delivery purposes.",
-          "isIosBackgroundLocationEnabled": true,
-          "isAndroidBackgroundLocationEnabled": true
+          "locationAlwaysPermission": "You location is used to show your position on the map, get directions, estimate travel times for delivery purposes."
         }
       ],
       [

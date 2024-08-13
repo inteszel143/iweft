@@ -138,7 +138,7 @@ export default function PlansScreen() {
             <View style={styles.footer}>
                 <View style={styles.bottomBtnRow}>
                     <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}
-                        onPress={() => router.push('/BookingChat')}
+                        onPress={() => router.push('/chatPage/CustomerSupport')}
                     >
                         <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
                     </TouchableOpacity>

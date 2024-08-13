@@ -27,13 +27,13 @@ export default function ApplePay({ bookingId, total }: state) {
             const { error, paymentMethod } = await createPlatformPayPaymentMethod({
                 applePay: {
                     cartItems: [
+                        // {
+                        //     label: 'Refund',
+                        //     amount: `${total * .80}`,
+                        //     paymentType: PlatformPay.PaymentType.Immediate,
+                        // },
                         {
-                            label: 'Refund',
-                            amount: `${total * .80}`,
-                            paymentType: PlatformPay.PaymentType.Immediate,
-                        },
-                        {
-                            label: 'Total',
+                            label: 'Iweft',
                             amount: `${total * .80}`,
                             paymentType: PlatformPay.PaymentType.Immediate,
                         },

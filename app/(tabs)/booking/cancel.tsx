@@ -102,7 +102,7 @@ export default function Page() {
                                 </View>
                             </View>
                             <View>
-                                <Link href={'/BookingChat'} style={styles.btnStyle} asChild>
+                            <Link href={'/chatPage/CustomerSupport'} style={styles.btnStyle} asChild>
                                     <TouchableOpacity>
                                         <Ionicons name='chatbubble-ellipses' size={hp(2.5)} color={'#0a5ca8'} />
                                     </TouchableOpacity>
