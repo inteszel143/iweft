@@ -27,14 +27,14 @@ export const getUserNotificationById = async (notifId: string) => {
   const accessToken = await SecureStore.getItemAsync("accessToken");
   try {
     const response = await axios.get(
-      `${process.env.EXPO_PUBLIC_API_URL}/user/notifications/${notifId}`,
+      `${process.env.EXPO_PUBLIC_API_URL}/user/notification/${notifId}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       }
     );
-    return response?.data || [];
+    return response?.data?.notification || [];
   } catch (error) {
     return Promise.reject(error);
   }

@@ -29,8 +29,8 @@ export const bookingBadge = (data: any) => {
 
 export const notifBadge = (data: any) => {
   const { setNotifValue } = useNotifBadge.getState();
-  const validate = Array.isArray(data) && data.length > 0;
-  if (validate) {
+  const hasUnread = data?.some((item: any) => item?.is_read === false);
+  if (hasUnread) {
     setNotifValue(true);
   } else {
     setNotifValue(false);
