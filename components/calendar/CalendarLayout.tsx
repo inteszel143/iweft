@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React, { useState } from 'react'
-import { Calendar, LocaleConfig } from 'react-native-calendars';
+import { Calendar } from 'react-native-calendars';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -49,7 +49,6 @@ export default function CalendarLayout() {
                     <Text style={styles.textStyle}>Upcoming</Text>
                 </View>
             </View>
-
             <Calendar
                 style={{
                     marginHorizontal: wp(4),

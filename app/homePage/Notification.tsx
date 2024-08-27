@@ -3,8 +3,21 @@ import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
 import { notification } from '@/constants/home/data';
+import { useIsFocused } from '@react-navigation/native';
+import { useHomeNotification } from '@/query/notifQuery';
+import { formatDate } from '@/utils/format';
 
 export default function Notification() {
+    const isFocused = useIsFocused();
+    const { data, isPending } = useHomeNotification(isFocused);
+
+
+    const payment = require("@/assets/temp/notif/notif1.png");
+    const newBundle = require("@/assets/temp/notif/notif2.png");
+    const specialOffers = require("@/assets/temp/notif/notif3.png");
+    const newAccount = require("@/assets/temp/notif/notif4.png")
+
+
 
     return (
         <View style={styles.container}>
@@ -28,56 +41,62 @@ export default function Notification() {
             </View>
 
             <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={styles.containerStyle} >
-                    <Text style={styles.titleText}>Today</Text>
-                    {
-                        notification.map((item, index) => {
+                {
+                    data.map((item: any, index: any) => {
+                        const today = new Date()
+                        const dateOnly = today.toISOString().split("T")[0];
+                        if (dateOnly === item?.created_at.split("T")[0]) {
                             return (
-                                <TouchableOpacity style={styles.cardRow} key={index}>
-                                    <View style={styles.cardInner}>
-                                        <Image
-                                            source={item.img}
-                                            resizeMode='contain'
-                                            style={styles.imageStyle}
-                                        />
-                                        <View style={{ flex: 1 }}>
-                                            <Text style={styles.titleStyle}>{item.title}</Text>
-                                            <Text style={styles.subStyle}>{item.sub}</Text>
-                                        </View>
-                                    </View>
-                                </TouchableOpacity>
-                            )
-                        })
-                    }
-
-
-                    <Text style={[styles.titleText, { marginTop: hp(3) }]}>Yesterday</Text>
-                    {
-                        notification.map((item, index) => {
-                            return (
-                                <Link href={'/bookingPage/Ereceipt'} asChild key={index}>
-                                    <TouchableOpacity style={styles.cardRow}>
+                                <View style={styles.containerStyle} key={index}>
+                                    <Text style={styles.titleText}>Today</Text>
+                                    <TouchableOpacity style={[styles.cardRow, { backgroundColor: item?.is_read ? '#FFFFFF' : '#DAE7F2' }]}
+                                        onPress={() => router.push({
+                                            pathname: '/homePage/NotificationReview',
+                                            params: { notifId: item?._id }
+                                        })}
+                                    >
                                         <View style={styles.cardInner}>
                                             <Image
-                                                source={item.img}
+                                                source={item?.title === "Payment Successful!" ? payment : newBundle}
                                                 resizeMode='contain'
                                                 style={styles.imageStyle}
                                             />
                                             <View style={{ flex: 1 }}>
                                                 <Text style={styles.titleStyle}>{item.title}</Text>
-                                                <Text style={styles.subStyle}>{item.sub}</Text>
+                                                <Text style={styles.subStyle}>{item.message}</Text>
                                             </View>
                                         </View>
                                     </TouchableOpacity>
-                                </Link>
-                            )
-                        })
-                    }
-                </View>
-            </ScrollView>
+                                </View>
+
+                            );
+                        } else {
+                            return (
+                                <View style={styles.containerStyle} key={index}>
+                                    <Text style={[styles.titleText, { marginTop: hp(3) }]}>Yesterday</Text>
+                                    <TouchableOpacity style={[styles.cardRow, { backgroundColor: item?.is_read ? '#FFFFFF' : '#DAE7F2' }]}>
+                                        <View style={styles.cardInner}>
+                                            <Image
+                                                source={item?.title === "Payment Successful!" ? payment : newBundle}
+                                                resizeMode='contain'
+                                                style={styles.imageStyle}
+                                            />
+                                            <View style={{ flex: 1 }}>
+                                                <Text style={styles.titleStyle}>{item.title}</Text>
+                                                <Text style={styles.subStyle}>{item.message}</Text>
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            );
+                        }
+                    })
+                }
+
+            </ScrollView >
 
 
-        </View>
+        </View >
     )
 }
 
@@ -128,7 +147,6 @@ const styles = StyleSheet.create({
         width: wp(92),
         paddingVertical: hp(2),
         justifyContent: 'center',
-        backgroundColor: '#FFFFFF',
         borderRadius: wp(4),
         marginTop: hp(2),
         paddingHorizontal: wp(5),

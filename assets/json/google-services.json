@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "969992398151",
+    "project_id": "iweftnotification",
+    "storage_bucket": "iweftnotification.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:969992398151:android:77747098cc2c0ae1a25862",
+        "android_client_info": {
+          "package_name": "com.paras23.iweft"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYV74At-rdxOJEMoAzOEmilaqlAFNmdJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

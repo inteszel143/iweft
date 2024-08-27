@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import { StyleSheet, Text, View, } from 'react-native'
+import React, { memo, useState } from 'react'
 import useValidateRefresh from '@/store/useValidateRefresh';
 import NoTokenProfile from '@/components/notoken/NoTokenProfile';
 import ProfilePage from '@/components/profile/ProfilePage';
-export default function Page() {
+const profile = () => {
     const { refreshToken } = useValidateRefresh();
     if (refreshToken === null) {
         return <NoTokenProfile />
@@ -10,3 +11,7 @@ export default function Page() {
         return <ProfilePage />
     }
 }
+
+export default memo(profile)
+
+const styles = StyleSheet.create({})

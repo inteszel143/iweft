@@ -3,6 +3,7 @@ import useProfileBadge from "@/store/useProfileBadge";
 import { useBookmarkStore } from "@/store/useBookmarkStore";
 import { useBookBundleStore } from "@/store/useBookmarkBundleStore";
 import useBookingBadge from "@/store/useBookingBadge";
+import useNotifBadge from "@/store/useNotifBadge";
 
 export const inboxBadge = (data: any) => {
   const { setInboxValue } = useInboxBadge.getState();
@@ -23,6 +24,16 @@ export const bookingBadge = (data: any) => {
     setValue(validate);
   } else {
     setValue(null);
+  }
+};
+
+export const notifBadge = (data: any) => {
+  const { setNotifValue } = useNotifBadge.getState();
+  const validate = Array.isArray(data) && data.length > 0;
+  if (validate) {
+    setNotifValue(true);
+  } else {
+    setNotifValue(false);
   }
 };
 

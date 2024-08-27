@@ -13,9 +13,11 @@ import errorRes from '@/apis/errorRes';
 import { PlatformPay, PlatformPayButton, createPlatformPayPaymentMethod } from '@stripe/stripe-react-native';
 import useStoreBooking from '@/store/useStoreBooking';
 import { getDiscountedTotal } from '@/utils/format';
+import useStoreSub from '@/store/useStoreSub';
 export default function ApplePay() {
     const { base_price, total, discount } = useStoreBooking();
     const isFocused = useIsFocused();
+    const { plan_name, } = useStoreSub();
     const { data, isPending } = useGetListPaymentMethod(isFocused);
     const [loading, setLoading] = useState(false);
 
@@ -25,6 +27,7 @@ export default function ApplePay() {
             return;
         };
         setLoading(true);
+        const total = 0;
         const totalPayment = parseFloat(base_price as any) + parseFloat(total as any);
         const discountPayment = getDiscountedTotal(base_price, total, discount);
         const walletMethods = data.filter((method: any) => method.card.wallet !== null);

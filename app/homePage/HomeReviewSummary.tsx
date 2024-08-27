@@ -90,12 +90,15 @@ export default function HomeReviewSummary() {
 
 
                 <View style={[styles.summarCard, { marginTop: hp(2), paddingVertical: hp(3.5) }]}>
-                    <View style={styles.summarRow}>
-                        <Text style={styles.summaryLabel}>Services Fee</Text>
-                        <Text style={styles.summaryValue}>AED {formatNumber(base_price)}.00</Text>
-                    </View>
 
-                    <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                    {
+                        !plan_name && <View style={styles.summarRow}>
+                            <Text style={styles.summaryLabel}>Services Fee</Text>
+                            <Text style={styles.summaryValue}>AED {formatNumber(base_price)}.00</Text>
+                        </View>
+                    }
+
+                    <View style={[styles.summarRow, { marginTop: plan_name ? hp(1) : hp(3) }]}>
                         <Text style={styles.summaryLabel}>Total Items</Text>
                         <Text style={[styles.summaryValue]}>AED {formatNumber(total)}.00</Text>
                     </View>
@@ -115,15 +118,33 @@ export default function HomeReviewSummary() {
                     <View style={styles.separator} />
 
                     {
-                        !discount ? <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                            <Text style={styles.summaryValue}>Total</Text>
-                            <Text style={[styles.summaryValue, { fontFamily: 'UrbanistBold', }]}>AED {getTotal(base_price, total)}.00</Text>
-                        </View>
+                        !discount ? <>
+                            {
+                                plan_name ? <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                                    <Text style={styles.summaryValue}>Total</Text>
+                                    <Text style={[styles.summaryValue, { fontFamily: 'UrbanistBold', }]}>AED {total}</Text>
+                                </View>
+                                    :
+                                    <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                                        <Text style={styles.summaryValue}>Total</Text>
+                                        <Text style={[styles.summaryValue, { fontFamily: 'UrbanistBold', }]}>AED {getTotal(base_price, total)}.00</Text>
+                                    </View>
+                            }
+                        </>
                             :
-                            <View style={[styles.summarRow, { marginTop: hp(3) }]}>
-                                <Text style={styles.summaryValue}>Total</Text>
-                                <Text style={[styles.summaryValue, { fontFamily: 'UrbanistBold', }]}>AED {getDiscountedTotal(base_price, total, discount)}.00</Text>
-                            </View>
+                            <>
+                                {
+                                    plan_name ? <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                                        <Text style={styles.summaryValue}>Total</Text>
+                                        <Text style={[styles.summaryValue, { fontFamily: 'UrbanistBold', }]}>AED {total}</Text>
+                                    </View>
+                                        :
+                                        <View style={[styles.summarRow, { marginTop: hp(3) }]}>
+                                            <Text style={styles.summaryValue}>Total</Text>
+                                            <Text style={[styles.summaryValue, { fontFamily: 'UrbanistBold', }]}>AED {getDiscountedTotal(base_price, total, discount)}.00</Text>
+                                        </View>
+                                }
+                            </>
                     }
 
                 </View>

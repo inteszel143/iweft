@@ -131,6 +131,7 @@ function RootLayoutNav() {
 
       {/* home */}
       <Stack.Screen name='homePage/Notification' options={{ headerShown: false }} />
+      <Stack.Screen name='homePage/NotificationReview' options={{ headerShown: false }} />
       <Stack.Screen name='homePage/Bookmarks' options={{ headerShown: false }} />
       <Stack.Screen name='homePage/SepecialOffers' options={{ headerShown: false }} />
       <Stack.Screen name='homePage/OfferOtherPage' options={{ headerShown: false }} />

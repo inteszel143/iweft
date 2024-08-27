@@ -19,6 +19,7 @@ import ErrorBookingModal from '@/components/ErrorBookingModal';
 import useStoreSub from '@/store/useStoreSub';
 import { getDiscountedTotal, getTotal } from '@/utils/format';
 import errorRes from '@/apis/errorRes';
+import * as Notifications from 'expo-notifications';
 interface CellProps {
     index: number;
     symbol: string;
@@ -26,8 +27,8 @@ interface CellProps {
 }
 
 export default function HomeConfirmPin() {
-    const { subscriptionId, setPlanName } = useStoreSub();
-    const { service, itemData, pick_up_date_time, delivery_date_time, address, latitude, longitude, total_amount, discounted_amount, driver_instruction, promo_code, collection_instruction, service_model, bundleId, setBundleId, prior, setPrior } = useStoreBooking();
+    const { subscriptionId, setPlanName, plan_name } = useStoreSub();
+    const { service, itemData, total, pick_up_date_time, delivery_date_time, address, latitude, longitude, total_amount, discounted_amount, driver_instruction, promo_code, collection_instruction, service_model, bundleId, setBundleId, prior, setPrior } = useStoreBooking();
     const [modalVisible, setModalVisible] = useState(false);
     const [btnLoading, setBtnLoading] = useState(false);
     const CELL_COUNT = 4;
@@ -67,9 +68,23 @@ export default function HomeConfirmPin() {
     };
 
 
+    async function schedulePushNotification() {
+        await Notifications.scheduleNotificationAsync({
+            content: {
+                title: "Iweft Laundry & Dry Cleaning",
+                body: "Your laundry booking has been confirmed. Expect a reminder when it's time for pickup",
+                data: { data: 'goes here', test: { test1: 'more data' } },
+            },
+            // trigger: { seconds: 1 },
+            trigger: null,
+        });
+    };
+
+
+
     const onSubmit = async () => {
         setBtnLoading(true);
-        const totalPayment = parseFloat(total_amount);
+        const totalPayment = plan_name ? parseFloat(total) : parseFloat(total_amount);
         const orderData = {
             order_details: {
                 service,
@@ -96,6 +111,7 @@ export default function HomeConfirmPin() {
                 const orderResult = await createBooking(orderData);
                 if (orderResult?.message === "Order successfully created") {
                     await addPayUsingCard(totalPayment, orderResult?.orders?._id, subscriptionId as string);
+                    await schedulePushNotification();
                     setOrderId(orderResult?.orders?._id);
                     setModalVisible(true);
                     setBtnLoading(false);

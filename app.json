@@ -66,7 +66,8 @@
           "value": "true"
         }
       ],
-      "package": "com.paras23.iweft"
+      "package": "com.paras23.iweft",
+      "googleServicesFile": "./assets/json/google-services.json"
     },
     "web": {
       "bundler": "metro",

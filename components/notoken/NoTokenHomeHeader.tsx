@@ -7,10 +7,12 @@ import { useIsFocused } from '@react-navigation/native';
 import HomeHeaderSkeleton from '../skeleton/HomeHeaderSkeleton';
 import { useTranslation } from 'react-i18next';
 import { getCurrentLanguage } from '@/services/i18n';
-import { bookingBadge, profileBadge } from '@/utils/validate';
+import { bookingBadge, notifBadge, profileBadge } from '@/utils/validate';
 import useUserId from '@/store/useUserInfo';
 import { useBooking } from '@/query/orderQuery';
 import HomeBookmark from '../home/HomeBookmark';
+import { useHomeNotification } from '@/query/notifQuery';
+import useNotifBadge from '@/store/useNotifBadge';
 
 export default function NoTokenHomeHeader() {
     const { t } = useTranslation();
@@ -21,14 +23,17 @@ export default function NoTokenHomeHeader() {
     const isFocused = useIsFocused();
     const { data, isPending } = useUserQuery(isFocused);
     const { data: completeData } = useBooking(isFocused, "Completed");
+    const { data: notifData } = useHomeNotification(isFocused);
     const { setUserId } = useUserId();
+    const { notifValue } = useNotifBadge();
     useEffect(() => {
         if (data && completeData) {
+            notifBadge(notifData);
             profileBadge(data);
             bookingBadge(completeData);
             setUserId(data?._id);
         }
-    }, [data, completeData]);
+    }, [data, completeData, notifData]);
 
     if (isPending) {
         return <HomeHeaderSkeleton />
@@ -74,11 +79,10 @@ export default function NoTokenHomeHeader() {
                     >
                         <Image source={require('@/assets/icons/bell.png')} resizeMode='contain' style={{ width: wp(8) }} />
                     </TouchableOpacity>
-                    {/* <View
-                        style={styles.notifRed}
-                    >
+                    {
+                        notifValue && <View style={styles.notifRed} />
+                    }
 
-                    </View> */}
                 </View>
 
                 {/* bookmark */}

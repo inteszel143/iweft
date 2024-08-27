@@ -78,7 +78,7 @@ export default function CreditCard({ method }: State) {
             </TouchableOpacity>
         )
 
-    }
+    };
 
     return (
         <TouchableOpacity

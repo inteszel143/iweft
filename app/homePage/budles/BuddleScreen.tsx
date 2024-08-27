@@ -216,11 +216,13 @@ export default function BuddleScreen() {
                     refreshToken === null ?
                         <View style={styles.bottomBtnRow}>
                             <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}
+                                disabled={isPending ? true : false}
                                 onPress={() => router.push('(modal)/login')}
                             >
                                 <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
+                                disabled={isPending ? true : false}
                                 onPress={() => router.push('(modal)/login')}
                             >
                                 <Text style={[styles.bottomText, { color: "white" }]}>Book Now </Text>
@@ -229,11 +231,13 @@ export default function BuddleScreen() {
                         :
                         <View style={styles.bottomBtnRow}>
                             <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}
+                                disabled={isPending ? true : false}
                                 onPress={() => router.push('chatPage/NewMessage')}
                             >
                                 <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
+                                disabled={isPending ? true : false}
                                 onPress={() => {
                                     setServiceModel("Service");
                                     setBundleId(bundleData?._id);

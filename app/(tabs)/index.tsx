@@ -1,4 +1,4 @@
-import { Alert, BackHandler, SafeAreaView, ScrollView, StyleSheet, RefreshControl } from 'react-native';
+import { Alert, BackHandler, SafeAreaView, ScrollView, StyleSheet, RefreshControl, Text } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import HomeHeader from '@/components/home/HomeHeader';
 import HomeSearch from '@/components/home/HomeSearch';
@@ -9,17 +9,19 @@ import HomeAds from '@/components/home/HomeAds';
 import BundleOffers from '@/components/home/BundleOffers';
 import { StatusBar } from 'expo-status-bar';
 import { router, useFocusEffect, useNavigation, useRouter } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import Test from '../Test';
 import { useIsFocused } from '@react-navigation/native';
 import { useGetMessageInbox } from '@/query/message';
 import { inboxBadge } from '@/utils/validate';
 import { useQueryClient } from '@tanstack/react-query';
-export default function Page() {
+import { usePushNotifications } from '@/usePushNotification';
+function Page() {
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const isFocused = useIsFocused();
   const { data: inbox } = useGetMessageInbox(isFocused);
+  const { expoPushToken, notification } = usePushNotifications();
   useEffect(() => {
     if (inbox) {
       inboxBadge(inbox);
@@ -47,7 +49,6 @@ export default function Page() {
       setRefreshing(false);
     }, 2000);
   }, []);
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style='dark' />
@@ -68,7 +69,7 @@ export default function Page() {
     </SafeAreaView>
   );
 };
-
+export default memo(Page)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
