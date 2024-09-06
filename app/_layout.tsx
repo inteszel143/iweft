@@ -108,8 +108,6 @@ function RootLayoutNav() {
       />
 
 
-
-
       {/* auth */}
       <Stack.Screen name="authPage/OnboardingScreen" options={{ headerShown: false, gestureEnabled: false }} />
       <Stack.Screen name="authPage/SelectLoginPage" options={{ headerShown: false, gestureEnabled: false }} />
@@ -122,6 +120,10 @@ function RootLayoutNav() {
       <Stack.Screen name="authPage/forgot/ForgotCode" options={{ headerShown: false }} />
       <Stack.Screen name="authPage/forgot/CreateNewPassword" options={{ headerShown: false }} />
       <Stack.Screen name="authPage/AfterSocialLogin" options={{ headerShown: false, gestureEnabled: false }} />
+
+      {/* search */}
+      <Stack.Screen name="search/SearchScreen" options={{ headerShown: false, animation: "fade" }} />
+      <Stack.Screen name="search/SearchDataScreen" options={{ headerShown: false, }} />
 
 
       <Stack.Screen name="authPage/create/ProfileData" options={{ headerShown: false }} />

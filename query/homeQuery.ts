@@ -10,6 +10,7 @@ import {
   getServiceCategory,
   getSpecialOffers,
   getSupscriptionPlan,
+  searchMe,
 } from "@/apis/homeApi";
 import { getProductCategroy } from "@/apis/stripe";
 /**
@@ -120,6 +121,14 @@ export const useActivationPromo = (isFocused: boolean) => {
     queryFn: getActivationOffer,
   });
 };
+
+export const useSearchMe = (isFocused: boolean, searchKey: string) => {
+  return useQuery({
+    queryKey: ["search-me", searchKey],
+    enabled: isFocused,
+    queryFn: () => searchMe(searchKey)
+  })
+}
 
 // /**
 //  * Get Home Laundry Bundles By ID ---------------------------------------------------------

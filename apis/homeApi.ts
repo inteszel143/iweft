@@ -252,3 +252,22 @@ export const applyCodeSpecialOffer = async (promo_code: string) => {
     return Promise.reject(error);
   }
 };
+
+
+export const searchMe = async (searchKey: string) => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  try {
+    const response = await axios.get(
+      `${process.env.EXPO_PUBLIC_API_URL}/service/search?title=${searchKey}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          //   "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response?.data?.services || [];
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
