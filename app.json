@@ -31,6 +31,7 @@
       },
       "bundleIdentifier": "com.paras23.iweft",
       "infoPlist": {
+        "NSFaceIDUsageDescription": "This app uses Face ID and Touch ID to verify the user's identity and protect sensitive data",
         "UIBackgroundModes": ["fetch", "remote-notification"],
         "NSCalendarsUsageDescription": "This app needs access to your calendar to schedule events and reminders.",
         "CFBundleURLTypes": [
@@ -129,6 +130,12 @@
         "expo-notifications",
         {
           "icon": "./assets/images/notification-icon.png"
+        }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID."
         }
       ],
       [

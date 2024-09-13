@@ -11,6 +11,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import errorRes from '@/apis/errorRes';
 import ModalUpdate from '@/components/ModalUpdate';
 import useValidateRefresh from '@/store/useValidateRefresh';
+import * as LocalAuthentication from 'expo-local-authentication';
+import { getItem } from '@/storage/passcodeStorage'
 export default function index() {
     const queryClient = useQueryClient();
     const [updateApp, setUpdateApp] = useState(false);
@@ -19,6 +21,7 @@ export default function index() {
         const validateFunction = async () => {
             const refreshToken = await SecureStore.getItemAsync('refreshToken');
             const onboarded = await SecureStore.getItemAsync('onboarded');
+            const passcode_status = await getItem("status_code");
             if (refreshToken === null) {
                 if (onboarded === null) {
                     router.push('/authPage/OnboardingScreen');
@@ -27,15 +30,34 @@ export default function index() {
                     setRefreshToken(refreshToken);
                 }
             } else {
-                try {
-                    const response = await appOpenRefresh(refreshToken);
-                    await SecureStore.setItemAsync('accessToken', response?.access?.token);
-                    await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
-                    queryClient.invalidateQueries({ queryKey: ['user-data'] });
-                    setRefreshToken(response?.refresh?.token);
-                    router.push('/(tabs)/');
-                } catch (error) {
-                    router.push('/(tabs)/');
+                if (passcode_status === "1") {
+
+                    try {
+                        const response = await appOpenRefresh(refreshToken);
+                        await SecureStore.setItemAsync('accessToken', response?.access?.token);
+                        await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+                        queryClient.invalidateQueries({ queryKey: ['user-data'] });
+                        setRefreshToken(response?.refresh?.token);
+                        const result = await LocalAuthentication.authenticateAsync({
+                            promptMessage: 'Authenticate with Face ID',
+                            cancelLabel: 'Cancel',
+                            fallbackLabel: 'Use passcode',
+                        });
+                        router.push('/(tabs)/');
+                    } catch (error) {
+                        router.push('/(tabs)/');
+                    }
+                } else {
+                    try {
+                        const response = await appOpenRefresh(refreshToken);
+                        await SecureStore.setItemAsync('accessToken', response?.access?.token);
+                        await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
+                        queryClient.invalidateQueries({ queryKey: ['user-data'] });
+                        setRefreshToken(response?.refresh?.token);
+                        router.push('/(tabs)/');
+                    } catch (error) {
+                        router.push('/(tabs)/');
+                    }
                 }
             }
         };
@@ -45,40 +67,6 @@ export default function index() {
         // }, 1000);
         // validate();
     }, []);
-
-    const validate = async () => {
-        try {
-            const refreshToken = await SecureStore.getItemAsync('refreshToken');
-            const onboarded = await SecureStore.getItemAsync('onboarded');
-            if (refreshToken !== null) {
-                try {
-                    const response = await appOpenRefresh(refreshToken);
-                    await SecureStore.setItemAsync('accessToken', response?.access?.token);
-                    await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
-                    queryClient.invalidateQueries({ queryKey: ['user-data'] });
-                    router.push('/(tabs)/');
-
-                } catch (error) {
-                    console.log('Error during token refresh:', errorRes(error));
-                    await SecureStore.deleteItemAsync('accessToken');
-                    await SecureStore.deleteItemAsync('refreshToken');
-                    router.push('/authPage/SelectLoginPage');
-                }
-            } else {
-                if (onboarded === null) {
-                    router.push('/authPage/OnboardingScreen');
-                } else {
-                    router.push('/authPage/SelectLoginPage');
-                }
-            }
-        } catch (error) {
-            await SecureStore.deleteItemAsync('accessToken');
-            await SecureStore.deleteItemAsync('refreshToken');
-            await SecureStore.deleteItemAsync('onboarded');
-            router.push('/authPage/SelectLoginPage');
-
-        }
-    };
 
     return (
         <View style={styles.container}>

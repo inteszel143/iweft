@@ -1,5 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform, ActivityIndicator, Alert } from 'react-native'
-import React, { useCallback, useMemo, useRef, useState } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, Platform, ActivityIndicator, Alert, Linking } from 'react-native'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
 import { Switch } from 'react-native-switch';
@@ -10,18 +10,78 @@ import {
     BottomSheetModalProvider,
     BottomSheetBackdrop,
 } from '@gorhom/bottom-sheet';
-import { defaultStyles } from '@/constants/Styles';
-import { TextInput } from 'react-native-gesture-handler';
 import { deleteAccount } from '@/apis/auth';
 import * as SecureStore from 'expo-secure-store';
+import * as LocalAuthentication from 'expo-local-authentication';
+import PasscodeSuccess from '@/components/PasscodeSuccess';
+import { setItem, getItem } from '@/storage/passcodeStorage'
 export default function Security() {
 
-    const [remeber, setRemember] = useState(true);
+    const [passcode, setPasscode] = useState(false);
     const [face, setFace] = useState(false);
     const [biometric, setBiometric] = useState(false);
-
+    const [showSuccess, setShowSuccess] = useState<boolean>(false);
     const [deleteBtnLoading, setDeleteBtnLoading] = useState(false);
 
+
+    useEffect(() => {
+        async function valdate() {
+            const value = await getItem("status_code");
+            if (value === "1") {
+                setPasscode(true);
+            } else {
+                setPasscode(false);
+            }
+        }
+        valdate();
+    }, [])
+
+    const toggleSwitchTouchID = async (value: boolean) => {
+        setBiometric(value);
+        const hasHardware = await LocalAuthentication.hasHardwareAsync();
+        const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+        if (value) {
+            if (!hasHardware) {
+                Alert.alert('Touch ID not supported on this device.');
+            } else if (!isEnrolled) {
+                Alert.alert(
+                    'Touch ID is not set up. Please go to your settings and enroll fingerprints under "Touch ID & Passcode" or "Security.',
+                    '',
+                    [
+                        // {
+                        //     text: 'Ok',
+                        //     // onPress: () => Linking.openURL('app-settings:'),
+                        // },
+                        { text: 'OK', style: 'cancel' },
+                    ]
+                );
+                setBiometric(false);
+            }
+        }
+
+    };
+
+    const togglePasscode = async (value: boolean) => {
+        setPasscode(value);
+        const hasHardware = await LocalAuthentication.hasHardwareAsync();
+        const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+        if (value) {
+            if (!hasHardware) {
+                Alert.alert('Touch ID not supported on this device.');
+            } else {
+                const result = await LocalAuthentication.authenticateAsync({
+                    promptMessage: 'Authenticate with Face ID',
+                    cancelLabel: 'Cancel',
+                    fallbackLabel: 'Use passcode',
+                });
+                setItem("status_code", "1");
+                setShowSuccess(true);
+            }
+        } else {
+            setItem("status_code", "0");
+        }
+
+    };
 
     // bottomSheet
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -62,6 +122,8 @@ export default function Security() {
         <BottomSheetModalProvider>
             <View style={styles.container}>
 
+                <PasscodeSuccess modalVisible={showSuccess} setModalVisible={setShowSuccess} />
+
                 <View style={styles.Headercontainer}>
                     <View style={styles.innerContainer}>
 
@@ -83,10 +145,19 @@ export default function Security() {
 
                 <View style={styles.containerStyle}>
                     <View style={styles.rowStyle}>
-                        <Text style={styles.rowText}>Remember me</Text>
+                        <View style={{
+                            width: wp(50)
+                        }}>
+                            <Text style={{
+                                fontFamily: 'UrbanistSemiBold',
+                                fontSize: hp(2.2),
+                                color: "#424242",
+                                lineHeight: hp(4)
+                            }}>Passcode / Touch Id / Face ID</Text>
+                        </View>
                         <Switch
-                            value={remeber}
-                            onValueChange={(val) => setRemember(val)}
+                            value={passcode}
+                            onValueChange={togglePasscode}
                             renderActiveText={false}
                             renderInActiveText={false}
                             circleSize={28}
@@ -101,11 +172,11 @@ export default function Security() {
                             barHeight={28}
                         />
                     </View>
-                    <View style={styles.rowStyle}>
+                    {/* <View style={styles.rowStyle}>
                         <Text style={styles.rowText}>Face ID</Text>
                         <Switch
                             value={face}
-                            onValueChange={(val) => setFace(val)}
+                            onValueChange={toggleSwitchFaceId}
                             renderActiveText={false}
                             renderInActiveText={false}
                             circleSize={28}
@@ -119,12 +190,12 @@ export default function Security() {
                             switchBorderRadius={30}
                             barHeight={28}
                         />
-                    </View>
-                    <View style={styles.rowStyle}>
+                    </View> */}
+                    {/* <View style={styles.rowStyle}>
                         <Text style={styles.rowText}>Biometric ID</Text>
                         <Switch
                             value={biometric}
-                            onValueChange={(val) => setBiometric(val)}
+                            onValueChange={toggleSwitchTouchID}
                             renderActiveText={false}
                             renderInActiveText={false}
                             circleSize={28}
@@ -138,7 +209,7 @@ export default function Security() {
                             switchBorderRadius={30}
                             barHeight={28}
                         />
-                    </View>
+                    </View> */}
                 </View>
 
                 <TouchableOpacity style={styles.googleAuth}

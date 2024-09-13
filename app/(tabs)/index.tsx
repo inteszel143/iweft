@@ -27,7 +27,6 @@ function Page() {
       inboxBadge(inbox);
     }
   }, [inbox]);
-
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {

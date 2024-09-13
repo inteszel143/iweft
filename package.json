@@ -81,7 +81,8 @@
     "react-native-web": "^0.19.11",
     "socket.io-client": "^4.7.5",
     "yup": "^1.4.0",
-    "zustand": "^4.5.2"
+    "zustand": "^4.5.2",
+    "expo-local-authentication": "~14.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
