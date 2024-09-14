@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
+import { router } from "expo-router";
 
 export interface PushNotificationState {
   notification?: Notifications.Notification;
@@ -78,7 +79,7 @@ export const usePushNotifications = (): PushNotificationState => {
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
+        router.push(`/(tabs)/${response?.notification?.request?.content?.data?.url}`);
       });
 
     return () => {

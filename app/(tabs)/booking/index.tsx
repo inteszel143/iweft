@@ -35,7 +35,6 @@ export default function Page() {
     const toggleClose = () => {
         setIsHiding(0);
     };
-
     const addHours = (dateString: string, hours: number): string => {
         const date = new Date(dateString);
         date.setHours(date.getHours() + hours);
@@ -63,7 +62,6 @@ export default function Page() {
             setRefreshing(false);
         }, 1000);
     }, []);
-
 
 
     if (isPending) {
@@ -108,6 +106,28 @@ export default function Page() {
                                     </View>
                                     <View style={{ marginLeft: current === 'ar' ? 0 : wp(4), marginRight: current === 'ar' ? wp(4) : 0 }}>
                                         <Text style={styles.titleStyle} >{item?.order_details?.service?.title}</Text>
+
+                                        {
+                                            item?.order_processed && <View
+                                                style={{
+                                                    paddingVertical: hp(0.4),
+                                                    paddingHorizontal: wp(2),
+                                                    borderWidth: 1,
+                                                    borderRadius: wp(2),
+                                                    borderColor: "#FACC15",
+                                                    marginTop: hp(1.5)
+                                                }}
+                                            >
+                                                <Text
+                                                    style={{
+                                                        fontFamily: "UrbanistSemiBold",
+                                                        fontSize: hp(1.6),
+                                                        color: "#FACC15"
+                                                    }}
+                                                >To be proccess</Text>
+                                            </View>
+                                        }
+
                                         <Text style={styles.subTitle}>{item?.order_details?.service?.sub_title}</Text>
                                         {/* <Text style={styles.subTitle}>
                                             {item?.order_details?.order_items?.length} {item?.order_details?.order_items?.length === 1 ? 'item' : 'items'}
@@ -126,7 +146,22 @@ export default function Page() {
                                     </Link>
                                 </View>
                             </TouchableOpacity>
-
+                            {/* <View
+                                style={{
+                                    marginTop: hp(1.5),
+                                    flexDirection: 'row',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        fontFamily: "UrbanistSemiBold",
+                                        fontSize: hp(1.8),
+                                        color: "#616161"
+                                    }}
+                                >Order Status: </Text>
+                           
+                            </View> */}
 
                             <View style={styles.separator} />
 
@@ -315,7 +350,7 @@ const styles = StyleSheet.create({
         fontSize: hp(2)
     },
     subTitle: {
-        marginTop: hp(2),
+        marginTop: hp(1.5),
         fontFamily: 'UrbanistMedium',
         fontSize: hp(1.8),
         color: 'gray',

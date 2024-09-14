@@ -19,6 +19,8 @@ import { useIsFocused } from "@react-navigation/native";
 import { useHomeNotification } from "@/query/notifQuery";
 import { formatDate } from "@/utils/format";
 import EmptyNotification from "@/components/empty/EmptyNotification";
+import { notifStyle } from "@/constants/booking/style";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function Notification() {
   const isFocused = useIsFocused();
@@ -87,7 +89,28 @@ export default function Notification() {
                   }
                 >
                   <View style={styles.cardInner}>
-                    <Image
+                    {
+                      item?.title === "Order Processed" ? <View style={notifStyle.orderProcess}>
+                        <MaterialCommunityIcons name="progress-clock" size={hp(3.5)} color={"#FFFFFF"} />
+                      </View>
+                        :
+                        item?.title === "Order Completed" ?
+                          <View style={notifStyle.complete}>
+                            <MaterialCommunityIcons name="coffee-maker-check-outline" size={hp(3.5)} color={"#FFFFFF"} />
+                          </View>
+                          :
+                          item?.title === "Payment Successful!" ?
+                            <View style={notifStyle.payment}>
+                              <MaterialCommunityIcons name="wallet" size={hp(3.5)} color={"#FFFFFF"} />
+                            </View>
+                            :
+                            <View style={notifStyle.cancel}>
+                              <MaterialCommunityIcons name="book-cancel" size={hp(3.5)} color={"#FFFFFF"} />
+                            </View>
+
+                    }
+
+                    {/* <Image
                       source={
                         item?.title === "Payment Successful!"
                           ? payment
@@ -95,7 +118,7 @@ export default function Notification() {
                       }
                       resizeMode="contain"
                       style={styles.imageStyle}
-                    />
+                    /> */}
                     <View style={{ flex: 1 }}>
                       <Text style={styles.titleStyle}>{item.title}</Text>
                       <Text style={styles.subStyle}>{item.message}</Text>
@@ -158,7 +181,7 @@ const styles = StyleSheet.create({
     paddingVertical: hp(2),
     justifyContent: "center",
     borderRadius: wp(4),
-    marginTop: hp(3),
+    marginTop: hp(2.5),
     paddingHorizontal: wp(5),
   },
   cardInner: {
