@@ -10,11 +10,13 @@ import SuccessLogin from '../SuccessLogin';
 import { getEmailChecker } from '@/apis/fetchAuth';
 import useStoreRefresh from '@/store/useStoreRefresh';
 import { useTranslation } from 'react-i18next';
+import { usePushNotifications } from '@/usePushNotification';
 export default function GoogleSigninSelect() {
     const [errorLoginModal, setErrorLoginModal] = useState(false);
     const [exists, setExists] = useState(false);
     const [successLogin, setSuccessLogin] = useState(false);
     const setRefreshToken = useStoreRefresh(state => state.setRefreshToken);
+    const { expoPushToken } = usePushNotifications();
     const { t } = useTranslation();
     const configureGoogleSignIn = () => {
         GoogleSignin.configure({
@@ -39,7 +41,7 @@ export default function GoogleSigninSelect() {
             const check = await getEmailChecker(userInfo?.user?.email as string);
             setExists(check?.exists);
 
-            const response = await signInWithGoogle(userInfo?.user?.email, userInfo?.user?.name, userInfo?.user?.id);
+            const response = await signInWithGoogle(userInfo?.user?.email, userInfo?.user?.name, userInfo?.user?.id, expoPushToken?.data);
             await SecureStore.setItemAsync('accessToken', response?.access?.token);
 
             setRefreshToken(response?.refresh?.token);

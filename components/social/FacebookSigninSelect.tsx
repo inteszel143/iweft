@@ -10,13 +10,14 @@ import SuccessLogin from '../SuccessLogin';
 import { getEmailChecker } from '@/apis/fetchAuth';
 import useStoreRefresh from '@/store/useStoreRefresh';
 import { useTranslation } from 'react-i18next';
+import { usePushNotifications } from '@/usePushNotification';
 export default function FacebookSigninSelect() {
     const [exists, setExists] = useState(false);
     const [errorLoginModal, setErrorLoginModal] = useState(false);
     const [successLogin, setSuccessLogin] = useState(false);
     const setRefreshToken = useStoreRefresh(state => state.setRefreshToken);
     const { t } = useTranslation();
-
+    const { expoPushToken } = usePushNotifications();
     useEffect(() => {
         const requestTracking = async () => {
             const { status } = await requestTrackingPermissionsAsync();
@@ -55,7 +56,7 @@ export default function FacebookSigninSelect() {
                                     setExists(check?.exists);
 
 
-                                    const response = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
+                                    const response = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID, expoPushToken?.data);
                                     await SecureStore.setItemAsync('accessToken', response?.access?.token);
                                     // await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
                                     setRefreshToken(response?.refresh?.token);
@@ -73,7 +74,7 @@ export default function FacebookSigninSelect() {
                         async function (currentProfile) {
                             if (currentProfile) {
                                 try {
-                                    const response = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
+                                    const response = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID, expoPushToken?.data);
                                     await SecureStore.setItemAsync('accessToken', response?.access?.token);
                                     await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
                                     setSuccessLogin(true);

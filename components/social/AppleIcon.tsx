@@ -10,12 +10,13 @@ import useStoreRefresh from '@/store/useStoreRefresh';
 import { getEmailChecker } from '@/apis/fetchAuth';
 import errorRes from '@/apis/errorRes';
 import { useTranslation } from 'react-i18next';
+import { usePushNotifications } from '@/usePushNotification';
 export default function AppleIcon() {
     const { t } = useTranslation();
     const [errorLoginModal, setErrorLoginModal] = useState(false);
     const [successLogin, setSuccessLogin] = useState(false);
     const [appleAuthAvailable, setAppleAvailable] = useState(false);
-
+    const { expoPushToken } = usePushNotifications();
     const [exists, setExists] = useState(false);
     const setRefreshToken = useStoreRefresh(state => state.setRefreshToken);
 
@@ -39,7 +40,7 @@ export default function AppleIcon() {
             if (appleEmail == null) {
                 try {
                     // const check = await getEmailChecker(credential?.email as string);
-                    const response = await signInWithApple(credential?.email, credential?.fullName?.givenName + ' ' + credential?.fullName?.familyName, credential?.identityToken as string);
+                    const response = await signInWithApple(credential?.email, credential?.fullName?.givenName + ' ' + credential?.fullName?.familyName, credential?.identityToken as string, expoPushToken?.data);
                     await SecureStore.setItemAsync('accessToken', response?.access?.token);
                     await SecureStore.setItemAsync('appleEmail', credential?.email as string);
                     setRefreshToken(response?.refresh?.token);
@@ -53,7 +54,7 @@ export default function AppleIcon() {
                 try {
                     const check = await getEmailChecker(appleEmail as string);
                     setExists(check?.exists);
-                    const response = await signInWithApple(appleEmail, credential?.fullName?.givenName + ' ' + credential?.fullName?.familyName, credential?.identityToken as string);
+                    const response = await signInWithApple(appleEmail, credential?.fullName?.givenName + ' ' + credential?.fullName?.familyName, credential?.identityToken as string, expoPushToken?.data);
                     await SecureStore.setItemAsync('accessToken', response?.access?.token);
                     setRefreshToken(response?.refresh?.token);
                     setSuccessLogin(true);

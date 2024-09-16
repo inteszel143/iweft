@@ -17,6 +17,7 @@ import ErrorLoginModal from '@/components/ErrorLoginModal';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useWarmUpBrowser } from '@/hooks/useWarmUpBrowser';
+import { usePushNotifications } from '@/usePushNotification';
 export default function Page() {
     useWarmUpBrowser();
     const { t } = useTranslation();
@@ -27,6 +28,8 @@ export default function Page() {
     const [showP, setShowP] = useState<boolean>(true);
     const [loadingBtn, setLoadingBtn] = useState<boolean>(false);
     const [errorModalVisible, setErrorModalVisible] = useState<boolean>(false);
+    const { expoPushToken, notification } = usePushNotifications();
+
     const toggleCheck = () => {
         setCheck(!check);
     };
@@ -59,8 +62,9 @@ export default function Page() {
 
     const onSubmit = async (data: any) => {
         setLoadingBtn(true);
+
         try {
-            const response = await manualLogin(data.email, data.password);
+            const response = await manualLogin(data.email, data.password, expoPushToken?.data as string);
             const refreshToken = response?.refresh?.token;
             await SecureStore.setItemAsync('accessToken', response?.access?.token);
             const isVerify = await getVerifyCheck(data?.email as string);

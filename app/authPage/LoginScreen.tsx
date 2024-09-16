@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import IconFacebook from '@/components/social/IconFacebook';
 import IconGoogle from '@/components/social/IconGoogle';
 import IconApple from '@/components/social/IconApple';
+import { usePushNotifications } from '@/usePushNotification';
 
 export default function LoginScreen() {
     const [emailF, setEmailF] = useState(false);
@@ -29,7 +30,7 @@ export default function LoginScreen() {
     const [errorModalVisible, setErrorModalVisible] = useState(false);
     const { t } = useTranslation();
     const [loadingBtn, setLoadingBtn] = useState(false);
-
+    const { expoPushToken, notification } = usePushNotifications();
 
     const toggleCheck = () => {
         setCheck(!check);
@@ -64,7 +65,7 @@ export default function LoginScreen() {
     const onSubmit = async (data: any) => {
         setLoadingBtn(true);
         try {
-            const response = await manualLogin(data.email, data.password);
+            const response = await manualLogin(data.email, data.password, expoPushToken?.data as string);
             const refreshToken = response?.refresh?.token;
             await SecureStore.setItemAsync('accessToken', response?.access?.token);
             const isVerify = await getVerifyCheck(data?.email as string);

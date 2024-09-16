@@ -14,6 +14,7 @@ import { manualSignup } from '@/apis/auth';
 import errorRes from '@/apis/errorRes';
 import ValidatingData from '@/components/ValidatingData';
 import { useTranslation } from 'react-i18next';
+import { usePushNotifications } from '@/usePushNotification';
 interface CellProps {
     index: number;
     symbol: string;
@@ -42,6 +43,7 @@ export default function CreateNewPIN() {
     const [enableMask, setEnableMask] = useState(true);
     const [value, setValue] = useState(''); // pin data
     const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
+    const { expoPushToken, notification } = usePushNotifications();
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
         value,
         setValue,
@@ -88,6 +90,7 @@ export default function CreateNewPIN() {
             formData.append("pin", pin);
             formData.append("latitude", latitude as string);
             formData.append("longitude", longitude as string);
+            formData.append("push_token", expoPushToken?.data as string);
             // // PROFILE IMAGE
             const filename = image.split("/").pop();
             const fileType = filename.split('.').pop();

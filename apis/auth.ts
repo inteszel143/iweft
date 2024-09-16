@@ -25,10 +25,11 @@ export const manualSignup = async (data: FormData) => {
 /**
  * MANUAL LOGINNNN ---------------------------------------------------------
  */
-export const manualLogin = async (email: string, password: string) => {
+export const manualLogin = async (email: string, password: string, push_token: string) => {
   const data = {
     email: email,
     password: password,
+    push_token: push_token,
   };
   try {
     const response = await axios.post(

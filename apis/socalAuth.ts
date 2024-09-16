@@ -9,12 +9,14 @@ import errorRes from "./errorRes";
 export const signInWithFacebook = async (
   email: any,
   fullname: any,
-  facebookId: any
+  facebookId: any,
+  push_token: any,
 ) => {
   const data = {
     email: email,
     fullname: fullname,
     facebookId: facebookId,
+    push_token: push_token,
   };
   try {
     const response = await axios.post(
@@ -37,12 +39,14 @@ export const signInWithFacebook = async (
 export const signInWithGoogle = async (
   email: any,
   fullname: any,
-  googleId: any
+  googleId: any,
+  push_token: any,
 ) => {
   const data = {
     email: email,
     fullname: fullname,
     googleId: googleId,
+    push_token: push_token,
   };
   try {
     const response = await axios.post(
@@ -65,12 +69,14 @@ export const signInWithGoogle = async (
 export const signInWithApple = async (
   email: any,
   fullname: string,
-  identityToken: string
+  identityToken: string,
+  push_token: any,
 ) => {
   const data = {
     email: email,
     fullname: fullname,
     identityToken: identityToken,
+    push_token: push_token,
   };
   try {
     const response = await axios.post(

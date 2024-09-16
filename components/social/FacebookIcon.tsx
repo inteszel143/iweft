@@ -10,11 +10,13 @@ import { getEmailChecker } from '@/apis/fetchAuth';
 import useStoreRefresh from '@/store/useStoreRefresh';
 import SuccessLogin from '../SuccessLogin';
 import { useTranslation } from 'react-i18next';
+import { usePushNotifications } from '@/usePushNotification';
 export default function FacebookIcon() {
     const { t } = useTranslation();
     const [errorLoginModal, setErrorLoginModal] = useState(false);
     const [successLogin, setSuccessLogin] = useState(false);
     const [exists, setExists] = useState(false);
+    const { expoPushToken } = usePushNotifications();
     const setRefreshToken = useStoreRefresh(state => state.setRefreshToken);
     useEffect(() => {
         const requestTracking = async () => {
@@ -55,7 +57,7 @@ export default function FacebookIcon() {
                                     setExists(check?.exists);
 
 
-                                    const response = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
+                                    const response = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID, expoPushToken?.data);
                                     await SecureStore.setItemAsync('accessToken', response?.access?.token);
                                     // await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
                                     setRefreshToken(response?.refresh?.token);
@@ -73,7 +75,7 @@ export default function FacebookIcon() {
                         async function (currentProfile) {
                             if (currentProfile) {
                                 try {
-                                    const response = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID);
+                                    const response = await signInWithFacebook(currentProfile?.email, currentProfile?.name, currentProfile?.userID, expoPushToken?.data);
                                     await SecureStore.setItemAsync('accessToken', response?.access?.token);
                                     await SecureStore.setItemAsync('refreshToken', response?.refresh?.token);
                                     setSuccessLogin(true);
