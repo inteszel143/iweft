@@ -82,7 +82,7 @@ export default function ItemPage() {
         return transformedItems;
     };
     const transformedData = transformData(itemData);
-    const filteredData = selectedCategory === 'All' ? DATA : DATA?.filter((item: any) => item.item_category_id.toLowerCase().includes(selectedCategory.toLowerCase()));
+    const filteredData = selectedCategory === 'All' ? DATA : DATA?.filter((item: any) => item?.item_category_id?.name.toLowerCase().includes(selectedCategory.toLowerCase()));
     const searchFilter = filteredData?.filter((item: any) => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
     const total = getTotalCost().toFixed(2);
     const onSubmit = async () => {
@@ -150,7 +150,7 @@ export default function ItemPage() {
                                         <TouchableOpacity key={index} style={topSelect == index ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
                                             onPress={() => {
                                                 setTopSelect(index);
-                                                handleCategoryPress(item._id);
+                                                handleCategoryPress(item.name);
                                             }}
                                         >
                                             <Text style={topSelect == index ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item.name}</Text>
@@ -174,7 +174,7 @@ export default function ItemPage() {
                                         <Image
                                             source={{ uri: item.image }}
                                             resizeMode='contain'
-                                            style={{ width: wp(12), height: hp(5) }} />
+                                            style={{ width: wp(14), height: hp(6) }} />
                                         <View style={{ flex: 1, marginLeft: wp(4), paddingHorizontal: wp(1) }}>
                                             <Text style={styles.bundleText}>{item.name}</Text>
                                             <Text style={styles.price}>+ AED {item.price}</Text>

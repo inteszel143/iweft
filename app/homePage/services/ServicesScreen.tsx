@@ -133,11 +133,20 @@ export default function ServicesScreen() {
                     isPending ? <ShimmerPlaceholder style={styles.imageTop} />
                         :
                         <Animated.View style={[styles.topStyle, imageAnimatedStyle]}>
-
-                            <ScrollView showsHorizontalScrollIndicator={false}
+                            <Image
+                                source={{ uri: serviceItem?.service?.image }}
+                                resizeMode='cover'
+                                style={[{ width: wp(100), height: IMG_HEIGHT }]}
+                            />
+                            {/* <ScrollView showsHorizontalScrollIndicator={false}
                                 horizontal
                                 pagingEnabled
                             >
+                                <Image
+                                    source={{ uri: serviceItem?.service?.image }}
+                                    resizeMode='cover'
+                                    style={[{ width: wp(100), height: IMG_HEIGHT }]}
+                                />
                                 {
                                     serviceItem?.service?.other_images?.map((item: any, index: any) => (
                                         <Pressable
@@ -156,13 +165,12 @@ export default function ServicesScreen() {
                                         </Pressable>
                                     ))
                                 }
-                            </ScrollView>
-
-                            <View style={styles.topFooter}>
+                            </ScrollView> */}
+                            {/* <View style={styles.topFooter}>
                                 <View style={{ width: wp(8), height: 10, borderRadius: 8, backgroundColor: '#0A5CA8' }} />
                                 <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
                                 <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
-                            </View>
+                            </View> */}
                         </Animated.View>
                 }
                 <ImageView
@@ -230,16 +238,38 @@ export default function ServicesScreen() {
                     <View style={styles.detailsStyle}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Text style={styles.detailText}>Photos & Videos</Text>
-                            <Link href={'/homePage/services/PhotosVideos'} asChild>
-                                <TouchableOpacity>
-                                    <Text style={styles.seeallText}>See all</Text>
-                                </TouchableOpacity>
-                            </Link>
+                            <TouchableOpacity
+                                onPress={() => router.push({
+                                    pathname: "/homePage/services/PhotosVideos",
+                                    params: { other_image: serviceItem?.service?.other_images }
+                                })}
+                            >
+                                <Text style={styles.seeallText}>See all</Text>
+                            </TouchableOpacity>
                         </View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
-                            <Image source={require('@/assets/temp/services/photo1.jpg')} resizeMode='contain' style={{ width: wp(40), height: hp(30) }} />
-                            <Image source={require('@/assets/temp/services/photo2.jpg')} resizeMode='contain' style={{ width: wp(40), height: hp(30) }} />
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', marginTop: hp(2) }}>
+                            {/* <Image source={require('@/assets/temp/services/photo1.jpg')} resizeMode='contain' style={{ width: wp(40), height: hp(30) }} />
+                            <Image source={require('@/assets/temp/services/photo2.jpg')} resizeMode='contain' style={{ width: wp(40), height: hp(30) }} /> */}
+                            {
+                                serviceItem?.service?.other_images?.slice(0, 2).map((item: any, index: any) => (
+                                    <Pressable
+                                        style={{
+                                            backgroundColor: "#FFFFFF",
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}
+                                        onPress={() => setIsVisible(!visible)}
+                                        key={index}>
+                                        <Image
+                                            source={{ uri: item }}
+                                            resizeMode='cover'
+                                            style={{ width: wp(40), height: hp(30), borderRadius: wp(3) }}
+                                        />
+                                    </Pressable>
+                                ))
+                            }
                         </View>
+
                     </View>
 
 

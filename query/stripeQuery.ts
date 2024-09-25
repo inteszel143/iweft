@@ -68,7 +68,7 @@ export const useGetPaymentHistory = (isFocused: any) => {
  */
 export const useGetEReceipt = (isFocused: any, orderId: string) => {
   return useQuery({
-    queryKey: ["e-receipt"],
+    queryKey: ["e-receipt", orderId],
     enabled: isFocused,
     queryFn: () => getBookingEreciept(orderId),
   });

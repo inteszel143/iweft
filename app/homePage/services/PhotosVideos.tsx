@@ -1,10 +1,13 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList, Dimensions } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link, router } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { photos } from '@/constants/home/data';
-
+const { width } = Dimensions.get('window');
 export default function PhotosVideos() {
+    const { other_image } = useLocalSearchParams();
+    const photosString = other_image as string
+    const photosArray = photosString.split(',');
     return (
         <View style={styles.container}>
 
@@ -29,12 +32,13 @@ export default function PhotosVideos() {
 
             <View style={styles.paddable}>
                 <FlatList
-                    data={photos}
+                    data={photosArray}
+                    numColumns={2}
+                    keyExtractor={(index) => index.toString()}
                     showsVerticalScrollIndicator={false}
-                    keyExtractor={(item) => item.img}
                     renderItem={({ item }) => (
                         <View style={{ marginTop: hp(2), alignItems: 'center' }}>
-                            <Image source={item.img} resizeMode='cover' style={{ width: wp(90), height: hp(50), borderRadius: wp(10) }} />
+                            <Image source={{ uri: item }} resizeMode='cover' style={{ width: (width / 2 - wp(2)), height: hp(30) }} />
                         </View>
                     )}
                 />
