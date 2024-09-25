@@ -62,7 +62,7 @@ function Page() {
         <HomeServices />
         <LaundryBundles />
         <HomeAds />
-        {/* <BundleOffers /> */}
+        <BundleOffers />
         {/* <Test /> */}
       </ScrollView>
     </SafeAreaView>

@@ -1,4 +1,4 @@
-import { Dimensions, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, Image, Platform, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
@@ -24,7 +24,7 @@ import { useHomeServicesId } from '@/query/homeQuery';
 import { LinearGradient } from 'expo-linear-gradient';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
 import useValidateRefresh from '@/store/useValidateRefresh';
-
+import ImageView from "react-native-image-viewing";
 
 const IMG_HEIGHT = 300;
 const { width } = Dimensions.get('window');
@@ -44,6 +44,7 @@ export default function ServicesScreen() {
     const { data: bookdata } = usetGetBookmarks(isFocused);
     const { data: reviews } = useGetReview(serviceItem?.service?._id, isFocused);
     const { userId } = useUserInfo();
+    const [visible, setIsVisible] = useState(false);
     useEffect(() => {
         if (bookdata) {
             checkBookmark(bookdata, serviceItem?.service?._id);
@@ -70,7 +71,6 @@ export default function ServicesScreen() {
             ],
         };
     });
-
     const headerStyle = useAnimatedStyle(() => {
         return {
             opacity: scrollHandler.value > 200 ? withSpring(1) : withSpring(0),
@@ -114,11 +114,10 @@ export default function ServicesScreen() {
             console.log(error);
         }
     };
-
+    const images = serviceItem?.service?.other_images.map((image: any) => ({ uri: image }));
     // if (isPending) {
     //     return <ViewServicesSkeleton />
     // }
-
     return (
         <View style={styles.container}>
 
@@ -134,10 +133,31 @@ export default function ServicesScreen() {
                     isPending ? <ShimmerPlaceholder style={styles.imageTop} />
                         :
                         <Animated.View style={[styles.topStyle, imageAnimatedStyle]}>
-                            <Image
-                                source={{ uri: serviceItem?.service?.image }}
-                                resizeMode='cover'
-                                style={[{ width: wp(50), height: hp(20), marginLeft: wp(4) }]} />
+
+                            <ScrollView showsHorizontalScrollIndicator={false}
+                                horizontal
+                                pagingEnabled
+                            >
+                                {
+                                    serviceItem?.service?.other_images?.map((item: any, index: any) => (
+                                        <Pressable
+                                            style={{
+                                                backgroundColor: "#FFFFFF",
+                                                alignItems: 'center',
+                                                justifyContent: 'center'
+                                            }}
+                                            onPress={() => setIsVisible(!visible)}
+                                            key={index}>
+                                            <Image
+                                                source={{ uri: item }}
+                                                resizeMode='cover'
+                                                style={[{ width: wp(100), height: hp(50) }]}
+                                            />
+                                        </Pressable>
+                                    ))
+                                }
+                            </ScrollView>
+
                             <View style={styles.topFooter}>
                                 <View style={{ width: wp(8), height: 10, borderRadius: 8, backgroundColor: '#0A5CA8' }} />
                                 <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
@@ -145,7 +165,12 @@ export default function ServicesScreen() {
                             </View>
                         </Animated.View>
                 }
-
+                <ImageView
+                    images={images}
+                    imageIndex={0}
+                    visible={visible}
+                    onRequestClose={() => setIsVisible(false)}
+                />
 
                 <View style={styles.middleStyle}>
 

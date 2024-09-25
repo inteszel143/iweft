@@ -23,7 +23,7 @@ export default function HomeServices() {
                     :
                     <View style={[styles.listStyle, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
                         {
-                            data?.map((item: any, index: any) => {
+                            data?.slice(0, 3)?.map((item: any, index: any) => {
                                 return (
                                     <TouchableOpacity key={index}
                                         onPress={() => router.push({
