@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
   getActivationOffer,
   getAllBundles,
@@ -7,6 +7,7 @@ import {
   getHomeServicesById,
   getItemCategory,
   getItems,
+  getLoadMoreItems,
   getServiceCategory,
   getSpecialOffers,
   getSupscriptionPlan,
@@ -85,6 +86,22 @@ export const useItems = (isFocused: boolean) => {
     queryKey: ["items"],
     enabled: isFocused,
     queryFn: getItems,
+  });
+};
+
+/**
+ * Get load more items ---------------------------------------------------------
+ */
+export const useLoadMoreItems = () => {
+  return useInfiniteQuery({
+    queryKey: ['item'],
+    queryFn: ({ pageParam }) => getLoadMoreItems(pageParam),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) => lastPage.nextPage,
+    select: (data) => {
+      const flatData = data?.pages.flatMap((page) => (page.items))
+      return flatData
+    }
   });
 };
 

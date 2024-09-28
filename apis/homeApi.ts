@@ -146,6 +146,27 @@ export const getItems = async () => {
 };
 
 /**
+ * Get or Load more Items ---------------------------------------------------------
+ */
+export const getLoadMoreItems = async (pageParam: number) => {
+  const accessToken = await SecureStore.getItemAsync("accessToken");
+  try {
+    const response = await axios.get(
+      `${process.env.EXPO_PUBLIC_API_URL}/items?page=${pageParam}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          //   "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response?.data || [];
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
+
+/**
  * Get All Bundles ---------------------------------------------------------
  */
 

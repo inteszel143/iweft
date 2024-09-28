@@ -1,10 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, TextInput, FlatList } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, TextInput, FlatList, ActivityIndicator } from 'react-native'
+import React, { useMemo, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
 import { itemList, items } from '@/constants/home/data';
 import { defaultStyles } from '@/constants/Styles';
-import { useItemCategory, useItems } from '@/query/homeQuery';
+import { useItemCategory, useItems, useLoadMoreItems } from '@/query/homeQuery';
 import { useIsFocused } from '@react-navigation/native';
 import ItemCategorySkeleton from '@/components/skeleton/ItemCategorySkeleton';
 import ItemDataSkeleton from '@/components/skeleton/ItemDataSkeleton';
@@ -21,6 +21,10 @@ export default function ItemPage() {
     const { setServiceModel } = useStoreBooking();
     // hook
     const [topSelect, setTopSelect] = useState(null);
+
+    const { data, isInitialLoading, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } =
+        useLoadMoreItems();
+    // console.log(data?.pages);
 
     const increment = (item: any) => {
         setItemData((prevData: any) => ({
@@ -82,9 +86,25 @@ export default function ItemPage() {
         return transformedItems;
     };
     const transformedData = transformData(itemData);
-    const filteredData = selectedCategory === 'All' ? DATA : DATA?.filter((item: any) => item?.item_category_id?.name.toLowerCase().includes(selectedCategory.toLowerCase()));
+    const filteredData = selectedCategory === 'All' ? data : data?.filter((item: any) => item?.item_category_id?.name.toLowerCase().includes(selectedCategory.toLowerCase()));
     const searchFilter = filteredData?.filter((item: any) => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
     const total = getTotalCost().toFixed(2);
+
+    const loadNext = () => {
+        if (hasNextPage) {
+            fetchNextPage();
+        }
+    };
+    const ListFooterComponent = useMemo(
+        () => (
+            <View style={{ marginVertical: 10, marginHorizontal: 10 }}>
+                {isFetchingNextPage && <ActivityIndicator size={'large'} color={"gray"} />}
+            </View>
+        ),
+        [isFetchingNextPage]
+    );
+
+
     const onSubmit = async () => {
         setServiceModel("Service");
         const itemDataString = JSON.stringify(transformedData);
@@ -92,8 +112,7 @@ export default function ItemPage() {
             pathname: 'homePage/services/AfterItemPage',
             params: { service, service_name, base_price, total, itemData: itemDataString, total_data: getTotalItems() }
         });
-    }
-
+    };
     return (
         <View style={styles.container}>
 
@@ -166,39 +185,51 @@ export default function ItemPage() {
             {
                 dataPending ? <ItemDataSkeleton />
                     :
-                    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(12) }}>
-                        {
-                            searchFilter?.map((item: any, index: any) => (
-                                <View style={[styles.cardStyle, { alignSelf: 'center' }]} key={index}>
-                                    <View style={styles.innerCardStyle}>
-                                        <Image
-                                            source={{ uri: item.image }}
-                                            resizeMode='contain'
-                                            style={{ width: wp(14), height: hp(6) }} />
-                                        <View style={{ flex: 1, marginLeft: wp(4), paddingHorizontal: wp(1) }}>
-                                            <Text style={styles.bundleText}>{item.name}</Text>
-                                            <Text style={styles.price}>+ AED {item.price}</Text>
-                                        </View>
-                                        <View style={styles.rightStyle}>
-                                            <TouchableOpacity style={styles.circle}
-                                                onPress={() => decrement(item)}
-                                                disabled={!itemData[item._id]?.quantity}
-                                            >
-                                                <Text style={styles.btnText}>-</Text>
-                                            </TouchableOpacity>
-                                            <Text style={styles.quantity}>{itemData[item._id]?.quantity || 0}</Text>
-                                            <TouchableOpacity style={styles.circle}
-                                                onPress={() => increment(item)}
-                                            >
-                                                <Text style={styles.btnText}>+</Text>
-                                            </TouchableOpacity>
-                                        </View>
+                    <FlatList
+                        data={searchFilter}
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={{ paddingBottom: hp(12) }}
+                        renderItem={({ item }) => (
+                            <View style={[styles.cardStyle, { alignSelf: 'center' }]}>
+                                <View style={styles.innerCardStyle}>
+                                    <Image
+                                        source={{ uri: item.image }}
+                                        resizeMode='contain'
+                                        style={{ width: wp(14), height: hp(6) }} />
+                                    <View style={{ flex: 1, marginLeft: wp(4), paddingHorizontal: wp(1) }}>
+                                        <Text style={styles.bundleText}>{item.name}</Text>
+                                        <Text style={styles.price}>+ AED {item.price}</Text>
+                                    </View>
+                                    <View style={styles.rightStyle}>
+                                        <TouchableOpacity style={styles.circle}
+                                            onPress={() => decrement(item)}
+                                            disabled={!itemData[item._id]?.quantity}
+                                        >
+                                            <Text style={styles.btnText}>-</Text>
+                                        </TouchableOpacity>
+                                        <Text style={styles.quantity}>{itemData[item._id]?.quantity || 0}</Text>
+                                        <TouchableOpacity style={styles.circle}
+                                            onPress={() => increment(item)}
+                                        >
+                                            <Text style={styles.btnText}>+</Text>
+                                        </TouchableOpacity>
                                     </View>
                                 </View>
-                            ))
-                        }
+                            </View>
+                        )}
+                        onEndReached={loadNext}
+                        onEndReachedThreshold={0.5}
+                        ListFooterComponent={ListFooterComponent}
 
-                    </ScrollView>
+                    />
+                // <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: hp(12) }}>
+                //     {
+                //         searchFilter?.map((item: any, index: any) => (
+
+                //         ))
+                //     }
+
+                // </ScrollView>
             }
 
             <View style={styles.footer}>

@@ -37,8 +37,20 @@ export default function PhotosVideos() {
                     keyExtractor={(index) => index.toString()}
                     showsVerticalScrollIndicator={false}
                     renderItem={({ item }) => (
-                        <View style={{ marginTop: hp(2), alignItems: 'center' }}>
-                            <Image source={{ uri: item }} resizeMode='cover' style={{ width: (width / 2 - wp(2)), height: hp(30) }} />
+                        <View
+                            style={{
+                                margin: wp(1.5), // Adding margin for both columns and rows
+                                alignItems: 'center',
+                            }}>
+                            <Image
+                                source={{ uri: item }}
+                                resizeMode="cover"
+                                style={{
+                                    width: width / 2 - wp(3), // Adjust the width to account for margins
+                                    height: hp(30),
+                                    borderRadius: wp(2)
+                                }}
+                            />
                         </View>
                     )}
                 />
@@ -53,7 +65,7 @@ export default function PhotosVideos() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
+        // backgroundColor: '#FFFFFF',
     },
 
     Headercontainer: {
@@ -79,10 +91,10 @@ const styles = StyleSheet.create({
         fontFamily: "UrbanistBold",
         fontSize: hp(2.5)
     },
-
-
     paddable: {
-        paddingBottom: hp(15)
+        paddingBottom: hp(15),
+        alignItems: 'center',
+        flex: 1,
     }
 
 

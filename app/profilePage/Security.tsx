@@ -75,7 +75,10 @@ export default function Security() {
                     fallbackLabel: 'Use passcode',
                 });
                 setItem("status_code", "1");
-                setShowSuccess(true);
+                // setShowSuccess(true);
+                Alert.alert('Success', 'Passcode set up! Your account is now more secure.', [
+                    { text: 'OK' },
+                ]);
             }
         } else {
             setItem("status_code", "0");
