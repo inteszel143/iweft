@@ -18,6 +18,7 @@ import { I18nManager, LogBox, TouchableOpacity } from "react-native";
 import HeaderInbox from "@/components/inbox/HeaderInbox";
 import HelpHeader from "@/components/profile/HelpHeader";
 import { Ionicons } from "@expo/vector-icons";
+import { SocketProvider } from "@/contexts/SocketProvider";
 export {
   ErrorBoundary,
 } from 'expo-router';
@@ -61,13 +62,15 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
-        <StripeProvider
-          publishableKey={`${process.env.EXPO_PUBLIC_STRIPE_PUBLIC_KEY}`}
-          urlScheme="iweft" // required for 3D Secure and bank redirects
-          merchantIdentifier="merchant.com.iweft" // required for Apple Pay
-        >
-          <RootLayoutNav />
-        </StripeProvider>
+        <SocketProvider>
+          <StripeProvider
+            publishableKey={`${process.env.EXPO_PUBLIC_STRIPE_PUBLIC_KEY}`}
+            urlScheme="iweft" // required for 3D Secure and bank redirects
+            merchantIdentifier="merchant.com.iweft" // required for Apple Pay
+          >
+            <RootLayoutNav />
+          </StripeProvider>
+        </SocketProvider>
       </QueryClientProvider>
     </GestureHandlerRootView>
   );

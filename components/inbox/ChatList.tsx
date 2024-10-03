@@ -48,12 +48,11 @@ export default function ChatList() {
                         tintColor="#DADADA"
                     />
                 }
-
                 renderItem={({ item }) => (
                     <TouchableOpacity style={styles.cardrow}
                         onPress={() => router.push({
                             pathname: '/chatPage/ChatInboxScreen',
-                            params: { convoId: item?._id }
+                            params: { convoId: item?._id, receiverId: item?.receiver?._id }
                         })}
                     >
                         <View style={styles.cardLeftRow}>

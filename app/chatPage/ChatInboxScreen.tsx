@@ -10,22 +10,46 @@ import ChatImageModal from '@/components/modal/ChatImageModal';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router';
 import useUserId from '@/store/useUserInfo';
+import { useSocket } from '@/hooks/useSocket';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function ChatInboxScreen() {
-    const { convoId } = useLocalSearchParams();
+    const socket = useSocket();
+    const isFocused = useIsFocused();
+    const { convoId, receiverId } = useLocalSearchParams();
     const queryClient = useQueryClient();
     const [imageModal, setImageModal] = useState(false);
     const [messages, setMessages] = useState<IMessage[]>([]);
     const insets = useSafeAreaInsets();
     const [text, setText] = useState('');
     const { userId } = useUserId();
-    const { mutate: sentMessage } = postSendMessage({});
+    const { mutate: sentMessage } = postSendMessage({
+        onSuccess: (data: any) => {
+            // enqueueSnackbar('Message sent', { variant: 'success' });
+            const objMessage = {
+                _id: data.new_message?._id,
+                text: data.new_message?.text,
+                createdAt: data.new_message?.createdAt,
+                user: {
+                    _id: data.new_message?.sender,
+                    name: data.new_message?.sender_model,
+                    // avatar: newMessage.sender.user_profile,
+                },
+                sent: true,
+            };
+            socket?.emit('sendMessage', {
+                ...objMessage,
+                receiverId: receiverId,
+            });
+        }
+    });
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await getMessages(convoId as string);
                 queryClient.invalidateQueries({ queryKey: ["inbox"] });
+                queryClient.invalidateQueries({ queryKey: ["message", convoId as string] });
                 setMessages([...response]);
             } catch (error) {
                 console.error('Error fetching messages:', error);
@@ -34,12 +58,45 @@ export default function ChatInboxScreen() {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        socket?.on('getMessage', (data) => {
+            if (data) {
+                const fetchData = async () => {
+                    try {
+                        const response = await getMessages(convoId as string);
+                        queryClient.invalidateQueries({ queryKey: ["inbox"] });
+                        queryClient.invalidateQueries({ queryKey: ["message", convoId as string] });
+                        setMessages([...response]);
+                    } catch (error) {
+                        console.error('Error fetching messages:', error);
+                    }
+                };
+                fetchData();
+                queryClient.invalidateQueries({
+                    queryKey: ['message', convoId as string],
+                });
+
+                queryClient.invalidateQueries({
+                    queryKey: ['inbox'],
+                });
+            }
+        });
+        return () => {
+            socket?.off('getMessage');
+        };
+    }, [socket, queryClient, receiverId, convoId]);
+
+
+
+
     const onSend = useCallback(async (messages = []) => {
         sentMessage({ text: messages[0]?.text });
         setMessages(previousMessages =>
             GiftedChat.append(previousMessages, messages),
         )
     }, []);
+
+
 
     return (
         <View style={[styles.container, { paddingBottom: Platform.OS === 'ios' ? hp(6) : 0 }]}>
@@ -55,6 +112,7 @@ export default function ChatInboxScreen() {
                 textInputProps={styles.composer}
                 onInputTextChanged={setText}
                 bottomOffset={insets.bottom}
+                keyboardShouldPersistTaps={'never'}
                 renderAvatar={null}
                 maxComposerHeight={100}
                 renderSystemMessage={(props) => <SystemMessage {...props} />}

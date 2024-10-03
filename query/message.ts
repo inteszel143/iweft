@@ -16,7 +16,7 @@ export const useGetMessageInbox = (isFocused: boolean) => {
  */
 export const useGetMessage = async (convoId: string, isFocused: boolean) => {
   return useQuery({
-    queryKey: ["message"],
+    queryKey: ["message", convoId],
     enabled: isFocused,
     queryFn: () => getMessages(convoId),
   });

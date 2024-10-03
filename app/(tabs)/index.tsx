@@ -16,17 +16,29 @@ import { useGetMessageInbox } from '@/query/message';
 import { inboxBadge } from '@/utils/validate';
 import { useQueryClient } from '@tanstack/react-query';
 import { usePushNotifications } from '@/usePushNotification';
+import { useSocket } from '@/hooks/useSocket';
+import useUserInfo from '@/store/useUserInfo';
 function Page() {
+  const socket = useSocket();
   const queryClient = useQueryClient();
+  const { userId } = useUserInfo();
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const isFocused = useIsFocused();
   const { data: inbox } = useGetMessageInbox(isFocused);
-  const { expoPushToken, notification } = usePushNotifications();
+  // const { expoPushToken, notification } = usePushNotifications();
   useEffect(() => {
     if (inbox) {
       inboxBadge(inbox);
-    }
-  }, [inbox]);
+    };
+    if (socket) {
+      socket.emit('addUser', userId);
+    };
+    return () => {
+      socket?.off('addUser')
+    };
+  }, [inbox, userId, socket]);
+
+
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {

@@ -40,7 +40,7 @@ export const usePushNotifications = (): PushNotificationState => {
         vibrationPattern: [0, 250, 250, 250],
         lightColor: "#FF231F7C",
       });
-    }
+    };
 
     if (Device.isDevice) {
       const { status: existingStatus } =
