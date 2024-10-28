@@ -22,7 +22,7 @@ export const useHomeNotification = (isFocused: any) => {
 
 export const useHomeNotificationByID = (isFocused: any, notifId: string) => {
   return useQuery({
-    queryKey: ["notif-id"],
+    queryKey: ["notif-id", notifId],
     enabled: isFocused,
     queryFn: () => getUserNotificationById(notifId),
   });

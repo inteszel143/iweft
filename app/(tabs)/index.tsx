@@ -25,7 +25,7 @@ function Page() {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const isFocused = useIsFocused();
   const { data: inbox } = useGetMessageInbox(isFocused);
-  // const { expoPushToken, notification } = usePushNotifications();
+  const { expoPushToken, notification } = usePushNotifications();
   useEffect(() => {
     if (inbox) {
       inboxBadge(inbox);
@@ -56,10 +56,13 @@ function Page() {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     queryClient.invalidateQueries({ queryKey: ['inbox'] });
+    queryClient.invalidateQueries({ queryKey: ['home-services'] });
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
   }, []);
+
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style='dark' />

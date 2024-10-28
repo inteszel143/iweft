@@ -2,7 +2,7 @@
   "expo": {
     "name": "Iweft",
     "slug": "iweft",
-    "version": "1.1.5",
+    "version": "1.1.6",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "iweft",
@@ -16,7 +16,7 @@
     "ios": {
       "usesAppleSignIn": true,
       "supportsTablet": true,
-      "buildNumber": "13",
+      "buildNumber": "14",
       "privacyManifests": {
         "NSPrivacyAccessedAPITypes": [
           {
@@ -67,8 +67,7 @@
           "value": "true"
         }
       ],
-      "package": "com.paras23.iweft",
-      "googleServicesFile": "./assets/json/google-services.json"
+      "googleServicesFile": "./android/app/google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -91,12 +90,6 @@
           "photosPermission": "Allow access to your photos to upload photos from your library.",
           "microphonePermission": "The microphone is used to record audio for use within the app.",
           "cameraPermission": "Camera usage to take pictures for your profile. Please allow camera access to continue."
-        }
-      ],
-      [
-        "expo-dev-launcher",
-        {
-          "launchModeExperimental": "most-recent"
         }
       ],
       ["expo-apple-authentication"],

@@ -32,13 +32,40 @@ export default function HomeServices() {
                                         })}
                                         style={{ alignItems: 'center' }}
                                     >
-                                        <View style={styles.circleImage}>
-                                            <Image
-                                                source={{ uri: item?.image }}
-                                                resizeMode='contain'
-                                                style={styles.imageStyle}
-                                            />
-                                        </View>
+                                        {/* <View style={styles.circleImage}>
+                                            <View
+                                                style={{
+                                                    width: wp(16),
+                                                    height: wp(16),
+                                                    borderRadius: wp(50),
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    overflow: "hidden",
+                                                }}
+                                            >
+                                                <Image
+                                                    source={{ uri: item?.image }}
+                                                    resizeMode='contain'
+                                                    style={styles.imageStyle}
+                                                />
+                                            </View>
+                                        </View> */}
+
+                                        <Image
+                                            source={{ uri: item?.image }}
+                                            resizeMode='cover'
+                                            style={{
+                                                width: wp(16),
+                                                height: wp(16),
+                                                borderRadius: wp(50),
+                                            }}
+                                        />
+
+
+
+
+
+
                                         <Text style={styles.titleStyle} >{item?.title.replace(" Services", "")}</Text>
                                     </TouchableOpacity>
                                 )
@@ -107,6 +134,6 @@ const styles = StyleSheet.create({
         borderRadius: wp(12),
         backgroundColor: "#F8F8F8",
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     }
 })
