@@ -25,7 +25,6 @@ function Page() {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const isFocused = useIsFocused();
   const { data: inbox } = useGetMessageInbox(isFocused);
-  const { expoPushToken, notification } = usePushNotifications();
   useEffect(() => {
     if (inbox) {
       inboxBadge(inbox);

@@ -83,7 +83,7 @@ export default function Page() {
                                 <View style={styles.imaging}>
                                     <Image
                                         source={{ uri: item?.order_details?.service?.image }}
-                                        resizeMode='contain'
+                                        resizeMode='cover'
                                         style={styles.imageStyle}
                                     />
                                 </View>
@@ -104,7 +104,7 @@ export default function Page() {
                                 </View>
                             </View>
                             <View>
-                            <Link href={'/chatPage/CustomerSupport'} style={styles.btnStyle} asChild>
+                                <Link href={'/chatPage/CustomerSupport'} style={styles.btnStyle} asChild>
                                     <TouchableOpacity>
                                         <Ionicons name='chatbubble-ellipses' size={hp(2.5)} color={'#0a5ca8'} />
                                     </TouchableOpacity>
@@ -262,7 +262,8 @@ const styles = StyleSheet.create({
     },
     imageStyle: {
         width: wp(20),
-        height: hp(10)
+        height: wp(20),
+        borderRadius: wp(50),
     },
     leftInner: {
         marginLeft: wp(4)
