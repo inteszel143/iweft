@@ -1,19 +1,41 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, Platform } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Platform, Pressable } from 'react-native'
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { defaultStyles } from '@/constants/Styles';
 import AppleSigninSelect from '@/components/social/AppleSigninSelect';
 import GoogleSigninSelect from '@/components/social/GoogleSigninSelect';
 import FacebookSigninSelect from '@/components/social/FacebookSigninSelect';
 import { useTranslation } from 'react-i18next';
 import LoginAsGuest from '@/components/social/LoginAsGuest';
+import { AntDesign } from '@expo/vector-icons';
 export default function SelectLoginPage() {
     const { t } = useTranslation();
     return (
         <View style={styles.container}>
             <View style={styles.topImage}>
-                <Image source={require('@/assets/temp/authIcons/topLogin.jpg')} resizeMode='contain' style={{ width: wp(80), height: hp(36) }} />
+                <Image source={require('@/assets/temp/authIcons/topLogin.jpg')} resizeMode='contain'
+                    style={{
+                        width: wp(80),
+                        height: hp(30)
+                    }} />
+            </View>
+
+            <View style={{
+                paddingHorizontal: wp(5),
+            }}>
+                <Pressable onPress={() => router.back()}>
+                    <AntDesign name='arrowleft' size={hp(3)} />
+                </Pressable>
+            </View>
+
+            <View style={{
+                alignItems: 'center',
+            }}>
+                <Text style={{
+                    fontFamily: "UrbanistBlack",
+                    fontSize: hp(4),
+                }}>Come on in...</Text>
             </View>
 
             <View style={styles.midStyle}>

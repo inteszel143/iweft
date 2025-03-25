@@ -19,7 +19,7 @@ import IconApple from '@/components/social/IconApple';
 export default function RegisterScreen() {
     const [emailF, setEmailF] = useState(false);
     const [passwordF, setPasswordF] = useState(false);
-    const [check, setCheck] = useState(true);
+    const [check, setCheck] = useState(false);
     const [showP, setShowP] = useState(true);
     const { t } = useTranslation();
     const [loadingBtn, setLoadingBtn] = useState(false);
@@ -96,7 +96,7 @@ export default function RegisterScreen() {
 
             <ScrollView bounces={false} contentContainerStyle={{ paddingBottom: hp(5) }}>
                 <View style={styles.containerStyle}>
-                    <Text style={styles.textStyle}>{t('Create your Account')}</Text>
+                    <Text style={styles.textStyle}>{t('Create your account')}</Text>
 
                     <View style={[styles.textField, { backgroundColor: emailF ? '#0A5CA826' : '#FAFAFA', borderColor: emailF ? '#0A5CA8' : '#FAFAFA' }]} >
                         <View style={styles.innerField}>
@@ -175,12 +175,28 @@ export default function RegisterScreen() {
                 </View>
 
                 {/* Remember */}
-                <TouchableOpacity style={styles.rememberStyle} onPress={toggleCheck}>
-                    {check ? <Ionicons name='checkbox' size={hp(2.6)} color={'#0A5CA8'} />
-                        :
-                        <MaterialCommunityIcons name='checkbox-blank-outline' size={hp(2.6)} color={'#0A5CA8'} />}
-                    <Text style={styles.rememberText}>{t('Remember me')}</Text>
-                </TouchableOpacity>
+                <View style={{
+                    alignItems: 'center',
+                }}>
+                    <TouchableOpacity style={styles.rememberStyle} onPress={toggleCheck}>
+                        {check ?
+                            <Image source={require('@/assets/icons/checkbox.png')} resizeMode='contain'
+                                style={{
+                                    width: wp(6),
+                                    height: hp(2.5)
+                                }} />
+                            // <Ionicons name='checkbox' size={hp(2.6)} color={'#0A5CA8'} />
+                            :
+                            // <MaterialCommunityIcons name='checkbox-blank-outline' size={hp(2.6)} color={'#0A5CA8'} />
+                            <Image source={require('@/assets/icons/emptybox.png')} resizeMode='contain'
+                                style={{
+                                    width: wp(6),
+                                    height: hp(2.5)
+                                }} />
+                        }
+                        <Text style={styles.rememberText}>{t('Remember me')}</Text>
+                    </TouchableOpacity>
+                </View>
 
 
 
@@ -190,11 +206,11 @@ export default function RegisterScreen() {
                         {loadingBtn ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>{t('Sign up')}</Text>}
                     </TouchableOpacity>
 
-                    <Link href={'/authPage/forgot/ForgotPassScreen'} asChild>
+                    {/* <Link href={'/authPage/forgot/ForgotPassScreen'} asChild>
                         <TouchableOpacity>
                             <Text style={styles.forgot}>{t('Forgot the password?')}</Text>
                         </TouchableOpacity>
-                    </Link>
+                    </Link> */}
                 </View>
 
 
@@ -235,11 +251,11 @@ const styles = StyleSheet.create({
 
     containerStyle: {
         paddingHorizontal: wp(5),
-        marginTop: hp(3),
+        marginTop: hp(6),
     },
     textStyle: {
         fontFamily: 'UrbanistBold',
-        fontSize: Platform.OS === 'ios' ? hp(4.5) : hp(5),
+        fontSize: Platform.OS === 'ios' ? hp(5) : hp(5.5),
     },
     headerBack: {
         width: wp(100),
@@ -352,7 +368,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: wp(2),
-        marginTop: hp(2)
+        marginTop: hp(8)
     },
     innerText: {
         fontFamily: 'UrbanistRegular',

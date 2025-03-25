@@ -16,7 +16,6 @@
     "ios": {
       "usesAppleSignIn": true,
       "supportsTablet": true,
-      "buildNumber": "14",
       "privacyManifests": {
         "NSPrivacyAccessedAPITypes": [
           {

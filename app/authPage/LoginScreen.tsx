@@ -24,7 +24,7 @@ import { usePushNotifications } from '@/usePushNotification';
 export default function LoginScreen() {
     const [emailF, setEmailF] = useState(false);
     const [passwordF, setPasswordF] = useState(false);
-    const [check, setCheck] = useState(true);
+    const [check, setCheck] = useState(false);
     const [showP, setShowP] = useState(true);
     const queryClient = useQueryClient();
     const [errorModalVisible, setErrorModalVisible] = useState(false);
@@ -172,12 +172,28 @@ export default function LoginScreen() {
 
 
                 {/* Remember */}
-                <TouchableOpacity style={styles.rememberStyle} onPress={toggleCheck}>
-                    {check ? <Ionicons name='checkbox' size={hp(2.6)} color={'#0A5CA8'} />
-                        :
-                        <MaterialCommunityIcons name='checkbox-blank-outline' size={hp(2.6)} color={'#0A5CA8'} />}
-                    <Text style={styles.rememberText}>{t('Remember me')}</Text>
-                </TouchableOpacity>
+                <View style={{
+                    alignItems: 'center',
+                }}>
+                    <TouchableOpacity style={styles.rememberStyle} onPress={toggleCheck}>
+                        {check ?
+                            <Image source={require('@/assets/icons/checkbox.png')} resizeMode='contain'
+                                style={{
+                                    width: wp(6),
+                                    height: hp(2.5)
+                                }} />
+                            // <Ionicons name='checkbox' size={hp(2.6)} color={'#0A5CA8'} />
+                            :
+                            // <MaterialCommunityIcons name='checkbox-blank-outline' size={hp(2.6)} color={'#0A5CA8'} />
+                            <Image source={require('@/assets/icons/emptybox.png')} resizeMode='contain'
+                                style={{
+                                    width: wp(6),
+                                    height: hp(2.5)
+                                }} />
+                        }
+                        <Text style={styles.rememberText}>{t('Remember me')}</Text>
+                    </TouchableOpacity>
+                </View>
 
 
 

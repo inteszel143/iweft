@@ -78,8 +78,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     btnImage: {
-        width: wp(5),
-        height: hp(5),
+        width: wp(5.5),
+        height: hp(5.5),
     },
 })
 

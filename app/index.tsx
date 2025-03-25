@@ -26,7 +26,8 @@ export default function index() {
                 if (onboarded === null) {
                     router.push('/authPage/OnboardingScreen');
                 } else {
-                    router.push('/(tabs)/');
+                    // router.push('/(tabs)/');
+                    router.push('/authPage/SelectLoginPage');
                     setRefreshToken(refreshToken);
                 }
             } else {

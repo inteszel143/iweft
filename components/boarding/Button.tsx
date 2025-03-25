@@ -62,9 +62,9 @@ const Button = ({ currentIndex, length, flatListRef }: Props) => {
 
     const onPress = useCallback(async () => {
         if (currentIndex.value === length - 1) {
-            // router.push('/authPage/SelectLoginPage');
+            router.push('/authPage/SelectLoginPage');
             setRefreshToken(null);
-            router.push('/(tabs)/');
+            // router.push('/(tabs)/');
             await SecureStore.setItemAsync("onboarded", "1");
             return;
         } else {
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
 
     btnStyle: {
         height: hp(7),
-        width: wp(90),
+        width: wp(89),
         backgroundColor: '#0A5CA8',
         alignItems: 'center',
         justifyContent: 'center',
@@ -97,6 +97,15 @@ const styles = StyleSheet.create({
         borderRadius: wp(10),
         marginTop: hp(8),
         marginBottom: hp(2),
+        shadowColor: "#0A5CA8",
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 0.34,
+        shadowRadius: 6.27,
+
+        elevation: 10,
     },
     textStyle: {
         fontFamily: 'UrbanistBold',
