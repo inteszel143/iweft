@@ -11,7 +11,7 @@ import { postPhoneVerificationCode } from '@/apis/auth';
 import { useTranslation } from 'react-i18next';
 
 export default function YourAddress() {
-    const { image, fullName, nickName, dob, email, password, phone } = useLocalSearchParams();
+    const { image, fullName, nickName, dob, email, password, phone, address } = useLocalSearchParams();
     const { t } = useTranslation();
     const [errorMsg, setErrorMsg] = useState("");
     const [nameAddress, setNameAddress] = useState<any>();
@@ -38,7 +38,7 @@ export default function YourAddress() {
 
     // bottomsheet
     const bottomSheetRef = useRef<BottomSheet>(null);
-    const snapPoints = useMemo(() => ['35%', '64%'], []);
+    const snapPoints = useMemo(() => ['36%', '66%'], []);
     // callbacks
     const handleSheetChanges = useCallback((index: number) => {
         // console.log('handleSheetChanges', index);
@@ -126,7 +126,27 @@ export default function YourAddress() {
                     onRegionChangeComplete={onRegionChange}
                 />
                 <View style={styles.markerStyle}>
-                    <Image source={require('@/assets/temp/mapmarker.png')} resizeMode='contain' style={{ width: wp(10) }} />
+                    <View style={{
+                        position: 'absolute',
+                        top: hp(2.4),
+                        alignSelf: 'center',
+                    }}>
+                        <Fontisto name='map-marker-alt' size={hp(3)} color={"#548DC2"} />
+                    </View>
+                    <View style={{
+                        backgroundColor: "#FFFFFF",
+                        borderRadius: wp(50),
+                        padding: 3,
+                    }}>
+                        <Image
+                            source={{ uri: image as string }}
+                            resizeMode='cover'
+                            style={{
+                                width: wp(6),
+                                height: wp(6),
+                                borderRadius: wp(50)
+                            }} />
+                    </View>
                 </View>
             </View>
 
@@ -235,7 +255,13 @@ const styles = StyleSheet.create({
     markerStyle: {
         position: 'absolute',
         alignSelf: 'center',
-        top: hp(15.5),
+        justifyContent: 'center',
+        alignItems: 'center',
+        top: hp(22),
+        backgroundColor: "#548DC2",
+        borderRadius: wp(50),
+        width: wp(10),
+        height: wp(10),
     },
 
 
@@ -252,7 +278,8 @@ const styles = StyleSheet.create({
     },
     bottomSheetTitle: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(2.5)
+        fontSize: hp(2.6),
+        marginTop: hp(2)
     },
     BottomSheetSeparator: {
         height: 1,

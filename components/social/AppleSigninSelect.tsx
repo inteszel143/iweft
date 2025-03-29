@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     },
     btnText: {
         fontFamily: 'UrbanistSemiBold',
-        fontSize: hp(1.9),
+        fontSize: hp(1.8),
         color: '#212121'
     },
     btnInner: {

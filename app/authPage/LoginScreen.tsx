@@ -98,7 +98,7 @@ export default function LoginScreen() {
                     <Text style={styles.textStyle}>{t('Login to your Account')}</Text>
                     <View style={[styles.textField, { backgroundColor: emailF ? '#0A5CA826' : '#FAFAFA', borderColor: emailF ? '#0A5CA8' : '#FAFAFA' }]} >
                         <View style={styles.innerField}>
-                            <Ionicons name='mail' size={hp(2.5)} color={emailF ? '#0A5CA8' : '#9E9E9E'} />
+                            <Ionicons name='mail' size={hp(2.3)} color={emailF ? '#0A5CA8' : '#9E9E9E'} />
                             <Controller
                                 control={control}
                                 rules={{
@@ -133,7 +133,7 @@ export default function LoginScreen() {
 
                     <View style={[styles.textField, { backgroundColor: passwordF ? '#0A5CA826' : '#FAFAFA', borderColor: passwordF ? '#0A5CA8' : '#FAFAFA' }]}  >
                         <View style={styles.innerField}>
-                            <Ionicons name='lock-closed' size={hp(2.5)} color={passwordF ? '#0A5CA8' : '#9E9E9E'} />
+                            <Ionicons name='lock-closed' size={hp(2.3)} color={passwordF ? '#0A5CA8' : '#9E9E9E'} />
 
                             <Controller
                                 control={control}
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     },
     textField: {
         width: wp(90),
-        height: hp(7.5),
+        height: hp(7),
         borderRadius: wp(4),
         justifyContent: 'center',
         paddingHorizontal: wp(5),
@@ -362,16 +362,16 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: wp(2),
-        marginTop: hp(2)
+        marginTop: hp(4)
     },
     innerText: {
         fontFamily: 'UrbanistRegular',
-        fontSize: hp(1.8),
+        fontSize: hp(1.6),
         color: '#9E9E9E',
     },
     signUpText: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(1.8),
+        fontSize: hp(1.6),
         color: '#0A5CA8'
     },
     errorStyle: {

@@ -1,12 +1,11 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, Platform, Modal, TextInput } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, Platform, Modal, TextInput, Pressable } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Link, router, useLocalSearchParams } from 'expo-router';
-import { FontAwesome5, Ionicons } from '@expo/vector-icons';
+import { router, useLocalSearchParams } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import PhoneInput from "react-native-phone-number-input";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { defaultStyles } from '@/constants/Styles';
-import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -18,15 +17,12 @@ export default function ProfileData() {
     const { t } = useTranslation();
 
     const phoneInput = useRef<PhoneInput>(null);
-    const [value, setValue] = useState("");
+    const [valueNumber, setValueNumber] = useState("");
     const [formattedValue, setFormattedValue] = useState(""); // Phone data
-    const [image, setImage] = useState<any>(null); // image data
+
     // Error
     const [phoneError, setPhoneError] = useState(false);
     const [date, setDate] = useState(new Date());
-    const [open, setOpen] = useState(false)
-
-    const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
     const dateVal = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`; // DOB value
 
     const [modalVisible, setModalVisible] = useState(false);
@@ -34,6 +30,23 @@ export default function ProfileData() {
         setModalVisible(!modalVisible);
     };
 
+
+    const schema = yup.object().shape({
+        full_name: yup.string().required(t('Full Name is requred')),
+        n_name: yup.string().required('Nickname is requred'),
+        address: yup.string().required('Address is requred'),
+        bdate: yup.date().required('Birthday is requred'),
+        image: yup?.string().required('Image is requred'),
+
+        email: yup.string().email('Invalid email').required('Email is required').default(email as string),
+        showPicker: yup.boolean().default(false),
+    });
+    const { control, handleSubmit, watch, setValue, formState: { errors } } = useForm({
+        resolver: yupResolver(schema),
+        defaultValues: {
+            image: "",
+        }
+    });
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -47,7 +60,7 @@ export default function ProfileData() {
         }
         if (!result.canceled) {
             toggleModal();
-            setImage(result.assets[0].uri);
+            setValue('image', result.assets[0].uri);
         }
     };
 
@@ -66,31 +79,24 @@ export default function ProfileData() {
         }
         if (!pickerResult.canceled) {
             toggleModal();
-            setImage(pickerResult?.assets[0].uri);
+            setValue('image', pickerResult?.assets[0].uri);
         }
     }
 
-    const schema = yup.object().shape({
-        full_name: yup.string().required(t('Full Name is requred')),
-        n_name: yup.string().required('Nickname is requred'),
-        email: yup.string().email('Invalid email').required('Email is required').default(email as string),
-    });
-    const { control, handleSubmit, formState: { errors } } = useForm({
-        resolver: yupResolver(schema),
-    });
-
     const onSubmit = async (data: any) => {
+        const params = {
+            image: watch('image'),
+            fullName: data?.full_name,
+            nickName: data?.n_name,
+            dob: data?.bdate?.toISOString().split('T')[0],
+            email: data.email,
+            password: password,
+            phone: formattedValue,
+            address: data?.address
+        }
         router.push({
             pathname: '/authPage/create/YourAddress',
-            params: {
-                image: image,
-                fullName: data?.full_name,
-                nickName: data?.n_name,
-                dob: dateVal,
-                email: data.email,
-                password: password,
-                phone: formattedValue,
-            }
+            params: params
         });
     };
 
@@ -156,26 +162,38 @@ export default function ProfileData() {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: Platform.OS === 'android' ? hp(3) : hp(6) }}
                 bounces={false}
-                extraScrollHeight={Platform.OS === 'ios' ? hp(4) : 0}
+                extraScrollHeight={Platform.OS === 'ios' ? hp(5) : 0}
             >
 
 
                 <View style={styles.headerStyle}>
-                    {image === null ? <Image source={require('@/assets/temp/default.jpg')} resizeMode='contain' style={{ width: wp(40), height: wp(40) }} />
+                    {watch('image') === "" ? <Image source={require('@/assets/temp/default.jpg')} resizeMode='contain' style={{ width: wp(36), height: wp(36) }} />
                         :
                         <View style={{ borderRadius: wp(20), width: wp(40), height: wp(40), overflow: 'hidden', backgroundColor: 'white' }}>
                             <Image
-                                source={{ uri: image }}
+                                source={{ uri: watch('image') }}
                                 resizeMode='cover'
-                                style={{ width: wp(40), height: wp(40), borderRadius: wp(18) }} />
+                                style={{ width: wp(36), height: wp(36), borderRadius: wp(18) }} />
                         </View>
                     }
                     <TouchableOpacity style={styles.editBtn}
                         onPress={toggleModal}
                     >
-                        <FontAwesome5 name='pen' color={'white'} />
+                        <Image
+                            source={require('@/assets/icons/editbtn.png')}
+                            resizeMode='contain'
+                            style={{
+                                width: wp(8),
+                                height: wp(8),
+                            }}
+                        />
                     </TouchableOpacity>
                 </View>
+                {/* Error */}
+                {errors.image?.message && <View style={styles.errorViewStyle}>
+                    <Ionicons name='alert-circle-outline' size={hp(2.4)} color={'#ED4337'} />
+                    <Text style={styles.errorStyle} >{errors.image?.message}</Text>
+                </View>}
 
 
                 <View style={{ alignItems: 'center' }}>
@@ -245,32 +263,50 @@ export default function ProfileData() {
 
 
                     {/* DateofBirth */}
-                    <TouchableOpacity
-                        onPress={() => setOpen(true)}
-                    >
-                        <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
+                    <View>
+                        <Pressable style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}
+                            onPress={() => setValue('showPicker', true)}>
                             <View style={defaultStyles.innerField}>
-                                <Text style={[defaultStyles.textInputStyle]} >{formattedDate}</Text>
-                                <DatePicker
-                                    modal
-                                    open={open}
-                                    mode='date'
-                                    date={date}
-                                    onConfirm={(date) => {
-                                        setOpen(false)
-                                        setDate(date)
-                                    }}
-                                    onCancel={() => {
-                                        setOpen(false)
-                                    }}
-                                />
-
+                                {watch('bdate') ?
+                                    <Text style={[defaultStyles.textInputStyle]}>{watch('bdate')?.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}</Text>
+                                    :
+                                    <Text style={[defaultStyles.textInputStyle, { color: "#9E9E9E" }]}>
+                                        {t("Date of Birth")}
+                                    </Text>
+                                }
                                 <TouchableOpacity>
-                                    <Image source={require('@/assets/temp/profileicons/calendar.jpg')} resizeMode='contain' style={{ width: wp(5) }} />
+                                    <Image
+                                        source={require('@/assets/temp/profileicons/calendar.jpg')}
+                                        resizeMode='contain'
+                                        style={{ width: wp(5) }}
+                                    />
                                 </TouchableOpacity>
                             </View>
-                        </View>
-                    </TouchableOpacity>
+                        </Pressable>
+                        <Controller
+                            name="bdate"
+                            control={control}
+                            render={({ field: { onChange, value } }) => (
+                                <DatePicker
+                                    modal
+                                    open={watch('showPicker')}
+                                    mode="date"
+                                    // locale={current === "dk" ? 'da' : 'en'}
+                                    confirmText={t("Confirm")}
+                                    cancelText={t('Cancel')}
+                                    title={t("Select date")}
+                                    date={value || new Date()}
+                                    onConfirm={(date) => {
+                                        setValue('showPicker', false);
+                                        onChange(date);
+                                    }}
+                                    onCancel={() => {
+                                        setValue('showPicker', false);
+                                    }}
+                                />
+                            )}
+                        />
+                    </View>
 
                     {/* Email */}
                     <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
@@ -314,18 +350,18 @@ export default function ProfileData() {
                     <View>
                         <PhoneInput
                             ref={phoneInput}
-                            defaultValue={value}
-                            placeholder='9 1234 5678 9'
+                            defaultValue={valueNumber}
+                            placeholder='000 000 000'
                             defaultCode="AE"
                             layout="first"
                             onChangeText={(text) => {
-                                setValue(text);
+                                setValueNumber(text);
                             }}
                             onChangeFormattedText={(text) => {
                                 setFormattedValue(text);
                             }}
-                            textInputStyle={{ fontFamily: 'UrbanistSemiBold', fontSize: hp(2) }}
-                            codeTextStyle={{ fontFamily: 'UrbanistSemiBold', fontSize: hp(2) }}
+                            textInputStyle={{ fontFamily: 'UrbanistMedium', fontSize: hp(1.8) }}
+                            codeTextStyle={{ fontFamily: 'UrbanistMedium', fontSize: hp(1.8) }}
                             flagButtonStyle={{ backgroundColor: '#FAFAFA', paddingLeft: wp(4) }}
                             containerStyle={{ borderRadius: wp(4), width: wp(90), marginTop: hp(3), minHeight: hp(7.5), maxHeight: hp(8), }}
                         />
@@ -339,22 +375,49 @@ export default function ProfileData() {
 
 
                     {/* Location */}
-                    <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
+                    {/* <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
                         <TouchableOpacity style={[defaultStyles.innerField]}
-                            disabled={!value || image === null ? true : false}
+                            // disabled={!value || image === null ? true : false}
                             onPress={handleSubmit(onSubmit)}>
                             <Text style={[defaultStyles.textInputStyle, { color: "#9E9E9E" }]}>{t('Address')}</Text>
                             <Ionicons name='location-outline' size={hp(2.4)} />
                         </TouchableOpacity>
+                    </View> */}
+                    <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
+                        <View style={defaultStyles.innerField}>
+                            <Controller
+                                control={control}
+                                rules={{
+                                    required: true,
+                                }}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        onBlur={onBlur}
+                                        // onFocus={handleFocus}
+                                        onChangeText={onChange}
+                                        value={value}
+                                        placeholder={t('Address')}
+                                        autoCapitalize='words'
+                                        placeholderTextColor={'#9E9E9E'}
+                                        style={defaultStyles.textInputStyle}
+                                    />
+                                )}
+                                name="address"
+                            />
+                        </View>
                     </View>
+
+                    {/* Error */}
+                    {errors.address?.message && <View style={styles.errorViewStyle}>
+                        <Ionicons name='alert-circle-outline' size={hp(2.4)} color={'#ED4337'} />
+                        <Text style={styles.errorStyle} >{errors.address?.message}</Text>
+                    </View>}
 
 
                 </View>
 
                 <View style={{ alignItems: 'center', marginTop: hp(4) }}>
-                    <TouchableOpacity style={[styles.footerBtn, { backgroundColor: "#DADADA" }]}
-                        // disabled={!value || image === null ? true : false}
-                        disabled
+                    <TouchableOpacity style={[defaultStyles.footerBtn]}
                         onPress={handleSubmit(onSubmit)}
 
                     >
@@ -363,16 +426,6 @@ export default function ProfileData() {
                 </View>
 
             </KeyboardAwareScrollView >
-            {/* <View style={styles.footer} >
-                <TouchableOpacity style={[styles.footerBtn, { backgroundColor: "#DADADA" }]}
-                    // disabled={!value || image === null ? true : false}
-                    disabled
-                    onPress={handleSubmit(onSubmit)}
-
-                >
-                    <Text style={styles.footerText}>Continue</Text>
-                </TouchableOpacity>
-            </View> */}
 
 
         </View >
@@ -425,7 +478,6 @@ const styles = StyleSheet.create({
         right: wp(3),
         width: wp(8),
         height: wp(8),
-        backgroundColor: "#0A5CA8",
         borderRadius: wp(2),
         alignItems: 'center',
         justifyContent: 'center'

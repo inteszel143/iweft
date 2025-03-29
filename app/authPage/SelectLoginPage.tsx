@@ -33,7 +33,7 @@ export default function SelectLoginPage() {
                 alignItems: 'center',
             }}>
                 <Text style={{
-                    fontFamily: "UrbanistBlack",
+                    fontFamily: "UrbanistBold",
                     fontSize: hp(4),
                 }}>Come on in...</Text>
             </View>
@@ -56,7 +56,7 @@ export default function SelectLoginPage() {
             <View style={styles.footer}>
                 <Link href={'/authPage/LoginScreen'} asChild>
                     <TouchableOpacity style={defaultStyles.footerBtn}>
-                        <Text style={styles.footerText}>{t('Sign in with password')}</Text>
+                        <Text style={defaultStyles.footerText}>{t('Sign in with password')}</Text>
                     </TouchableOpacity>
                 </Link>
                 <View style={styles.footerInner}>
@@ -148,12 +148,13 @@ const styles = StyleSheet.create({
         borderRadius: wp(10),
         backgroundColor: '#0A5CA8',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+
     },
     footerText: {
-        fontFamily: 'UrbanistBold',
-        fontSize: hp(2),
-        color: "#FFFFFF"
+        fontFamily: "UrbanistBold",
+        fontSize: hp(1.9),
+        color: "#FFFFFF",
     },
     footerInner: {
         flexDirection: 'row',
@@ -163,12 +164,12 @@ const styles = StyleSheet.create({
     },
     innerText: {
         fontFamily: 'UrbanistRegular',
-        fontSize: hp(1.8),
+        fontSize: hp(1.6),
         color: '#9E9E9E',
     },
     signUpText: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(1.8),
+        fontSize: hp(1.6),
         color: '#0A5CA8'
     }
 })

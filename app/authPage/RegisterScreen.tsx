@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     },
     textField: {
         width: wp(90),
-        height: hp(7.5),
+        height: hp(7),
         borderRadius: wp(4),
         justifyContent: 'center',
         paddingHorizontal: wp(5),
@@ -372,12 +372,12 @@ const styles = StyleSheet.create({
     },
     innerText: {
         fontFamily: 'UrbanistRegular',
-        fontSize: hp(1.8),
+        fontSize: hp(1.6),
         color: '#9E9E9E',
     },
     signUpText: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(1.8),
+        fontSize: hp(1.6),
         color: '#0A5CA8'
     },
     errorStyle: {

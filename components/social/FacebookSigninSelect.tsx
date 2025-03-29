@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     },
     btnText: {
         fontFamily: 'UrbanistSemiBold',
-        fontSize: hp(1.9),
+        fontSize: hp(1.8),
         color: '#212121'
     },
     btnInner: {
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
         gap: wp(4)
     },
     btnImage: {
-        width: wp(5),
-        height: hp(5),
+        width: wp(6),
+        height: hp(6),
     },
 })
