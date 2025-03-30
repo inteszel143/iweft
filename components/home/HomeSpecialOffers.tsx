@@ -17,6 +17,23 @@ export default function HomeSpecialOffers() {
     const { data, isPending } = useSpecialOffers(isFocused);
     const [activeIndex, setActiveIndex] = useState(0);
 
+    const carousel1 = require('@/assets/temp/special/carousel1.png');
+    const carousel2 = require('@/assets/temp/special/carousel2.png');
+    const carousel3 = require('@/assets/temp/special/carousel3.png');
+
+    const newData = [
+        {
+            image: carousel1,
+        },
+        {
+            image: carousel2,
+        },
+        {
+            image: carousel3,
+        },
+
+    ]
+
     const special1 = require('@/assets/temp/special/specialoffers1.png');
     const special2 = require('@/assets/temp/special/specialoffers2.png');
     const special3 = require('@/assets/temp/special/specialoffers.png');
@@ -47,13 +64,11 @@ export default function HomeSpecialOffers() {
             },
         })
     ).current;
-
     if (isPending) {
         return (
             <SpecialOfferSkeleton />
         )
     }
-
     return (
         <View style={styles.container}>
             <View style={[styles.header, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
@@ -72,6 +87,49 @@ export default function HomeSpecialOffers() {
                     height={width / 1.8}
                     autoPlay={true}
                     pagingEnabled
+                    data={newData}
+                    autoPlayInterval={4000}
+                    scrollAnimationDuration={500}
+                    onSnapToItem={(index) => setActiveIndex(index)}
+                    renderItem={({ item, index }) => (
+                        <View
+                            style={{
+                                flex: 1,
+                                justifyContent: 'center',
+                                paddingTop: hp(6),
+                            }}
+                            {...panResponder.panHandlers}
+                        >
+                            <Pressable
+                                onPress={() => router.push({
+                                    pathname: '/homePage/OfferOtherPage',
+                                    params: { item: JSON.stringify(item) },
+                                })}
+                            >
+                                <View style={{
+                                    alignItems: 'center',
+                                }}>
+                                    <Image
+                                        source={item?.image}
+                                        resizeMode='contain'
+                                        style={{
+                                            width: wp(104),
+                                            height: hp(50),
+                                        }}
+                                    />
+                                </View>
+                            </Pressable>
+                            <Text style={{ textAlign: 'center', fontSize: 30 }}>{index}</Text>
+                        </View>
+                    )}
+                />
+
+                {/* <Carousel
+                    loop
+                    width={width}
+                    height={width / 1.8}
+                    autoPlay={true}
+                    pagingEnabled
                     data={data}
                     autoPlayInterval={4000}
                     scrollAnimationDuration={500}
@@ -82,11 +140,11 @@ export default function HomeSpecialOffers() {
                                 flex: 1,
                                 justifyContent: 'center',
                                 paddingTop: hp(6),
-                                backgroundColor: 'white'
+                                backgroundColor: 'gray'
                             }}
                             {...panResponder.panHandlers}
                         >
-                            <TouchableOpacity
+                            <Pressable
                                 style={[styles.cardStyle, { backgroundColor: item?.title === "Weekend Special!" ? "#35DEBC" : item?.title === "Summer Sale!" ? "#FFAB38" : item?.title === "Today's Special!" ? "#548DC2" : "#FF8A9B", }]}
                                 onPress={() => router.push({
                                     pathname: '/homePage/OfferOtherPage',
@@ -107,14 +165,18 @@ export default function HomeSpecialOffers() {
                                         />
                                     </View>
                                 </View>
-                            </TouchableOpacity>
+                            </Pressable>
                             <Text style={{ textAlign: 'center', fontSize: 30 }}>{index}</Text>
                         </View>
                     )}
-                />
-            </View>
-            <View style={styles.indicatorStyle}>
-                <CarouselIndicator totalItem={data.length} currentIndex={activeIndex} />
+                /> */}
+                <View style={{
+                    position: 'absolute',
+                    bottom: hp(3.5),
+                    alignSelf: 'center',
+                }}>
+                    <CarouselIndicator totalItem={newData.length} currentIndex={activeIndex} />
+                </View>
             </View>
         </View>
     )

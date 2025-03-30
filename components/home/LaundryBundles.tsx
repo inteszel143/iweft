@@ -24,7 +24,7 @@ export default function LaundryBundles() {
                 <View>
                     <Link href={'/homePage/budles/AllLaundryBundles'} asChild>
                         <TouchableOpacity style={styles.btnStyle}>
-                            <Text style={styles.seeAllText} >See all</Text>
+                            <Text style={styles.seeAllText} >See All</Text>
                             <MaterialIcons name='keyboard-arrow-right' size={hp(2.5)} color={"#6F767E"} />
                         </TouchableOpacity>
                     </Link>
@@ -93,15 +93,15 @@ const styles = StyleSheet.create({
     },
     headerText: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(2.4),
+        fontSize: hp(2.5),
     },
     seeAllText: {
         fontFamily: 'UrbanistSemiBold',
-        fontSize: hp(1.6),
+        fontSize: hp(1.7),
         color: "#6F767E"
     },
     btnStyle: {
-        width: wp(23),
+        width: wp(25),
         height: hp(4.5),
         borderRadius: wp(10),
         borderWidth: 1,

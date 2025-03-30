@@ -27,7 +27,7 @@ export default function HomeSearch() {
         <Image
           source={require("@/assets/icons/search.png")}
           resizeMode="contain"
-          style={{ width: wp(6.5) }}
+          style={{ width: wp(5.5) }}
         />
         {/* <TextInput
           placeholder={t("Seach what you need...")}
@@ -39,7 +39,7 @@ export default function HomeSearch() {
       <Image
         source={require("@/assets/icons/filter.png")}
         resizeMode="contain"
-        style={{ width: wp(6.5) }}
+        style={{ width: wp(5.5) }}
       />
     </TouchableOpacity>
   );

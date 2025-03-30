@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 interface CarouselIndicatorProps {
     totalItem: number,
@@ -31,14 +31,14 @@ const styles = StyleSheet.create({
         marginTop: 8,
     },
     indicator: {
-        width: 8,
-        height: 6,
+        width: wp(1),
+        height: wp(1),
         borderRadius: 4,
-        marginHorizontal: 5,
-        backgroundColor: '#D3D3D3', // Inactive color
+        marginHorizontal: 3,
+        backgroundColor: '#FFFFFF', // Inactive color
     },
     activeIndicator: {
-        backgroundColor: '#0a5ca8', // Active color
+        backgroundColor: '#FFFFFF', // Active color
         width: 14,
     },
 

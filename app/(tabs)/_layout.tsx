@@ -20,7 +20,7 @@ function TabBarIcon(props: {
 }) {
   return (
     <Ionicons
-      size={Platform.OS === "android" ? 24 : 27}
+      size={Platform.OS === "android" ? 22 : 25}
       style={{ marginBottom: -3 }}
       {...props}
     />
@@ -162,7 +162,7 @@ export default function TabLayout() {
                   source={require("@/assets/icons/boldhome.png")}
                   resizeMode="contain"
                   style={{
-                    width: Platform.OS === "ios" ? 23 : 20,
+                    width: Platform.OS === "ios" ? 20 : 20,
                     tintColor: "#0a5ca8",
                   }}
                 />
@@ -171,7 +171,7 @@ export default function TabLayout() {
                   source={require("@/assets/icons/home.png")}
                   resizeMode="contain"
                   style={{
-                    width: Platform.OS === "ios" ? 23 : 20,
+                    width: Platform.OS === "ios" ? 20 : 20,
                     tintColor: "gray",
                   }}
                 />
@@ -185,12 +185,26 @@ export default function TabLayout() {
             title: t('Bookings'),
             headerTitle: "",
             tabBarBadge: bookingValue as string,
-            tabBarIcon: ({ color, focused }) => (
-              <TabBarIcon
-                name={focused ? "reader" : "reader-outline"}
-                color={color}
+            tabBarIcon: ({ color, focused }) => focused ? (
+              <Image
+                source={require("@/assets/icons/booking.png")}
+                resizeMode="contain"
+                style={{
+                  width: Platform.OS === "ios" ? 25 : 23,
+                  tintColor: "#0a5ca8",
+                }}
+              />
+            ) : (
+              <Image
+                source={require("@/assets/icons/empty_book.png")}
+                resizeMode="contain"
+                style={{
+                  width: Platform.OS === "ios" ? 25 : 23,
+                  tintColor: "gray",
+                }}
               />
             ),
+
             header: () => <Header />,
           }}
         />
@@ -199,10 +213,23 @@ export default function TabLayout() {
           name="calendar"
           options={{
             title: t('Calendar'),
-            tabBarIcon: ({ color, focused }) => (
-              <TabBarIcon
-                name={focused ? "calendar" : "calendar-outline"}
-                color={color}
+            tabBarIcon: ({ color, focused }) => focused ? (
+              <Image
+                source={require("@/assets/icons/calendar.png")}
+                resizeMode="contain"
+                style={{
+                  width: Platform.OS === "ios" ? 25 : 23,
+                  tintColor: "#0a5ca8",
+                }}
+              />
+            ) : (
+              <Image
+                source={require("@/assets/icons/empty_calendar.png")}
+                resizeMode="contain"
+                style={{
+                  width: Platform.OS === "ios" ? 25 : 23,
+                  tintColor: "gray",
+                }}
               />
             ),
             header: () => <CalendarHeader />,
@@ -214,8 +241,8 @@ export default function TabLayout() {
           options={{
             title: t('Inbox'),
             tabBarBadge: inboxValue as string,
-            tabBarIcon: ({ color }) => (
-              <TabBarIcon name="chatbubble-ellipses-outline" color={color} />
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon name={focused ? "chatbubble-ellipses" : "chatbubble-ellipses-outline"} color={color} />
             ),
             header: () => <InboxHeader />,
           }}
@@ -227,10 +254,23 @@ export default function TabLayout() {
             title: t('Profile'),
             headerShown: false,
             tabBarBadge: value as string,
-            tabBarIcon: ({ color, focused }) => (
-              <TabBarIcon
-                name={focused ? "person" : "person-outline"}
-                color={color}
+            tabBarIcon: ({ color, focused }) => focused ? (
+              <Image
+                source={require("@/assets/icons/user.png")}
+                resizeMode="contain"
+                style={{
+                  width: Platform.OS === "ios" ? 25 : 23,
+                  tintColor: "#0a5ca8",
+                }}
+              />
+            ) : (
+              <Image
+                source={require("@/assets/icons/empty_uder.png")}
+                resizeMode="contain"
+                style={{
+                  width: Platform.OS === "ios" ? 25 : 23,
+                  tintColor: "gray",
+                }}
               />
             ),
             // header: () => <ProfileHeader />,
