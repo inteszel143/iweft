@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, router, useLocalSearchParams } from 'expo-router'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Animated, { interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, withSpring } from 'react-native-reanimated';
-import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { AntDesign, FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { bundle } from '@/constants/home/data';
 import { useIsFocused } from '@react-navigation/native';
 import { LaundryBundle } from '@/utils/interface';
@@ -17,7 +17,7 @@ import { useLaundryBundlesUsingId } from '@/query/homeQuery';
 import { LinearGradient } from 'expo-linear-gradient';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
 import useValidateRefresh from '@/store/useValidateRefresh';
-const IMG_HEIGHT = 300;
+const IMG_HEIGHT = 350;
 
 export default function BuddleScreen() {
     const { bundleId } = useLocalSearchParams();
@@ -116,9 +116,11 @@ export default function BuddleScreen() {
                     isPending ? <ShimmerPlaceholder style={styles.imageTop} />
                         :
                         <Animated.View style={[styles.topStyle, imageAnimatedStyle]}>
-                            <Image source={{ uri: bundleData?.image }} resizeMode='contain' style={[{ width: wp(60), height: hp(25), }]} />
+                            <Image source={{ uri: bundleData?.image }} resizeMode='contain' style={[{ width: wp(70), height: hp(30), }]} />
                             <View style={styles.topFooter}>
                                 <View style={{ width: wp(8), height: 10, borderRadius: 8, backgroundColor: '#0A5CA8' }} />
+                                <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
+                                <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
                                 <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
                                 <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
                             </View>
@@ -187,7 +189,7 @@ export default function BuddleScreen() {
                                             <Text style={styles.bundleText}>{item?.name}</Text>
                                         </View>
                                         <View>
-                                            <MaterialCommunityIcons name='check-circle' size={hp(3)} color={'#0A5CA8'} />
+                                            <FontAwesome name='check-square' size={hp(2.7)} color={'#0A5CA8'} />
                                         </View>
                                     </View>
                                 </View>
@@ -221,7 +223,17 @@ export default function BuddleScreen() {
                             >
                                 <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
+                            <TouchableOpacity style={[styles.bottomBtn, {
+                                backgroundColor: "#0A5CA8",
+                                shadowColor: "#0A5CA8",
+                                shadowOffset: {
+                                    width: 0,
+                                    height: 5,
+                                },
+                                shadowOpacity: 0.34,
+                                shadowRadius: 6.27,
+                                elevation: 10,
+                            }]}
                                 disabled={isPending ? true : false}
                                 onPress={() => router.push('(modal)/login')}
                             >
@@ -236,7 +248,17 @@ export default function BuddleScreen() {
                             >
                                 <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
+                            <TouchableOpacity style={[styles.bottomBtn, {
+                                backgroundColor: "#0A5CA8",
+                                shadowColor: "#0A5CA8",
+                                shadowOffset: {
+                                    width: 0,
+                                    height: 5,
+                                },
+                                shadowOpacity: 0.34,
+                                shadowRadius: 6.27,
+                                elevation: 10,
+                            }]}
                                 disabled={isPending ? true : false}
                                 onPress={() => {
                                     setServiceModel("Service");
@@ -297,14 +319,15 @@ const styles = StyleSheet.create({
     topStyle: {
         height: IMG_HEIGHT,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        paddingTop: hp(2),
     },
     topFooter: {
         position: 'absolute',
         bottom: 0,
         flexDirection: 'row',
         alignItems: 'center',
-        gap: wp(2)
+        gap: wp(1.5)
     },
     topBtnStyle: {
         position: 'absolute',
@@ -323,7 +346,7 @@ const styles = StyleSheet.create({
     },
     middleText: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(3)
+        fontSize: hp(3.5)
     },
     rateStyle: {
         flexDirection: 'row',

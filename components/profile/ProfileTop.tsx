@@ -155,14 +155,30 @@ export default function ProfileTop() {
                             style={{ width: wp(36), height: wp(36), borderRadius: wp(18) }}
                         />
                 }
-                <TouchableOpacity style={styles.editBtn}
-                    onPress={toggleModal}
-                >
-                    <FontAwesome5 name='pen' color={'white'} />
-                </TouchableOpacity>
                 {data?.profile_picture === "https://res.cloudinary.com/dgepgnzoc/image/upload/v1715604259/uploads_profile_pictures/default_profile_picture.jpg" && <View style={styles.warning}>
                     <AntDesign name='exclamationcircle' size={hp(2.5)} color={'red'} />
                 </View>}
+                <TouchableOpacity
+                    style={{
+                        position: 'absolute',
+                        bottom: hp(1),
+                        right: wp(3),
+                        borderRadius: wp(2),
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                    onPress={toggleModal}
+                >
+                    <Image
+                        source={require('@/assets/temp/bookmark/edit.png')}
+                        resizeMode='contain'
+                        style={{
+                            width: wp(7),
+                            height: wp(7),
+                        }}
+                    />
+
+                </TouchableOpacity>
             </View>
 
 
@@ -242,7 +258,7 @@ const styles = StyleSheet.create({
     },
     headerTextStyle: {
         alignItems: 'center',
-        marginTop: hp(2),
+        marginTop: hp(1),
     },
     nameStyle: {
         fontFamily: 'UrbanistBold',

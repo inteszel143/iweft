@@ -25,6 +25,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
 import useValidateRefresh from '@/store/useValidateRefresh';
 import ImageView from "react-native-image-viewing";
+import CarouselIndicator from '@/components/home/CarouselIndicator';
 
 const IMG_HEIGHT = 300;
 const { width } = Dimensions.get('window');
@@ -134,9 +135,11 @@ export default function ServicesScreen() {
                         :
                         <Animated.View style={[styles.topStyle, imageAnimatedStyle]}>
                             <Image
-                                source={{ uri: serviceItem?.service?.image }}
-                                resizeMode='cover'
-                                style={[{ width: wp(100), height: IMG_HEIGHT }]}
+                                // source={{ uri: serviceItem?.service?.image }}
+                                source={require('@/assets/temp/services/services1.jpg')}
+                                resizeMode='contain'
+                                // style={[{ width: wp(100), height: IMG_HEIGHT }]}
+                                style={[{ width: wp(55), height: hp(30) }]}
                             />
                             {/* <ScrollView showsHorizontalScrollIndicator={false}
                                 horizontal
@@ -171,6 +174,25 @@ export default function ServicesScreen() {
                                 <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
                                 <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
                             </View> */}
+                            <View style={{
+                                alignSelf: 'center',
+                            }}>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                }}>
+                                    {[...Array(5)].map((_, index) => (
+                                        <View
+                                            key={index}
+                                            style={[
+                                                styles.indicator,
+                                                index === 0 && styles.activeIndicator,
+                                            ]}
+                                        />
+                                    ))}
+                                </View>
+                            </View>
+
                         </Animated.View>
                 }
                 <ImageView
@@ -179,7 +201,6 @@ export default function ServicesScreen() {
                     visible={visible}
                     onRequestClose={() => setIsVisible(false)}
                 />
-
                 <View style={styles.middleStyle}>
 
                     <View style={[styles.middelTopRow]}>
@@ -275,12 +296,12 @@ export default function ServicesScreen() {
 
 
                     <View style={styles.detailsStyle}>
-                        <Text style={styles.detailText}>Reviews</Text>
+                        {/* <Text style={styles.detailText}>Reviews</Text> */}
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: hp(1.5) }}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                                 {/* <Image source={require('@/assets/icons/star.jpg')} resizeMode='contain' style={{ width: wp(5) }} /> */}
                                 <SingleStarRating rating={serviceItem?.review?.average_rating} />
-                                <Text style={styles.ratingBold}>{serviceItem?.review?.average_rating} ( {serviceItem?.review?.review_count} {serviceItem?.review?.review_count <= 1 ? 'review' : 'reviews'} )</Text>
+                                <Text style={styles.ratingBold}>{serviceItem?.review?.average_rating} ({serviceItem?.review?.review_count} {serviceItem?.review?.review_count <= 1 ? 'review' : 'reviews'})</Text>
                             </View>
                             <TouchableOpacity>
                                 <Text style={styles.seeallText}>See all</Text>
@@ -297,11 +318,13 @@ export default function ServicesScreen() {
                             {
                                 starRating.map((item, index) => {
                                     return (
-                                        <TouchableOpacity key={index} style={topSelect === item?.label ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
+                                        <TouchableOpacity key={index}
+                                            style={topSelect === item?.label ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
                                             onPress={() => setTopSelect(item?.label)}
                                         >
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2) }}>
-                                                {item.label != "All" && <FontAwesome name='star' size={hp(1.6)} color={topSelect === item?.label ? 'white' : '#0A5CA8'} />}
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(1) }}>
+                                                {/* {item.label != "All" && <FontAwesome name='star' size={hp(1.6)} color={topSelect === item?.label ? 'white' : '#0A5CA8'} />} */}
+                                                <FontAwesome name='star' size={hp(1.6)} color={topSelect === item?.label ? 'white' : '#0A5CA8'} />
                                                 <Text style={topSelect === item?.label ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item.label}</Text>
                                             </View>
                                         </TouchableOpacity>
@@ -371,14 +394,34 @@ export default function ServicesScreen() {
                             </TouchableOpacity>
                     }
                     {
-                        refreshToken === null ? <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
+                        refreshToken === null ? <TouchableOpacity style={[styles.bottomBtn, {
+                            backgroundColor: "#0A5CA8",
+                            shadowColor: "#0A5CA8",
+                            shadowOffset: {
+                                width: 0,
+                                height: 5,
+                            },
+                            shadowOpacity: 0.34,
+                            shadowRadius: 6.27,
+                            elevation: 10,
+                        }]}
                             disabled={isPending ? true : false}
                             onPress={() => router.push('(modal)/login')}
                         >
                             <Text style={[styles.bottomText, { color: "white" }]}>Book Now </Text>
                         </TouchableOpacity>
                             :
-                            <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#0A5CA8" }]}
+                            <TouchableOpacity style={[styles.bottomBtn, {
+                                backgroundColor: "#0A5CA8",
+                                shadowColor: "#0A5CA8",
+                                shadowOffset: {
+                                    width: 0,
+                                    height: 5,
+                                },
+                                shadowOpacity: 0.34,
+                                shadowRadius: 6.27,
+                                elevation: 10,
+                            }]}
                                 disabled={isPending ? true : false}
                                 onPress={() => router.push({
                                     pathname: 'homePage/services/BookNow',
@@ -425,6 +468,18 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#FFFFFF',
+    },
+    indicator: {
+        width: wp(2),
+        height: wp(2),
+        borderRadius: 4,
+        marginHorizontal: 3,
+        backgroundColor: '#9FBFDD', // Inactive color
+    },
+
+    activeIndicator: {
+        backgroundColor: '#0A5CA8', // Active color
+        width: wp(8),
     },
     topStyle: {
         height: IMG_HEIGHT,
@@ -494,7 +549,7 @@ const styles = StyleSheet.create({
     },
 
     scrollStyle: {
-        width: wp(18),
+        width: wp(17),
         height: hp(4),
         borderRadius: wp(4),
         alignItems: 'center',
@@ -519,7 +574,7 @@ const styles = StyleSheet.create({
     },
     middleText: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(3)
+        fontSize: hp(3.4)
     },
     rateStyle: {
         flexDirection: 'row',
@@ -539,7 +594,7 @@ const styles = StyleSheet.create({
     },
     ratingBold: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(2),
+        fontSize: hp(2.5),
     },
     laundryStyle: {
         width: wp(22),
@@ -564,7 +619,7 @@ const styles = StyleSheet.create({
     },
     priceText: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(3.2),
+        fontSize: hp(3.5),
         color: '#0A5CA8'
     },
     subText: {
@@ -573,7 +628,7 @@ const styles = StyleSheet.create({
         color: "#616161"
     },
     detailsStyle: {
-        marginTop: hp(3)
+        marginTop: hp(2)
     },
     detailText: {
         fontFamily: "UrbanistBold",
@@ -588,7 +643,7 @@ const styles = StyleSheet.create({
     },
     seeallText: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(1.8),
+        fontSize: hp(1.9),
         color: '#0a5ca8'
     },
     customerName: {
@@ -638,6 +693,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: wp(6),
+
     },
     bottomText: {
         fontFamily: 'UrbanistBold',

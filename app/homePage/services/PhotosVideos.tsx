@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList, Dimensions } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList, Dimensions, Platform } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
@@ -33,22 +33,21 @@ export default function PhotosVideos() {
             <View style={styles.paddable}>
                 <FlatList
                     data={photosArray}
-                    numColumns={2}
-                    keyExtractor={(index) => index.toString()}
                     showsVerticalScrollIndicator={false}
-                    renderItem={({ item }) => (
+                    renderItem={({ item, index }) => (
                         <View
+                            key={index}
                             style={{
-                                margin: wp(1.5), // Adding margin for both columns and rows
+                                margin: wp(2),
                                 alignItems: 'center',
                             }}>
                             <Image
                                 source={{ uri: item }}
                                 resizeMode="cover"
                                 style={{
-                                    width: width / 2 - wp(3), // Adjust the width to account for margins
-                                    height: hp(30),
-                                    borderRadius: wp(2)
+                                    width: wp(90),
+                                    height: hp(60),
+                                    borderRadius: wp(10)
                                 }}
                             />
                         </View>
@@ -65,7 +64,7 @@ export default function PhotosVideos() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // backgroundColor: '#FFFFFF',
+        backgroundColor: '#FFFFFF',
     },
 
     Headercontainer: {
@@ -92,7 +91,6 @@ const styles = StyleSheet.create({
         fontSize: hp(2.5)
     },
     paddable: {
-        paddingBottom: hp(15),
         alignItems: 'center',
         flex: 1,
     }

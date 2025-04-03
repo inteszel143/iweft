@@ -13,6 +13,10 @@ export default function HomeServices() {
     const { data, isPending } = useHomeServices(isFocused);
     const { t } = useTranslation();
     const current = getCurrentLanguage();
+
+    const list1 = require('@/assets/temp/services/list1.png');
+    const list2 = require('@/assets/temp/services/list2.png');
+    const list3 = require('@/assets/temp/services/list3.png');
     return (
         <View style={styles.container}>
             <View style={[styles.header, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
@@ -32,7 +36,7 @@ export default function HomeServices() {
                                         })}
                                         style={{ alignItems: 'center' }}
                                     >
-                                        {/* <View style={styles.circleImage}>
+                                        <View style={styles.circleImage}>
                                             <View
                                                 style={{
                                                     width: wp(16),
@@ -44,28 +48,12 @@ export default function HomeServices() {
                                                 }}
                                             >
                                                 <Image
-                                                    source={{ uri: item?.image }}
-                                                    resizeMode='contain'
+                                                    source={item?.title === "Wash & Folds" ? list3 : item?.title === "Clean & Press" ? list1 : list2}
+                                                    resizeMode='cover'
                                                     style={styles.imageStyle}
                                                 />
                                             </View>
-                                        </View> */}
-
-                                        <Image
-                                            source={{ uri: item?.image }}
-                                            resizeMode='cover'
-                                            style={{
-                                                width: wp(16),
-                                                height: wp(16),
-                                                borderRadius: wp(50),
-                                            }}
-                                        />
-
-
-
-
-
-
+                                        </View>
                                         <Text style={styles.titleStyle} >{item?.title.replace(" Services", "")}</Text>
                                     </TouchableOpacity>
                                 )
@@ -110,8 +98,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
     },
     imageStyle: {
-        width: wp(12.5),
-        height: hp(6),
+        width: wp(15),
+        height: hp(7.5),
     },
     seeallStyle: {
         width: wp(19),

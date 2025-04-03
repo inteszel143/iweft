@@ -25,6 +25,41 @@ export default function AllServices() {
         setSelectedCategory(caterogydata);
     }
 
+    const tempdata = [
+        {
+            image: require('@/assets/temp/bookmark/bookmark1.png'),
+            subTitle: "Cleaning / Pressing",
+            title: "Weekly Work Refresh",
+            price: "25",
+            rate: 4.8,
+            reviews: "8,289"
+        },
+        {
+            image: require('@/assets/temp/bookmark/bookmark2.png'),
+            subTitle: "Wash & Fold",
+            title: "Family Bundle",
+            price: "30",
+            rate: 4.9,
+            reviews: "6,182"
+        },
+        {
+            image: require('@/assets/temp/bookmark/bookmark3.png'),
+            subTitle: "Cleaning / Pressing",
+            title: "Delicate Dresses",
+            price: "22",
+            rate: 4.7,
+            reviews: "7,938"
+        },
+        {
+            image: require('@/assets/temp/bookmark/bookmark4.png'),
+            subTitle: "Wash & Fold",
+            title: "Sporty Bundle",
+            price: "24",
+            rate: 4.9,
+            reviews: "6,182"
+        },
+    ]
+
     const filteredData = selectedCategory === 'All' ? data : data?.filter((item: any) => item?.service_category?._id.toLowerCase().includes(selectedCategory.toLowerCase()));
     return (
         <View style={styles.container}>
@@ -84,34 +119,39 @@ export default function AllServices() {
                         </View>
 
                         <FlatList
-                            data={filteredData}
+                            data={tempdata}
                             showsVerticalScrollIndicator={false}
-                            keyExtractor={(item) => item?._id}
-                            renderItem={({ item }) => (
+                            renderItem={({ item, index }) => (
                                 <TouchableOpacity style={styles.CardStyle}
-                                    onPress={() => router.push({
-                                        pathname: 'homePage/services/ServicesScreen',
-                                        params: { serviceId: item?._id },
-                                    })}
+                                    // onPress={() => router.push({
+                                    //     pathname: 'homePage/services/ServicesScreen',
+                                    //     params: { serviceId: item?._id },
+                                    // })}
+                                    key={index}
                                 >
                                     <View style={styles.cardRow}>
                                         <View style={styles.cardLeft}>
                                             <View style={styles.imaging}>
-                                                <Image source={{ uri: item?.image }}
-                                                    resizeMode='contain'
-                                                    style={{ width: wp(20), height: hp(10), }} />
+                                                <Image
+                                                    // source={{ uri: item?.image }}
+                                                    source={item?.image}
+                                                    resizeMode='cover'
+                                                    style={{
+                                                        width: wp(30),
+                                                        height: wp(30),
+                                                    }}
+                                                />
                                             </View>
                                             <View style={{ width: wp(45) }}>
-                                                < Text style={styles.topText} >{item?.sub_title}</Text>
+                                                < Text style={styles.topText} >{item?.subTitle}</Text>
                                                 <Text style={styles.middleText}>{item?.title}</Text>
-                                                <Text style={styles.priceText}>AED {item?.base_price}</Text>
+                                                <Text style={styles.priceText}>AED {item?.price}</Text>
                                                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2), marginTop: hp(1.5), }}>
-                                                    {/* <FontAwesome name='star' size={hp(2)} color={'#FB9400'} /> */}
-                                                    <SingleStarRating rating={item?.review?.average_rating} />
-                                                    <Text style={styles.rateText}>{item?.review?.average_rating}</Text>
+                                                    <SingleStarRating rating={item?.rate} />
+                                                    <Text style={styles.rateText}>{item?.rate}</Text>
                                                     <View style={styles.cardSeperator} />
                                                     <Text style={styles.rateText}>
-                                                        {item?.review?.review_count} {item?.review?.review_count <= 1 ? 'review' : 'reviews'}
+                                                        {item?.reviews} reviews
                                                     </Text>
                                                 </View>
                                             </View>
@@ -205,22 +245,23 @@ const styles = StyleSheet.create({
     },
     cardLeft: {
         flexDirection: 'row',
+        alignItems: 'center',
         gap: wp(4)
     },
     topText: {
         fontFamily: 'UrbanistRegular',
-        fontSize: hp(1.8),
+        fontSize: hp(1.6),
         color: '#616161'
     },
     middleText: {
         fontFamily: 'UrbanistBold',
-        fontSize: hp(2.2),
-        marginTop: hp(1.5)
+        fontSize: hp(2),
+        marginTop: hp(2)
     },
     priceText: {
         fontFamily: 'UrbanistBold',
         fontSize: hp(2.2),
-        marginTop: hp(1.5),
+        marginTop: hp(2),
         color: '#0A5CA8'
     },
     cardSeperator: {
@@ -234,12 +275,12 @@ const styles = StyleSheet.create({
         color: "#616161"
     },
     imaging: {
-        width: wp(28),
-        height: hp(13),
+        width: wp(30),
+        height: wp(30),
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: wp(2),
-        overflow: 'hidden'
+        borderRadius: wp(4),
+        overflow: 'hidden',
     }
 
 
