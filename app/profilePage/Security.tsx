@@ -194,7 +194,7 @@ export default function Security() {
                             barHeight={28}
                         />
                     </View> */}
-                    {/* <View style={styles.rowStyle}>
+                    <View style={styles.rowStyle}>
                         <Text style={styles.rowText}>Biometric ID</Text>
                         <Switch
                             value={biometric}
@@ -212,7 +212,7 @@ export default function Security() {
                             switchBorderRadius={30}
                             barHeight={28}
                         />
-                    </View> */}
+                    </View>
                 </View>
 
                 <TouchableOpacity style={styles.googleAuth}
@@ -236,17 +236,17 @@ export default function Security() {
                     >
                         <Text style={[styles.footerText, { color: '#0A5CA8' }]}>Change Password</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.footerBtn, { backgroundColor: '#DAE7F2', }]}
+                    {/* <TouchableOpacity style={[styles.footerBtn, { backgroundColor: '#DAE7F2', }]}
                         onPress={() => router.push('/profilePage/ChangePhoneNumber')}
                     >
                         <Text style={[styles.footerText, { color: '#0A5CA8' }]}>Change Phone Number</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
+                    </TouchableOpacity> */}
+                    {/* <TouchableOpacity
                         style={[styles.footerBtn, { backgroundColor: '#F75555', }]}
                         onPress={handlePresentModalPress}
                     >
                         <Text style={[styles.footerText, { color: '#FFFFFF' }]}>Delete Account</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
 
 

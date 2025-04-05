@@ -30,7 +30,7 @@ export default function SubscriptionModal({ modalVisible, setModalVisible }: Mod
             <View style={styles.modalStyle}>
                 <View style={styles.modalBox}>
                     <View>
-                        <Image source={require('@/assets/temp/success.jpg')} resizeMode='contain' style={styles.imageStyle} />
+                        <Image source={require('@/assets/temp/lock.png')} resizeMode='contain' style={styles.imageStyle} />
                     </View>
                     <Text style={styles.titleStyle}>Subscription Required!</Text>
                     <Text style={[styles.subStyle, { paddingBottom: hp(3) }]}> This offer is exclusive to iweft subscribers! Check out our subscription plans to find out more!</Text>

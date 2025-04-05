@@ -9,6 +9,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Ionicons } from '@expo/vector-icons';
 import { useQueryClient } from '@tanstack/react-query';
 import DuplicateCardMadal from '@/components/modal/DuplicateCardMadal';
+import { defaultStyles } from '@/constants/Styles';
 export default function AddNewCard() {
     const queryClient = useQueryClient();
     const { createPaymentMethod } = useStripe();
@@ -184,13 +185,17 @@ export default function AddNewCard() {
                 contentContainerStyle={{ paddingBottom: Platform.OS === 'ios' ? hp(14) : hp(6) }}
                 showsVerticalScrollIndicator={false}
             >
-                <View style={{ alignItems: 'center', marginTop: Platform.OS === 'ios' ? hp(2) : hp(1) }}>
-                    <Image source={require('@/assets/temp/profileicons/card.jpg')}
+                <View
+                    style={{
+                        alignItems: 'center',
+                        marginTop: Platform.OS === 'ios' ? hp(2) : hp(1),
+                    }}>
+                    <Image source={require('@/assets/temp/debit-card.png')}
                         resizeMode='contain'
                         style={{ width: wp(90), height: hp(25) }} />
                 </View>
 
-                <CardField
+                {/* <CardField
                     postalCodeEnabled={true}
                     placeholders={{
                         number: '4242 4242 4242 4242',
@@ -208,7 +213,7 @@ export default function AddNewCard() {
                         setCardDetails(cardDetails);
                         setComplete(cardDetails.complete);
                     }}
-                />
+                /> */}
 
                 {/* <CardForm
                     // disabled={inputDisabled}
@@ -252,7 +257,7 @@ export default function AddNewCard() {
                     }}
                 /> */}
                 {/* <Button title='Add Payment Method' onPress={handleAddPaymentMethod} /> */}
-                {/* 
+
                 <View style={{ alignItems: 'center' }}>
 
                     <View style={{ marginTop: hp(3) }}>
@@ -325,11 +330,11 @@ export default function AddNewCard() {
                         </View>
                     </View>
 
-                </View> */}
+                </View>
 
                 {
                     Platform.OS === 'android' && <View style={{ alignItems: 'center', marginTop: hp(6) }}>
-                        <TouchableOpacity style={styles.footerBtn}
+                        <TouchableOpacity style={defaultStyles.footerBtn}
                             onPress={handleAddPaymentMethod}
                         >
                             {loading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>Add New Card</Text>}
@@ -340,7 +345,7 @@ export default function AddNewCard() {
             </KeyboardAwareScrollView>
             {
                 Platform.OS === 'ios' && <View style={styles.footer} >
-                    <TouchableOpacity style={styles.footerBtn}
+                    <TouchableOpacity style={defaultStyles.footerBtn}
                         onPress={handleAddPaymentMethod}
                     >
                         {loading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>Add New Card</Text>}
@@ -404,7 +409,7 @@ const styles = StyleSheet.create({
     textStyle: {
         flex: 1,
         fontFamily: "UrbanistSemiBold",
-        fontSize: hp(2)
+        fontSize: hp(1.8)
     },
 
 

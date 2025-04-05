@@ -12,6 +12,8 @@ import BookmarkSheet from '@/components/bottomsheet/BookmarkSheet';
 import BookmarkSkeleton from '@/components/skeleton/BookmarkSkeleton';
 import NoBookmark from '@/components/empty/NoBookmark';
 import SingleStarRating from '@/components/SingleStarRating';
+import { validateServiceInTheBookmark } from '@/utils/validate';
+import { FontAwesome } from '@expo/vector-icons';
 export default function Bookmarks() {
     const isFocused = useIsFocused();
     const { data, isPending } = usetGetBookmarks(isFocused);
@@ -23,6 +25,42 @@ export default function Bookmarks() {
         setItemData(item);
         modalARef.current?.present();
     };
+
+    const tempdata = [
+        {
+            image: require('@/assets/temp/bookmark/bookmark1.png'),
+            subTitle: "Cleaning / Pressing",
+            title: "Weekly Work Refresh",
+            price: "25",
+            rate: 4.8,
+            reviews: "8,289"
+        },
+        {
+            image: require('@/assets/temp/bookmark/bookmark2.png'),
+            subTitle: "Wash & Fold",
+            title: "Family Bundle",
+            price: "30",
+            rate: 4.9,
+            reviews: "6,182"
+        },
+        {
+            image: require('@/assets/temp/bookmark/bookmark3.png'),
+            subTitle: "Cleaning / Pressing",
+            title: "Delicate Dresses",
+            price: "22",
+            rate: 4.7,
+            reviews: "7,938"
+        },
+        {
+            image: require('@/assets/temp/bookmark/bookmark4.png'),
+            subTitle: "Wash & Fold",
+            title: "Sporty Bundle",
+            price: "24",
+            rate: 4.9,
+            reviews: "6,182"
+        },
+    ]
+
 
 
     return (
@@ -49,26 +87,73 @@ export default function Bookmarks() {
             {
                 isPending ? <BookmarkSkeleton /> : <>
                     {
-                        !data || data == 0 ? <NoBookmark />
-                            :
-                            <View style={{ flex: 1, }}>
+                        // !data || data == 0 ? <NoBookmark />
+                        //     :
+                        <View style={{ flex: 1, }}>
 
-                                <View style={{ paddingVertical: hp(1), marginTop: hp(1.5) }}>
-                                    <FlatList
-                                        data={bookmakeTop}
-                                        horizontal
-                                        showsHorizontalScrollIndicator={false}
-                                        keyExtractor={(item) => item?.label}
-                                        renderItem={({ item, index }) => (
-                                            <TouchableOpacity style={topSelect == index ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
-                                                onPress={() => setTopSelect(index)}
-                                            >
-                                                <Text style={topSelect == index ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item.label}</Text>
-                                            </TouchableOpacity>
-                                        )}
-                                    />
-                                </View>
+                            <View style={{ paddingVertical: hp(1), marginTop: hp(1.5) }}>
                                 <FlatList
+                                    data={bookmakeTop}
+                                    horizontal
+                                    showsHorizontalScrollIndicator={false}
+                                    keyExtractor={(item) => item?.label}
+                                    renderItem={({ item, index }) => (
+                                        <TouchableOpacity style={topSelect == index ? [styles.scrollStyle, { backgroundColor: '#0A5CA8' }] : [styles.scrollStyle, { borderWidth: 1.5, borderColor: "#0A5CA8" }]}
+                                            onPress={() => setTopSelect(index)}
+                                        >
+                                            <Text style={topSelect == index ? [styles.scrollText, { color: 'white' }] : [styles.scrollText, { color: '#0A5CA8' }]}>{item.label}</Text>
+                                        </TouchableOpacity>
+                                    )}
+                                />
+                            </View>
+                            <FlatList
+                                data={tempdata}
+                                showsVerticalScrollIndicator={false}
+                                renderItem={({ item, index }) => (
+                                    <TouchableOpacity style={styles.CardStyle}
+                                        // onPress={() => router.push({
+                                        //     pathname: 'homePage/services/ServicesScreen',
+                                        //     params: { serviceId: item?._id },
+                                        // })}
+                                        key={index}
+                                    >
+                                        <View style={styles.cardRow}>
+                                            <View style={styles.cardLeft}>
+                                                <View style={styles.imaging}>
+                                                    <Image
+                                                        // source={{ uri: item?.image }}
+                                                        source={item?.image}
+                                                        resizeMode='cover'
+                                                        style={{
+                                                            width: wp(30),
+                                                            height: wp(30),
+                                                        }}
+                                                    />
+                                                </View>
+                                                <View style={{ width: wp(45) }}>
+                                                    < Text style={styles.topText} >{item?.subTitle}</Text>
+                                                    <Text style={styles.middleText}>{item?.title}</Text>
+                                                    <Text style={styles.priceText}>AED {item?.price}</Text>
+                                                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2), marginTop: hp(1.5), }}>
+                                                        <SingleStarRating rating={item?.rate} />
+                                                        <Text style={styles.rateText}>{item?.rate}</Text>
+                                                        <View style={styles.cardSeperator} />
+                                                        <Text style={styles.rateText}>
+                                                            {item?.reviews} reviews
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                            </View>
+                                            <View>
+                                                <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5), height: hp(4) }} />
+                                            </View>
+
+                                        </View>
+                                    </TouchableOpacity >
+                                )}
+                            />
+
+                            {/* <FlatList
                                     data={data}
                                     showsVerticalScrollIndicator={false}
                                     keyExtractor={(item) => item._id}
@@ -102,13 +187,14 @@ export default function Bookmarks() {
                                                 </View>
                                                 <View>
                                                     <Image source={require('@/assets/icons/bookmarkActive.jpg')} resizeMode='contain' style={{ width: wp(5), height: hp(4) }} />
-                                                    {/* <FontAwesome name='bookmark' size={hp(2.9)} color={'#0A5CA8'} /> */}
+                                                    <FontAwesome
+                                                        name='bookmark' size={hp(2.9)} color={'#0A5CA8'} />
                                                 </View>
                                             </View>
                                         </TouchableOpacity >
                                     )}
-                                />
-                            </View>
+                                /> */}
+                        </View>
                     }
                 </>
 

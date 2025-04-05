@@ -287,7 +287,9 @@ export default function BookingDetails() {
 
 
                 <View style={styles.footer}>
-                    <TouchableOpacity style={defaultStyles.footerBtn}
+                    <TouchableOpacity style={[defaultStyles.footerBtn, {
+                        backgroundColor: !collectDate || !topSelect || !deliveryDate || !deliveryTime ? "#85aed4" : "#0A5CA8"
+                    }]}
                         disabled={!collectDate || !topSelect || !deliveryDate || !deliveryTime ? true : false}
                         onPress={onSubmit}
                     >

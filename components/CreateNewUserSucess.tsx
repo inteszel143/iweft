@@ -32,7 +32,7 @@ export default function CreateNewUserSucess({ modalVisible, setModalVisible }: M
             <View style={styles.modalStyle}>
                 <View style={styles.modalBox}>
                     <View>
-                        <Image source={require('@/assets/temp/success.jpg')} resizeMode='contain' style={styles.imageStyle} />
+                        <Image source={require('@/assets/temp/new_success.png')} resizeMode='contain' style={styles.imageStyle} />
                     </View>
                     <Text style={styles.titleStyle}>{t('Congratulations!')}</Text>
                     <Text style={styles.subStyle}>{t('Your account is ready to use. You will be redirected to the Login page in a few seconds..')}</Text>

@@ -1,4 +1,4 @@
-import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { StatusBar } from 'expo-status-bar';
@@ -21,6 +21,9 @@ export default function OfferOtherPage() {
     const [btnLoading, setBtnLoading] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [showError, setShowError] = useState(false);
+    const [extend, setExtend] = useState<boolean>(false)
+
+
     const { data, isPending } = useActivationPromo(isFocused);
     const special1 = require('@/assets/temp/special/specialoffers1.png');
     const special2 = require('@/assets/temp/special/specialoffers2.png');
@@ -54,20 +57,41 @@ export default function OfferOtherPage() {
                 </View>
                 <View style={[styles.bottomStyle, { backgroundColor: specialOffers?.title === "Weekend Special!" ? "#35DEBC" : specialOffers?.title === "Summer Sale!" ? "#F4CB93" : specialOffers?.title === "Today's Special!" ? "#83C0DF" : "#FFB5BF", }]}>
                     <View style={styles.bottomtopStyle}>
-                        <Text style={styles.topText}>{specialOffers?.title}</Text>
-                        <FontAwesome name='bookmark-o' size={hp(3.5)} color={'#0A5CA8'} />
+                        <Text style={styles.topText}>Referral Discount</Text>
+                        {/* <Text style={styles.topText}>{specialOffers?.title}</Text> */}
+                        {/* <FontAwesome name='bookmark-o' size={hp(3.5)} color={'#0A5CA8'} /> */}
+                        <Image source={require('@/assets/temp/bookmark.png')} resizeMode='contain' style={{ width: wp(5.4), height: hp(4), }} />
                     </View>
-                    <Text style={styles.discountText}>{specialOffers?.discount_value}% OFF</Text>
+                    {/* <Text style={styles.discountText}>{specialOffers?.discount_value}% OFF</Text> */}
+                    <Text style={styles.discountText}>25% OFF</Text>
                     <View style={styles.separator} />
 
                     <View style={styles.listStyle}>
                         <Text style={styles.listText}>Details</Text>
-                        <Text style={styles.listSubText} >{specialOffers?.description} <Text style={{ fontFamily: 'UrbanistBold', color: "#0A5CA8" }}>Read more...</Text> </Text>
+                        {/* <Text style={styles.listSubText} >{specialOffers?.description} <Text style={{ fontFamily: 'UrbanistBold', color: "#0A5CA8" }}>Read more...</Text> </Text> */}
+                        <Text style={styles.listSubText} numberOfLines={extend ? 0 : 3}>
+                            With our iWeft basic plan, you will be set up for 3 collections every month, allowing you to stay on top of your laundry and get on with the better things in life. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Optio ducimus odio cupiditate aspernatur mollitia dolor ipsa culpa tenetur repudiandae maiores officiis voluptate, nobis veniam cum esse quas. Quidem, accusamus odio?
+                        </Text>
+
+                        <Pressable onPress={() => setExtend(!extend)}>
+                            <Text
+                                style={{
+                                    fontFamily: 'UrbanistBold',
+                                    color: "#0A5CA8",
+                                    fontSize: hp(1.6),
+                                    marginTop: hp(0.5)
+                                }}
+                            >
+                                {extend ? 'Read less' : 'Read more'}
+                            </Text>
+                        </Pressable>
+
                     </View>
                     <View style={styles.separator} />
                     <View style={styles.listStyle}>
                         <Text style={styles.listText}>Terms & Conditions</Text>
-                        <Text style={styles.listSubText} >{specialOffers?.terms_and_conditions}</Text>
+                        {/* <Text style={styles.listSubText} >{specialOffers?.terms_and_conditions}</Text> */}
+                        <Text style={styles.listSubText} >‘Referral Discount’ is valid until 01/02/2030. Once activated, this discount can be used on up to 3 separate orders with iweft laundry services. The discount must be used within six months of activation.</Text>
                     </View>
                 </View>
             </ScrollView>
@@ -168,7 +192,7 @@ const styles = StyleSheet.create({
     },
     listSubText: {
         fontFamily: 'UrbanistRegular',
-        fontSize: hp(1.8),
+        fontSize: hp(1.6),
         color: '#FFFFFF',
         marginTop: hp(2)
     },

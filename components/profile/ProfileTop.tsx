@@ -169,14 +169,23 @@ export default function ProfileTop() {
                     }}
                     onPress={toggleModal}
                 >
-                    <Image
-                        source={require('@/assets/temp/bookmark/edit.png')}
-                        resizeMode='contain'
-                        style={{
-                            width: wp(7),
-                            height: wp(7),
-                        }}
-                    />
+                    <View style={{
+                        backgroundColor: "#FFFFFF",
+                        borderRadius: wp(50),
+                        width: wp(6),
+                        height: wp(6),
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}>
+                        <Image
+                            source={require('@/assets/temp/bookmark/edit.png')}
+                            resizeMode='contain'
+                            style={{
+                                width: wp(7),
+                                height: wp(7),
+                            }}
+                        />
+                    </View>
 
                 </TouchableOpacity>
             </View>

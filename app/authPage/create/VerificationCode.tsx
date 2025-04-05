@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
         borderRadius: wp(4),
         borderWidth: 1,
         borderColor: "#F1F1F1",
-        backgroundColor: "#EEEEEE",
+        backgroundColor: "#fafafa",
         textAlign: 'center',
         justifyContent: 'center',
     },

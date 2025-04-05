@@ -16,6 +16,18 @@ export default function AllLaundryBundles() {
     const isFocused = useIsFocused();
     const { data: laundryData, isPending } = useLaundryBundles(isFocused);
 
+    const exampleData = [
+        {
+            image: require('@/assets/temp/laundryBundle/bundle_1.png'),
+        },
+        {
+            image: require('@/assets/temp/laundryBundle/bundle_2.png'),
+        },
+        {
+            image: require('@/assets/temp/laundryBundle/bundle_3.png'),
+        },
+    ]
+
     return (
         <View style={styles.container}>
 
@@ -40,24 +52,34 @@ export default function AllLaundryBundles() {
 
             <View style={styles.containerStyle}>
                 <FlatList
-                    data={laundryData}
+                    data={exampleData}
                     showsVerticalScrollIndicator={false}
-                    keyExtractor={(item) => item._id}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity
-                            style={[styles.cardStyle, { backgroundColor: item?.title === "Bedding Set Bundle" ? "#486FFB" : "#FF6A80" }]}
-                            onPress={() => router.push({
-                                pathname: '/homePage/budles/BuddleScreen',
-                                params: { bundleId: item?._id },
-                            })}
-                        >
-                            <View style={styles.cardInner}>
-                                <View style={{ width: wp(50) }}>
-                                    <Text style={styles.cardLabel}>{item?.title}</Text>
-                                </View>
-                                <Image source={{ uri: item?.image }} resizeMode='contain' style={{ width: wp(30), height: hp(12), tintColor: 'white' }} />
-                            </View>
-                        </TouchableOpacity>
+                    renderItem={({ item, index }) => (
+                        <View key={index}>
+                            <Image
+                                source={item?.image}
+                                resizeMode='cover'
+                                style={{
+                                    width: wp(100),
+                                    height: hp(22),
+                                }}
+                            />
+                        </View>
+                        // <TouchableOpacity
+                        //     style={[styles.cardStyle, { backgroundColor: item?.title === "Bedding Set Bundle" ? "#486FFB" : "#FF6A80" }]}
+                        //     onPress={() => router.push({
+                        //         pathname: '/homePage/budles/BuddleScreen',
+                        //         params: { bundleId: item?._id },
+                        //     })}
+                        //     key={index}
+                        // >
+                        //     <View style={styles.cardInner}>
+                        //         <View style={{ width: wp(50) }}>
+                        //             <Text style={styles.cardLabel}>{item?.title}</Text>
+                        //         </View>
+                        //         <Image source={{ uri: item?.image }} resizeMode='contain' style={{ width: wp(30), height: hp(12), tintColor: 'white' }} />
+                        //     </View>
+                        // </TouchableOpacity>
                     )}
                 />
             </View>
@@ -103,7 +125,7 @@ const styles = StyleSheet.create({
 
     containerStyle: {
         alignItems: 'center',
-        paddingBottom: hp(15)
+        marginTop: hp(3)
     },
     cardStyle: {
         marginTop: hp(2.5),

@@ -26,8 +26,11 @@ export default function EditProflieData() {
     const { data, isFetching } = useUserQuery(isFocused);
     const { address, street, citys, latitude, longitude } = useStoreAddress();
     const phoneInput = useRef<PhoneInput>(null);
-    const [gender, setGender] = useState(""); 
-    const [contry, setCountry] = useState(""); 
+    const [value, setValue] = useState("");
+    const [formattedValue, setFormattedValue] = useState("");
+
+    const [gender, setGender] = useState("");
+    const [contry, setCountry] = useState("");
 
     const [addressError, setAddressError] = useState(false);
     const [date, setDate] = useState(new Date(data?.dob));
@@ -252,7 +255,7 @@ export default function EditProflieData() {
 
 
 
-                {/* <View>
+                <View>
                     <PhoneInput
                         ref={phoneInput}
                         defaultValue={data?.contact_number ? data.contact_number.slice(3, 14) : value}
@@ -270,7 +273,7 @@ export default function EditProflieData() {
                         containerStyle={{ borderRadius: wp(4), width: wp(90), marginTop: hp(3), minHeight: hp(7.5), maxHeight: hp(8), }}
                     />
 
-                </View> */}
+                </View>
 
 
 
@@ -281,6 +284,7 @@ export default function EditProflieData() {
                         save="value"
                         placeholder='Gender'
                         search={false}
+                        arrowicon={<FontAwesome name='caret-down' size={hp(2.5)} />}
                         boxStyles={styles.boxStyles}
                         inputStyles={{ fontFamily: "UrbanistSemiBold", fontSize: hp(2), }}
                         dropdownStyles={styles.dropdownStyles}
