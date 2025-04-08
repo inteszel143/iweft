@@ -32,7 +32,6 @@ export default function index() {
                 }
             } else {
                 if (passcode_status === "1") {
-
                     try {
                         const response = await appOpenRefresh(refreshToken);
                         await SecureStore.setItemAsync('accessToken', response?.access?.token);
@@ -46,7 +45,7 @@ export default function index() {
                         });
                         router.push('/(tabs)/');
                     } catch (error) {
-                        router.push('/(tabs)/');
+                        router.push('/authPage/SelectLoginPage');
                     }
                 } else {
                     try {
@@ -57,7 +56,7 @@ export default function index() {
                         setRefreshToken(response?.refresh?.token);
                         router.push('/(tabs)/');
                     } catch (error) {
-                        router.push('/(tabs)/');
+                        router.push('/authPage/SelectLoginPage');
                     }
                 }
             }
