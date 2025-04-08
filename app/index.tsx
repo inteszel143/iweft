@@ -46,7 +46,7 @@ export default function index() {
                         });
                         router.push('/(tabs)/');
                     } catch (error) {
-                        router.push('/(tabs)/');
+                        router.push('/authPage/SelectLoginPage');
                     }
                 } else {
                     try {
@@ -57,7 +57,7 @@ export default function index() {
                         setRefreshToken(response?.refresh?.token);
                         router.push('/(tabs)/');
                     } catch (error) {
-                        router.push('/(tabs)/');
+                        router.push('/authPage/SelectLoginPage');
                     }
                 }
             }

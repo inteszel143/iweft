@@ -208,29 +208,50 @@ export default function Page() {
                                         </MapView>
                                     </View>
 
-                                    <View style={[styles.mapRows, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
+                                    {
+                                        item?.order_processed ? <View style={{
+                                            alignItems: 'center'
+                                        }}>
 
-                                        <TouchableOpacity style={[styles.mapBtn, { borderWidth: 1, borderColor: "#0a5ca8" }]}
-                                            onPress={() => {
-                                                setGetBookingId(item?._id);
-                                                setTotal(item?.total_amount);
-                                                handlePresentModalPress()
-                                            }}
-                                        >
-                                            <Text style={[styles.mapText, { color: '#0a5ca8' }]}>{t('Cancel Booking')}</Text>
-                                        </TouchableOpacity>
+                                            <TouchableOpacity style={[styles.mapBtn, {
+                                                width: wp(80),
+                                                backgroundColor: "#0a5ca8"
+                                            }]}
+                                                onPress={() => router.push({
+                                                    pathname: '/bookingPage/Ereceipt',
+                                                    params: { orderId: item?._id }
+                                                })}
+                                            >
+                                                <Text style={[styles.mapText, { color: 'white' }]}>{t('View E-Receipt')}</Text>
+                                            </TouchableOpacity>
+
+                                        </View>
+                                            :
+                                            <View style={[styles.mapRows, { flexDirection: current === 'ar' ? 'row-reverse' : 'row', }]}>
+
+                                                <TouchableOpacity style={[styles.mapBtn, { borderWidth: 1, borderColor: "#0a5ca8" }]}
+                                                    onPress={() => {
+                                                        setGetBookingId(item?._id);
+                                                        setTotal(item?.total_amount);
+                                                        handlePresentModalPress()
+                                                    }}
+                                                >
+                                                    <Text style={[styles.mapText, { color: '#0a5ca8' }]}>{t('Cancel Booking')}</Text>
+                                                </TouchableOpacity>
 
 
-                                        <TouchableOpacity style={[styles.mapBtn, { backgroundColor: "#0a5ca8" }]}
-                                            onPress={() => router.push({
-                                                pathname: '/bookingPage/Ereceipt',
-                                                params: { orderId: item?._id }
-                                            })}
-                                        >
-                                            <Text style={[styles.mapText, { color: 'white' }]}>{t('View E-Receipt')}</Text>
-                                        </TouchableOpacity>
+                                                <TouchableOpacity style={[styles.mapBtn, { backgroundColor: "#0a5ca8" }]}
+                                                    onPress={() => router.push({
+                                                        pathname: '/bookingPage/Ereceipt',
+                                                        params: { orderId: item?._id }
+                                                    })}
+                                                >
+                                                    <Text style={[styles.mapText, { color: 'white' }]}>{t('View E-Receipt')}</Text>
+                                                </TouchableOpacity>
 
-                                    </View>
+                                            </View>
+                                    }
+
 
                                     <TouchableOpacity style={styles.footerBtn} onPress={() => toggleClose()}>
                                         <Ionicons name='chevron-up-outline' size={hp(2.5)} />
