@@ -11,7 +11,7 @@ import { postPhoneVerificationCode } from '@/apis/auth';
 import { useTranslation } from 'react-i18next';
 
 export default function YourAddress() {
-    const { image, fullName, nickName, dob, email, password, phone, address } = useLocalSearchParams();
+    const { image, fullName, nickName, dob, email, password, phone, address, valueNumber } = useLocalSearchParams();
     const { t } = useTranslation();
     const [errorMsg, setErrorMsg] = useState("");
     const [nameAddress, setNameAddress] = useState<any>();
@@ -68,7 +68,7 @@ export default function YourAddress() {
             // await postPhoneVerificationCode(phone as string);
             setTimeout(() => {
                 router.push({
-                    pathname: '/authPage/create/CreateNewPIN',
+                    pathname: '/authPage/create/ProfileOverview',
                     params: {
                         image: image,
                         fullName: fullName,
@@ -82,6 +82,7 @@ export default function YourAddress() {
                         city: city,
                         latitude: lat,
                         longitude: long,
+                        valNumber: valueNumber,
                     }
                 });
                 setBtnLoading(false);

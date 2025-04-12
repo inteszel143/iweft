@@ -129,8 +129,9 @@ function RootLayoutNav() {
 
       <Stack.Screen name="authPage/create/ProfileData" options={{ headerShown: false }} />
       <Stack.Screen name="authPage/create/YourAddress" options={{ headerShown: false }} />
-      <Stack.Screen name="authPage/create/CreateNewPIN" options={{ headerShown: false }} />
       <Stack.Screen name="authPage/create/VerificationCode" options={{ headerShown: false }} />
+      <Stack.Screen name="authPage/create/ProfileOverview" options={{ headerShown: false }} />
+      <Stack.Screen name="authPage/create/CreateNewPIN" options={{ headerShown: false }} />
 
       {/* home */}
       <Stack.Screen name='homePage/Notification' options={{ headerShown: false }} />

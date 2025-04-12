@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, Platform, Modal, TextInput, Pressable } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, Platform, Modal, TextInput, Pressable, ActivityIndicator } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -12,13 +12,28 @@ import * as yup from 'yup';
 import * as ImagePicker from 'expo-image-picker';
 import DatePicker from 'react-native-date-picker';
 import { useTranslation } from 'react-i18next';
-export default function ProfileData() {
-    const { email, password } = useLocalSearchParams(); // email and password
+const ProfileOverview = () => {
+    const { image,
+        fullName,
+        nickName,
+        dob,
+        email,
+        password,
+        phone,
+        nameAddress,
+        street,
+        city,
+        latitude,
+        longitude,
+        valNumber
+    } =
+        useLocalSearchParams();
     const { t } = useTranslation();
 
     const phoneInput = useRef<PhoneInput>(null);
-    const [valueNumber, setValueNumber] = useState("");
-    const [formattedValue, setFormattedValue] = useState(""); // Phone data
+    const [valueNumber, setValueNumber] = useState(valNumber);
+    const [formattedValue, setFormattedValue] = useState("");
+
     // Error
     const [phoneError, setPhoneError] = useState(false);
     const [date, setDate] = useState(new Date());
@@ -29,7 +44,7 @@ export default function ProfileData() {
         setModalVisible(!modalVisible);
     };
 
-
+    const finalAddress = nameAddress + ' ' + street + ' ' + city;
     const schema = yup.object().shape({
         full_name: yup.string().required(t('Full Name is requred')),
         n_name: yup.string().required('Nickname is requred'),
@@ -39,11 +54,19 @@ export default function ProfileData() {
 
         email: yup.string().email('Invalid email').required('Email is required').default(email as string),
         showPicker: yup.boolean().default(false),
+
+        loading: yup.boolean(),
     });
     const { control, handleSubmit, watch, setValue, formState: { errors } } = useForm({
         resolver: yupResolver(schema),
         defaultValues: {
-            image: "",
+            image: image as string,
+            full_name: fullName as string,
+            n_name: nickName as string,
+            address: finalAddress,
+            bdate: dob ? new Date(dob as string) : "",
+
+            loading: false
         }
     });
 
@@ -83,21 +106,33 @@ export default function ProfileData() {
     }
 
     const onSubmit = async (data: any) => {
-        const params = {
-            image: watch('image'),
-            fullName: data?.full_name,
-            nickName: data?.n_name,
-            dob: data?.bdate?.toISOString().split('T')[0],
-            email: data.email,
-            password: password,
-            phone: formattedValue,
-            address: data?.address,
-            valueNumber: valueNumber,
+        setValue('loading', true);
+        try {
+            // await postPhoneVerificationCode(phone as string);
+            setTimeout(() => {
+                router.push({
+                    pathname: '/authPage/create/CreateNewPIN',
+                    params: {
+                        image: watch('image'),
+                        fullName: data?.full_name,
+                        nickName: data?.n_name,
+                        dob: data?.bdate?.toISOString().split('T')[0],
+                        email: email,
+                        password: password,
+                        phone: formattedValue,
+                        nameAddress: nameAddress,
+                        street: street,
+                        city: city,
+                        latitude: latitude,
+                        longitude: longitude,
+                    }
+                });
+                setValue('loading', false);
+            }, 2000);
+        } catch (error) {
+            console.log(error);
+            setValue('loading', false);
         }
-        router.push({
-            pathname: '/authPage/create/YourAddress',
-            params: params
-        });
     };
 
     function ModalProfile() {
@@ -121,8 +156,8 @@ export default function ProfileData() {
                         </TouchableOpacity>
 
                         {/* <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#F75555' }]}>
-                            <Text style={[styles.modalText, { color: '#FFFFFF' }]}>Delete Photo</Text>
-                        </TouchableOpacity> */}
+                              <Text style={[styles.modalText, { color: '#FFFFFF' }]}>Delete Photo</Text>
+                          </TouchableOpacity> */}
 
                         <TouchableOpacity style={[styles.modalBtn, { backgroundColor: '#DAE7F2' }]}
                             onPress={toggleModal}
@@ -319,6 +354,7 @@ export default function ProfileData() {
                                 render={({ field: { onChange, onBlur, value } }) => (
                                     <TextInput
                                         onBlur={onBlur}
+                                        editable={false}
                                         defaultValue={email as string}
                                         onChangeText={onChange}
                                         value={value}
@@ -328,7 +364,7 @@ export default function ProfileData() {
                                         autoComplete='email'
                                         autoCorrect={false}
                                         placeholderTextColor={'#9E9E9E'}
-                                        style={defaultStyles.textInputStyle}
+                                        style={[defaultStyles.textInputStyle, { color: "gray" }]}
                                     />
                                 )}
                                 name="email"
@@ -376,13 +412,13 @@ export default function ProfileData() {
 
                     {/* Location */}
                     {/* <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
-                        <TouchableOpacity style={[defaultStyles.innerField]}
-                            // disabled={!value || image === null ? true : false}
-                            onPress={handleSubmit(onSubmit)}>
-                            <Text style={[defaultStyles.textInputStyle, { color: "#9E9E9E" }]}>{t('Address')}</Text>
-                            <Ionicons name='location-outline' size={hp(2.4)} />
-                        </TouchableOpacity>
-                    </View> */}
+                          <TouchableOpacity style={[defaultStyles.innerField]}
+                              // disabled={!value || image === null ? true : false}
+                              onPress={handleSubmit(onSubmit)}>
+                              <Text style={[defaultStyles.textInputStyle, { color: "#9E9E9E" }]}>{t('Address')}</Text>
+                              <Ionicons name='location-outline' size={hp(2.4)} />
+                          </TouchableOpacity>
+                      </View> */}
                     <View style={[defaultStyles.textField, { backgroundColor: "#FAFAFA", borderColor: "#FAFAFA" }]}>
                         <View style={defaultStyles.innerField}>
                             <Controller
@@ -421,7 +457,7 @@ export default function ProfileData() {
                         onPress={handleSubmit(onSubmit)}
 
                     >
-                        <Text style={styles.footerText}>{t('Continue')}</Text>
+                        {watch('loading') ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={styles.footerText}>{t('Continue')}</Text>}
                     </TouchableOpacity>
                 </View>
 
@@ -431,6 +467,8 @@ export default function ProfileData() {
         </View >
     )
 }
+
+export default ProfileOverview
 
 const styles = StyleSheet.create({
     container: {
@@ -582,6 +620,4 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
-});
-
-
+})

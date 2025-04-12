@@ -100,9 +100,7 @@ export default function CreateNewPIN() {
                 type: `image/${fileType}`,
             });
             formData.append("dob", dob as string);
-            console.log(formData);
             const result = await manualSignup(formData);
-            console.log(result);
             setTimeout(() => {
                 setBtnLoading(false);
                 setValidate(false);
