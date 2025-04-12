@@ -65,10 +65,10 @@ export default function YourAddress() {
     const onSubmit = async () => {
         setBtnLoading(true);
         try {
-            await postPhoneVerificationCode(phone as string);
+            // await postPhoneVerificationCode(phone as string);
             setTimeout(() => {
                 router.push({
-                    pathname: '/authPage/create/VerificationCode',
+                    pathname: '/authPage/create/CreateNewPIN',
                     params: {
                         image: image,
                         fullName: fullName,

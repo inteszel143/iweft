@@ -100,7 +100,9 @@ export default function CreateNewPIN() {
                 type: `image/${fileType}`,
             });
             formData.append("dob", dob as string);
-            await manualSignup(formData);
+            console.log(formData);
+            const result = await manualSignup(formData);
+            console.log(result);
             setTimeout(() => {
                 setBtnLoading(false);
                 setValidate(false);
@@ -231,8 +233,8 @@ const styles = StyleSheet.create({
         height: wp(16),
         borderRadius: wp(4),
         borderWidth: 1,
-        borderColor: "#F1F1F1",
-        backgroundColor: "#EEEEEE",
+        borderColor: "#EEEEEE",
+        backgroundColor: "#FAFAFA",
         textAlign: 'center',
         justifyContent: 'center',
     },

@@ -37,7 +37,7 @@ export default function VerificationCode() {
     const onSubmit = async () => {
         setBtnLoading(true);
         try {
-            await postVerifyCheck(phone as string, value as string);
+            // await postVerifyCheck(phone as string, value as string);
             setApprovedModal(true);
             setTimeout(() => {
                 router.push({
