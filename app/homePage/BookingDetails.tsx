@@ -95,7 +95,7 @@ export default function BookingDetails() {
                             <TouchableOpacity onPress={toggleShowCard}>
                                 <Image source={require('@/assets/icons/bookingMenu.png')} resizeMode='contain' style={{ width: wp(7.5) }} />
                             </TouchableOpacity>
-                            {deliveryTime && <View style={styles.notifRed} />}
+                            {deliveryDate && <View style={styles.notifRed} />}
                         </View>
                     </View>
                 </View>

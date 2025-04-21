@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, Platform } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Platform, ScrollView, NativeSyntheticEvent, NativeScrollEvent } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Link, router, useLocalSearchParams } from 'expo-router'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Animated, { interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, withSpring } from 'react-native-reanimated';
 import { AntDesign, FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { bundle } from '@/constants/home/data';
+import { bundle, itemList } from '@/constants/home/data';
 import { useIsFocused } from '@react-navigation/native';
 import { LaundryBundle } from '@/utils/interface';
 import useStoreBooking from '@/store/useStoreBooking';
@@ -29,6 +29,9 @@ export default function BuddleScreen() {
     const { data: bundleData, isPending } = useLaundryBundlesUsingId(bundleId as string, isFocused);
     const [showBookmark, setShowBookmark] = useState(false);
     const { isBookmarked, setBookmarked } = useBookBundleStore();
+    const [activeIndex, setActiveIndex] = useState<number>(0);
+
+
     const { data: bookdata } = usetGetBookmarks(isFocused);
     useEffect(() => {
         if (bookdata) {
@@ -39,6 +42,12 @@ export default function BuddleScreen() {
         setAddbook(!addbook);
     }
     const { setServiceModel, setBundleId } = useStoreBooking();
+    const handleScroll = (event: any) => {
+        const scrollPosition = event.nativeEvent.contentOffset.x;
+        const index = Math.round(scrollPosition / wp(100)); // assuming each image is full screen width
+        setActiveIndex(index);
+    };
+
     // scrollview
     const scrollRef = useAnimatedRef<Animated.ScrollView>();
     const scrollOffset = useScrollViewOffset(scrollRef);
@@ -84,7 +93,6 @@ export default function BuddleScreen() {
             console.log(error);
         }
     };
-
     const removeBookmark = async () => {
         try {
             await removeBookmarks(bundleData?._id);
@@ -99,7 +107,6 @@ export default function BuddleScreen() {
     //     return <ViewServicesSkeleton />
     // };
 
-
     return (
         <View style={styles.container}>
 
@@ -112,7 +119,7 @@ export default function BuddleScreen() {
                 scrollEventThrottle={16}
             >
 
-                {
+                {/* {
                     isPending ? <ShimmerPlaceholder style={styles.imageTop} />
                         :
                         <Animated.View style={[styles.topStyle, imageAnimatedStyle]}>
@@ -125,8 +132,63 @@ export default function BuddleScreen() {
                                 <View style={{ width: 8, height: 8, borderRadius: 8, backgroundColor: '#548DC2' }} />
                             </View>
                         </Animated.View>
-                }
+                } */}
 
+                {
+                    isPending ? <ShimmerPlaceholder style={styles.imageTop} />
+                        :
+                        <ScrollView
+                            horizontal
+                            pagingEnabled
+                            showsHorizontalScrollIndicator={false}
+                            onScroll={handleScroll}
+                            scrollEventThrottle={16}
+                        >
+                            {
+                                bundleData?.other_images?.map((item: any, index: number) => (
+                                    <View
+                                        key={index}
+                                        style={{
+                                            height: IMG_HEIGHT,
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            paddingTop: hp(2),
+                                        }}
+                                    >
+                                        <View style={{
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            width: wp(100),
+                                        }}>
+                                            <Image source={{ uri: item }} resizeMode='cover' style={[{ width: wp(70), height: hp(30), }]} />
+                                        </View>
+
+
+                                    </View>
+                                ))
+                            }
+                        </ScrollView>
+                }
+                <View style={{
+                    flexDirection: 'row',
+                    alignSelf: 'center',
+                    alignItems: 'center',
+                    gap: wp(1.5)
+                }}>
+                    {bundleData?.other_images?.map((_: any, index: any) => (
+                        <View
+                            key={index}
+                            style={[
+                                {
+                                    width: activeIndex === index ? wp(8) : wp(2.2),
+                                    height: hp(1),
+                                    borderRadius: wp(2),
+                                    backgroundColor: activeIndex === index ? "#0A5CA8" : "#9FBFDD"
+                                }
+                            ]}
+                        />
+                    ))}
+                </View>
 
                 <View style={styles.middleStyle}>
 
@@ -197,11 +259,6 @@ export default function BuddleScreen() {
                         }
 
                     </View>
-
-
-
-
-
 
 
                     <View style={[styles.detailsStyle, { paddingBottom: hp(15) }]}>

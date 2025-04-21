@@ -31,8 +31,7 @@ export default function LaundryBundles() {
                     </Link>
                 </View>
             </View>
-
-
+            
             {
                 isPending ? <HomeBundleSkeleton />
                     :
