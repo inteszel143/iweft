@@ -10,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useQueryClient } from '@tanstack/react-query';
 import DuplicateCardMadal from '@/components/modal/DuplicateCardMadal';
 import { defaultStyles } from '@/constants/Styles';
+import MasCard from '@/SVG/MasCard'
 export default function AddNewCard() {
     const queryClient = useQueryClient();
     const { createPaymentMethod } = useStripe();
@@ -190,10 +191,13 @@ export default function AddNewCard() {
                         alignItems: 'center',
                         marginTop: Platform.OS === 'ios' ? hp(2) : hp(1),
                     }}>
-                    <Image source={require('@/assets/temp/debit-card.png')}
-                        resizeMode='contain'
-                        style={{ width: wp(90), height: hp(25) }} />
+                    {/* <Image source={require('@/assets/temp/Mocard.png')}
+                        resizeMode='cover'
+                        style={{ width: wp(90), height: hp(26) }} /> */}
+                    <MasCard />
                 </View>
+
+
 
                 {/* <CardField
                     postalCodeEnabled={true}

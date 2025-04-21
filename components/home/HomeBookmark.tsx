@@ -27,7 +27,7 @@ export default function HomeBookmark() {
                 >
                     <Image source={require('@/assets/icons/bookmark.png')} resizeMode='contain' style={{ width: wp(7.5) }} />
                 </TouchableOpacity>
-                <View style={styles.notifRed} />
+                {/* <View style={styles.notifRed} /> */}
             </View>
         )
     }
