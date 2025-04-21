@@ -20,9 +20,22 @@ export default function BundleOffers() {
                 </View>
             </View>
 
+            <View style={{
+                alignItems: 'center',
+                marginTop: hp(4)
+            }}>
+                <Image
+                    source={require('@/assets/logo/bundleDiscount.png')}
+                    resizeMode='contain'
+                    style={{
+                        width: wp(100),
+                    }}
+                />
+            </View>
 
 
-            <View>
+
+            {/* <View>
                 <View style={styles.bundleOfferContainer}>
                     <View style={{ paddingLeft: wp(6) }}>
 
@@ -49,7 +62,7 @@ export default function BundleOffers() {
 
                     </View>
                 </View>
-            </View>
+            </View> */}
 
 
         </View>

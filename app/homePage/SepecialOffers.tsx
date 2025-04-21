@@ -13,6 +13,19 @@ export default function SepecialOffers() {
     const special4 = require('@/assets/temp/special/special4.png');
     const isFocused = useIsFocused();
     const { data, isPending } = useSpecialOffers(isFocused);
+
+    const newData = [
+        {
+            image: require('@/assets/logo/offer1.png'),
+        },
+        {
+            image: require('@/assets/logo/offer2.png'),
+        },
+        {
+            image: require('@/assets/logo/offer3.png'),
+        },
+    ]
+
     return (
         <View style={styles.container}>
 
@@ -41,19 +54,22 @@ export default function SepecialOffers() {
 
             <View style={styles.containerStyle}>
                 <FlatList
-                    data={data}
-                    contentContainerStyle={{ paddingBottom: hp(14) }}
+                    data={newData}
                     showsVerticalScrollIndicator={false}
-                    keyExtractor={(item) => item._id}
-                    renderItem={({ item }) => (
+                    // keyExtractor={(item) => item._id}
+                    renderItem={({ item, index }) => (
                         <TouchableOpacity
-                            style={[styles.cardStyle, { backgroundColor: item?.title === "Weekend Special!" ? "#35DEBC" : item?.title === "Summer Sale!" ? "#FFAB38" : item?.title === "Today's Special!" ? "#548DC2" : "#FF8A9B", }]}
+                            // style={[styles.cardStyle, { backgroundColor: item?.title === "Weekend Special!" ? "#35DEBC" : item?.title === "Summer Sale!" ? "#FFAB38" : item?.title === "Today's Special!" ? "#548DC2" : "#FF8A9B", }]}
                             onPress={() => router.push({
                                 pathname: '/homePage/OfferOtherPage',
                                 params: { item: JSON.stringify(item) },
                             })}
+                            style={{
+                                marginTop: hp(2),
+                            }}
+                            key={index}
                         >
-                            <View style={styles.cardRow}>
+                            {/* <View style={styles.cardRow}>
                                 <View style={{ width: wp(45), marginLeft: wp(8) }}>
                                     <Text style={styles.discount}>{item?.discount_value}%</Text>
                                     <Text style={styles.title}>{item?.title}</Text>
@@ -66,7 +82,14 @@ export default function SepecialOffers() {
                                         style={{ width: wp(50), height: hp(30), marginTop: hp(2.5) }}
                                     />
                                 </View>
-                            </View>
+                            </View> */}
+                            <Image
+                                source={item?.image}
+                                resizeMode='contain'
+                                style={{
+                                    width: wp(100),
+                                }}
+                            />
                         </TouchableOpacity>
                     )}
 
@@ -113,8 +136,8 @@ const styles = StyleSheet.create({
 
 
     containerStyle: {
+        flex: 1,
         alignItems: 'center',
-        marginTop: hp(1),
     },
     cardStyle: {
         alignSelf: 'center',

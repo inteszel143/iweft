@@ -17,7 +17,7 @@ export default function HomeSpecialOffers() {
     const { data, isPending } = useSpecialOffers(isFocused);
     const [activeIndex, setActiveIndex] = useState(0);
 
-    const carousel1 = require('@/assets/temp/special/carousel1.png');
+    const carousel1 = require('@/assets/carousel/carousel1.png');
     const carousel2 = require('@/assets/temp/special/carousel2.png');
     const carousel3 = require('@/assets/temp/special/carousel3.png');
 

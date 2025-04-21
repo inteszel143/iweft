@@ -1,4 +1,4 @@
-import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { StatusBar } from 'expo-status-bar';
@@ -44,12 +44,16 @@ export default function OfferOtherPage() {
     }
 
     return (
-        <View style={styles.container}>
+        <ImageBackground
+            source={require('@/assets/logo/frame1.png')}
+            style={styles.container}
+            resizeMode="cover"
+        >
             <StatusBar style='light' />
             {showSuccess && <SuccessActivePromo modalVisible={showSuccess} setModalVisible={setShowSuccess} />}
             {showError && <ErrorActivePromo modalVisible={showError} setModalVisible={setShowError} />}
             <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
-                <View style={[styles.topStyle, { backgroundColor: specialOffers?.title === "Weekend Special!" ? "#35DEBC" : specialOffers?.title === "Summer Sale!" ? "#FFAB38" : specialOffers?.title === "Today's Special!" ? "#548DC2" : "#FF8A9B", }]}>
+                <View style={[styles.topStyle]}>
                     <Image
                         source={specialOffers?.title === "Today's Special!" ? special1 : specialOffers?.title === "Summer Sale!" ? special2 : specialOffers?.title === "Weekend Special!" ? special4 : special3}
                         resizeMode='contain'
@@ -134,7 +138,7 @@ export default function OfferOtherPage() {
                     </Animated.View>
             }
 
-        </View>
+        </ImageBackground>
     )
 }
 
