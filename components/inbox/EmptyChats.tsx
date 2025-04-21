@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
         fontSize: hp(1.8),
         color: "#616161",
         textAlign: 'center',
-        paddingHorizontal: wp(6),
+        paddingHorizontal: wp(10),
         marginTop: hp(2)
     }
 })

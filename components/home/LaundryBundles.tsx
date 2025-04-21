@@ -10,9 +10,10 @@ import { useTranslation } from 'react-i18next';
 import { getCurrentLanguage } from '@/services/i18n';
 export default function LaundryBundles() {
     const isFocused = useIsFocused();
-    const { data: laundryData, isPending } = useLaundryBundles(isFocused);
+    const { data, isPending } = useLaundryBundles(isFocused);
     const { t } = useTranslation();
     const current = getCurrentLanguage();
+    const sortedData = data?.slice().sort((a: any, b: any) => a.title.localeCompare(b.title));
     return (
         <View style={styles.container}>
 
@@ -37,7 +38,7 @@ export default function LaundryBundles() {
                     :
                     <View>
                         <FlatList
-                            data={laundryData}
+                            data={sortedData?.slice(0, 2)}
                             horizontal
                             showsHorizontalScrollIndicator={false}
                             keyExtractor={(item) => item?._id.toString()}
@@ -53,8 +54,9 @@ export default function LaundryBundles() {
                                             source={{ uri: item?.image }}
                                             resizeMode='contain'
                                             style={{
-                                                width: wp(30),
-                                                height: hp(20),
+                                                width: wp(40),
+                                                height: hp(24),
+                                                marginLeft: wp(3)
                                             }}
                                         />
                                         <Text style={styles.bundleText}>{item?.title.replace(" Bundle", "")}</Text>

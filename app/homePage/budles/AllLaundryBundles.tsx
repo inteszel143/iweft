@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router } from 'expo-router';
@@ -15,19 +15,10 @@ export default function AllLaundryBundles() {
 
     const isFocused = useIsFocused();
     const { data: laundryData, isPending } = useLaundryBundles(isFocused);
-
-    const exampleData = [
-        {
-            image: require('@/assets/temp/laundryBundle/bundle_1.png'),
-        },
-        {
-            image: require('@/assets/temp/laundryBundle/bundle_2.png'),
-        },
-        {
-            image: require('@/assets/temp/laundryBundle/bundle_3.png'),
-        },
-    ]
-
+    const bundle1 = require('@/assets/temp/laundryBundle/bundle_1.png');
+    const bundle2 = require('@/assets/temp/laundryBundle/bundle_2.png');
+    const bundle3 = require('@/assets/temp/laundryBundle/bundle_3.png');
+    const sortedData = laundryData?.slice().sort((a: any, b: any) => a.title.localeCompare(b.title));
     return (
         <View style={styles.container}>
 
@@ -52,18 +43,25 @@ export default function AllLaundryBundles() {
 
             <View style={styles.containerStyle}>
                 <FlatList
-                    data={exampleData}
+                    data={sortedData}
                     showsVerticalScrollIndicator={false}
                     renderItem={({ item, index }) => (
                         <View key={index}>
-                            <Image
-                                source={item?.image}
-                                resizeMode='cover'
-                                style={{
-                                    width: wp(100),
-                                    height: hp(22),
-                                }}
-                            />
+                            <Pressable
+                                onPress={() => router.push({
+                                    pathname: '/homePage/budles/BuddleScreen',
+                                    params: { bundleId: item?._id },
+                                })}
+                            >
+                                <Image
+                                    source={item?.title === "Bedding Set Bundle" ? bundle1 : item?.title === "Suit Care Bundle" ? bundle2 : bundle3}
+                                    resizeMode='cover'
+                                    style={{
+                                        width: wp(100),
+                                        height: hp(22),
+                                    }}
+                                />
+                            </Pressable>
                         </View>
                         // <TouchableOpacity
                         //     style={[styles.cardStyle, { backgroundColor: item?.title === "Bedding Set Bundle" ? "#486FFB" : "#FF6A80" }]}
@@ -124,6 +122,7 @@ const styles = StyleSheet.create({
 
 
     containerStyle: {
+        flex: 1,
         alignItems: 'center',
         marginTop: hp(3)
     },
