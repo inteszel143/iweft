@@ -241,12 +241,12 @@ export default function Security() {
                     >
                         <Text style={[styles.footerText, { color: '#0A5CA8' }]}>Change Phone Number</Text>
                     </TouchableOpacity> */}
-                    {/* <TouchableOpacity
+                    <TouchableOpacity
                         style={[styles.footerBtn, { backgroundColor: '#F75555', }]}
                         onPress={handlePresentModalPress}
                     >
                         <Text style={[styles.footerText, { color: '#FFFFFF' }]}>Delete Account</Text>
-                    </TouchableOpacity> */}
+                    </TouchableOpacity>
                 </View>
 
 
