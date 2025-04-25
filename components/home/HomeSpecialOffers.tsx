@@ -114,7 +114,7 @@ export default function HomeSpecialOffers() {
                                         resizeMode='contain'
                                         style={{
                                             width: wp(104),
-                                            height: hp(50),
+                                            height: hp(35),
                                         }}
                                     />
                                 </View>

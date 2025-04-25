@@ -29,6 +29,7 @@ export default function BundleOffers() {
                     resizeMode='contain'
                     style={{
                         width: wp(100),
+                        height: hp(25)
                     }}
                 />
             </View>

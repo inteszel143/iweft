@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList, TextInput, Platform, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView, FlatList, TextInput, Platform, ActivityIndicator, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Link, router, useLocalSearchParams } from 'expo-router';
@@ -46,20 +46,21 @@ export default function AfterItemPage() {
     const toggleSubmit = () => {
         setBtnLoading(true)
         if (subscription === "Yes") {
-            setService(service as string);
-            setServiceName(service_name as string);
-            setBasePrice(base_price);
-            setItemData(itemData);
-            setTotal(total);
-            if (data && Array.isArray(data) && data[0] && data[0].special_offer) {
-                setPromoCode(data[0]?.special_offer?.promo_code);
-                setDiscount(data[0]?.special_offer?.discount_value);
-            } else {
-                setPromoCode(null)
-                setDiscount("")
-            }
-            setTotalData(total_data as string);
-            router.push('/homePage/services/ChooseSubscription');
+            Alert.alert('Under Construction!', 'We’re working hard to bring you this feature. Please check back soon!')
+            // setService(service as string);
+            // setServiceName(service_name as string);
+            // setBasePrice(base_price);
+            // setItemData(itemData);
+            // setTotal(total);
+            // if (data && Array.isArray(data) && data[0] && data[0].special_offer) {
+            //     setPromoCode(data[0]?.special_offer?.promo_code);
+            //     setDiscount(data[0]?.special_offer?.discount_value);
+            // } else {
+            //     setPromoCode(null)
+            //     setDiscount("")
+            // }
+            // setTotalData(total_data as string);
+            // router.push('/homePage/services/ChooseSubscription');
             setBtnLoading(false)
         } else {
             setService(service as string);
