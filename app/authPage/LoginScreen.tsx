@@ -88,7 +88,10 @@ export default function LoginScreen() {
             {errorModalVisible && <ErrorLoginModal modalVisible={errorModalVisible} setModalVisible={setErrorModalVisible} />}
 
             <View style={styles.headerBack}>
-                <TouchableOpacity onPress={() => router.push('/authPage/SelectLoginPage')}>
+                <TouchableOpacity
+                    // onPress={() => router.push('/authPage/SelectLoginPage')}
+                    onPress={() => router.back()}
+                >
                     <AntDesign name='arrowleft' size={hp(3)} />
                 </TouchableOpacity>
             </View>

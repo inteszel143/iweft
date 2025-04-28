@@ -11,7 +11,9 @@ export default function NoTokenInbox() {
                 <Text style={styles.subTitle}>Once you login, you'll access your inbox and find message here.</Text>
             </View>
             <View style={[styles.topStyle]}>
-                <TouchableOpacity style={styles.btnStyle} onPress={() => router.push('(modal)/login')}>
+                <TouchableOpacity style={styles.btnStyle}
+                    onPress={() => router.push("/authPage/LoginScreen")}
+                >
                     <Text style={styles.btnText}>Login</Text>
                 </TouchableOpacity>
             </View>

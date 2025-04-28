@@ -381,7 +381,7 @@ export default function ServicesScreen() {
                     {
                         refreshToken === null ? <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}
                             disabled={isPending ? true : false}
-                            onPress={() => router.push('(modal)/login')}
+                            onPress={() => router.push("/authPage/LoginScreen")}
                         >
                             <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
                         </TouchableOpacity>
@@ -406,7 +406,7 @@ export default function ServicesScreen() {
                             elevation: 10,
                         }]}
                             disabled={isPending ? true : false}
-                            onPress={() => router.push('(modal)/login')}
+                            onPress={() => router.push("/authPage/LoginScreen")}
                         >
                             <Text style={[styles.bottomText, { color: "white" }]}>Book Now </Text>
                         </TouchableOpacity>

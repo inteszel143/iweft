@@ -111,7 +111,7 @@ export default function OfferOtherPage() {
                 >
                     <TouchableOpacity style={[defaultStyles.footerBtn, { marginTop: hp(3) }]}
                         disabled={btnLoading}
-                        onPress={() => router.push('(modal)/login')}
+                        onPress={() => router.push("/authPage/LoginScreen")}
                     >
                         {btnLoading ? <ActivityIndicator size={'small'} color={'white'} /> : <Text style={defaultStyles.footerText}>Activate Discount</Text>}
                     </TouchableOpacity>

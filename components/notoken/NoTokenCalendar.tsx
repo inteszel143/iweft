@@ -11,7 +11,8 @@ export default function NoTokenCalendar() {
             </View>
             <View style={[styles.topStyle]}>
                 <TouchableOpacity style={styles.btnStyle}
-                    onPress={() => router.push('(modal)/login')}>
+                    onPress={() => router.push("/authPage/LoginScreen")}
+                >
                     <Text style={styles.btnText}>Login</Text>
                 </TouchableOpacity>
             </View>

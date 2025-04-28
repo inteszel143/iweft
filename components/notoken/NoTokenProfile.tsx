@@ -38,7 +38,9 @@ export default function NoTokenProfile() {
             </View>
 
             <View style={{ paddingHorizontal: wp(6), }}>
-                <TouchableOpacity style={styles.btnStyle} onPress={() => router.push('(modal)/login')}>
+                <TouchableOpacity style={styles.btnStyle}
+                    onPress={() => router.push("/authPage/LoginScreen")}
+                >
                     <Text style={styles.btnText}>Log in</Text>
                 </TouchableOpacity>
                 <View style={styles.rowStyle}>

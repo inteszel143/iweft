@@ -195,7 +195,9 @@ export default function BuddleScreen() {
                     <View style={styles.middelTopRow}>
                         <Text style={styles.middleText}>{bundleData?.title}</Text>
                         {
-                            refreshToken === null ? <TouchableOpacity onPress={() => router.push('(modal)/login')}>
+                            refreshToken === null ? <TouchableOpacity
+                                onPress={() => router.push("/authPage/LoginScreen")}
+                            >
                                 <Image source={require('@/assets/icons/bookmarkInactive.jpg')} resizeMode='contain' style={{ width: wp(5.4), height: hp(4), }} />
                             </TouchableOpacity>
                                 :
@@ -276,7 +278,7 @@ export default function BuddleScreen() {
                         <View style={styles.bottomBtnRow}>
                             <TouchableOpacity style={[styles.bottomBtn, { backgroundColor: "#DAE7F2" }]}
                                 disabled={isPending ? true : false}
-                                onPress={() => router.push('(modal)/login')}
+                                onPress={() => router.push("/authPage/LoginScreen")}
                             >
                                 <Text style={[styles.bottomText, { color: "#0A5CA8" }]}>Message</Text>
                             </TouchableOpacity>
@@ -292,7 +294,7 @@ export default function BuddleScreen() {
                                 elevation: 10,
                             }]}
                                 disabled={isPending ? true : false}
-                                onPress={() => router.push('(modal)/login')}
+                                onPress={() => router.push("/authPage/LoginScreen")}
                             >
                                 <Text style={[styles.bottomText, { color: "white" }]}>Book Now </Text>
                             </TouchableOpacity>

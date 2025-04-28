@@ -77,7 +77,7 @@ export default function HomeHeader() {
           ]}
         >
           <View>
-            <TouchableOpacity onPress={() => router.push("(modal)/login")}>
+            <TouchableOpacity onPress={() => router.push("/authPage/LoginScreen")}>
               <Image
                 source={require("@/assets/icons/bell.png")}
                 resizeMode="contain"
@@ -93,7 +93,7 @@ export default function HomeHeader() {
 
           {/* bookmark */}
           <View>
-            <TouchableOpacity onPress={() => router.push("(modal)/login")}>
+            <TouchableOpacity onPress={() => router.push("/authPage/LoginScreen")}>
               <Image
                 source={require("@/assets/icons/bookmark.png")}
                 resizeMode="contain"

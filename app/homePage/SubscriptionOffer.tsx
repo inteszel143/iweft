@@ -10,7 +10,9 @@ import useStoreBooking from '@/store/useStoreBooking';
 import { useIsFocused } from '@react-navigation/native';
 import { useGetAllSubscription } from '@/query/stripeQuery';
 import { oppositeCancelAt } from '@/utils/validate';
+import useValidateRefresh from '@/store/useValidateRefresh';
 export default function SubscriptionOffer() {
+    const { refreshToken } = useValidateRefresh();
     const isFocused = useIsFocused();
     const { data: subscription, isPending } = useGetAllSubscription(isFocused);
     const [modalVisible, setModalVisible] = useState(true);
@@ -69,20 +71,28 @@ export default function SubscriptionOffer() {
             <Animated.View style={styles.footer}
                 entering={SlideInDown.duration(400)}
             >
-                <TouchableOpacity style={styles.footerBtn}
-                    onPress={() => {
-                        router.push('homePage/item/PriorityItemPage');
-                        setPrior(true);
-                    }}
-                >
-                    <Text style={styles.footerText}>Book Now</Text>
-                </TouchableOpacity>
+                {
+                    refreshToken === null ?
+                        <TouchableOpacity style={styles.footerBtn}
+                            onPress={() => router.push("/authPage/LoginScreen")}
+                        >
+                            <Text style={styles.footerText}>Book Now</Text>
+                        </TouchableOpacity>
+                        :
+                        <TouchableOpacity style={styles.footerBtn}
+                            onPress={() => {
+                                router.push('homePage/item/PriorityItemPage');
+                                setPrior(true);
+                            }}
+                        >
+                            <Text style={styles.footerText}>Book Now</Text>
+                        </TouchableOpacity>
+                }
             </Animated.View>
 
         </View>
     )
 }
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,

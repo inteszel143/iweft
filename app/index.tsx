@@ -26,8 +26,8 @@ export default function index() {
                 if (onboarded === null) {
                     router.push('/authPage/OnboardingScreen');
                 } else {
-                    // router.push('/(tabs)/');
-                    router.push('/authPage/SelectLoginPage');
+                    router.push('/(tabs)/');
+                    // router.push('/authPage/SelectLoginPage');
                     setRefreshToken(refreshToken);
                 }
             } else {
@@ -46,7 +46,8 @@ export default function index() {
                         });
                         router.push('/(tabs)/');
                     } catch (error) {
-                        router.push('/authPage/SelectLoginPage');
+                        // router.push('/authPage/SelectLoginPage');
+                        router.push('/(tabs)/');
                     }
                 } else {
                     try {
