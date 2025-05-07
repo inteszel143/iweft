@@ -65,7 +65,7 @@
           "value": "true"
         }
       ],
-      "googleServicesFile": "./android/app/google-services.json"
+      "googleServicesFile": "./assets/animate/google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -136,7 +136,20 @@
           "enableGooglePay": true
         }
       ],
-      "expo-build-properties"
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "minSdkVersion": 24,
+            "buildToolsVersion": "35.0.0"
+          },
+          "ios": {
+            "deploymentTarget": "15.1"
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

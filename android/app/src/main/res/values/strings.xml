@@ -1,9 +1,0 @@
-<resources>
-  <string name="app_name">Iweft</string>
-  <string name="expo_splash_screen_resize_mode" translatable="false">contain</string>
-  <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
-  <string name="expo_system_ui_user_interface_style" translatable="false">automatic</string>
-  <string name="facebook_app_id">1518615575408915</string>
-  <string name="facebook_client_token">fde73919bc269ef295f20308f3725012</string>
-  <string name="fb_login_protocol_scheme">fb1518615575408915</string>
-</resources>
