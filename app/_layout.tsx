@@ -14,6 +14,7 @@ import { StripeProvider } from '@stripe/stripe-react-native';
 import {
   QueryClient, QueryClientProvider,
 } from '@tanstack/react-query';
+import { configureReanimatedLogger, ReanimatedLogLevel } from "react-native-reanimated";
 import { I18nManager, LogBox, TouchableOpacity } from "react-native";
 import HeaderInbox from "@/components/inbox/HeaderInbox";
 import HelpHeader from "@/components/profile/HelpHeader";
@@ -26,12 +27,15 @@ const queryClient = new QueryClient();
 export const unstable_settings = {
   initialRouteName: '(tabs)',
 };
+import { KeyboardProvider } from "react-native-keyboard-controller";
 I18nManager.forceRTL(false);
 SplashScreen.preventAutoHideAsync();
-LogBox.ignoreLogs(['Sending `onAnimatedValueUpdate` with no listeners registered.']);
-LogBox.ignoreLogs([
-  'Warning: Avatar: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.',
-]);
+LogBox.ignoreAllLogs(true);
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false,
+});
+
 export default function RootLayout() {
 
   const [loaded, error] = useFonts({
@@ -68,7 +72,9 @@ export default function RootLayout() {
             urlScheme="iweft" // required for 3D Secure and bank redirects
             merchantIdentifier="merchant.com.iweft" // required for Apple Pay
           >
-            <RootLayoutNav />
+            <KeyboardProvider>
+              <RootLayoutNav />
+            </KeyboardProvider>
           </StripeProvider>
         </SocketProvider>
       </QueryClientProvider>

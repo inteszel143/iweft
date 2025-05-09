@@ -12,7 +12,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "usesAppleSignIn": true,
       "supportsTablet": true,
@@ -20,7 +22,9 @@
         "NSPrivacyAccessedAPITypes": [
           {
             "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
-            "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1"
+            ]
           }
         ]
       },
@@ -31,7 +35,10 @@
       "bundleIdentifier": "com.paras23.iweft",
       "infoPlist": {
         "NSFaceIDUsageDescription": "This app uses Face ID and Touch ID to verify the user's identity and protect sensitive data",
-        "UIBackgroundModes": ["fetch", "remote-notification"],
+        "UIBackgroundModes": [
+          "fetch",
+          "remote-notification"
+        ],
         "NSCalendarsUsageDescription": "This app needs access to your calendar to schedule events and reminders.",
         "CFBundleURLTypes": [
           {
@@ -59,13 +66,8 @@
         "android.permission.READ_CALENDAR",
         "android.permission.WRITE_CALENDAR"
       ],
-      "meta-data": [
-        {
-          "name": "com.google.android.gms.wallet.api.enabled",
-          "value": "true"
-        }
-      ],
-      "googleServicesFile": "./assets/animate/google-services.json"
+      "googleServicesFile": "./assets/animate/google-services.json",
+      "package": "com.paras23.iweft"
     },
     "web": {
       "bundler": "metro",
@@ -90,7 +92,9 @@
           "cameraPermission": "Camera usage to take pictures for your profile. Please allow camera access to continue."
         }
       ],
-      ["expo-apple-authentication"],
+      [
+        "expo-apple-authentication"
+      ],
       [
         "expo-tracking-transparency",
         {
