@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Dimensions, TouchableOpacity, Pressable, PanResponder, GestureResponderEvent, PanResponderGestureState } from 'react-native'
+import { StyleSheet, Text, View, Image, Dimensions, TouchableOpacity, Pressable, PanResponder, GestureResponderEvent, PanResponderGestureState, useWindowDimensions } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Carousel from 'react-native-reanimated-carousel';
@@ -16,6 +16,7 @@ export default function HomeSpecialOffers() {
     const isFocused = useIsFocused();
     const { data, isPending } = useSpecialOffers(isFocused);
     const [activeIndex, setActiveIndex] = useState(0);
+    const screenWidth = Dimensions.get('window').width;
 
     const carousel1 = require('@/assets/carousel/carousel1.png');
     const carousel2 = require('@/assets/temp/special/carousel2.png');
@@ -59,7 +60,7 @@ export default function HomeSpecialOffers() {
             ) => {
                 const { dx } = gestureState;
                 if (Math.abs(dx) < 1) {
-                    router.push('/homePage/SpecialOffers');
+                    router.push('/homePage/SpecialOffers' as any);
                 }
             },
         })
@@ -111,9 +112,9 @@ export default function HomeSpecialOffers() {
                                 }}>
                                     <Image
                                         source={item?.image}
-                                        resizeMode='contain'
+                                        resizeMode='cover'
                                         style={{
-                                            width: wp(104),
+                                            width: screenWidth,
                                             height: hp(35),
                                         }}
                                     />
